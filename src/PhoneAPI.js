@@ -1,0 +1,641 @@
+import store from '@/store'
+import VoiceRTC from './VoiceRCT'
+import Vue from 'vue'
+import {Howl} from 'howler'
+
+import emoji from './emoji.json'
+const keyEmoji = Object.keys(emoji)
+
+let USE_VOICE_RTC = false
+const BASE_URL = 'http://gcphone/'
+
+/* eslint-disable camelcase */
+class PhoneAPI {
+  constructor () {
+    // evento che controlla l'apertura e la chiusura del telefono:
+    // aggiungere che ad event.data.show si apre il lockscreen
+    window.addEventListener('message', (event) => {
+      const eventType = event.data.event
+      if (eventType !== undefined && typeof this['on' + eventType] === 'function') {
+        this['on' + eventType](event.data)
+      } else if (event.data.show !== undefined) {
+        store.commit('SET_PHONE_VISIBILITY', event.data.show)
+      }
+    })
+    this.config = null
+    this.voiceRTC = null
+    this.soundList = {}
+  }
+
+  // attenzione: per evitare l'Uncaught (in promise) error sulla console, è
+  // necessario inserire il cb("ok") sul lua, visto che si aspetta qualcosa in ritorno
+  async post (method, data) {
+    const ndata = data === undefined ? '{}' : JSON.stringify(data)
+    const response = await window.jQuery.post(BASE_URL + method, ndata)
+    return JSON.parse(response)
+  }
+
+  async log (...data) {
+    if (process.env.NODE_ENV === 'production') {
+      return this.post('log', data)
+    } else {
+      return console.log(...data)
+    }
+  }
+
+  convertEmoji (text) {
+    for (const e of keyEmoji) {
+      text = text.replace(new RegExp(`:${e}:`, 'g'), emoji[e])
+    }
+    return text
+  }
+
+  // === Gestion des messages
+  async sendMessage (phoneNumber, message) {
+    return this.post('sendMessage', {phoneNumber, message})
+  }
+
+  async deleteMessage (id) {
+    return this.post('deleteMessage', {id})
+  }
+
+  async deleteMessagesNumber (number) {
+    return this.post('deleteMessageNumber', {number})
+  }
+
+  async deleteAllMessages () {
+    return this.post('deleteAllMessage')
+  }
+
+  async setMessageRead (number) {
+    return this.post('setReadMessageNumber', {number})
+  }
+
+  // === Gestion des contacts
+  async updateContactAvatar (id, display, number, icon) {
+    return this.post('aggiornaAvatarContatto', { id, display, number, icon })
+  }
+
+  async updateContact (id, display, phoneNumber) {
+    return this.post('updateContact', { id, display, phoneNumber })
+  }
+
+  async addContact (display, phoneNumber) {
+    return this.post('addContact', { display, phoneNumber })
+  }
+
+  async deleteContact (id) {
+    return this.post('deleteContact', { id })
+  }
+
+  // == Gestion des appels
+  async appelsDeleteHistorique (numero) {
+    return this.post('appelsDeleteHistorique', { numero })
+  }
+
+  async appelsDeleteAllHistorique () {
+    return this.post('appelsDeleteAllHistorique')
+  }
+
+  // === Autre
+  async closePhone () {
+    return this.post('closePhone')
+  }
+
+  async setGPS (x, y) {
+    return this.post('setGPS', {x, y})
+  }
+
+  async takePhoto () {
+    store.commit('SET_TEMPO_HIDE', true)
+    const data = await this.post('takePhoto', { url: this.config.fileUploadService_Url, field: this.config.fileUploadService_Field })
+    store.commit('SET_TEMPO_HIDE', false)
+    if (data) {
+      return data
+    }
+  }
+
+  async sendErrorMessage (message) {
+    return this.post('sendESXNotification', message)
+  }
+
+  async getReponseText (data) {
+    // { text }
+    if (process.env.NODE_ENV === 'production') {
+      return this.post('reponseText', data || {})
+    } else {
+      return {text: window.prompt()}
+    }
+  }
+
+  async faketakePhoto () {
+    return this.post('faketakePhoto')
+  }
+
+  async callEvent (eventName, data) {
+    return this.post('callEvent', {eventName, data})
+  }
+
+  async deleteALL () {
+    localStorage.clear()
+    store.dispatch('tchatReset')
+    store.dispatch('resetPhone')
+    store.dispatch('resetMessage')
+    store.dispatch('resetContact')
+    store.dispatch('resetBourse')
+    store.dispatch('resetAppels')
+    store.dispatch('resetDati')
+    return this.post('deleteALL')
+  }
+
+  async getConfig () {
+    if (this.config === null) {
+      const response = await window.jQuery.get('/html/static/config/config.json')
+      if (process.env.NODE_ENV === 'production') {
+        this.config = JSON.parse(response)
+      } else {
+        this.config = response
+      }
+      if (this.config.useWebRTCVocal === true) {
+        this.voiceRTC = new VoiceRTC(this.config.RTCConfig)
+        USE_VOICE_RTC = true
+      }
+      this.notififyUseRTC(this.config.useWebRTCVocal)
+    }
+    return this.config
+  }
+
+  async onsetEnableApp (data) {
+    store.dispatch('setEnableApp', data)
+  }
+
+  async setIgnoreFocus (ignoreFocus) {
+    this.post('setIgnoreFocus', { ignoreFocus })
+  }
+
+  // === App Tchat
+  async tchatGetMessagesChannel (channel) {
+    this.post('tchat_getChannel', { channel })
+  }
+
+  async tchatSendMessage (channel, message) {
+    this.post('tchat_addMessage', { channel, message })
+  }
+
+  // === App Notes
+  async notesGetMessagesChannel (channel) {
+    window.localStorage.setItem('gc_notas_locales', channel)
+  }
+
+  async notesSendMessage (channel, message) {
+    this.post('notes_addMessage', { channel, message })
+  }
+
+  // ==========================================================================
+  //  Gestione degli eventi
+  // ==========================================================================
+  onupdateMyPhoneNumber (data) {
+    store.commit('SET_MY_PHONE_NUMBER', data.myPhoneNumber)
+  }
+
+  onupdateMessages (data) {
+    store.commit('SET_MESSAGES', data.messages)
+  }
+
+  onnewMessage (data) {
+    store.commit('ADD_MESSAGE', data.message)
+  }
+
+  onupdateContacts (data) {
+    store.commit('SET_CONTACTS', data.contacts)
+  }
+
+  onhistoriqueCall (data) {
+    store.commit('SET_APPELS_HISTORIQUE', data.historique)
+  }
+
+  onupdateBankbalance (data) {
+    store.commit('SET_BANK_AMONT', data.soldi, data.iban)
+  }
+
+  async postUpdateMoney (money, iban) {
+    return this.post('sendMoneyToIban', {money, iban})
+  }
+
+  onupdateBourse (data) {
+    store.commit('SET_BOURSE_INFO', data.bourse)
+  }
+
+  // Call
+  async startCall (numero, extraData = undefined) {
+    if (USE_VOICE_RTC === true) {
+      const rtcOffer = await this.voiceRTC.prepareCall()
+      return this.post('startCall', { numero, rtcOffer, extraData })
+    } else {
+      return this.post('startCall', { numero, extraData })
+    }
+  }
+
+  async acceptCall (infoCall) {
+    if (USE_VOICE_RTC === true) {
+      const rtcAnswer = await this.voiceRTC.acceptCall(infoCall)
+      return this.post('acceptCall', { infoCall, rtcAnswer })
+    } else {
+      return this.post('acceptCall', { infoCall })
+    }
+  }
+
+  async rejectCall (infoCall) {
+    return this.post('rejectCall', { infoCall })
+  }
+
+  async notififyUseRTC (use) {
+    return this.post('notififyUseRTC', use)
+  }
+
+  async ignoraChiamata (infoCall) {
+    return this.post('ignoreCall', infoCall)
+  }
+
+  onwaitingCall (data) {
+    store.commit('SET_APPELS_INFO_IF_EMPTY', {
+      ...data.infoCall,
+      initiator: data.initiator
+    })
+  }
+
+  onacceptCall (data) {
+    if (USE_VOICE_RTC === true) {
+      if (data.initiator === true) {
+        this.voiceRTC.onReceiveAnswer(data.infoCall.rtcAnswer)
+      }
+      this.voiceRTC.addEventListener('onCandidate', (candidates) => {
+        this.post('onCandidates', { id: data.infoCall.id, candidates })
+      })
+    }
+    store.commit('SET_APPELS_INFO_IS_ACCEPTS', true)
+  }
+
+  oncandidatesAvailable (data) {
+    this.voiceRTC.addIceCandidates(data.candidates)
+  }
+
+  onrejectCall (data) {
+    if (this.voiceRTC !== null) {
+      this.voiceRTC.close()
+    }
+    store.commit('SET_APPELS_INFO', null)
+  }
+
+  // Tchat Event
+  ontchat_receive (data) {
+    store.dispatch('tchatAddMessage', data)
+  }
+
+  ontchat_channel (data) {
+    store.commit('TCHAT_SET_MESSAGES', data)
+  }
+
+  // Notes Event
+  onnotes_receive (data) {
+    store.dispatch('notesAddMessage', data)
+  }
+
+  onnotes_channel (data) {
+    store.commit('NOTES_SET_MESSAGES', data)
+  }
+
+  // =====================
+  onautoStartCall (data) {
+    this.startCall(data.number, data.extraData)
+  }
+
+  onautoAcceptCall (data) {
+    store.commit('SET_APPELS_INFO', data.infoCall)
+    this.acceptCall(data.infoCall)
+  }
+
+  // ==========================================================================
+  //  Zona eventi e funzioni Twitter
+  // ==========================================================================
+  twitter_login (username, password) {
+    this.post('twitter_login', { username, password })
+  }
+
+  twitter_changePassword (username, password, newPassword) {
+    this.post('twitter_changePassword', { username, password, newPassword })
+  }
+
+  twitter_createAccount (username, password, avatarUrl) {
+    this.post('twitter_createAccount', { username, password, avatarUrl })
+  }
+
+  twitter_postTweet (username, password, message) {
+    this.post('twitter_postTweet', { username, password, message })
+  }
+
+  twitter_toggleLikeTweet (username, password, tweetId) {
+    this.post('twitter_toggleLikeTweet', { username, password, tweetId })
+  }
+
+  twitter_setAvatar (username, password, avatarUrl) {
+    this.post('twitter_setAvatarUrl', { username, password, avatarUrl })
+  }
+
+  twitter_getTweets (username, password) {
+    this.post('twitter_getTweets', { username, password })
+  }
+
+  twitter_getFavoriteTweets (username, password) {
+    this.post('twitter_getFavoriteTweets', { username, password })
+  }
+
+  ontwitter_tweets (data) {
+    store.commit('SET_TWEETS', data)
+  }
+
+  ontwitter_favoritetweets (data) {
+    store.commit('SET_FAVORITE_TWEETS', data)
+  }
+
+  ontwitter_newTweet (data) {
+    store.dispatch('addTweet', data.tweet)
+  }
+
+  ontwitter_setAccount (data) {
+    store.dispatch('setAccount', data)
+  }
+
+  ontwitter_updateTweetLikes (data) {
+    store.commit('UPDATE_TWEET_LIKE', data)
+  }
+
+  ontwitter_setTweetLikes (data) {
+    store.commit('UPDATE_TWEET_ISLIKE', data)
+  }
+
+  ontwitter_showError (data) {
+    Vue.notify({
+      title: store.getters.IntlString(data.title, ''),
+      message: store.getters.IntlString(data.message),
+      icon: 'twitter',
+      backgroundColor: '#e0245e80'
+    })
+  }
+
+  ontwitter_showSuccess (data) {
+    Vue.notify({
+      title: store.getters.IntlString(data.title, ''),
+      message: store.getters.IntlString(data.message),
+      icon: 'twitter'
+    })
+  }
+
+  onplaySound ({ sound, volume = 1 }) {
+    var path = '/html/static/sound/' + sound
+    if (!sound) return
+    if (this.soundList[sound] !== undefined) {
+      this.soundList[sound].volume = volume
+    } else {
+      this.soundList[sound] = new Howl({
+        src: path,
+        onend: function () {}
+      })
+      this.soundList[sound].loop = true
+      this.soundList[sound].volume = volume
+      this.soundList[sound].play()
+    }
+  }
+
+  onsetSoundVolume ({ sound, volume = 1 }) {
+    if (this.soundList[sound] !== undefined) {
+      this.soundList[sound].volume = volume
+    }
+  }
+
+  onstopSound ({ sound }) {
+    if (this.soundList[sound] !== undefined) {
+      this.soundList[sound].pause()
+      delete this.soundList[sound]
+    }
+  }
+
+  // ==========================================================================
+  //  Zona eventi e funzioni Chiamate di emergenza
+  // ==========================================================================
+
+  async sendEmergencyMessage (data) {
+    return this.post('chiamataEmergenza', data)
+  }
+
+  // ==========================================================================
+  //  Zona eventi e funzioni Wifi e dati
+  // ==========================================================================
+  async requestOfferta () {
+    return this.post('requestOfferta')
+  }
+
+  async connettiAllaRete (table) {
+    return this.post('connettiAllaRete', table)
+  }
+
+  onupdateRetiWifi ({ data }) {
+    store.commit('UPDATE_RETI_WIFI', data)
+  }
+
+  onupdateOfferta ({ data }) {
+    store.commit('UPDATE_OFFERTA', data)
+  }
+
+  // dati ricevuti dal nuimessage:
+  // 0, 1, 2, 3, 4 per potenza segnale
+  onupdateSegnale ({ data }) {
+    var segnale = data.potenza
+    store.commit('SET_SEGNALE', segnale)
+  }
+  // data contiene
+  // {
+  //   label: 'MIN',
+  //   current: 299,
+  //   max: 103
+  // }
+  //
+  // valori necessari!!
+  // [1] MIN
+  // [2] SMS
+  // [3] MB
+  onupdateDati ({ data }) {
+    store.commit('SET_DATI_INFO', data)
+  }
+
+  // a questo messaggio va mandato
+  // data.hasWifi come booleano
+  onupdateWifi ({ data }) {
+    store.commit('UPDATE_WIFI', data.hasWifi)
+  }
+
+  // == Schermata di sblocco
+  async postPlayUnlockSound () {
+    return this.post('soundLockscreen')
+  }
+
+  // ==========================================================================
+  //  Zona eventi e funzioni Instagram
+  // ==========================================================================
+  async instagram_setAvatar (username, password, avatarUrl) {
+    return this.post('instagram_changeAvatar', { username, password, avatarUrl })
+  }
+  // questo è la funzione generale
+  // che ti permette di postare una nuova immagine
+  // su instagram
+  async instagram_postImage (username, password, imgTable) {
+    return this.post('nuovoPost', { username, password, imgTable })
+  }
+
+  // funzione asincrona con post per controllo
+  // username e password inseriti
+  async instagram_login (username, password) {
+    return this.post('loginInstagram', { username, password })
+  }
+
+  // questa funzione fa richiesta al database per prendere
+  // tutti i post dal database per poi rimandarglieli al db
+  async instagram_getPosts (username, password) {
+    return this.post('requestPosts', { username, password })
+  }
+
+  // funzione asincrona per la creazione dell'account di instagram
+  async instagram_createAccount (username, password, avatarUrl) {
+    return this.post('createNewAccount', { username, password, avatarUrl })
+  }
+
+  // funzione del cambio password
+  async instagram_changePassword (username, password, newPassword) {
+    return this.post('changePassword', { username, password, newPassword })
+  }
+
+  async instagram_toggleLikePost (username, password, postId) {
+    Vue.notify({
+      sound: 'Instagram_Like_Sound.ogg',
+      backgroundColor: 'rgba(0, 0, 0, 0)',
+      volume: 0.4
+    })
+    return this.post('togglePostLike', { username, password, postId })
+  }
+
+  // questo evento riceve dal client del lua
+  // la table del post fatta dall'utente, già buildata
+  // come il database
+  oninstagramNewPost (data) {
+    store.dispatch('instagramNewPostFinale', data.post)
+  }
+
+  oninstagramRecivePosts (posts) {
+    store.commit('SET_POSTS', posts)
+  }
+
+  oninstagram_setAccount ({ data }) {
+    store.dispatch('setInstagramAccount', data)
+  }
+
+  oninstagramSetupAccount ({ data }) {
+    store.dispatch('setInstagramAccount', data)
+  }
+
+  // questo messaggio dal lua aggiorna i tutti i like del
+  // post per tutti i giocatori al trigger
+  // data.postId, data.likes
+  oninstagram_updatePostLikes (data) {
+    store.commit('UPDATE_POST_LIKES', data)
+  }
+
+  // questo messaggio dal lua aggiorna il like del player singolo
+  // facendolo eventualmente diventare rosso
+  // data.postId, data.isLike
+  oninstagram_updatePostIsLiked (data) {
+    store.commit('UPDATE_POST_ISLIKE', data)
+  }
+
+  // notifica di errore
+  oninstagram_showError (data) {
+    Vue.notify({
+      title: store.getters.IntlString(data.title, ''),
+      message: store.getters.IntlString(data.message),
+      icon: 'instagram',
+      backgroundColor: '#66000080',
+      sound: 'Instagram_Error.ogg'
+    })
+  }
+
+  // notifica di successo
+  oninstagram_showSuccess (data) {
+    Vue.notify({
+      title: store.getters.IntlString(data.title, ''),
+      message: store.getters.IntlString(data.message),
+      icon: 'instagram',
+      backgroundColor: '#FF66FF80',
+      sound: 'Instagram_Notification.ogg'
+    })
+  }
+
+  // ==========================================================================
+  //  Zona eventi e funzioni Whatsapp
+  // ==========================================================================
+  // notifica di errore
+  onwhatsapp_showError (data) {
+    Vue.notify({
+      title: store.getters.IntlString(data.title, ''),
+      message: store.getters.IntlString(data.message),
+      icon: 'whatsapp',
+      backgroundColor: '#00996680',
+      sound: 'Whatsapp_Error.ogg'
+    })
+  }
+
+  // notifica di successo
+  onwhatsapp_showSuccess (data) {
+    Vue.notify({
+      title: store.getters.IntlString(data.title, ''),
+      message: store.getters.IntlString(data.message),
+      icon: 'whatsapp',
+      backgroundColor: '#33CC6680',
+      sound: 'Whatsapp_Notification.ogg'
+    })
+  }
+
+  onwhatsappGetReturnedGroups (data) {
+    store.commit('UPDATE_POST_ISLIKE', data)
+  }
+
+  async abbandonaGruppo (gruppo) {
+    return this.post('abbandonaGruppo', gruppo)
+  }
+
+  async requestWhatsappMessaggi (groupId) {
+    return this.post('requestWhatsappeMessages', groupId)
+  }
+
+  async sendMessageOnGroup (messaggio, id, phoneNumber) {
+    return this.post('sendMessageInGroup', { messaggio, id, phoneNumber })
+  }
+
+  async getPhoneNumber () {
+    return this.post('requestPhoneNumber')
+  }
+
+  async requestInfoOfGroups () {
+    return this.post('requestAllGroupsInfo')
+  }
+
+  async postCreazioneGruppo (data) {
+    return this.post('inviaValoriPost', data)
+  }
+
+  async updateNotifications (data) {
+    return this.post('updateNotifications', data)
+  }
+}
+
+const instance = new PhoneAPI()
+
+export default instance

@@ -1,0 +1,859 @@
+<template>
+  <div style="width: 324px; height: 595px;" class="background_color">
+    <div style="width: 314px; height: 577px;" class='phone_content content inputText'>
+
+      <template v-if="state === STATI.MENU">
+
+        <template v-if="!isLogin">
+          <div class="group" data-type="button" @click.stop="state = STATI.LOGIN">
+            <input type='button' class="btn btn-gray" @click.stop="state = STATI.LOGIN" :value="IntlString('APP_INSTAGRAM_ACCOUNT_LOGIN')"/>
+          </div>
+
+          <div class="group" data-type="button" @click.stop="state = STATI.NOTIFICATION">
+            <input type='button' class="btn btn-gray" @click.stop="state = STATI.NOTIFICATION" :value="IntlString('APP_INSTAGRAM_NOTIFICATION')" />
+          </div>
+
+          <div class="group bottom" data-type="button" @click.stop="state = STATI.NEW_ACCOUNT">
+            <span style="position: absolute; bottom: 120px; left: 145px;" class="fa fa-user"></span>
+            <input type='button' class="btn btn-green" @click.stop="state = STATI.NEW_ACCOUNT" :value="IntlString('APP_INSTAGRAM_ACCOUNT_NEW')" />
+          </div>
+        </template>
+
+        <template v-if="isLogin">
+          <img :src="instagramAvatarUrl" class="loggedInImage">
+
+          <div class="group" data-type="button" @click.stop="state = STATI.ACCOUNT">
+            <input type='button' class="btn btn-gray" @click.stop="state = STATI.ACCOUNT" :value="IntlString('APP_INSTAGRAM_ACCOUNT_PARAM')" />
+          </div>
+
+          <div class="group" data-type="button" @click.stop="state = STATI.NOTIFICATION">
+            <input type='button' class="btn btn-gray" @click.stop="state = STATI.NOTIFICATION" :value="IntlString('APP_INSTAGRAM_NOTIFICATION')" />
+          </div>
+
+          <div class="group bottom" data-type="button" @click.stop="logout">
+            <input type='button' class="btn btn-red" @click.stop="logout" :value="IntlString('APP_INSTAGRAM_ACCOUNT_LOGOUT')" />
+          </div>
+        </template>
+
+      </template>
+
+      <!-- PAGINA LOGIN CON USERNAME E PASSWORD -->
+      <template v-else-if="state === STATI.LOGIN">
+        <img class="instagram_title" src="/html/static/img/app_instagram/instagramtitle.png">
+        <div class="group inputText" data-type="text" :data-defaultValue="accountLocale.username">
+            <input class="loginBoxes" :placeholder="IntlString('APP_INSTAGRAM_USERNAME_LABEL')" type="text" :value="accountLocale.username" @change="setLocalAccount($event, 'username')">
+            <span class="highlight"><i class="anim fa fa-user fa-lg"></i></span>
+            <span class="bar"></span>
+        </div>
+
+        <div class="group inputText" data-type="text" data-model='password'>
+            <input class="loginBoxes" :placeholder="IntlString('APP_INSTAGRAM_PASSWORD_LABEL')" autocomplete="new-password" type="password" :value="accountLocale.password" @change="setLocalAccount($event, 'password')">
+            <span class="highlight"><i class="fa fa-key fa-lg"></i></span>
+            <span class="bar"></span>
+        </div>
+
+        <div class="group" data-type="button" @click.stop="login">
+          <!-- <input type='button' class="btn btn-generic" @click.stop="login" :value="IntlString('APP_INSTAGRAM_ACCOUNT_LOGIN')" /> -->
+          <span class="favicon fa fa-instagram fa-3x">
+            <p class="LoginText">Login</p>
+          </span>
+          <input type='button' class="btn btn-generic" @click.stop="login"/>
+
+        </div>
+
+      </template>
+
+      <!-- PAGINA CON IMPOSTAZIONI DELLE NOTIFICHE -->
+      <template v-else-if="state === STATI.NOTIFICATION">
+        <div class="groupCheckBoxTitle">
+          <i class="fa fa-cogs" style="position: absolute; padding-top: 5px; padding-left: 5px;"></i>
+          <label style="font-weight: 500; justify-content: center; align-content: center; display: flex;">{{ IntlString('APP_INSTAGRAM_NOTIFICATION_SOUND') }}</label>
+        </div>
+
+        <label class="group checkbox" data-type="button" @click.prevent.stop="setNotification(2)">
+          <input type="checkbox" :checked="instagramNotification === 2" @click.prevent.stop="setNotification(2)">
+          {{ IntlString('APP_TWITTER_NOTIFICATION_ALL') }}
+        </label>
+
+        <label class="group checkbox" data-type="button" @click.prevent.stop="setNotification(1)">
+          <input type="checkbox" :checked="instagramNotification === 1" @click.prevent.stop="setNotification(1)">
+          {{ IntlString('APP_TWITTER_NOTIFICATION_MENTION') }}
+        </label>
+
+        <label class="group checkbox" data-type="button" @click.prevent.stop="setNotification(0)">
+          <input type="checkbox" :checked="instagramNotification === 0" @click.prevent.stop="setNotification(0)">
+          {{ IntlString('APP_TWITTER_NOTIFICATION_NEVER') }}
+        </label>
+
+        <div class="groupCheckBoxTitle">
+          <i class="fa fa-bell" style="position: absolute; padding-top: 5px; padding-left: 5px;"></i>
+          <label style="font-weight: 500; justify-content: center; align-content: center; display: flex;">{{ IntlString('APP_TWITTER_NOTIFICATION_SOUND') }}</label>
+        </div>
+
+        <label class="group checkbox" data-type="button" @click.prevent.stop="setNotificationSound(true)">
+          <input type="checkbox" :checked="instagramNotificationSound" @click.prevent.stop="setNotificationSound(true)">
+          {{ IntlString('APP_TWITTER_NOTIFICATION_SOUND_YES') }}
+        </label>
+
+        <label class="group checkbox" data-type="button" @click.prevent.stop="setNotificationSound(false)">
+          <input type="checkbox" :checked="!instagramNotificationSound" @click.prevent.stop="setNotificationSound(false)">
+          {{ IntlString('APP_TWITTER_NOTIFICATION_SOUND_NO') }}
+        </label>
+
+      </template>
+
+      <template v-else-if="state === STATI.ACCOUNT">
+
+        <div style="margin-top: 60px; margin-bottom: 82px; margin-left: 85px;" class="group img" data-type="button" @click.stop="onPressChangeAvartar">
+          <img :src="instagramAvatarUrl" style="height: 128px; width: 128px; border-style: solid; border-width: 1px;" @click.stop="onPressChangeAvartar">
+        </div>
+
+        <div style="margin-top: 30px; margin-bottom: 82px;" class="group img" data-type="button" @click.stop="onPressChangeAvartar">
+          <input type='button' class="btn btn-generic" :value="IntlString('APP_INSTAGRAM_ACCOUNT_AVATAR')" @click.stop="onPressChangeAvartar"/>
+        </div>
+
+        <i class="fa fa-key" style="position: absolute; top: 480px; left: 155px;"></i>
+        <div style="top: 50px;" class="group" data-type="button" @click.stop="changePassword">
+          <input type='button' class="btn btn-red" :value="IntlString('APP_INSTAGRAM_ACCOUNT_CHANGE_PASSWORD')" @click.stop="changePassword"/>
+        </div>
+
+      </template>
+
+      <template v-else-if="state === STATI.NEW_ACCOUNT">
+
+        <img class="instagram_title" src="/html/static/img/app_instagram/instagramtitle.png">
+        <div class="group inputText" data-type="text" :data-defaultValue="accountLocale.username">
+            <input class="loginBoxes" :placeholder="IntlString('APP_INSTAGRAM_USERNAME_LABEL')" type="text" :value="accountLocale.username" @change="setLocalAccount($event, 'username')">
+            <span class="highlight"><i class="anim fa fa-user fa-lg"></i></span>
+            <span class="bar"></span>
+        </div>
+
+        <div class="group inputText" data-type="text" data-model='password'>
+            <input class="loginBoxes" :placeholder="IntlString('APP_INSTAGRAM_PASSWORD_LABEL')" autocomplete="new-password" type="password" :value="accountLocale.password" @change="setLocalAccount($event, 'password')">
+            <span class="highlight"><i class="fa fa-key fa-lg"></i></span>
+            <span class="bar"></span>
+        </div>
+
+        <div class="group inputText" data-type="text" data-model='password'>
+            <input class="loginBoxes" :placeholder="IntlString('APP_INSTAGRAM_PASSWORD_CONFIRM_LABEL')" autocomplete="new-password" type="password" :value="accountLocale.passwordConfirm" @change="setLocalAccount($event, 'passwordConfirm')">
+            <span class="highlight"><i class="fa fa-key fa-lg"></i></span>
+            <span class="bar"></span>
+        </div>
+
+        <div style="overflow-x: hidden; overflow-y: hidden;" class="group" data-type="button" @click.stop="createAccount">
+          <!-- <input type='button' class="btn btn-generic" @click.stop="login" :value="IntlString('APP_INSTAGRAM_ACCOUNT_LOGIN')" /> -->
+          <span class="favicon fa fa-instagram fa-3x">
+            <p class="LoginText">Registrati</p>
+          </span>
+          <input type='button' class="btn btn-generic" @click.stop="createAccount"/>
+        </div>
+
+        <!-- 
+        <div class="group inputText" data-type="text" data-maxlength='64' data-defaultValue="">
+            <input type="text" :value="accountLocale.username" @change="setLocalAccount($event, 'username')">
+            <span class="highlight"></span>
+            <span class="bar"></span>
+            <label>{{ IntlString('APP_TWITTER_NEW_ACCOUNT_USERNAME') }}</label>
+        </div>
+
+        <div class="group inputText" data-type="text" data-model='password' data-maxlength='30'>
+            <input autocomplete="new-password" type="password" :value="accountLocale.password" @change="setLocalAccount($event, 'password')">
+            <span class="highlight"></span>
+            <span class="bar"></span>
+            <label>{{ IntlString('APP_TWITTER_NEW_ACCOUNT_PASSWORD') }}</label>
+        </div>
+
+
+        <div class="group inputText" data-type="text" data-model='password' data-maxlength='30'>
+            <input autocomplete="new-password" type="password" :value="accountLocale.passwordConfirm" @change="setLocalAccount($event, 'passwordConfirm')">
+            <span class="highlight"></span>
+            <span class="bar"></span>
+            <label>{{ IntlString('APP_TWITTER_NEW_ACCOUNT_PASSWORD_CONFIRM') }}</label>
+        </div>
+
+        <div style="margin-top: 42px; margin-bottom: 42px;" class="group img" data-type="button" @click.stop="setLocalAccountAvartar($event)">
+          <img :src="accountLocale.avatarUrl" style="height: 128px; width: 128px; overflow: auto;" @click.stop="setLocalAccountAvartar($event)">
+          <input type='button' class="btn btn-generic" :value="IntlString('APP_TWITTER_NEW_ACCOUNT_AVATAR')" @click.stop="setLocalAccountAvartar($event)"/>
+        </div>
+
+        <div class="group" data-type="button" @click.stop="createAccount">
+          <input type='button' class="btn" :class="validAccount ? 'btn-generic' : 'btn-gray'" :value="IntlString('APP_TWIITER_ACCOUNT_CREATE')" @click.stop="createAccount"/>
+        </div>
+        -->
+      </template>
+
+    </div>
+
+  </div>
+</template>
+
+<script>
+import { mapGetters, mapActions } from 'vuex'
+import Modal from '@/components/Modal'
+import PhoneAPI from './../../PhoneAPI'
+
+const STATI = Object.freeze({
+  MENU: 0,
+  NEW_ACCOUNT: 1,
+  LOGIN: 2,
+  ACCOUNT: 3,
+  NOTIFICATION: 4
+})
+
+export default {
+  components: {
+  },
+  data () {
+    return {
+      STATI,
+      state: STATI.MENU,
+      accountLocale: {
+        username: '',
+        password: '',
+        passwordConfirm: '',
+        avatarUrl: '/html/static/img/app_instagram/default_profile.png'
+      },
+      notification: 0,
+      notificationSound: false,
+      ignoreControls: false
+    }
+  },
+  computed: {
+    ...mapGetters(['IntlString', 'instagramUsername', 'instagramPassword', 'instagramAvatarUrl', 'instagramNotification', 'instagramNotificationSound']),
+    isLogin () {
+      return this.instagramUsername !== undefined && this.instagramUsername !== ''
+    },
+    validAccount () {
+      return this.accountLocale.username.length >= 4 && this.accountLocale.password.length >= 6 && this.accountLocale.password === this.accountLocale.passwordConfirm
+    }
+  },
+  methods: {
+    ...mapActions(['instagramLogin', 'instagramChangePassword', 'instagramLogout', 'instagramSetAvatar', 'instagramCreateNewAccount', 'setInstagramNotification', 'setInstagramNotificationSound']),
+    onUp: function () {
+      if (this.ignoreControls === true) return
+      let select = document.querySelector('.group.select')
+      if (select === null) {
+        select = document.querySelector('.group')
+        select.classList.add('select')
+        return
+      }
+      while (select.previousElementSibling !== null) {
+        if (select.previousElementSibling.classList.contains('group')) {
+          break
+        }
+        select = select.previousElementSibling
+      }
+      if (select.previousElementSibling !== null) {
+        document.querySelectorAll('.group').forEach(elem => {
+          elem.classList.remove('select')
+        })
+        select.previousElementSibling.classList.add('select')
+        let i = select.previousElementSibling.querySelector('input')
+        if (i !== null) {
+          i.focus()
+        }
+      }
+    },
+    onDown: function () {
+      if (this.ignoreControls === true) return
+      let select = document.querySelector('.group.select')
+      if (select === null) {
+        select = document.querySelector('.group')
+        select.classList.add('select')
+        return
+      }
+      while (select.nextElementSibling !== null) {
+        if (select.nextElementSibling.classList.contains('group')) {
+          break
+        }
+        select = select.nextElementSibling
+      }
+      if (select.nextElementSibling !== null) {
+        document.querySelectorAll('.group').forEach(elem => {
+          elem.classList.remove('select')
+        })
+        select.nextElementSibling.classList.add('select')
+        let i = select.nextElementSibling.querySelector('input')
+        if (i !== null) {
+          i.focus()
+        }
+      }
+    },
+    onEnter () {
+      if (this.ignoreControls === true) return
+      let select = document.querySelector('.group.select')
+      if (select === null) return
+      if (select.dataset !== null) {
+        if (select.dataset.type === 'text') {
+          const $input = select.querySelector('input')
+          let options = {
+            limit: parseInt(select.dataset.maxlength) || 64,
+            text: select.dataset.defaultValue || ''
+          }
+          this.$phoneAPI.getReponseText(options).then(data => {
+            $input.value = data.text
+            $input.dispatchEvent(new window.Event('change'))
+          })
+        }
+        if (select.dataset.type === 'button') {
+          select.click()
+        }
+      }
+    },
+    onBack () {
+      if (this.state !== this.STATI.MENU) {
+        this.state = this.STATI.MENU
+      } else {
+        this.$bus.$emit('instagramHome')
+      }
+    },
+    setLocalAccount ($event, key) {
+      this.accountLocale[key] = $event.target.value
+    },
+    async onPressChangeAvartar () {
+      try {
+        this.ignoreControls = true
+        let choix = [
+          {id: 1, title: this.IntlString('APP_TWITTER_LINK_PICTURE'), icons: 'fa-link'},
+          {id: 2, title: this.IntlString('APP_TWITTER_TAKE_PICTURE'), icons: 'fa-camera'}
+        ]
+        const resp = await Modal.CreateModal({ choix: choix })
+        if (resp.id === 1) {
+          const data = await Modal.CreateTextModal({ text: this.instagramAvatarUrl || 'https://i.imgur.com/' })
+          this.instagramSetAvatar({ avatarUrl: data.text })
+          this.ignoreControls = false
+        } else if (resp.id === 2) {
+          const newAvatar = await PhoneAPI.takePhoto()
+          if (newAvatar.url !== null) {
+            if (this.accountLocale.avatarUrl === null) {
+              this.accountLocale.avatarUrl = newAvatar.url
+              this.instagramAvatarUrl = newAvatar.url
+            }
+            this.instagramSetAvatar({ avatarUrl: newAvatar.url })
+            this.ignoreControls = false
+          }
+        }
+      } catch (e) {}
+    },
+    login () {
+      this.instagramLogin({ username: this.accountLocale.username, password: this.accountLocale.password })
+      this.state = STATI.MENU
+    },
+    logout () {
+      this.instagramLogout()
+    },
+    createAccount () {
+      if (this.validAccount === true) {
+        this.instagramCreateNewAccount(this.accountLocale)
+        this.accountLocale = {
+          username: '',
+          password: '',
+          passwordConfirm: '',
+          avatarUrl: null
+        }
+        this.state = this.STATI.MENU
+      }
+    },
+    cancel () {
+      this.state = STATI.MENU
+    },
+    setNotification (value) {
+      this.setInstagramNotification(value)
+    },
+    setNotificationSound (value) {
+      this.setInstagramNotificationSound(value)
+    },
+    async changePassword () {
+      if (this.ignoreControls === true) return
+      this.ignoreControls = true
+      // SEZIONE MODAL ASYNC //
+      const password1 = await Modal.CreateTextModal({ limit: 40 })
+      if (password1.text === '' || password1.text === null || password1.text === undefined) return
+      const password2 = await Modal.CreateTextModal({ limit: 40 })
+      if (password2.text === '' || password2.text === null || password2.text === undefined) return
+      if (password2.text !== password1.text) {
+        this.$notify({
+          title: this.IntlString('APP_INSTAGRAM_NAME'),
+          message: this.IntlString('APP_INSTAGRAM_NOTIF_NEW_PASSWORD_MISS_MATCH'),
+          icon: 'instagram',
+          backgroundColor: '#66000080'
+        })
+        setTimeout(() => { this.ignoreControls = false }, 200)
+        return
+      } else if (password2.text.length < 6) {
+        this.$notify({
+          title: this.IntlString('APP_INSTAGRAM_NAME'),
+          message: this.IntlString('APP_INSTAGRAM_NOTIF_NEW_PASSWORD_LENGTH_ERROR'),
+          icon: 'instagram',
+          backgroundColor: '#66000080'
+        })
+        setTimeout(() => { this.ignoreControls = false }, 200)
+        return
+      } else {
+        setTimeout(() => { this.ignoreControls = false }, 200)
+      }
+      this.instagramChangePassword(password2.text)
+    }
+  },
+  created () {
+    this.$bus.$on('keyUpArrowDown', this.onDown)
+    this.$bus.$on('keyUpArrowUp', this.onUp)
+    this.$bus.$on('keyUpEnter', this.onEnter)
+    this.$bus.$on('keyUpBackspace', this.onBack)
+  },
+  beforeDestroy () {
+    this.$bus.$off('keyUpArrowDown', this.onDown)
+    this.$bus.$off('keyUpArrowUp', this.onUp)
+    this.$bus.$off('keyUpEnter', this.onEnter)
+    this.$bus.$off('keyUpBackspace', this.onBack)
+  }
+}
+</script>
+
+<style scoped>
+.background_color {
+  background: rgb(218,153,0);
+  background: linear-gradient(13deg, rgba(218,153,0,1) 0%, rgba(177,56,0,1) 32%, rgba(189,0,150,1) 78%, rgba(149,0,198,1) 100%);
+}
+
+.content {
+  padding-top: 20px;
+  margin: 6px 10px;
+  margin-top: 0px;
+  height: calc(100% - 48px);
+  display: flex;
+  flex-direction: column;
+}
+
+/* #################################### */
+/* RAGGRUPPAMENTO ELEMENTI NEI TEMPLATE */
+/* #################################### */
+
+.group {
+  position: relative;
+  margin-top: 24px;
+  height: 60px;
+}
+
+.group.inputText {
+  position: relative;
+  padding-left: 25px;
+  margin-top: 45px;
+}
+
+.group.bottom {
+  margin-top: auto;
+}
+
+.group.img {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+.group.img img{
+  display: flex;
+  flex-direction: row;
+  overflow: auto;
+  flex-grow: 0;
+  flex: 0 0 128px;
+  margin-right: 24px;
+  border-radius: 100px;
+  object-fit: cover;
+}
+
+/* ######################### */
+/* PAGINA LOGIN DI INSTAGRAM */
+/* ######################### */
+
+.instagram_title {
+  height: 120px;
+}
+
+.loginBoxes {
+  opacity: 0.6;
+  border-radius: 5px;
+  background-color: rgb(228, 228, 228);
+  padding-left: 50px;
+  font-size: 18px;
+}
+
+input {
+  font-size: 24px;
+  display: flexbox;
+  padding-left: 2px;
+  width: 90%;
+  height: 50px;
+  border: none;
+  border-bottom: 1px solid #757575;
+}
+
+input:focus { 
+  outline: none; 
+  opacity: 0.9;
+}
+
+.LoginText {
+  top: 18px;
+  bottom: 0px;
+  position: absolute;
+  justify-content: center;
+  opacity: 0;
+  color: black;
+  font-size: 20px;
+  font-weight: bold;
+  animation: textOff 0.5s ease;
+}
+
+.group.select .LoginText {
+  animation: textOn 0.5s ease;
+  animation-fill-mode: forwards;
+}
+
+.favicon {
+  position: absolute;
+  padding-left: 130px;
+  padding-top: 2px;
+  animation: buttonMoveOff 0.5s ease;
+}
+
+.group.select .favicon {
+  animation: buttonMove 0.5s ease;
+  animation-fill-mode: forwards; 
+}
+
+@keyframes buttonMove {
+	from { padding-left: 130px; }
+  to { padding-left: 50px; }
+}
+
+@keyframes buttonMoveOff {
+	from { padding-left: 50px; }
+  to { padding-left: 130px; }
+}
+
+@keyframes textOn {
+	from { opacity: 0.0; padding-left: 130px; }
+  to { opacity: 1.0; padding-left: 80px; }
+}
+
+@keyframes textOff {
+	from { opacity: 1.0; padding-left: 80px; }
+  to { opacity: 0.0; padding-left: 130px; }
+}
+
+/* ######################### */
+/* ACCOUNT LOGGATO INSTAGRAM */
+/* ######################### */
+
+.loggedInImage {
+  height: 128px; 
+  width: 128px; 
+  overflow: auto; 
+  border-radius: 100px; 
+  align-self: center; 
+  object-fit: cover;
+  border-style: solid;
+  border-width: 1px;
+}
+
+.group .btn.btn-gray{
+  left: 27px;
+  position: absolute;
+  color: #222;
+  background-color: rgba(170, 170, 170, 0);
+  font-weight: bold;
+  border-style: solid;
+  border-width: 1px;
+  border-radius: 10px;
+}
+
+.group.select .btn.btn-gray {
+  background-color: #75757559;
+  color: white;
+}
+
+.group .btn.btn-red {
+  left: 55px;
+  bottom: 50px;
+  position: absolute;
+  font-weight: bold;
+  border-radius: 10px;
+  background-color: rgba(255, 0, 0, 0.9);
+  color: white;
+  width: 193px;
+  margin: 0 auto;
+  margin-bottom: 50px;
+  animation: redButtonOff 0.8s ease;
+  animation-fill-mode: forwards; 
+}
+
+.group.select .btn.btn-red {
+  background-color: rgba(255, 0, 0, 0.9);
+  color: white;
+  border: none;
+  animation: redButton 0.8s ease;
+  animation-fill-mode: forwards; 
+}
+
+.group .btn.btn-green {
+  left: 55px;
+  bottom: 50px;
+  position: absolute;
+  font-weight: bold;
+  border-radius: 10px;
+  background-color: rgba(0, 175, 0, 0.8);
+  color: white;
+  width: 193px;
+  margin: 0 auto;
+  margin-bottom: 50px;
+  animation: redButtonOff 0.8s ease;
+  animation-fill-mode: forwards; 
+}
+
+.group.select .btn.btn-green {
+  background-color: rgba(0, 175, 0, 0.8);
+  color: white;
+  border: none;
+  animation: redButton 0.8s ease;
+  animation-fill-mode: forwards; 
+}
+
+@keyframes redButton {
+	from { opacity: 0.0; }
+  to { opacity: 1.0; }
+}
+
+@keyframes redButtonOff {
+	from { opacity: 1.0; }
+  to { opacity: 0.0; }
+}
+
+/* ################## */
+/* CHECKBOX NOTIFICHE */
+/* ################## */
+
+.groupCheckBoxTitle {
+  font-weight: 700;
+  margin-top: 12px;
+}
+
+.group.inputText label {
+  color: rgb(0, 0, 0);
+  font-size: 18px;
+  font-weight: normal;
+  position: absolute;
+  pointer-events: none;
+  left: 5px;
+  top: 10px;
+  transition: 0.2s ease all;
+  -moz-transition: 0.2s ease all;
+  -webkit-transition: 0.2s ease all;
+}
+
+.checkbox {
+  display: flex;
+  height: 65px;
+  line-height: 45px;
+  align-items: center;
+  color: #000000;
+  font-weight: bold;
+  border-radius: 6px;
+  padding-left: 12px;
+  margin-top: 5px;
+
+  animation: checkboxOpacityOn 0.5s ease;
+  animation-fill-mode: forwards;
+}
+
+.mytextwithicon {
+  position: relative;
+}    
+.mytextwithicon:before {
+  content: "\25AE";  /* this is your text. You can also use UTF-8 character codes as I do here */
+  font-family: FontAwesome;
+  left:-5px;
+  position:absolute;
+  top:0;
+}
+
+.checkbox input {
+  width: 24px;
+  height: 0px;
+  opacity: 1;
+}
+
+.checkbox.select {
+  border: 1px solid #ff00f2;
+  background-color: #fd00e869;
+  color: white;
+
+  animation: checkboxOpacityOff 0.5s ease;
+  animation-fill-mode: forwards;
+}
+
+@keyframes checkboxOpacityOff {
+	from { opacity: 0.2; }
+  to 	{ opacity: 1.0; }
+}
+
+@keyframes checkboxOpacityOn {
+	from { opacity: 1.0; }
+  to 	{ opacity: 0.2; }
+}
+
+/* QUANDO PREMI E IL PALLINO CAMBIA COLORE */ 
+
+.checkbox input::after {
+  box-sizing: border-box;
+  content: '';
+  opacity: 1;
+  position: absolute;
+  left: 6px;
+  margin-top: -10px;
+
+  font-family: FontAwesome;
+  content: "\f00d";
+
+  animation: pallinoRotazioneOff 0.5s ease;
+  animation-fill-mode: forwards;
+}
+
+.checkbox input:checked::after {
+  
+  font-family: FontAwesome;
+  content: "\f00c";
+
+  animation: pallinoRotazione 0.5s ease;
+  animation-fill-mode: forwards;
+}
+
+@keyframes pallinoRotazione {
+  from {
+    opacity: 0.6;
+    transform: rotate(0deg);
+  }
+  to {
+    opacity: 1.0;
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes pallinoRotazioneOff {
+  from {
+    opacity: 1.0;
+    transform: rotate(360deg);
+  }
+  to {
+    opacity: 0.6;
+    transform: rotate(0deg);
+  }
+}
+
+/* active state */
+.group.inputText input:focus ~ label, .group.inputText input:valid ~ label 		{
+  top: -24px;
+  font-size: 18px;
+  color: #ff00f2;
+}
+
+/* BOTTOM BARS ================================= */
+.bar { 
+  position: relative; 
+  display: block; 
+  width: 90%; 
+}
+
+.bar:before, .bar:after {
+  content: '';
+  height: 3px;
+  width: 0;
+  bottom: 1px;
+  position: absolute;
+  background: #ff00f2;
+  transition: 0.2s ease all;
+  -moz-transition: 0.2s ease all;
+  -webkit-transition: 0.2s ease all;
+}
+
+.bar:before {
+  left: 50%;
+}
+
+.bar:after {
+  right: 50%;
+}
+
+/* active state */
+input:focus ~ .bar:before, input:focus ~ .bar:after,
+.group.select input ~ .bar:before, .group.select input ~ .bar:after{
+  width:50%;
+}
+
+/* HIGHLIGHTER ================================== */
+.highlight {
+  position: absolute;
+  height: 70%;
+  width: 20%;
+  border-radius: 10px;
+  top: 17%;
+  left: 40px;
+  pointer-events: none;
+  opacity: 0.5;
+}
+
+/* active state */
+input:focus ~ .highlight {
+  -webkit-animation: inputHighlighter 0.3s ease;
+  -moz-animation: inputHighlighter 0.3s ease;
+  animation: inputHighlighter 0.3s ease;
+}
+
+.group .btn {
+  width: 80%;
+  padding: 0px 0px;
+  height: 60px;
+  color: rgb(156, 156, 156);
+  border: 0 none;
+  font-size: 22px;
+  font-weight: 500;
+  line-height: 34px;
+  color: #202129;
+  background-color: rgb(156, 156, 156);
+}
+
+.group .btn.btn-generic {
+  width: 260px;
+  margin-left: 25px;
+  border: 2px solid #999999;
+  color: #acacac;
+  background-color: rgba(255, 255, 255, 0);
+  font-weight: 500;
+  opacity: 0.4;
+  border-radius: 5px;
+  font-weight: 300;
+  font-size: 19px;
+}
+
+.group.select .btn.btn-generic {
+  background-color: rgba(255, 255, 255, 0.192);
+  color: white;
+  opacity: 0.8;
+  border: none;
+}
+
+/* ANIMATIONS ================ */
+
+@-webkit-keyframes inputHighlighter {
+	from { background:#ff00f2; }
+  to 	{ width:0; background:transparent; }
+}
+@-moz-keyframes inputHighlighter {
+	from { background:#ff00f2; }
+  to 	{ width:0; background:transparent; }
+}
+@keyframes inputHighlighter {
+	from { background:#ff00f2; }
+  to 	{ width:0; background:transparent; }
+}
+</style>

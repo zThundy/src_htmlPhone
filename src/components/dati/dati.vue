@@ -1,0 +1,293 @@
+<template>
+  <div class="phone_app">
+    <PhoneTitle :title="IntlString('APP_DATI_TITLE')" @back="onBackspace" :backgroundColor="'#fc915322'" />
+
+    <div class='elements'>
+
+      <md-toast ref="updating">
+        <md-activity-indicator
+          :size="20"
+          :text-size="16"
+          color="white"
+          text-color="white"
+        >Aggiornamento...</md-activity-indicator>
+      </md-toast>
+
+      <md-toast ref="success" :content="'Riuscito'" :hasMask="false">
+        <md-icon name="right" size="sm" color="lime"></md-icon>
+        <div style="font-size: 17px; padding-left: 2px;">Riuscito</div>
+      </md-toast>
+
+      <div class='element' v-for='(elem, key) in datiInfo' :key="key">
+
+        <md-progress
+          :style="posizioni[key]"
+          :size="130"
+          :value="strokedata[key]/100"
+          :width="5"
+          :linecap="'round'"
+          :transition="true"
+          :rotate="90"
+          :color="'#fc9153'"
+        >
+          <md-icon style="color: #fc9153;" class="md-notice-demo-icon md-notice-demo-icon-left" :name="elem.icon"></md-icon>
+        </md-progress>
+
+      </div>
+
+      <div style="padding-top:455px;">
+        <div class='element' v-for='(elem, key) in datiInfo' :key="key + 'secondo'">
+
+          <div class="md-example-child md-example-child-notice-bar md-example-child-notice-bar-7">
+            <md-notice-bar
+              style="color: #fc9153; background-color: #fc915320;"
+              scrollable
+            >
+              <md-icon slot="left" class="md-notice-demo-icon md-notice-demo-icon-left" :name="elem.icon"></md-icon>
+              {{strokedata[key]}}/{{elem.max}}
+            </md-notice-bar>
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+  </div>
+</template>
+
+<script>
+import { mapGetters, mapMutations } from 'vuex'
+import PhoneTitle from './../PhoneTitle'
+import { NoticeBar, Progress, Icon, Toast, ActivityIndicator } from 'mand-mobile'
+import 'mand-mobile/lib/mand-mobile.css'
+import Modal from '@/components/Modal/index.js'
+
+export default {
+  name: 'dati',
+  components: {
+    PhoneTitle,
+    [Progress.name]: Progress,
+    [NoticeBar.name]: NoticeBar,
+    [Icon.name]: Icon,
+    [Toast.component.name]: Toast.component,
+    [ActivityIndicator.name]: ActivityIndicator
+  },
+  data () {
+    return {
+      disableBackspace: false,
+      posizioni: [{
+        'left': '5px',
+        'padding-top': '130px',
+        position: 'absolute'
+      }, {
+        'right': '14px',
+        'padding-top': '130px',
+        position: 'absolute'
+      }, {
+        'right': '101px',
+        'padding-top': '230px',
+        position: 'absolute'
+      }]
+    }
+  },
+  computed: {
+    ...mapGetters(['IntlString', 'datiInfo', 'segnale', 'strokedata'])
+  },
+  methods: {
+    ...mapMutations(['SET_DATI_INFO']),
+    onBackspace () {
+      if (this.disableBackspace) return
+      this.$router.push({ name: 'menu' })
+    },
+    async onRight () {
+      if (this.disableBackspace) return
+      this.disableBackspace = true
+      let choix = [
+        {id: 1, title: this.IntlString('APP_DATI_REFRESH'), icons: 'fa-plus'},
+        {id: 2, title: this.IntlString('CANCEL'), color: 'red', icons: 'fa-ban'}
+      ]
+      const resp = await Modal.CreateModal({ choix })
+      // risposta del menù
+      switch (resp.id) {
+        case 1:
+          this.$refs.updating.show()
+          setTimeout(() => {
+            this.disableBackspace = false
+            this.$refs.updating.hide()
+            this.$refs.success.show()
+            // questo è il timeout che nasconde
+            // il toast "successo"
+            setTimeout(() => {
+              this.$refs.success.hide()
+            }, 2000)
+          }, 3000)
+          break
+        case 2:
+          this.disableBackspace = false
+          break
+      }
+      // qui controllo se la persona ha premuto solo la backspace per
+      // chiudere il modal aperto
+      if (resp.title === 'cancel') {
+        this.disableBackspace = false
+      }
+    }
+  },
+  created () {
+    this.$bus.$on('keyUpArrowRight', this.onRight)
+    this.$bus.$on('keyUpBackspace', this.onBackspace)
+  },
+  beforeDestroy () {
+    this.$bus.$off('keyUpArrowRight', this.onRight)
+    this.$bus.$off('keyUpBackspace', this.onBackspace)
+  }
+}
+</script>
+
+<style scoped>
+.elements{
+  height: calc(200% - 34px);
+  overflow-y: auto;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/*
+.screen{
+  position: relative;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.title{
+  padding-left: 16px;
+  height: 34px;
+  line-height: 34px;
+  font-weight: 700;
+  color: white;
+  background-color: rgb(76, 175, 80);
+}
+
+.element{
+  height: 170px;
+  width: 100%;
+  line-height: 56px;
+  display: flex;
+  position: middle;
+}
+
+.element.select{
+  background-color: rgb(255, 255, 255);
+}
+
+.elem-label{
+  padding-left: 120px;
+  flex: 1;
+  font-size: 22px;
+  position: center;
+  white-space: nowrap;
+  font-weight: 100;
+  font-size: 15px;
+}
+
+.elem-right{
+  text-align: center;
+  width: 90px;
+  font-size: 18px;
+  font-weight: 700;
+  font-weight: 100;
+  font-size: 15px;
+  padding-right: 6px;
+}
+*/
+
+/* CERCHI INDICATORI */
+
+/*
+.flex-wrapper {
+  display: flex;
+  flex-flow: row nowrap;
+}
+
+.single-chart {
+  width: 85%;
+  justify-content: space-around;
+  position: middle;
+}
+
+.circular-chart {
+  display: block;
+  margin: 10px auto;
+  max-width: 80%;
+  max-height: 250px;
+  padding-left: 60px;
+  position: middle;
+}
+
+.circle-bg {
+  fill: none;
+  stroke: #eee;
+  stroke-width: 3.8;
+}
+
+.circle {
+  fill: none;
+  stroke-width: 2.8;
+  stroke-linecap: round;
+  animation: progress 1s ease-out forwards;
+}
+
+@keyframes progress {
+  0% {
+    stroke-dasharray: 0 100;
+  }
+}
+
+.circular-chart.orange .circle {
+  stroke: #ff9f00;
+}
+
+.circular-chart.green .circle {
+  stroke: #4CC790;
+}
+
+.percentage {
+  fill: rgb(0, 0, 0);
+  font-family: sans-serif;
+  font-size: 0.40em;
+  text-anchor: middle;
+}
+
+.label-sotto {
+  fill: rgb(0, 0, 0);
+  font-family: sans-serif;
+  word-spacing: 0.1em;
+  font-size: 0.22em;
+  text-anchor: middle;
+  position: absolute;
+}
+*/
+
+</style>

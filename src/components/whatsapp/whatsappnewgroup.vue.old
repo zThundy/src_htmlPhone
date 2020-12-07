@@ -1,0 +1,108 @@
+<template>
+  <div style="width: 326px; height: 743px;">
+    <PhoneTitle :title="this.IntlString('APP_WHATSAPP_TITLE')" @back="onBackspace"/>
+
+    <list :list='lcontacts' :disable="disableList" :title="IntlString('APP_WHATSAPP_CHOOSE_CONTACTS')" @back="back" @select='onSelect' @option='onOption'></list>
+
+    </div>
+
+  </div>
+</template>
+
+
+<script>
+import { mapGetters, mapActions } from 'vuex'
+import PhoneTitle from './../PhoneTitle'
+import Modal from '@/components/Modal/index.js'
+
+export default {
+  components: { PhoneTitle },
+  data () {
+    return {
+      currentSelected: -1,
+      ignoreControls: false,
+      scelti: []
+    }
+  },
+  computed: {
+    ...mapGetters(['IntlString', 'contacts']),
+    lcontacts () {
+      let addContact = {display: this.IntlString('APP_CONTACT_NEW'), letter: '+', num: '', id: -1}
+      return [addContact, ...this.contacts.map(e => {
+        if (e.icon === null || e.icon === undefined || e.icon === '') {
+          e.backgroundColor = e.backgroundColor || generateColorForStr(e.number)
+        }
+        return e
+      })]
+    }
+  },
+  methods: {
+    // ...mapMutations(['SET_DATI_INFO']),
+    ...mapActions(['leaveGroup']),
+    onSelect () {
+      
+    },
+    onBackspace () {
+      if (this.ignoreControls === true) { this.ignoreControls = false; return }
+      if (this.currentSelected !== -1) { this.currentSelected = -1; return }
+      this.$router.push({ name: 'whatsapp' })
+    },
+    onEnter () {
+      if (this.currentSelected === -1) return
+      if (this.ignoreControls === true) return
+      this.$router.push({ name: 'whatsapp.gruppo', params: { gruppo: this.gruppi[this.currentSelected] } })
+    }
+  },
+  created () {
+    this.$bus.$on('keyUpArrowDown', this.onDown)
+    this.$bus.$on('keyUpArrowUp', this.onUp)
+    this.$bus.$on('keyUpArrowRight', this.onRight)
+    this.$bus.$on('keyUpBackspace', this.onBackspace)
+    this.$bus.$on('keyUpEnter', this.onEnter)
+  },
+  beforeDestroy () {
+    this.$bus.$off('keyUpArrowDown', this.onDown)
+    this.$bus.$off('keyUpArrowUp', this.onUp)
+    this.$bus.$off('keyUpArrowRight', this.onRight)
+    this.$bus.$off('keyUpBackspace', this.onBackspace)
+    this.$bus.$off('keyUpEnter', this.onEnter)
+  }
+}
+</script>
+
+<style scoped>
+.generale {
+  width: 326px; 
+  height: 743px;
+}
+
+.whatsapp-menu-item {
+  flex-grow: 1;
+  flex-basis: 0;
+  height: 75px;
+  padding-top: 10px;
+  padding-left: 5px;
+  display: flex;
+  color: rgb(108, 250, 108);
+}
+
+.whatsapp-menu-item.select {
+  background-color: #00ac0e62;
+}
+
+.whatsapp-menu-item:hover {
+  background-color: #00ac0e62;
+}
+
+.immagineGruppo {
+  width: 60px;
+  height: 60px;
+  border-radius: 80px;
+}
+
+.titoloGruppo {
+  color: black;
+  padding-left: 5px;
+  font-weight: bold;
+}
+</style>
