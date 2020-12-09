@@ -6,16 +6,24 @@ end)
 
 
 function updateCachedGroups()
+    local query = false
     MySQL.Async.fetchAll("SELECT * FROM phone_whatsapp_groups", {}, function(r)
         for k, v in pairs(r) do
             cachedGroups[v.id] = v
         end
+
+        query = true
     end)
+
+    while not query do Citizen.Wait(1000) end
+
+    return cachedGroups
 end
 
 
 ESX.RegisterServerCallback("gcPhone:getMessaggiFromGroupId", function(source, cb, id)
     local messages = {}
+    local xPlayer = ESX.GetPlayerFromId(source)
     messages[tostring(id)] = {}
 
     MySQL.Async.fetchAll("SELECT * FROM phone_whatsapp_messages WHERE idgruppo = @id", {['@id'] = id}, function(result)
@@ -30,7 +38,15 @@ ESX.RegisterServerCallback("gcPhone:getMessaggiFromGroupId", function(source, cb
             })
         end
 
-        cb(messages)
+        gcPhone.isAbleToSurfInternet(xPlayer.identifier, 0.1 * #messages, function(isAble, mbToRemove)
+			if isAble then
+				gcPhone.usaDatiInternet(xPlayer.identifier, mbToRemove)
+                cb(messages)
+            else
+                TriggerClientEvent("gcphone:whatsapp_showError", "Errore", "Non hai abbastanza giga per farlo!")
+                cb(false)
+            end
+        end)
     end)
 end)
 
@@ -44,40 +60,42 @@ end)
 RegisterServerEvent("gcPhone:getAllGroups")
 AddEventHandler("gcPhone:getAllGroups", function()
     local player = source
-
-    MySQL.Async.fetchAll("SELECT * FROM phone_whatsapp_groups", {}, function(r)
-        for k, v in pairs(r) do
-            cachedGroups[v.id] = v
-        end
-
-        TriggerClientEvent("gcphone:whatsapp_updateGruppi", player, cachedGroups)
-    end)
+    TriggerClientEvent("gcphone:whatsapp_updateGruppi", player, updateCachedGroups())
 end)
 
 
 RegisterServerEvent("gcphone:whatsapp_sendMessage")
 AddEventHandler("gcphone:whatsapp_sendMessage", function(data)
     local player = source
+    local xPlayer = ESX.GetPlayerFromId(player)
 
-    MySQL.Async.insert("INSERT INTO phone_whatsapp_messages(idgruppo, sender, message) VALUES(@id, @sender, @message)", {
-        ['@id'] = data.id,
-        ['@sender'] = data.phoneNumber,
-        ['@message'] = data.messaggio
-    }, function(id)
-        -- print("ho fatto la query. id è", id)
-        if id > 0 then
-            local group = cachedGroups[data.id]
+    gcPhone.isAbleToSurfInternet(xPlayer.identifier, 1.5, function(isAble, mbToRemove)
+		if isAble then
+            gcPhone.usaDatiInternet(xPlayer.identifier, mbToRemove)
 
-            for _, val in pairs(json.decode(group.partecipanti)) do
-                -- print(val.number, "il numero del partecipante è questo")
-                local g_source = gcPhone.getSourceFromPhoneNumber(val.number)
-                -- print(g_source, "ho ricevuto la source")
+            MySQL.Async.insert("INSERT INTO phone_whatsapp_messages(idgruppo, sender, message) VALUES(@id, @sender, @message)", {
+                ['@id'] = data.id,
+                ['@sender'] = data.phoneNumber,
+                ['@message'] = data.messaggio
+            }, function(id)
+                -- print("ho fatto la query. id è", id)
+                if id > 0 then
+                    local group = cachedGroups[data.id]
 
-                if g_source ~= nil then
-                    -- message, label, sender, id | sender, label, message, id
-                    TriggerClientEvent("gcphone:whatsapp_sendNotificationToMembers", g_source, data.phoneNumber, group.gruppo, data.messaggio, data.id)
+                    for _, val in pairs(json.decode(group.partecipanti)) do
+                        -- print(val.number, "il numero del partecipante è questo")
+                        local g_source = gcPhone.getSourceFromPhoneNumber(val.number)
+                        -- print(g_source, "ho ricevuto la source")
+
+                        if g_source ~= nil then
+                            -- message, label, sender, id | sender, label, message, id
+                            TriggerClientEvent("gcphone:whatsapp_sendNotificationToMembers", g_source, data.phoneNumber, group.gruppo, data.messaggio, data.id)
+                        end
+                    end
                 end
-            end
+            end)
+        else
+            TriggerClientEvent("gcphone:whatsapp_showError", "Errore", "Non hai abbastanza giga per farlo!")
         end
     end)
 end)
@@ -89,21 +107,34 @@ AddEventHandler("gcphone:whatsapp_leaveGroup", function(group)
     local xPlayer = ESX.GetPlayerFromId(player)
     local number = gcPhone.getPhoneNumber(xPlayer.identifier)
 
-    MySQL.Async.fetchAll("SELECT * FROM phone_whatsapp_groups WHERE id = @id", {['@id'] = group.id}, function(r)
-        local partecipanti = json.decode(r[1].partecipanti)
-        for k, v in pairs(partecipanti) do
-            if v.number == number then
-                table.remove(partecipanti, k)
-                break
-            end
-        end
+    -- print(number, group.id)
+    gcPhone.isAbleToSurfInternet(xPlayer.identifier, 5.0, function(isAble, mbToRemove)
+		if isAble then
+            gcPhone.usaDatiInternet(xPlayer.identifier, mbToRemove)
 
-        MySQL.Async.execute("UPDATE phone_whatsapp_groups SET partecipanti = @partecipanti WHERE id = @id", {
-            ['@partecipanti'] = json.encode(partecipanti),
-            ['@id'] = group.id
-        }, function()
-            updateCachedGroups()
-        end)
+            MySQL.Async.fetchAll("SELECT * FROM phone_whatsapp_groups WHERE id = @id", {['@id'] = group.id}, function(r)
+                local partecipanti = json.decode(r[1].partecipanti)
+                for k, v in pairs(partecipanti) do
+                    if v.number == number then
+                        table.remove(partecipanti, k)
+                        print("rimosso", v.number)
+                        break
+                    end
+                end
+
+                if #partecipanti == 0 then
+                    MySQL.Async.execute("DELETE FROM phone_whatsapp_groups WHERE id = @id", {['@id'] = group.id}, function() updateCachedGroups() end)
+                    return
+                end
+
+                MySQL.Async.execute("UPDATE phone_whatsapp_groups SET partecipanti = @partecipanti WHERE id = @id", {
+                    ['@partecipanti'] = json.encode(partecipanti),
+                    ['@id'] = group.id
+                }, function() updateCachedGroups() end)
+            end)
+        else
+            TriggerClientEvent("gcphone:whatsapp_showError", "Errore", "Non hai abbastanza giga per farlo!")
+        end
     end)
 end)
 
@@ -132,45 +163,62 @@ end)
 RegisterServerEvent("gcphone:whatsapp_creaNuovoGruppo")
 AddEventHandler("gcphone:whatsapp_creaNuovoGruppo", function(data)
     local player = source
+    local xPlayer = ESX.GetPlayerFromId(player)
     local contatti = {}
+
+    gcPhone.isAbleToSurfInternet(xPlayer.identifier, 1.5, function(isAble, mbToRemove)
+		if isAble then
+			gcPhone.usaDatiInternet(xPlayer.identifier, mbToRemove)
     
-    table.insert(contatti, {
-        display = data.myInfo.display,
-        id = data.myInfo.id,
-        number = data.myInfo.number
-    })
-
-    -- print(json.encode(data.contacts))
-
-    for k, v in pairs(data.contacts) do
-        if v.selected then
             table.insert(contatti, {
-                display = v.display,
-                icon = v.icon or '/html/static/img/app_whatsapp/defaultgroup.png',
-                id = v.id,
-                number = v.number
+                display = data.myInfo.display,
+                id = data.myInfo.id,
+                number = data.myInfo.number
             })
-        end
-    end
 
-    MySQL.Async.insert("INSERT INTO phone_whatsapp_groups(icona, gruppo, partecipanti) VALUES(@icona, @gruppo, @partecipanti)", {
-        ['@icona'] = data.groupImage or '/html/static/img/app_whatsapp/defaultgroup.png',
-        ['@gruppo'] = data.groupTitle,
-        ['@partecipanti'] = json.encode(contatti)
-    }, function(id)
-        MySQL.Async.fetchAll("SELECT * FROM phone_whatsapp_groups WHERE id = @id", {['@id'] = id}, function(r)
-            cachedGroups[id] = r[1]
-            TriggerClientEvent("gcphone:whatsapp_updateGruppi", player, cachedGroups)
-        end)
+            -- print(json.encode(data.contacts))
+
+            for k, v in pairs(data.contacts) do
+                if v.selected then
+                    table.insert(contatti, {
+                        display = v.display,
+                        icon = v.icon or '/html/static/img/app_whatsapp/defaultgroup.png',
+                        id = v.id,
+                        number = v.number
+                    })
+                end
+            end
+
+            MySQL.Async.insert("INSERT INTO phone_whatsapp_groups(icona, gruppo, partecipanti) VALUES(@icona, @gruppo, @partecipanti)", {
+                ['@icona'] = data.groupImage or '/html/static/img/app_whatsapp/defaultgroup.png',
+                ['@gruppo'] = data.groupTitle,
+                ['@partecipanti'] = json.encode(contatti)
+            }, function(id)
+                TriggerClientEvent("gcphone:whatsapp_updateGruppi", player, updateCachedGroups())
+            end)
+        else
+            TriggerClientEvent("gcphone:whatsapp_showError", "Errore", "Non hai abbastanza giga per farlo!")
+        end
     end)
 end)
 
 ESX.RegisterServerCallback("gcphone:whatsapp_editGroup", function(source, cb, group)
-    MySQL.Async.execute("UPDATE phone_whatsapp_groups SET gruppo = @gruppo, icona = @icona WHERE id = @id", {
-        ['@gruppo'] = group.gruppo,
-        ['@icona'] = group.icona,
-        ['@id'] = group.id
-    }, function(rows)
-        if #rows > 0 then cb(true) else cb(false) end
+    local xPlayer = ESX.GetPlayerFromId(source)
+
+    gcPhone.isAbleToSurfInternet(xPlayer.identifier, 2.5, function(isAble, mbToRemove)
+		if isAble then
+            gcPhone.usaDatiInternet(xPlayer.identifier, mbToRemove)
+            
+            MySQL.Async.execute("UPDATE phone_whatsapp_groups SET gruppo = @gruppo, icona = @icona WHERE id = @id", {
+                ['@gruppo'] = group.gruppo,
+                ['@icona'] = group.icona,
+                ['@id'] = group.id
+            }, function(rowsChanged)
+                if rowsChanged > 0 then cb(true) else cb(false) end
+            end)
+        else
+            TriggerClientEvent("gcphone:whatsapp_showError", "Errore", "Non hai abbastanza giga per farlo!")
+            cb(false)
+        end
     end)
 end)

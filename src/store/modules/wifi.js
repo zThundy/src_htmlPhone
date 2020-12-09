@@ -20,6 +20,7 @@ const actions = {
     } else {
       commit('UPDATE_WIFI_STRING', 'Non connesso')
     }
+    commit('UPDATE_WIFI', bool)
   }
 }
 

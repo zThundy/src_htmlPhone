@@ -157,7 +157,7 @@ export default {
 
     updateWifiTable () {
       for (var i in this.retiWifi) {
-        this.retiWifiRender[this.retiWifi[i].label] = {id: i, icons: 'fa-wifi', label: this.retiWifi[i].label, value: this.retiWifi[i].password}
+        this.retiWifiRender[this.retiWifi[i].label] = {id: i, icons: 'fa-wifi', label: this.retiWifi[i].label, password: this.retiWifi[i].password, value: this.retiWifi[i].password}
       }
       this.retiWifiRender['Annulla'] = {icons: 'fa-undo', label: 'Annulla', value: 'cancel', color: 'red'}
       return this.retiWifiRender

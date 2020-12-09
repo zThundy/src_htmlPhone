@@ -105,7 +105,7 @@ export default {
       var myInfo = {
         id: -1,
         number: this.myPhoneNumber,
-        display: 'Tu'
+        display: 'Amministratore'
       }
       this.creaGruppo({ contacts: this.contacts, groupTitle: groupInfo.title, groupImage: groupInfo.image, myInfo })
       this.$router.push({ name: 'whatsapp' })

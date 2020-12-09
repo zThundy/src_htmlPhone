@@ -83,7 +83,7 @@ export default {
       }
     },
     async modificaGruppo () {
-      console.log('gruppo modificato')
+      this.$router.push({ name: 'whatsapp' })
     },
     stylePuce (data) {
       data = data || {}

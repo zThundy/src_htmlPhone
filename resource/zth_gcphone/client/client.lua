@@ -24,6 +24,7 @@ hasFocus = false
 local inCall = false
 local stoppedPlayingUnreachable = false
 secondiRimanenti = 0
+enabeGlobalNotification = true
 
 local PhoneInCall = {}
 local currentPlaySound = false
@@ -42,6 +43,8 @@ Citizen.CreateThread(function()
 		TriggerEvent('esx:getSharedObject', function(obj) ESX = obj end)
 		Citizen.Wait(0)
     end
+
+    TriggerServerEvent("gcPhone:allUpdate")
 end)
 
 
@@ -106,6 +109,11 @@ AddEventHandler('gcPhone:setEnableApp', function(appName, enable)
     SendNUIMessage({event = 'setEnableApp', appName = appName, enable = enable })
 end)
 
+RegisterNUICallback("updateNotifications", function(data, cb)
+    print(data)
+    enabeGlobalNotification = data
+end)
+
 --==================================================================================================================
 --------  Funzioni per i suoni
 --==================================================================================================================
@@ -155,17 +163,21 @@ AddEventHandler("gcPhone:allMessage", function(allmessages, notReceivedMessages)
     SendNUIMessage({event = 'updateMessages', messages = allmessages})
     messages = allmessages
 
-    if notReceivedMessages > 0 then
-        if notReceivedMessages == 1 then
-            ESX.ShowNotification("Hai "..notReceivedMessages.." nuovo messaggo")
-        else
-            ESX.ShowNotification("Hai "..notReceivedMessages.." nuovi messaggi")
-        end
+    if notReceivedMessages ~= nil then
+        if notReceivedMessages > 0 then
+            if notReceivedMessages == 1 then
+                ESX.ShowNotification("Hai "..notReceivedMessages.." nuovo messaggo")
+            else
+                ESX.ShowNotification("Hai "..notReceivedMessages.." nuovi messaggi")
+            end
 
-        DrawNotification(false, false)
-        PlaySoundJS('msgnotify.ogg', 0.05)
-        Citizen.Wait(3000)
-        StopSoundJS('msgnotify.ogg')
+            if enabeGlobalNotification then
+                DrawNotification(false, false)
+                PlaySoundJS('msgnotify.ogg', 0.05)
+                Citizen.Wait(3000)
+                StopSoundJS('msgnotify.ogg')
+            end
+        end
     end
 end)
 
@@ -217,9 +229,11 @@ AddEventHandler("gcPhone:receiveMessage", function(message)
         end
 
         ESX.ShowNotification(text)
-        PlaySoundJS('msgnotify.ogg', 0.05)
-        Citizen.Wait(3000)
-        StopSoundJS('msgnotify.ogg')
+        if enabeGlobalNotification then
+            PlaySoundJS('msgnotify.ogg', 0.05)
+            Citizen.Wait(3000)
+            StopSoundJS('msgnotify.ogg')
+        end
     end
 end)
 
@@ -390,7 +404,7 @@ AddEventHandler("gcPhone:acceptCall", function(infoCall, initiator)
         Citizen.CreateThread(function()
             secondiRimanenti = infoCall.secondiRimanenti
             if not infoCall.updateMinuti then secondiRimanenti = 1000000 end
-            print("Accetto la chiamata chicco", infoCall.updateMinuti, secondiRimanenti)
+            -- print("Accetto la chiamata chicco", infoCall.updateMinuti, secondiRimanenti)
 
             while inCall do
                 Citizen.Wait(1000)
@@ -435,7 +449,7 @@ AddEventHandler("gcPhone:rejectCall", function(infoCall)
 
     if infoCall and infoCall.updateMinuti then
         if not inCall then secondiRimanenti = infoCall.secondiRimanenti end
-        print("Sto nel reject da parte del chiamante", infoCall.secondiRimanenti, secondiRimanenti, infoCall.updateMinuti)
+        -- print("Sto nel reject da parte del chiamante", infoCall.secondiRimanenti, secondiRimanenti, infoCall.updateMinuti)
         TriggerServerEvent("gcPhone:updateParametroTariffa", infoCall.transmitter_num, "minuti", secondiRimanenti)
     end
 
@@ -547,7 +561,7 @@ end)
 RegisterNetEvent("gcPhone:sendRequestedOfferta")
 AddEventHandler("gcPhone:sendRequestedOfferta", function(dati, label)
     ESX.TriggerServerCallback("esx_cartesim:getPianoTariffario", function(massimo)
-        print("Tariffa telefono", massimo.minuti, massimo.messaggi, massimo.dati)
+        -- print("Tariffa telefono", massimo.minuti, massimo.messaggi, massimo.dati)
         local info = {
             current = dati,
             max = {
@@ -737,7 +751,7 @@ RegisterNUICallback('deleteALL', function(data, cb)
 end)
 
 
-function TooglePhone() 
+function TooglePhone()
     menuIsOpen = not menuIsOpen
     SendNUIMessage({show = menuIsOpen})
 
@@ -780,17 +794,6 @@ RegisterNUICallback('appelsDeleteAllHistorique', function (data, cb)
 end)
 
 
-----------------------------------
----------- GESTION VIA WEBRTC ----
-----------------------------------
-AddEventHandler('onClientResourceStart', function(res)
-    DoScreenFadeIn(300)
-    if res == "gcphone" then
-        TriggerServerEvent('gcPhone:allUpdate')
-    end
-end)
-
-
 RegisterNUICallback('setIgnoreFocus', function(data, cb)
     ignoreFocus = data.ignoreFocus
     cb("ok")
@@ -804,8 +807,9 @@ end)
 
 RegisterNetEvent("gcphone:aggiornaRetiWifi")
 AddEventHandler("gcphone:aggiornaRetiWifi", function(retiWifiServer)
+    -- print("sto aggiornando retiwifi")
+    -- print(json.encode(retiWifiServer))
     retiWifi = retiWifiServer
-    -- table.insert(retiWifi, 1, {toggleDiv = true})
 
     -- aggiorna la lista del wifi
     SendNUIMessage({event = "updateRetiWifi", data = retiWifi})
@@ -823,7 +827,7 @@ RegisterNUICallback('connettiAllaRete', function(data, cb)
     tempDataWifi = {label = data.label, password = data.password}
     ESX.ShowNotification("Password corretta!", "success")
 
-    TriggerEvent("gcphone:updateWifi", true, {label = data.label, password = data.password})
+    TriggerEvent("gcphone:updateWifi", true, tempDataWifi)
     startCheck()
     cb("ok")
 end)
@@ -839,6 +843,8 @@ end)
 
 RegisterNetEvent("gcphone:updateWifi")
 AddEventHandler("gcphone:updateWifi", function(connected, rete)
+    -- print("updating isConnected")
+
     isConnected = connected
     SendNUIMessage({event = "updateWifi", data = {hasWifi = isConnected}})
     TriggerServerEvent('gcPhone:updateReteWifi', isConnected, rete)
@@ -847,7 +853,7 @@ end)
 
 -- funzione che controlla se sei nel range o no
 function startCheck()
-    local found
+    local found = false
 
     Citizen.CreateThread(function()
         while true do
@@ -855,13 +861,19 @@ function startCheck()
             found = false
 
             if isConnected then
+                -- print("sei connesso")
 
                 for k, v in pairs(retiWifi) do
+                    -- print(v.label, tempDataWifi.label, v.password, tempDataWifi.password)
+
                     if v.label == tempDataWifi.label and v.password == tempDataWifi.password then
                         found = true
+                        -- print("rete trovata")
                         break
                     end
                 end
+
+                -- print(found)
 
                 if not found then
                     isConnected = false

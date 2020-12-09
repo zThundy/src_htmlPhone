@@ -19,6 +19,10 @@ AddEventHandler("gcphone:whatsapp_updateGruppi", function(groups)
 
             group.partecipantiString = ""
             for index, contact in pairs(group.partecipanti) do
+                -- se il numero che loopa è il tuo, allora sostituisce il display
+                -- con "Tu"
+                if contact.number == number then contact.display = "Tu" end
+                -- mi loopo i contatti e mi creo la stringa da mandare al NUI
                 if index == 1 then
                     group.partecipantiString = contact.display
                 else
@@ -26,8 +30,8 @@ AddEventHandler("gcphone:whatsapp_updateGruppi", function(groups)
                 end
             end
 
-            if string.len(group.partecipantiString) > 20 then
-                group.partecipantiString = string.sub(group.partecipantiString, 20)
+            if string.len(group.partecipantiString) > 50 then
+                group.partecipantiString = string.sub(group.partecipantiString, 50)
                 group.partecipantiString = group.partecipantiString.."..."
             end
 
@@ -55,7 +59,7 @@ end)
 RegisterNUICallback("abbandonaGruppo", function(data, cb)
     -- print(data)
     -- print(data.gruppo)
-    TriggerServerEvent("gcphone:whatsapp_leaveGroup", data.group, myPhoneNumber)
+    TriggerServerEvent("gcphone:whatsapp_leaveGroup", data.gruppo)
     cb("ok")
 end)
 
@@ -65,7 +69,9 @@ RegisterNUICallback("requestWhatsappeMessages", function(data, cb)
     ESX.TriggerServerCallback("gcPhone:getMessaggiFromGroupId", function(messages)
         -- for k, v in pairs(messages) do print(k, v) for j, m in pairs(v) do print(j, m, m.message, m.sender, m.id) end end
         -- print(json.encode(messages))
-        SendNUIMessage({event = "whatsappReceiveMessages", messages = messages })
+        if messages then
+            SendNUIMessage({event = "whatsappReceiveMessages", messages = messages })
+        end
     end, data.id)
 end)
 
@@ -123,5 +129,14 @@ RegisterNUICallback("updateGroup", function(data, cb)
             ESX.ShowNotification("~r~Impossibile aggiornare il gruppo")
         end
     end, data)
+    cb("ok")
+end)
+
+RegisterNUICallback("sendAudioNotification", function(data, cb)
+    if enabeGlobalNotification then
+        PlaySoundJS('msgnotify.ogg', 0.05)
+        Citizen.Wait(3000)
+        StopSoundJS('msgnotify.ogg')
+    end
     cb("ok")
 end)

@@ -643,6 +643,10 @@ class PhoneAPI {
     return this.post('sendMessageInGroup', { messaggio, id, phoneNumber })
   }
 
+  async sendAudioNotification () {
+    return this.post('sendAudioNotification')
+  }
+
   async requestInfoOfGroups () {
     return this.post('requestAllGroupsInfo')
   }

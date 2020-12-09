@@ -135,12 +135,16 @@ export default {
           switch (resp.id) {
             case 1:
               this.ignoreControls = false
-              this.sendMessageInGroup({gruppo: this.gruppo, message: '%pos%', phoneNumber: this.myPhoneNumber})
+              if (this.myPhoneNumber.includes('#') || this.myPhoneNumber === 0 || this.myPhoneNumber === '0') {
+                this.$phoneAPI.onwhatsapp_showError({ title: 'Errore', message: 'Impossibile ottenere il numero di telefono' })
+              } else {
+                this.sendMessageInGroup({ gruppo: this.gruppo, message: '%pos%', phoneNumber: this.myPhoneNumber })
+              }
               break
             case 2:
               this.ignoreControls = false
               const { url } = await this.$phoneAPI.takePhoto()
-              if (url !== null && url !== undefined) { this.sendMessageInGroup({gruppo: this.gruppo, message: url, phoneNumber: this.myPhoneNumber}) }
+              if (url !== null && url !== undefined) { this.sendMessageInGroup({ gruppo: this.gruppo, message: url, phoneNumber: this.myPhoneNumber }) }
               break
           }
         } catch (e) {} finally { this.ignoreControls = false }
@@ -156,7 +160,12 @@ export default {
       this.$phoneAPI.getReponseText().then(data => {
         let message = data.text.trim()
         if (message !== '') {
-          this.sendMessageInGroup({gruppo: this.gruppo, message: message, phoneNumber: this.myPhoneNumber})
+          if (this.myPhoneNumber.includes('#') || this.myPhoneNumber === 0 || this.myPhoneNumber === '0') {
+            this.$phoneAPI.onwhatsapp_showError({ title: 'Errore', message: 'Impossibile ottenere il numero di telefono' })
+          } else {
+            this.sendMessageInGroup({ gruppo: this.gruppo, message: message, phoneNumber: this.myPhoneNumber })
+          }
+          // qui aggiorno la visualizzazione dei messaggi
           setTimeout(() => {
             this.currentSelected = this.messaggi[String(this.gruppo.id)].length - 1
             this.scrollIntoViewIfNeeded()

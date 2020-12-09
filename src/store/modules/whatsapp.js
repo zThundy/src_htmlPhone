@@ -33,12 +33,12 @@ const actions = {
   showMessageNotification ({ state, commit }, data) {
     // console.log('showMessageNotification is triggered')
     // console.log(data.sender, data.label, data.message)
+    PhoneAPI.sendAudioNotification()
     Vue.notify({
       message: data.message,
       title: data.sender + ' | ' + data.label + ':',
       icon: 'whatsapp',
-      backgroundColor: 'rgba(0, 163, 0, 0.384)',
-      sound: 'msgnotify.ogg'
+      backgroundColor: 'rgba(0, 163, 0, 0.384)'
     })
     commit('ADD_MESSAGE_TO_GROUP', data)
   },

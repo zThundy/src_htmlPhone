@@ -17,7 +17,9 @@ import { mapGetters } from 'vuex'
 import CurrentTime from './CurrentTime'
 
 export default {
-  computed: mapGetters(['config', 'segnale', 'hasWifi']),
+  computed: {
+    ...mapGetters(['config', 'segnale', 'hasWifi'])
+  },
   components: { CurrentTime },
   data: function () {
     return {

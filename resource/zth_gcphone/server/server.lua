@@ -775,7 +775,7 @@ end)
 
 RegisterServerEvent('gcPhone:allUpdate')
 AddEventHandler('gcPhone:allUpdate', function()
-    local player = tonumber(source)
+    local player = source
     local identifier = gcPhone.getPlayerID(player)
     local num = gcPhone.getPhoneNumber(identifier)
 

@@ -27,7 +27,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['IntlString', 'gruppi'])
+    ...mapGetters(['IntlString', 'gruppi', 'myPhoneNumber'])
   },
   methods: {
     // ...mapMutations(['SET_DATI_INFO']),
@@ -70,6 +70,12 @@ export default {
     },
     async onRight () {
       if (this.ignoreControls === true) return
+      // qui controllo se il numero che ha salvato il telefono in memoria
+      // è valido oppure no
+      if (this.myPhoneNumber.includes('#') || this.myPhoneNumber === 0 || this.myPhoneNumber === '0') {
+        this.$phoneAPI.onwhatsapp_showError({ title: 'Errore', message: 'Impossibile ottenere il numero di telefono' })
+        return
+      }
       let gruppo = this.gruppi[this.currentSelected]
       this.ignoreControls = true
       let scelte = [
