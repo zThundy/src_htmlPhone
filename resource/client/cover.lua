@@ -1,5 +1,0 @@
-RegisterNUICallback("requestMyCovers", function(data, cb)
-    ESX.TriggerServerCallback("gcphone:cover_requestCovers", function(covers)
-        cb(covers)
-    end)
-end)

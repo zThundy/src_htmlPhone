@@ -23,7 +23,7 @@ ESX.RegisterServerCallback("gcphone:cover_buyCover", function(source, cb, cover)
         if money >= Config.Covers[cover] then
             MySQL.Async.insert("INSERT INTO phone_user_covers(identifier, cover) VALUES(@identifier, @cover)", {
                 ['@identifier'] = xPlayer.identifier,
-                ['@cover'] = cover
+                ['@cover'] = cover..".png"
             }, function(id)
                 if id == 0 then cb(false) else cb(true) end
             end)
