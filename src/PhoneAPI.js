@@ -7,7 +7,7 @@ import emoji from './emoji.json'
 const keyEmoji = Object.keys(emoji)
 
 let USE_VOICE_RTC = false
-const BASE_URL = 'http://gcphone/'
+const BASE_URL = 'http://zth_gcphone/'
 
 /* eslint-disable camelcase */
 class PhoneAPI {
@@ -32,6 +32,7 @@ class PhoneAPI {
   async post (method, data) {
     const ndata = data === undefined ? '{}' : JSON.stringify(data)
     const response = await window.jQuery.post(BASE_URL + method, ndata)
+    if (response === undefined) return 'ok'
     return JSON.parse(response)
   }
 
@@ -443,6 +444,13 @@ class PhoneAPI {
     store.commit('UPDATE_RETI_WIFI', data)
   }
 
+  // questo ascolto è utile per capire, all'apertura del telefono
+  // se sei connsesso al wifi o no
+  // @data.hasWifi = false | true
+  onupdateHasWifi ({ data }) {
+    store.commit('UPDATE_HAS_WIFI', data.hasWifi)
+  }
+
   onupdateOfferta ({ data }) {
     store.commit('UPDATE_OFFERTA', data)
   }
@@ -455,9 +463,9 @@ class PhoneAPI {
   }
   // data contiene
   // {
-  //   label: 'MIN',
   //   current: 299,
-  //   max: 103
+  //   max: 103,
+  //   icon: 'phone'
   // }
   //
   // valori necessari!!
@@ -603,24 +611,36 @@ class PhoneAPI {
     })
   }
 
+  onwhatsappClearGroups () {
+    store.commit('CLEAR_GROUP')
+  }
+
+  onwhatsappReceiveGroups (data) {
+    store.commit('UPDATE_GROUP', data.group)
+  }
+
   onwhatsappGetReturnedGroups (data) {
     store.commit('UPDATE_POST_ISLIKE', data)
   }
 
+  onwhatsappShowMessageNotification (data) {
+    store.dispatch('showMessageNotification', data.info)
+  }
+
+  onwhatsappReceiveMessages (data) {
+    store.commit('UPDATE_MESSAGGI', data.messages)
+  }
+
   async abbandonaGruppo (gruppo) {
-    return this.post('abbandonaGruppo', gruppo)
+    return this.post('abbandonaGruppo', { gruppo })
   }
 
   async requestWhatsappMessaggi (groupId) {
-    return this.post('requestWhatsappeMessages', groupId)
+    return this.post('requestWhatsappeMessages', { id: groupId })
   }
 
   async sendMessageOnGroup (messaggio, id, phoneNumber) {
     return this.post('sendMessageInGroup', { messaggio, id, phoneNumber })
-  }
-
-  async getPhoneNumber () {
-    return this.post('requestPhoneNumber')
   }
 
   async requestInfoOfGroups () {
@@ -633,6 +653,14 @@ class PhoneAPI {
 
   async updateNotifications (data) {
     return this.post('updateNotifications', data)
+  }
+
+  // ////////////////////// //
+  // SEZIONE COVER TELEFONO //
+  // ////////////////////// //
+
+  async requestMyCovers () {
+    return this.post('requestMyCovers')
   }
 }
 

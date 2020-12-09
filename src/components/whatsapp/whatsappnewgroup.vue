@@ -1,6 +1,6 @@
 <template>
   <div style="width: 326px; height: 743px;" class="sfondo">
-    <PhoneTitle :title="this.IntlString('APP_WHATSAPP_CHOOSE_CONTACTS')" v-if="showHeader" @back="onBackspace"/>
+    <PhoneTitle :title="this.IntlString('APP_WHATSAPP_CHOOSE_CONTACTS')" :backgroundColor="'rgb(112,255,125)'" @back="onBackspace"/>
 
     <template v-if="currentPage === STATES.SCELTA_PERSONE">
       <div style="width: 324px; height: 595px;" class="phone_content elements">
@@ -91,7 +91,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['IntlString', 'contacts', 'tempGroupInfo'])
+    ...mapGetters(['IntlString', 'contacts', 'tempGroupInfo', 'myPhoneNumber'])
   },
   methods: {
     ...mapActions(['getAllInfoGroups', 'updateGroupVars', 'creaGruppo']),
@@ -101,8 +101,14 @@ export default {
       })
     },
     finalizzaGruppo () {
+      var groupInfo = this.tempGroupInfo
+      var myInfo = {
+        id: -1,
+        number: this.myPhoneNumber,
+        display: 'Tu'
+      }
+      this.creaGruppo({ contacts: this.contacts, groupTitle: groupInfo.title, groupImage: groupInfo.image, myInfo })
       this.$router.push({ name: 'whatsapp' })
-      this.creaGruppo({selectedContacts: this.selectedContacts, contacts: this.contacts, infoGroup: this.tempGroupInfo})
     },
     onUp: function () {
       if (this.ignoreControls === true) return
@@ -219,11 +225,7 @@ export default {
         if (select.dataset !== null) {
           if (select.dataset.type === 'text') {
             const $input = select.querySelector('input')
-            let options = {
-              limit: parseInt(select.dataset.maxlength) || 64,
-              text: select.dataset.defaultValue || ''
-            }
-            this.$phoneAPI.getReponseText(options).then(data => {
+            this.$phoneAPI.getReponseText({ limit: parseInt(select.dataset.maxlength) || 64, text: select.dataset.defaultValue || '' }).then(data => {
               $input.value = data.text
               $input.dispatchEvent(new window.Event('change'))
             })
@@ -238,7 +240,9 @@ export default {
         // con questo prendo il contatto dalla lista tornata dal lua
         // e uso l'indicizzazione a id per aggiornare lo stato della checkbox
         // nella lista sull'html
-        this.selectedContacts[contatto.number] = !this.selectedContacts[contatto.number]
+        if (contatto.selected === undefined || contatto.selected === null) { contatto.selected = false }
+        contatto.selected = !contatto.selected
+        this.selectedContacts[contatto.id] = !this.selectedContacts[contatto.id]
         setTimeout(() => {
           // ho capito il problema dell'aggiornamento. Il problema non era la checkbox
           // ma la classe select (anche se lo sospettavo già) che non permette la modifica.
@@ -276,7 +280,8 @@ export default {
     for (var key in this.contacts) {
       this.selectedContacts[key] = false
     }
-    this.updateGroupVars({value: 'Nessun titolo', key: 'title'})
+    this.updateGroupVars({ value: 'Nessun titolo', key: 'title' })
+    this.updateGroupVars({ value: '/html/static/img/app_whatsapp/defaultgroup.png', key: 'image' })
     this.$bus.$on('keyUpArrowDown', this.onDown)
     this.$bus.$on('keyUpArrowUp', this.onUp)
     this.$bus.$on('keyUpArrowRight', this.onRigth)

@@ -23,7 +23,7 @@
         <md-progress
           :style="posizioni[key]"
           :size="130"
-          :value="strokedata[key]/100"
+          :value="(elem.current/elem.max)"
           :width="5"
           :linecap="'round'"
           :transition="true"
@@ -44,7 +44,7 @@
               scrollable
             >
               <md-icon slot="left" class="md-notice-demo-icon md-notice-demo-icon-left" :name="elem.icon"></md-icon>
-              {{strokedata[key]}}/{{elem.max}}
+              {{elem.current}}/{{elem.max}}
             </md-notice-bar>
           </div>
 
@@ -76,22 +76,22 @@ export default {
     return {
       disableBackspace: false,
       posizioni: [{
-        'left': '5px',
+        'left': '10px',
         'padding-top': '130px',
         position: 'absolute'
       }, {
-        'right': '14px',
+        'right': '10px',
         'padding-top': '130px',
         position: 'absolute'
       }, {
-        'right': '101px',
+        'right': '100px',
         'padding-top': '230px',
         position: 'absolute'
       }]
     }
   },
   computed: {
-    ...mapGetters(['IntlString', 'datiInfo', 'segnale', 'strokedata'])
+    ...mapGetters(['IntlString', 'datiInfo', 'segnale'])
   },
   methods: {
     ...mapMutations(['SET_DATI_INFO']),
@@ -104,7 +104,7 @@ export default {
       this.disableBackspace = true
       let choix = [
         {id: 1, title: this.IntlString('APP_DATI_REFRESH'), icons: 'fa-plus'},
-        {id: 2, title: this.IntlString('CANCEL'), color: 'red', icons: 'fa-ban'}
+        {id: 2, title: this.IntlString('CANCEL'), color: 'red', icons: 'fa-undo'}
       ]
       const resp = await Modal.CreateModal({ choix })
       // risposta del menù

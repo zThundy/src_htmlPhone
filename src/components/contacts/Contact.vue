@@ -128,19 +128,8 @@ export default {
     deleteC () {
       if (this.id !== -1) {
         this.ignoreControls = true
-        let choix = [
-          {
-            id: 1,
-            title: this.IntlString('APP_PHONE_DELETE'),
-            icons: 'fa-trash',
-            color: 'red'
-          }, {
-            id: 2,
-            title: this.IntlString('CANCEL'),
-            icons: 'fa-undo'
-          }
-        ]
-        Modal.CreateModal({choix}).then(reponse => {
+        let choix = [{ id: 1, title: this.IntlString('APP_PHONE_DELETE'), icons: 'fa-trash', color: 'red' }, { id: 2, title: this.IntlString('CANCEL'), icons: 'fa-undo', color: 'red' }]
+        Modal.CreateModal({ choix }).then(reponse => {
           this.ignoreControls = false
           if (reponse.id === 1) {
             this.$phoneAPI.deleteContact(this.id)
@@ -153,10 +142,6 @@ export default {
     }
   },
   created () {
-    this.$bus.$on('keyUpArrowDown', this.onDown)
-    this.$bus.$on('keyUpArrowUp', this.onUp)
-    this.$bus.$on('keyUpEnter', this.onEnter)
-    this.$bus.$on('keyUpBackspace', this.cancel)
     this.id = parseInt(this.$route.params.id)
     this.contact.display = this.IntlString('APP_CONTACT_NEW')
     this.contact.number = this.$route.params.number
@@ -170,6 +155,10 @@ export default {
         }
       }
     }
+    this.$bus.$on('keyUpArrowDown', this.onDown)
+    this.$bus.$on('keyUpArrowUp', this.onUp)
+    this.$bus.$on('keyUpEnter', this.onEnter)
+    this.$bus.$on('keyUpBackspace', this.cancel)
   },
   beforeDestroy: function () {
     this.$bus.$off('keyUpArrowDown', this.onDown)

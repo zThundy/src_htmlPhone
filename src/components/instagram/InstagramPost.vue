@@ -2,19 +2,16 @@
   <div style="width: 326px; height: 743px;" class="phone_content">
 
     <div class='resize_immagine'>
-
       <i class="fa fa-camera-retro fa-5x" style="color: #E533FF;"></i>
-
     </div>
 
     <span class='instagram_send'>{{ IntlString('APP_INSTAGRAM_POST_PICTURE') }}</span> 
-
   </div>
 </template>
 
 <script>
 import { mapActions, mapGetters } from 'vuex'
-// import PhoneAPI from './../../PhoneAPI'
+import PhoneAPI from './../../PhoneAPI'
 
 export default {
   components: {},
@@ -34,13 +31,13 @@ export default {
     async onEnter () {
       if (this.ignoreControls) return
       this.ignoreControls = true
-      this.$bus.$emit('instagramScegliFiltri')
-      // const post = await PhoneAPI.takePhoto()
-      // if (post.url !== null) {
-      //   this.instagramSaveTempPost(post.url)
-      //   this.ignoreControls = false
-      //   this.$bus.$emit('instagramScegliFiltri')
-      // }
+      // this.$bus.$emit('instagramScegliFiltri')
+      const post = await PhoneAPI.takePhoto()
+      if (post.url !== null) {
+        this.instagramSaveTempPost(post.url)
+        this.ignoreControls = false
+        this.$bus.$emit('instagramScegliFiltri')
+      }
     },
     onBack () {
       if (this.ignoreControls) {
@@ -53,8 +50,6 @@ export default {
   created () {
     this.$bus.$on('keyUpEnter', this.onEnter)
     this.$bus.$on('keyUpBackspace', this.onBack)
-  },
-  async mounted () {
   },
   beforeDestroy () {
     this.$bus.$off('keyUpEnter', this.onEnter)

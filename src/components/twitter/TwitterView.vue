@@ -84,7 +84,8 @@ export default {
       }, {
         id: -1,
         title: this.IntlString('CANCEL'),
-        icons: 'fa-undo'
+        icons: 'fa-undo',
+        color: 'red'
       }]
       if (this.isImage(tweet.message)) {
         optionsChoix = [{

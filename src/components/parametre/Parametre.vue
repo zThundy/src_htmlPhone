@@ -34,7 +34,8 @@ export default {
     return {
       ignoreControls: false,
       currentSelect: 0,
-      retiWifiRender: []
+      retiWifiRender: [],
+      cover: []
     }
   },
   computed: {
@@ -76,11 +77,12 @@ export default {
           values: this.config.background
         },
         {
+          meta: 'cover',
           icons: 'fa-mobile',
           title: this.IntlString('APP_CONFIG_CASE'),
           value: this.coqueLabel,
           onValid: 'onChangeCoque',
-          values: this.config.coque
+          values: this.cover
         },
         {
           icons: 'fa-bell-o',
@@ -198,6 +200,12 @@ export default {
       if (param.values !== undefined) {
         this.ignoreControls = true
         let choix = Object.keys(param.values).map(key => {
+          // qui ho un controllo custom per le cover
+          if (param.values[key].meta !== undefined || param.values[key].meta !== null) {
+            if (param.values[key].meta === 'cover') {
+              return {title: key, value: param.values[key].value, picto: param.values[key].value}
+            }
+          }
           if (param.values[key].value !== undefined) {
             // controllo sui colori
             if (param.values[key].color !== undefined) {
@@ -209,7 +217,7 @@ export default {
             return {title: key, value: param.values[key], picto: param.values[key]}
           }
         })
-        Modal.CreateModal({choix}).then(reponse => {
+        Modal.CreateModal({ choix }).then(reponse => {
           this.ignoreControls = false
           if (reponse.title === 'cancel' || reponse.value === 'cancel') return
           this[param.onValid](param, reponse)
@@ -358,6 +366,7 @@ export default {
   },
 
   created () {
+    this.cover = this.config.coque
     this.$bus.$on('keyUpArrowRight', this.onRight)
     this.$bus.$on('keyUpArrowLeft', this.onLeft)
     this.$bus.$on('keyUpArrowDown', this.onDown)

@@ -3,12 +3,14 @@
 
 const state = {
   retiWifi: [],
-  wifiString: 'Non connesso'
+  wifiString: 'Non connesso',
+  hasWifi: false
 }
 
 const getters = {
   retiWifi: ({ retiWifi }) => retiWifi,
-  wifiString: ({ wifiString }) => wifiString
+  wifiString: ({ wifiString }) => wifiString,
+  hasWifi: ({ hasWifi }) => hasWifi
 }
 
 const actions = {
@@ -27,6 +29,9 @@ const mutations = {
   },
   UPDATE_WIFI_STRING (state, string) {
     state.wifiString = string
+  },
+  UPDATE_WIFI (state, bool) {
+    state.hasWifi = bool
   }
 }
 

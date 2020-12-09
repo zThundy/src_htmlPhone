@@ -63,16 +63,7 @@
 
 
   "coque": {
-    "Arancione": "arancione.png",
-    "Azzurra": "azzurro.png",
-    "Bianca": "bianco.png",
-    "Blu": "blu.png",
-    "Gialla": "giallo.png",
-    "Nera": "nero.png",
-    "Rosa": "rosa.png",
-    "Rossa": "rossa.png",
-    "Verde": "verde.png",
-    "Viola": "viola.png"
+    "Default": "base.png"
   },
 
   "sonido": {
@@ -86,8 +77,8 @@
   },
 
   "coque_default": {
-    "label": "Azzurra",
-    "value": "azure.png"
+    "label": "Default",
+    "value": "base.png"
   },
 
   "sonido_default": {
@@ -210,7 +201,7 @@
       "icons": "/html/static/img/icons_app/insta.png",
       "routeName": "instagram.splash",
       "inHomePage": false,
-      "enabled": false
+      "enabled": true
     },
     {
       "name": "Whatsapp",
@@ -218,7 +209,7 @@
       "icons": "/html/static/img/icons_app/whatsappIcon.png",
       "routeName": "whatsapp.splash",
       "inHomePage": false,
-      "enabled": false
+      "enabled": true
     },
     {
       "name": "Piano tariffario",
@@ -455,6 +446,8 @@
       "APP_WHATSAPP_ADD_NUMBER": "Aggiungi al gruppo",
       "APP_WHATSAPP_CHOOSE_CONTACTS": "Contatti",
       "APP_WHATSAPP_PLACEHOLDER_ENTER_MESSAGE": "Invia un messaggio",
+      "APP_WHATSAPP_SET_GPS": "Posizione GPS",
+      "APP_WHATSAPP_ZOOM_IMG": "Zoom",
       "APP_WHATSAPP_NEXT_STEP": "Prossimo passaggio",
       "APP_WHATSAPP_GROUP_NAME": "Nome del gruppo",
       "APP_WHATSAPP_GROUP_AVATAR": "Immagine del gruppo",

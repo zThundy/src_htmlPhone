@@ -15,11 +15,10 @@
 <script>
 import { mapGetters } from 'vuex'
 import CurrentTime from './CurrentTime'
+
 export default {
   computed: mapGetters(['config', 'segnale', 'hasWifi']),
-  components: {
-    CurrentTime
-  },
+  components: { CurrentTime },
   data: function () {
     return {
       barra1: {

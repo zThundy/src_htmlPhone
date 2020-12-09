@@ -9,16 +9,16 @@
 
     <textarea ref="copyTextarea" class="copyTextarea"/>
     
-    <div style="width: 326px; height: 678px; backgroundColor: white"  id='sms_list' @contextmenu.prevent.stop="showOptions">
+    <div style="width: 326px; height: 678px; backgroundColor: white"  id='sms_list'>
 
-        <div class="sms" v-bind:class="{ select: key === selectMessage}" v-for='(mess, key) in messagesListApp' v-bind:key="mess.id" @click.stop="onActionMessage(mess)" @contextmenu.prevent.stop="showOptions">
+        <div class="sms" v-bind:class="{ select: key === selectMessage}" v-for='(mess, key) in messagesListApp' v-bind:key="mess.id">
 
           <div class="sms_message_time">
               <h6 v-bind:class="{ sms_me : mess.owner === 1}"  class="name_other_sms_me">{{displayContact}}</h6>
-              <h6 v-bind:class="{ sms_me : mess.owner === 1}"  class="name_other_sms_other" @click.stop="onActionMessage(mess)"><timeago style="font-weight: 500" class="sms_time" :since='mess.time' :auto-update="20"></timeago></h6>
+              <h6 v-bind:class="{ sms_me : mess.owner === 1}"  class="name_other_sms_other"><timeago style="font-weight: 500" class="sms_time" :since='mess.time' :auto-update="20"></timeago></h6>
           </div>
 
-            <span class='sms_message sms_me' @click.stop="onActionMessage(mess)" v-bind:class="{ sms_other : mess.owner === 0}">
+            <span class='sms_message sms_me' v-bind:class="{ sms_other : mess.owner === 0}">
               
               <img v-if="isSMSImage(mess)" class="sms-img" :src="mess.message">
               <span v-else>{{mess.message}}</span>
@@ -30,13 +30,13 @@
 
     </div>
 
-    <div style="width: 306px;" id='sms_write' @contextmenu.prevent="showOptions">
+    <div style="width: 306px;" id='sms_write'>
 
-      <input type="text" v-model="message" :placeholder="IntlString('APP_MESSAGE_PLACEHOLDER_ENTER_MESSAGE')" v-autofocus @keyup.enter.prevent="send">
+      <input type="text" v-model="message" :placeholder="IntlString('APP_MESSAGE_PLACEHOLDER_ENTER_MESSAGE')">
       
-      <div style="font-size: 10px;" class="sms_send" @click.stop="send">
+      <div style="font-size: 10px;" class="sms_send">
 
-        <svg height="24" viewBox="0 0 24 24" width="24" @click.stop="send">
+        <svg height="24" viewBox="0 0 24 24" width="24">
           <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/>
           <path d="M0 0h24v24H0z" fill="none"/>
         </svg>
@@ -134,15 +134,19 @@ export default {
         let isGPS = /(-?\d+(\.\d+)?), (-?\d+(\.\d+)?)/.test(message.message)
         let hasNumber = /#([0-9]+)/.test(message.message)
         let isSMSImage = this.isSMSImage(message)
-        let choix = [{
-          id: 'delete',
-          title: this.IntlString('APP_MESSAGE_DELETE'),
-          icons: 'fa-trash'
-        }, {
-          id: -1,
-          title: this.IntlString('CANCEL'),
-          icons: 'fa-undo'
-        }]
+        let choix = [
+          {
+            id: 'delete',
+            title: this.IntlString('APP_MESSAGE_DELETE'),
+            icons: 'fa-trash'
+          },
+          {
+            id: -1,
+            title: this.IntlString('CANCEL'),
+            icons: 'fa-undo',
+            color: 'red'
+          }
+        ]
         if (isGPS === true) {
           choix = [{
             id: 'gps',
@@ -207,18 +211,20 @@ export default {
             id: 'call',
             title: this.IntlString('APP_MESSAGE_MESS_CALL'),
             icons: 'fa-phone'
+          },
+          {
+            id: -1,
+            title: this.IntlString('CANCEL'),
+            icons: 'fa-undo',
+            color: 'red'
+          },
+          {
+            id: 'copy',
+            title: this.IntlString('APP_MESSAGE_MESS_COPY'),
+            icons: 'fa-copy'
           }
         ]
-        choix.push({
-          id: 'copy',
-          title: this.IntlString('APP_MESSAGE_MESS_COPY'),
-          icons: 'fa-copy'
-        })
-        choix.push({
-          id: -1,
-          title: this.IntlString('CANCEL'),
-          icons: 'fa-undo'
-        })
+
         const data = await Modal.CreateModal({ choix })
         if (data.id === 'sms') {
           this.phoneNumber = number
@@ -260,13 +266,13 @@ export default {
         this.ignoreControls = true
         let choix = [
           {id: 1, title: this.IntlString('APP_MESSAGE_SEND_GPS'), icons: 'fa-location-arrow'},
-          {id: -1, title: this.IntlString('CANCEL'), icons: 'fa-undo'}
+          {id: -1, title: this.IntlString('CANCEL'), icons: 'fa-undo', color: 'red'}
         ]
         if (this.enableTakePhoto) {
           choix = [
             {id: 1, title: this.IntlString('APP_MESSAGE_SEND_GPS'), icons: 'fa-location-arrow'},
             {id: 2, title: this.IntlString('APP_MESSAGE_SEND_PHOTO'), icons: 'fa-picture-o'},
-            {id: -1, title: this.IntlString('CANCEL'), icons: 'fa-undo'}
+            {id: -1, title: this.IntlString('CANCEL'), icons: 'fa-undo', color: 'red'}
           ]
         }
         const data = await Modal.CreateModal({ choix })

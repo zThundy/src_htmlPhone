@@ -78,8 +78,10 @@ export default {
     }
   },
   created () {
+    PhoneAPI.requestInfoOfGroups()
     PhoneAPI.requestOfferta()
     this.setupUnreadMessages()
+    PhoneAPI.requestMyCovers()
     /*
     for (var key in this.messages) {
       if (this.messages[key].isRead === 0) {
@@ -94,9 +96,7 @@ export default {
       }
     }
     */
-    if (this.nbMessagesUnread > 0) {
-      this.hasUnredMessages = true
-    }
+    if (this.nbMessagesUnread > 0) { this.hasUnredMessages = true }
     this.$bus.$on('keyUpEnter', this.onEnter)
     this.$bus.$on('keyUpBackspace', this.onBack)
   },

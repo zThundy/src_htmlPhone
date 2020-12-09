@@ -68,7 +68,7 @@ export default {
       let choix = [
         {id: 1, title: this.IntlString('APP_DARKTCHAT_NEW_CHANNEL'), icons: 'fa-plus', color: 'green'},
         {id: 2, title: this.IntlString('APP_DARKTCHAT_DELETE_CHANNEL'), icons: 'fa-minus', color: 'orange'},
-        {id: 3, title: this.IntlString('APP_DARKTCHAT_CANCEL'), icons: 'fa-undo'}
+        {id: 3, title: this.IntlString('APP_DARKTCHAT_CANCEL'), icons: 'fa-undo', color: 'red'}
       ]
       if (this.tchatChannels.length === 0) {
         choix.splice(1, 1)
@@ -91,7 +91,7 @@ export default {
         this.ignoreControls = true
         let choix = [
           {id: 1, title: this.IntlString('APP_DARKTCHAT_NEW_CHANNEL'), icons: 'fa-plus', color: 'green'},
-          {id: 3, title: this.IntlString('APP_DARKTCHAT_CANCEL'), icons: 'fa-undo'}
+          {id: 3, title: this.IntlString('APP_DARKTCHAT_CANCEL'), icons: 'fa-undo', color: 'red'}
         ]
         const rep = await Modal.CreateModal({ choix })
         this.ignoreControls = false

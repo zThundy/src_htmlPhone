@@ -3,7 +3,7 @@
     <notification />
     <div v-if="show === true && tempoHide === false" :style="{zoom: zoom}" @contextmenu.stop>
       <div class="phone_wrapper">
-        <div v-if="coque" class="phone_coque" :style="{backgroundImage: 'url(/html/static/img/coque/' + coque.value + ')'}"></div>
+        <div v-if="coque" class="phone_coque" :style="{backgroundImage: 'url(/html/static/img/cover/' + coque.value + ')'}"></div>
         
           <div id="app" class="phone_screen noselect">
             <transition-page>

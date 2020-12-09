@@ -69,7 +69,7 @@ export default {
 </script>
 <style scoped>
 .title {
-  padding-top: 5px;
+  padding-top: 10px;
   font-family: Arial, Helvetica, sans-serif;
   text-align: center;
   padding-right: 90px;

@@ -40,7 +40,7 @@ export default {
           {id: 2, title: this.IntlString('APP_MESSAGE_ERASE_ALL_CONVERSATIONS'), icons: 'fa-trash', color: 'red'}
         ]
         .concat(data.unknowContact ? [{id: 7, title: this.IntlString('APP_MESSAGE_SAVE_CONTACT'), icons: 'fa-save'}] : [])
-        .concat([{id: 3, title: this.IntlString('CANCEL'), icons: 'fa-undo'}])
+        .concat([{id: 3, title: this.IntlString('CANCEL'), icons: 'fa-undo', color: 'red'}])
       }).then(rep => {
         if (rep.id === 1) {
           this.deleteMessagesNumber({num: data.number})

@@ -1,29 +1,52 @@
 <template>
   <div style="width: 326px; height: 743px;" class="sfondo">
-    <PhoneTitle :title="this.gruppo.gruppo" :backgroundColor="'rgba(255,255,255,2)'" @back="onBackspace"/>
+    <PhoneTitle :title="this.gruppo.gruppo" :titleColor="'black'" :backgroundColor="'rgb(112,255,125)'" @back="onBackspace" :showInfoBare="true"/>
 
-    <div v-for="(s, i) of messages" :key="i" class="whatsapp-menu-item">
-
-      <div style="height: 20px;">
-        <div v-if="isSentByMe(s)" class="bubble daMe" :class="{select: i === currentSelected}">{{s.sender}}: {{s.message}}</div>
-        <div v-else class="bubble daAltri" :class="{select: i === currentSelected}">{{s.sender}}: {{s.message}}</div>
-      </div>
-      
+    <div style="position: absolute;" class="groupImage" data-type="button">
+      <img :src="gruppo.icona" />
     </div>
 
-    <div style="width: 306px; bottom: 0px;" id='sms_write' @contextmenu.prevent="showOptions">
+    <div style="position: absolute;" class="img-fullscreen" v-if="imgZoom !== undefined">
+      <img :src="imgZoom" />
+    </div>
 
-      <input type="text" v-model="message" :placeholder="IntlString('APP_WHATSAPP_PLACEHOLDER_ENTER_MESSAGE')" v-autofocus>
-      
-      <div style="font-size: 10px;" class="sms_send" @click.stop="send">
+    <md-toast ref="wh_update">
+      <md-activity-indicator
+        :size="20"
+        :text-size="16"
+        color="white"
+        text-color="white"
+      >Aggiornamento...</md-activity-indicator>
+    </md-toast>
 
-        <svg height="24" viewBox="0 0 24 24" width="24" @click.stop="send">
-          <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/>
-          <path d="M0 0h24v24H0z" fill="none"/>
-        </svg>
+    <div style="width: 326px; height: 575px;" id='sms_list'>
 
+      <div v-for="(s, i) of messaggi[String(gruppo.id)]" :key="i" v-bind:class="{ select: i === currentSelected}" class="whatsapp-menu-item">
+
+        <div v-if="!isImage(s)" style="overflow: auto;">
+          <div v-if="isSentByMe(s)" class="bubble daMe" :class="{select: i === currentSelected}">{{s.sender}}: {{s.message}}</div>
+          <div v-else class="bubble daAltri" :class="{select: i === currentSelected}">{{s.sender}}: {{s.message}}</div>
+        </div>
+
+        <div v-else style="overflow: auto;">
+          <img v-if="isSentByMe(s)" class="sms-img bubble daMe" :class="{select: i === currentSelected}" :src="s.message">
+          <img v-else class="sms-img bubble daAltri" :class="{select: i === currentSelected}" :src="s.message">
+        </div>
+        
       </div>
 
+    </div>
+
+    <div style="height: 70px; position: fixed;">
+      <div style="width: 306px;" id='sms_write'>
+        <input type="text" :placeholder="IntlString('APP_WHATSAPP_PLACEHOLDER_ENTER_MESSAGE')" v-autofocus>
+        <div style="font-size: 10px;" class="sms_send">
+          <svg height="24" viewBox="0 0 24 24" width="24">
+            <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/>
+            <path d="M0 0h24v24H0z" fill="none"/>
+          </svg>
+        </div>
+      </div>
     </div>
 
   </div>
@@ -34,16 +57,22 @@
 import { mapGetters, mapActions } from 'vuex'
 import PhoneTitle from './../PhoneTitle'
 import Modal from '@/components/Modal/index.js'
+import { Toast, ActivityIndicator } from 'mand-mobile'
+import 'mand-mobile/lib/mand-mobile.css'
 
 export default {
-  components: { PhoneTitle },
+  name: 'whatsapp_selected_group',
+  components: {
+    PhoneTitle,
+    [Toast.component.name]: Toast.component,
+    [ActivityIndicator.name]: ActivityIndicator
+  },
   data () {
     return {
       currentSelected: -1,
       ignoreControls: false,
       gruppo: [],
-      message: '',
-      messages: []
+      imgZoom: null
     }
   },
   computed: {
@@ -62,7 +91,7 @@ export default {
     onUp () {
       if (this.ignoreControls === true) return
       if (this.currentSelected === -1) {
-        this.selectMessage = 0
+        this.currentSelected = this.messaggi[String(this.gruppo.id)].length - 1
       } else {
         this.currentSelected = this.currentSelected === 0 ? 0 : this.currentSelected - 1
       }
@@ -71,66 +100,112 @@ export default {
     onDown () {
       if (this.ignoreControls === true) return
       if (this.currentSelected === -1) {
-        this.currentSelected = 0
+        this.currentSelected = this.messaggi[String(this.gruppo.id)].length - 1
       } else {
         this.currentSelected = this.currentSelected === this.messaggi[this.gruppo.id].length - 1 ? this.currentSelected : this.currentSelected + 1
       }
       this.scrollIntoViewIfNeeded()
     },
     onBackspace () {
+      if (this.imgZoom !== null) { this.imgZoom = null; return }
       if (this.ignoreControls === true) { this.ignoreControls = false; return }
       if (this.currentSelected !== -1) { this.currentSelected = -1; return }
       this.$router.push({ name: 'whatsapp' })
     },
     async onRight () {
       if (this.ignoreControls === true) return
-      try {
-        this.ignoreControls = true
-        let choix = [
-          {id: 1, title: this.IntlString('APP_WHATSAPP_SEND_GPS'), icons: 'fa-location-arrow'},
-          {id: -1, title: this.IntlString('CANCEL'), icons: 'fa-undo', color: 'red'}
-        ]
-        if (this.enableTakePhoto) {
-          choix = [
+      // qui controllo se hai un messaggio selezionato
+      // così da farti uscire le impostazioni di quel messaggio
+      // oppure della chat
+      if (this.currentSelected === -1) {
+        try {
+          this.ignoreControls = true
+          let choix = [
             {id: 1, title: this.IntlString('APP_WHATSAPP_SEND_GPS'), icons: 'fa-location-arrow'},
-            {id: 2, title: this.IntlString('APP_WHATSAPP_SEND_PHOTO'), icons: 'fa-picture-o'},
             {id: -1, title: this.IntlString('CANCEL'), icons: 'fa-undo', color: 'red'}
           ]
-        }
-        const resp = await Modal.CreateModal({ choix })
-        switch (resp.id) {
-          case 1:
-            this.ignoreControls = false
-            this.sendMessageInGroup({gruppo: this.gruppo, message: '%pos%', phoneNumber: this.myPhoneNumber})
-            break
-          case 2:
-            this.ignoreControls = false
-            const { url } = await this.$phoneAPI.takePhoto()
-            if (url !== null && url !== undefined) { this.sendMessageInGroup({gruppo: this.gruppo, message: url, phoneNumber: this.myPhoneNumber}) }
-            break
-        }
-      } catch (e) {} finally { this.ignoreControls = false }
+          if (this.enableTakePhoto) {
+            choix = [
+              {id: 1, title: this.IntlString('APP_WHATSAPP_SEND_GPS'), icons: 'fa-location-arrow'},
+              {id: 2, title: this.IntlString('APP_WHATSAPP_SEND_PHOTO'), icons: 'fa-picture-o'},
+              {id: -1, title: this.IntlString('CANCEL'), icons: 'fa-undo', color: 'red'}
+            ]
+          }
+          const resp = await Modal.CreateModal({ choix })
+          switch (resp.id) {
+            case 1:
+              this.ignoreControls = false
+              this.sendMessageInGroup({gruppo: this.gruppo, message: '%pos%', phoneNumber: this.myPhoneNumber})
+              break
+            case 2:
+              this.ignoreControls = false
+              const { url } = await this.$phoneAPI.takePhoto()
+              if (url !== null && url !== undefined) { this.sendMessageInGroup({gruppo: this.gruppo, message: url, phoneNumber: this.myPhoneNumber}) }
+              break
+          }
+        } catch (e) {} finally { this.ignoreControls = false }
+      } else {
+        this.onActionMessage(this.messaggi[String(this.gruppo.id)][this.currentSelected])
+      }
+    },
+    isImage (mess) {
+      return /^https?:\/\/.*\.(png|jpg|jpeg|gif)/.test(mess.message)
     },
     onEnter () {
       if (this.ignoreControls === true) return
-      if (this.currentSelected === -1) {
-        this.$phoneAPI.getReponseText().then(data => {
-          let message = data.text.trim()
-          if (message !== '') {
-            this.sendMessageInGroup({gruppo: this.gruppo, message: message, phoneNumber: this.myPhoneNumber})
-          }
-        })
-      }
+      this.$phoneAPI.getReponseText().then(data => {
+        let message = data.text.trim()
+        if (message !== '') {
+          this.sendMessageInGroup({gruppo: this.gruppo, message: message, phoneNumber: this.myPhoneNumber})
+          setTimeout(() => {
+            this.currentSelected = this.messaggi[String(this.gruppo.id)].length - 1
+            this.scrollIntoViewIfNeeded()
+          }, 200)
+        }
+      })
     },
     isSentByMe (messaggio) {
       if (messaggio.sender === this.myPhoneNumber) return true
       return false
+    },
+    async onActionMessage (message) {
+      try {
+        let isGPS = /(-?\d+(\.\d+)?), (-?\d+(\.\d+)?)/.test(message.message)
+        let isSMSImage = this.isImage(message)
+        // dopo aver controllato che tipo di messaggio è, creo il modal
+        let choix = [{ id: -1, title: this.IntlString('CANCEL'), icons: 'fa-undo', color: 'red' }]
+        if (isGPS === true) { choix = [{ id: 'gps', title: this.IntlString('APP_WHATSAPP_SET_GPS'), icons: 'fa-location-arrow' }, ...choix] }
+        if (isSMSImage === true) { choix = [{ id: 'zoom', title: this.IntlString('APP_MESSAGE_ZOOM_IMG'), icons: 'fa-search' }, ...choix] }
+        // disabilito i controlli
+        this.ignoreControls = true
+        const data = await Modal.CreateModal({ choix })
+        if (data.id === 'gps') {
+          let val = message.message.match(/(-?\d+(\.\d+)?), (-?\d+(\.\d+)?)/)
+          this.$phoneAPI.setGPS(val[1], val[3])
+        } else if (data.id === 'zoom') {
+          this.imgZoom = message.message
+        }
+      } catch (e) { } finally { this.ignoreControls = false }
+    },
+    async startUpdatingMessages () {
+      this.$refs.wh_update.show()
+      this.ignoreControls = true
+      setTimeout(() => {
+        this.currentSelected = this.messaggi[String(this.gruppo.id)].length - 1
+        this.scrollIntoViewIfNeeded()
+        this.$refs.wh_update.hide()
+        this.ignoreControls = false
+      }, 3000)
     }
   },
   created () {
-    this.requestWhatsappInfo(this.gruppo.id)
     this.gruppo = this.$route.params.gruppo
-    if (this.messaggi[String(this.gruppo.id)] !== null || this.messaggi[String(this.gruppo.id)] !== undefined) { this.messages = this.messaggi[String(this.gruppo.id)] }
+    this.requestWhatsappInfo(this.gruppo.id)
+    // qui imposto il messaggio all'ultimo e con la funzione
+    // lo "metto in mostra"
+    setTimeout(() => {
+      this.startUpdatingMessages()
+    }, 100)
     // eventi attivi //
     this.$bus.$on('keyUpArrowDown', this.onDown)
     this.$bus.$on('keyUpArrowUp', this.onUp)
@@ -149,11 +224,6 @@ export default {
 </script>
 
 <style scoped>
-.generale {
-  width: 326px; 
-  height: 743px;
-}
-
 .sfondo {
   background-image: url("/html/static/img/app_whatsapp/sfondogruppi.png");
   background-repeat: no-repeat;
@@ -161,6 +231,7 @@ export default {
   height: auto;
   margin: 0;
   padding: 0;
+  position: absolute;
 }
 
 .whatsapp-menu-item {
@@ -170,6 +241,12 @@ export default {
 }
 
 /* Input message zone */
+
+#sms_list{
+    height: calc(100% - 34px - 26px);
+    overflow-y: auto;
+    padding-bottom: 8px;
+}
 
 #sms_write {
   position: absolute;
@@ -203,6 +280,31 @@ export default {
   fill: #C0C0C0;
 }
 
+.sms-img{
+  width: 80%;
+  height: auto;
+  padding-top: 12px;
+  border-radius: 19px;
+}
+
+/* IMMAGINE DEL GRUPPO */
+
+.groupImage {
+  top: 35px;
+  right: 15px;
+}
+
+.groupImage img {
+  border-radius: 50%;
+  border-style: solid;
+  border-color: rgb(6, 75, 0);
+  height: 50px;
+  width: 50px;
+  overflow: hidden;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
 
 
 
@@ -248,8 +350,8 @@ export default {
   left: -9px;
 }
 
-.daAltri.select { background-color: rgb(118, 255, 137); }
-.daAltri.select::before { background-color: rgb(118, 255, 137); }
+.daAltri.select { background-color: rgb(230, 230, 230); }
+.daAltri.select::before { background-color: rgb(230, 230, 230); }
 
 .daMe {
   float: right;

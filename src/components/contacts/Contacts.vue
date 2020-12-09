@@ -49,7 +49,7 @@ export default {
       var choix = [
           {id: 1, title: this.IntlString('APP_CONTACT_EDIT'), icons: 'fa-user-circle', color: 'orange'},
           {id: 2, title: this.IntlString('APP_CONTACT_ADD_PICTURE'), icons: 'fa-camera'},
-          {id: 4, title: this.IntlString('CANCEL'), icons: 'fa-undo'}
+          {id: 4, title: this.IntlString('CANCEL'), icons: 'fa-undo', color: 'red'}
       ]
       if (isValid === true) { choix = [{id: 3, title: this.IntlString('APP_PHONE_CALL'), icons: 'fa-phone'}, ...choix] }
       const resp = await Modal.CreateModal({ choix: choix })

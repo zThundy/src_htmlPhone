@@ -93,7 +93,7 @@ export default {
         {id: 1, title: this.IntlString('APP_PHONE_DELETE'), icons: 'fa-trash', color: 'orange'},
         {id: 2, title: this.IntlString('APP_PHONE_DELETE_ALL'), icons: 'fa-trash', color: 'red'},
         {id: 4, title: this.IntlString('APP_PHONE_ADD'), icons: 'fa-plus'},
-        {id: 3, title: this.IntlString('APP_PHONE_CANCEL'), icons: 'fa-undo'}
+        {id: 3, title: this.IntlString('APP_PHONE_CANCEL'), icons: 'fa-undo', color: 'red'}
       ]
       if (isValid === true) {
         choix = [{id: 0, title: this.IntlString('APP_PHONE_CALL'), icons: 'fa-phone'}, ...choix]
@@ -126,8 +126,8 @@ export default {
     },
     save (numero) {
       if (this.id !== -1) {
-        this.addContact({ number: numero })
-      } else {
+        this.$router.push({ name: 'contacts.view', params: { id: -1, number: numero } })
+      // } else {
         // contatto non salvato con successo???
         // console.log('No añadido')
       }

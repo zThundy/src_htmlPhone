@@ -1,10 +1,12 @@
 <template>
   <div style="width: 326px; height: 743px;">
-    <PhoneTitle :title="this.IntlString('APP_WHATSAPP_TITLE')" @back="onBackspace"/>
+    <PhoneTitle :title="this.IntlString('APP_WHATSAPP_TITLE')" :textColor="'black'" :backgroundColor="'rgb(112,255,125)'" @back="onBackspace"/>
 
     <div v-for="(s, i) in gruppi" :key="i" class="whatsapp-menu-item" :class="{select: i === currentSelected}">
       <img :src="hasImage(s)" class="immagineGruppo">
-      <div class="titoloGruppo">{{s.gruppo}}</div>
+      <div class="titoloGruppo">{{s.gruppo}}
+        <div class="sottotitoloGruppo">{{s.partecipantiString}}</div>
+      </div>
     </div>
 
   </div>
@@ -39,6 +41,7 @@ export default {
       })
     },
     hasImage (selectedGroup) {
+      // console.log(selectedGroup.icona, 'sono nel file vue di whatsapp')
       if (selectedGroup.icona !== null && selectedGroup.icona !== undefined) {
         return selectedGroup.icona
       } else {
@@ -104,6 +107,7 @@ export default {
     onEnter () {
       if (this.currentSelected === -1) return
       if (this.ignoreControls === true) return
+      // qui invio il gruppo al router
       // console.log(this.gruppi[this.currentSelected])
       this.$router.push({ name: 'whatsapp.gruppo', params: { gruppo: this.gruppi[this.currentSelected] } })
     }
@@ -159,6 +163,12 @@ export default {
   color: black;
   padding-left: 5px;
   font-weight: bold;
+}
+
+.sottotitoloGruppo {
+  color: gray;
+  padding-left: 10px;
+  font-size: 15px;
 }
 
 </style>
