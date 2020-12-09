@@ -4,7 +4,7 @@
 
     <div v-if="showSlice === true">
       <div class="slice" :style="{backgroundColor: backgroundColor, color: textColor}">
-        <i style="padding-top: 15px; padding-right: 25px;" class="fas fa-angle-left" @click.stop="back"></i>
+        <i style="padding-top: 15px; padding-right: 25px;" class="fas fa-angle-left"></i>
       </div>
 
       <div class="title">{{title}}</div>
@@ -12,8 +12,8 @@
 
     <div v-else>
       <div class="phone_title" :style="{backgroundColor: backgroundColor, color: textColor}">
-        <button class="btn-back" @click.stop="back">
-          <i style="padding-top: 15px; padding-right: 25px;" class="fas fa-angle-left" @click.stop="back"></i>
+        <button class="btn-back">
+          <i style="padding-top: 15px; padding-right: 25px;" class="fas fa-angle-left"></i>
         </button>
 
         <div class="title">{{title}}</div>
@@ -81,6 +81,10 @@ export default {
 
 .btn-back {
   padding-top: 4px;
+}
+
+.btn-back:hover {
+  background-color: rgba(0, 255, 255, 0);
 }
 
 .phone_title_content {

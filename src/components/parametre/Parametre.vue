@@ -9,7 +9,7 @@
         v-bind:key="key"
       >
 
-        <i class="fa" v-bind:class="elem.icons" v-bind:style="{color: elem.color}" @click.stop="onPressItem(key)"></i>
+        <i class="fa" v-bind:class="elem.icons" v-bind:style="{color: elem.color}"></i>
 
         <div class="element-content">
           <span class="element-title">{{elem.title}}</span>
@@ -182,10 +182,17 @@ export default {
 
     onRight () {
       if (this.ignoreControls === true) return
+      if (this.ignoreControls === true) return
       let param = this.paramList[this.currentSelect]
       if (param.onRight !== undefined) {
         param.onRight(param)
+        return
       }
+      // qui controllo se il parametro ha un submenu
+      if (param.meta !== undefined && param.meta === 'wifi') {
+        this.paramList[this.currentSelect].values = this.updateWifiTable()
+      }
+      this.actionItem(param)
     },
 
     onLeft () {
@@ -353,7 +360,8 @@ export default {
           reset: true
         }, {
           title: this.IntlString('CANCEL'),
-          icons: 'fa-undo'
+          icons: 'fa-undo',
+          color: 'red'
         }]
         Modal.CreateModal({ choix: choix }).then(reponse => {
           this.ignoreControls = false
@@ -387,47 +395,53 @@ export default {
 
 <style scoped>
 .element{
-  height: 58px;
+  height: 50px;
   line-height: 58px;
   display: flex;
   align-items: center;
   position: relative;
 }
+
 .element .fa{
-  color: #0b81ff;
+  color: #002853;
   margin-left: 6px;
   height: 52px;
   width: 52px;
   text-align: center;
   line-height: 52px;
 }
+
 .element-content{
   display: block;
   height: 58px;
   width: 100%;
+  margin-bottom: 10px;
   margin-left: 6px;
   display: flex;
   flex-flow: column;
   justify-content: center;
 }
+
 .element-title{
   display: block;
   margin-top: 4px;
   height: 22px;
   line-height: 22px;
-  font-size: 20px;
+  font-size: 15px;
   font-weight: 300;
   font-family: -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
 }
+
 .element-value{
   display: block;
   line-height: 16px;
   height: 8px;
-  font-size: 14px;
+  font-size: 13px;
   font-weight: 100;
   color: #808080;
 }
-.element.select, .element:hover{
-   background-color: #DDD;
+
+.element.select {
+  background-color: #DDD;
 }
 </style>

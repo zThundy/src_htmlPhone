@@ -164,3 +164,13 @@ AddEventHandler("gcphone:whatsapp_creaNuovoGruppo", function(data)
         end)
     end)
 end)
+
+ESX.RegisterServerCallback("gcphone:whatsapp_editGroup", function(source, cb, group)
+    MySQL.Async.execute("UPDATE phone_whatsapp_groups SET gruppo = @gruppo, icona = @icona WHERE id = @id", {
+        ['@gruppo'] = group.gruppo,
+        ['@icona'] = group.icona,
+        ['@id'] = group.id
+    }, function(rows)
+        if #rows > 0 then cb(true) else cb(false) end
+    end)
+end)

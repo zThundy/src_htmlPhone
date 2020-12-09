@@ -39,6 +39,7 @@ import whatsapp from '@/components/whatsapp/whatsapp'
 import whatsappsplash from '@/components/whatsapp/whatsappsplash'
 import whatsappgruppo from '@/components/whatsapp/whatsappgruppo'
 import whatsappnewgruppo from '@/components/whatsapp/whatsappnewgroup'
+import whatsappgroupedit from '@/components/whatsapp/whatsappgroupedit'
 
 Vue.use(Router)
 
@@ -197,6 +198,11 @@ export default new Router({
       path: '/whatsapp/newgruppo',
       name: 'whatsapp.newgruppo',
       component: whatsappnewgruppo
+    },
+    {
+      path: '/whatsapp/whatsappgroupedit',
+      name: 'whatsapp.editgroup',
+      component: whatsappgroupedit
     },
     {
       meta: { depth: 2, transitionName: 'slide' },

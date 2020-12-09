@@ -209,7 +209,7 @@ export default {
   position: absolute;
   height: 56px;
   margin: 10px;
-  width: 380px;
+  width: 388px;
   background-color: #e9e9eb;
   border-radius: 56px;
   padding-bottom: 0px;

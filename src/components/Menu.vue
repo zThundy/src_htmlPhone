@@ -3,7 +3,7 @@
     <div style="width: 342px; height: 756px;" class="backblur" v-bind:style="{background: 'url(' + backgroundURL +')'}"></div>
     <InfoBare class="infobare"/>
 
-    <div class="menu" @click="onBack">
+    <div class="menu">
       
       <div class="menu_content">
       
@@ -14,7 +14,6 @@
 
                 v-bind:class="{ select: key === currentSelect}"
                 v-bind:style="{backgroundImage: 'url(' + but.icons +')'}"
-                @click.stop="openApp(but)"
               >
                 {{but.intlName}}
                 <span class="puce" v-if="but.puce !== undefined && but.puce !== 0">{{but.puce}}</span>
@@ -200,8 +199,8 @@ button .puce{
   right: 12px;
 }
 
-button.select, button:hover{
-  background-color: rgba(28, 240, 255, 0.2);
+button.select {
+  background-color: rgba(190, 190, 190, 0.2);
   border-radius: 12px;
 }
 

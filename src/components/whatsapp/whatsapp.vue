@@ -73,7 +73,7 @@ export default {
       let gruppo = this.gruppi[this.currentSelected]
       this.ignoreControls = true
       let scelte = [
-        {id: 0, title: this.IntlString('APP_WHATSAPP_SETTINGS'), icons: 'fa-cog'},
+        {id: 3, title: this.IntlString('APP_WHATSAPP_EDIT_GROUP'), icons: 'fa-cog'},
         {id: 1, title: this.IntlString('APP_WHATSAPP_QUIT_GROUP'), icons: 'fa-trash', color: 'red'}
       ]
       if (this.currentSelected === -1) {
@@ -97,6 +97,9 @@ export default {
           // this.$router.push({ name: 'whatsapp.gruppo', params: { gruppo: this.gruppi[this.currentSelected] } })
           this.$router.push({ name: 'whatsapp.newgruppo' })
           break
+        case 3:
+          this.ignoreControls = false
+          this.$router.push({ name: 'whatsapp.editgroup', params: { gruppo: gruppo } })
       }
     },
     onBackspace () {

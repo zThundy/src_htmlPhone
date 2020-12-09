@@ -18,16 +18,16 @@
         <label>{{ IntlString('APP_CONTACT_LABEL_NUMBER') }}</label>
       </div>
 
-      <div  style="margin-top: 23px; width: 263px; margin-left: 23px; " class="group " data-type="button" data-action='save' @click.stop="save">
-        <input style="font-weight: 100;" type='button' class="btn btn-green" :value="IntlString('APP_CONTACT_SAVE')" @click.stop="save"/>
+      <div  style="margin-top: 23px; width: 263px; margin-left: 23px; " class="group " data-type="button" data-action='save'>
+        <input style="font-weight: 100;" type='button' class="btn btn-green" :value="IntlString('APP_CONTACT_SAVE')"/>
       </div>
 
-      <div style="margin-top: 23px; width: 263px; margin-left: 23px;" class="group" data-type="button" data-action='cancel' @click.stop="forceCancel">
-        <input  style="font-weight: 100;" type='button' class="btn btn-orange" :value="IntlString('APP_CONTACT_CANCEL')" @click.stop="forceCancel"/>
+      <div style="margin-top: 23px; width: 263px; margin-left: 23px;" class="group" data-type="button" data-action='cancel'>
+        <input  style="font-weight: 100;" type='button' class="btn btn-orange" :value="IntlString('APP_CONTACT_CANCEL')"/>
       </div>
 
-      <div style="margin-top: 23px; width: 263px; margin-left: 23px;" class="group" data-type="button" data-action='deleteC' @click.stop="deleteC">
-        <input style="font-weight: 100;" type='button' class="btn btn-red" :value="IntlString('APP_CONTACT_DELETE')" @click.stop="deleteC"/>
+      <div style="margin-top: 23px; width: 263px; margin-left: 23px;" class="group" data-type="button" data-action='deleteC'>
+        <input style="font-weight: 100;" type='button' class="btn btn-red" :value="IntlString('APP_CONTACT_DELETE')"/>
       </div>
 
     </div>

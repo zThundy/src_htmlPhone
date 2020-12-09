@@ -4,13 +4,13 @@
 
     <div style="width: 324px; height: 595px;" class="phone_content elements">
 
-      <div class="element" v-for='(elem, key) in list'  v-bind:key="elem[keyDispay]" v-bind:class="{ select: key === currentSelect }" @click.stop="selectItem(elem)" @contextmenu.prevent.stop="optionItem(elem)" >
+      <div class="element" v-for='(elem, key) in list'  v-bind:key="elem[keyDispay]" v-bind:class="{ select: key === currentSelect }">
           
-        <div class="elem-pic" v-bind:style="stylePuce(elem)" @click.stop="selectItem(elem)">{{elem.letter || elem[keyDispay][0]}}</div>
-        <div @click.stop="selectItem(elem)" @contextmenu.prevent.stop="optionItem(elem)" v-if="elem.puce !== undefined && elem.puce !== 0" class="elem-puce">{{elem.puce}}</div>
-        <div @click.stop="selectItem(elem)" @contextmenu.prevent.stop="optionItem(elem)" v-if="elem.keyDesc === undefined || elem.keyDesc === ''" class="elem-title">{{elem[keyDispay]}}</div>
-        <div @click.stop="selectItem(elem)" @contextmenu.prevent.stop="optionItem(elem)" v-if="elem.keyDesc !== undefined && elem.keyDesc !== ''" class="elem-title-has-desc">{{elem[keyDispay]}}</div>
-        <div @click.stop="selectItem(elem)" @contextmenu.prevent.stop="optionItem(elem)" v-if="elem.keyDesc !== undefined && elem.keyDesc !== ''" class="elem-description">{{elem.keyDesc}}</div>
+        <div class="elem-pic" v-bind:style="stylePuce(elem)">{{elem.letter || elem[keyDispay][0]}}</div>
+        <div v-if="elem.puce !== undefined && elem.puce !== 0" class="elem-puce">{{elem.puce}}</div>
+        <div v-if="elem.keyDesc === undefined || elem.keyDesc === ''" class="elem-title">{{elem[keyDispay]}}</div>
+        <div v-if="elem.keyDesc !== undefined && elem.keyDesc !== ''" class="elem-title-has-desc">{{elem[keyDispay]}}</div>
+        <div v-if="elem.keyDesc !== undefined && elem.keyDesc !== ''" class="elem-description">{{elem.keyDesc}}</div>
       
       </div>
 
@@ -169,7 +169,7 @@ export default {
     font-size: 18px;
 }
 
-.element.select, .element:hover {
+.element.select {
    background-color: #DDD;
 }
 
@@ -181,6 +181,7 @@ export default {
   line-height: 48px;
   font-weight: 200;
 }
+
 .elem-puce{
   background-color: #EE3838;
   top: 0px;
@@ -197,15 +198,18 @@ export default {
   left: 42px;
   z-index: 6;
 }
+
 .elem-title{
   margin-left: 12px;
   font-size: 20px;
     font-weight: 400;
 }
+
 .elem-title-has-desc {
   margin-top:-15px;
   margin-left: 12px;
 }
+
 .elem-description{
   text-align:left;
   color:grey;

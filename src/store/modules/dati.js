@@ -20,8 +20,7 @@ const state = {
 
 const getters = {
   datiInfo: ({ datiInfo }) => datiInfo,
-  segnale: ({ segnale }) => segnale,
-  hasWifi: ({ hasWifi }) => hasWifi
+  segnale: ({ segnale }) => segnale
 }
 
 const actions = {
@@ -41,9 +40,6 @@ const mutations = {
     state.segnale = segnale
     getters.activeBar = state.activeBar
     getters.nonActiveBar = state.nonActiveBar
-  },
-  UPDATE_WIFI (state, hasWifi) {
-    state.hasWifi = hasWifi
   },
   UPDATE_OFFERTA (state, data) {
     for (var key in data.current) {

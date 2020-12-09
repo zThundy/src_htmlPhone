@@ -3,7 +3,7 @@
   <div style="width: 330px; height: 743px; backgroundColor: white"  class="phone_app messages">
     <PhoneTitle :title="displayContact" style="backgroundColor: #F1F1F1; color: black" @back="quit"/> <!--:title="displayContact" :backgroundColor="color" -->
     
-    <div class="img-fullscreen" v-if="imgZoom !== undefined" @click.stop="imgZoom = undefined">
+    <div class="img-fullscreen" v-if="imgZoom !== undefined">
       <img :src="imgZoom" />
     </div>
 

@@ -41,6 +41,12 @@ const actions = {
       sound: 'msgnotify.ogg'
     })
     commit('ADD_MESSAGE_TO_GROUP', data)
+  },
+  editGroupTitle ({ commit }, data) {
+    commit('UPDATE_GROUP_TITLE', data)
+  },
+  editGroupIcon ({ commit }, data) {
+    commit('UPDATE_GROUP_ICON', data)
   }
 }
 
@@ -81,6 +87,24 @@ const mutations = {
     // console.log('sto mettendo messaggi su', data.id)
     // poi li inserisco nella table dei messaggi
     state.messaggi[String(data.id)].push(message)
+  },
+  UPDATE_GROUP_TITLE (state, data) {
+    for (var key in state.gruppi) {
+      if (state.gruppi[key].id === data.gruppo.id) {
+        state.gruppi[key].gruppo = data.text
+        PhoneAPI.updateGroupInfo(state.gruppi[key])
+        break
+      }
+    }
+  },
+  UPDATE_GROUP_ICON (state, data) {
+    for (var key in state.gruppi) {
+      if (state.gruppi[key].id === data.gruppo.id) {
+        state.gruppi[key].icona = data.text
+        PhoneAPI.updateGroupInfo(state.gruppi[key])
+        break
+      }
+    }
   }
 }
 

@@ -655,6 +655,10 @@ class PhoneAPI {
     return this.post('updateNotifications', data)
   }
 
+  async updateGroupInfo (data) {
+    return this.post('updateGroup', data)
+  }
+
   // ////////////////////// //
   // SEZIONE COVER TELEFONO //
   // ////////////////////// //

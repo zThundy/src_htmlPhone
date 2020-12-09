@@ -201,7 +201,7 @@ export default {
    
 }
 .elemento.select .elem-title, .elemento:hover .elem-title {
-  margin-left: 12px;
+  margin-left: 15px;
 }
 .elemento.select .elem-title .diese, .elemento:hover .elem-title .diese {
   color:#0079d3;

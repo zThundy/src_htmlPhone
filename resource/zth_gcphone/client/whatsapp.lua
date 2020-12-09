@@ -113,3 +113,15 @@ RegisterNUICallback("inviaValoriPost", function(data, cb)
     TriggerServerEvent("gcphone:whatsapp_creaNuovoGruppo", data)
     cb("ok")
 end)
+
+
+RegisterNUICallback("updateGroup", function(data, cb)
+    ESX.TriggerServerCallback("gcphone:whatsapp_editGroup", function(ok)
+        if ok then
+            ESX.ShowNotification("~g~Gruppo aggiornato con successo")
+        else
+            ESX.ShowNotification("~r~Impossibile aggiornare il gruppo")
+        end
+    end, data)
+    cb("ok")
+end)

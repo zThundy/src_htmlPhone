@@ -12,6 +12,7 @@
 
 <script>
 import { Swiper } from 'mand-mobile'
+import 'mand-mobile/lib/mand-mobile.css'
 
 const DEFAULT_TRANSITION = 'slide'
 const DEFAULT_TRANSITION_MODE = `out-in`
