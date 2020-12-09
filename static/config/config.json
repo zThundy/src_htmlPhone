@@ -63,7 +63,14 @@
 
 
   "coque": {
-    "Default": "base.png"
+    "Default": "base.png",
+    "Nera": "black.png",
+    "Verde": "green.png",
+    "Grigia": "grey.png",
+    "Orange": "orange.png",
+    "Rosa": "pink.png",
+    "Rosso": "red.png",
+    "Giallo": "yellow.png"
   },
 
   "sonido": {
@@ -112,76 +119,198 @@
       }]
     },
     {
-      "display": "Meccanici",
-      "icon": "/html/static/img/app_favourites/meccanico.png",
-      "subMenu": [{
-        "title": "Invia un messaggio",
-        "icons": "fa-phone",
-        "eventName": "esx_addons_gcphone:call",
-        "type": {
-          "number": "meccanico"
+      "display": "Taxi",
+      "backgroundColor": "yellow",
+      "icon": "/html/static/img/app_favourites/taxi.png",
+      "subMenu": [
+        {
+          "title": "Invia un messaggio",
+		  "icons": "fa-phone",
+          "eventName": "esx_addons_gcphone:call",
+          "type": {
+            "number": "taxi"
+          }
         }
-      }]
+      ]
     },
     {
-      "display": "Import & Export",
-      "icon": "/html/static/img/app_favourites/imp.png",
-      "subMenu": [{
-        "title": "Invia un messaggio",
-        "icons": "fa-phone",
-        "eventName": "esx_addons_gcphone:call",
-        "type": {
-          "number": "import"
+      "display": "Concessionario Auto",
+      "backgroundColor": "blue",
+      "icon": "/html/static/img/app_favourites/car.png",
+      "subMenu": [
+        {
+          "title": "Invia un messaggio",
+		  "icons": "fa-phone",
+          "eventName": "esx_addons_gcphone:call",
+          "type": {
+            "number": "cardealer"
+          }
         }
-      }]
+      ]
+    },
+    {
+      "display": "Concessionario Aerei",
+      "backgroundColor": "blue",
+      "icon": "/html/static/img/app_favourites/aereo.png",
+      "subMenu": [
+        {
+          "title": "Invia un messaggio",
+		  "icons": "fa-phone",
+          "eventName": "esx_addons_gcphone:call",
+          "type": {
+            "number": "motorcycle"
+          }
+        }
+      ]
+    },
+    {
+      "display": "Weazel News",
+      "backgroundColor": "blue",
+      "subMenu": [
+        {
+          "title": "Invia un messaggio",
+		  "icons": "fa-phone",
+          "eventName": "esx_addons_gcphone:call",
+          "type": {
+            "number": "reporter"
+          }
+        }
+      ]
+    },
+    {
+      "display": "LS Customs",
+      "backgroundColor": "orange",
+      "icon": "/html/static/img/app_favourites/meccanico.png",
+      "subMenu": [
+        {
+          "title": "Invia un messaggio",
+		  "icons": "fa-phone",
+          "eventName": "esx_addons_gcphone:call",
+          "type": {
+            "number": "lolly"
+          }
+        }
+      ]
+    },
+    {
+      "display": "Immobiliare",
+      "backgroundColor": "red",
+      "icon": "/html/static/img/app_favourites/agenzia.png",
+      "subMenu": [
+        {
+          "title": "Invia un messaggio",
+		  "icons": "fa-phone",
+          "eventName": "esx_addons_gcphone:call",
+          "type": {
+            "number": "realestateagent"
+          }
+        }
+      ]
     },
     {
       "display": "Armeria",
-      "icon": "/html/static/img/app_favourites/armeria.png",
-      "subMenu": [{
-        "title": "Invia un messaggio",
-        "icons": "fa-phone",
-        "eventName": "esx_addons_gcphone:call",
-        "type": {
-          "number": "armeria"
+      "backgroundColor": "red",
+      "icon": "/html/static/img/app_favourites/ammu.png",
+      "subMenu": [
+        {
+          "title": "Invia un messaggio",
+		  "icons": "fa-phone",
+          "eventName": "esx_addons_gcphone:call",
+          "type": {
+            "number": "armeria"
+          }
         }
-      }]
+      ]
     },
     {
-      "display": "Concessionario",
-      "icon": "/html/static/img/app_favourites/concessionario.png",
-      "subMenu": [{
-        "title": "Invia un messaggio",
-        "icons": "fa-phone",
-        "eventName": "esx_addons_gcphone:call",
-        "type": {
-          "number": "concessionario"
+      "display": "Concessionario Camion",
+      "backgroundColor": "green",
+      "icon": "/html/static/img/app_favourites/truck.png",
+      "subMenu": [
+        {
+          "title": "Invia un messaggio",
+		  "icons": "fa-phone",
+          "eventName": "esx_addons_gcphone:call",
+          "type": {
+            "number": "truckdealer"
+          }
         }
-      }]
+      ]
     },
     {
-      "display": "Agenzia Immobiliare",
-      "icon": "/html/static/img/app_favourites/agenzia.png",
-      "subMenu": [{
-        "title": "Invia un messaggio",
-        "icons": "fa-phone",
-        "eventName": "esx_addons_gcphone:call",
-        "type": {
-          "number": "agenziaimmobiliare"
+      "display": "Concessionario Usate",
+      "backgroundColor": "green",
+      "icon": "/html/static/img/app_favourites/car.png",
+      "subMenu": [
+        {
+          "title": "Invia un messaggio",
+		  "icons": "fa-phone",
+          "eventName": "esx_addons_gcphone:call",
+          "type": {
+            "number": "autousate"
+          }
         }
-      }]
+      ]
     },
     {
-      "display": "Rimozione forzata",
-      "icon": "/html/static/img/app_favourites/rimozione.png",
-      "subMenu": [{
-        "title": "Invia un messaggio",
-        "icons": "fa-phone",
-        "eventName": "esx_addons_gcphone:call",
-        "type": {
-          "number": "rimozioneforzata"
+      "display": "Burger Shot",
+      "backgroundColor": "blue",
+      "icon": "/html/static/img/app_favourites/bunger.png",
+      "subMenu": [
+        {
+          "title": "Invia un messaggio",
+		  "icons": "fa-phone",
+          "eventName": "esx_addons_gcphone:call",
+          "type": {
+            "number": "burgershot"
+          }
         }
-      }]
+      ]
+    },
+    {
+      "display": "Azienda 1",
+      "backgroundColor": "blue",
+      "icon": "/html/static/img/app_favourites/company1.png",
+      "subMenu": [
+        {
+          "title": "Invia un messaggio",
+		  "icons": "fa-phone",
+          "eventName": "esx_addons_gcphone:call",
+          "type": {
+            "number": "azienda1"
+          }
+        }
+      ]
+    },
+    {
+      "display": "Azienda 2",
+      "backgroundColor": "blue",
+      "icon": "/html/static/img/app_favourites/company2.png",
+      "subMenu": [
+        {
+          "title": "Invia un messaggio",
+		  "icons": "fa-phone",
+          "eventName": "esx_addons_gcphone:call",
+          "type": {
+            "number": "azienda2"
+          }
+        }
+      ]
+    },
+    {
+      "display": "Azienda 3",
+      "backgroundColor": "blue",
+      "icon": "/html/static/img/app_favourites/company3.png",
+      "subMenu": [
+        {
+          "title": "Invia un messaggio",
+		  "icons": "fa-phone",
+          "eventName": "esx_addons_gcphone:call",
+          "type": {
+            "number": "azienda3"
+          }
+        }
+      ]
     }
   ],
 
@@ -252,7 +381,6 @@
       "inHomePage": false,
       "enabled": true
     },
-
     {
       "name": "Banca",
       "it_IT__name": "Banca",
@@ -271,7 +399,7 @@
     {
       "name": "DarkNet",
       "it_IT__name": "DarkNet",
-      "icons": "/html/static/img/icons_app/reddit.png",
+      "icons": "/html/static/img/icons_app/tor.png",
       "routeName": "tchat",
       "enabled": true
     }
@@ -450,6 +578,7 @@
       "APP_WHATSAPP_ZOOM_IMG": "Zoom",
       "APP_WHATSAPP_EDIT_GROUP": "Modifica gruppo",
       "APP_WHATSAPP_NEXT_STEP": "Prossimo passaggio",
+      "APP_WHATSAPP_ADD_MEMBERS": "Aggiungi membri",
       "APP_WHATSAPP_GROUP_NAME": "Nome del gruppo",
       "APP_WHATSAPP_GROUP_AVATAR": "Immagine del gruppo",
 

@@ -16,11 +16,15 @@
         <img v-else-if="gruppo.icona === null || gruppo.icona === undefined"  style="height: 128px; width: 128px; overflow: auto; border-radius: 100px;" src="/html/static/img/app_whatsapp/defaultgroup.png">
       </div>
 
-      <div style="left: 3%; top: 45%; position: absolute;" class="group" data-type="button" :class="{select: 2 === currentSelect}" @click="snapGroupImage">
+      <div style="left: 3%; top: 45%; position: absolute;" class="group" data-type="button" :class="{select: 2 === currentSelect}" @click="addNewMembers">
+        <input type='button' class="btn btn-green" :value="IntlString('APP_WHATSAPP_ADD_MEMBERS')"/>
+      </div>
+
+      <div style="left: 3%; top: 55%; position: absolute;" class="group" data-type="button" :class="{select: 3 === currentSelect}" @click="snapGroupImage">
         <input type='button' class="btn btn-green" :value="IntlString('APP_WHATSAPP_GROUP_AVATAR')"/>
       </div>
 
-      <div style="left: 3%; top: 55%; position: absolute;" class="group" data-type="button" :class="{select: 3 === currentSelect}" @click="modificaGruppo">
+      <div style="left: 3%; top: 65%; position: absolute;" class="group" data-type="button" :class="{select: 4 === currentSelect}" @click="modificaGruppo">
         <input type='button' class="btn btn-green" :value="IntlString('APP_WHATSAPP_EDIT_GROUP')"/>
       </div>
 
@@ -57,7 +61,7 @@ export default {
     },
     onDown: function () {
       if (this.ignoreControls === true) return
-      if (this.currentSelect === 3) return
+      if (this.currentSelect === 4) return
       this.currentSelect = this.currentSelect + 1
     },
     async snapGroupImage () {
@@ -85,6 +89,9 @@ export default {
     async modificaGruppo () {
       this.$router.push({ name: 'whatsapp' })
     },
+    async addNewMembers () {
+      this.$router.push({ name: 'whatsapp.newgruppo', params: { isAddingMembers: true, gruppo: this.gruppo } })
+    },
     stylePuce (data) {
       data = data || {}
       if (data.icon !== undefined) {
@@ -105,7 +112,6 @@ export default {
       if (this.ignoreControls === true) return
       let select = document.querySelector('.select')
       if (select === null) return
-      console.log(select.dataset.type)
       if (select.dataset.type === 'button') {
         select.click()
       }

@@ -69,7 +69,8 @@ export default {
       ignoreControls: false,
       currentSelect: -1,
       currentPage: STATES.SCELTA_PERSONE,
-      selectedContacts: []
+      selectedContacts: [],
+      isAddingMembers: false
     }
   },
   props: {
@@ -94,7 +95,7 @@ export default {
     ...mapGetters(['IntlString', 'contacts', 'tempGroupInfo', 'myPhoneNumber'])
   },
   methods: {
-    ...mapActions(['getAllInfoGroups', 'updateGroupVars', 'creaGruppo']),
+    ...mapActions(['getAllInfoGroups', 'updateGroupVars', 'creaGruppo', 'addSelectedMembers']),
     scrollIntoViewIfNeeded: function () {
       this.$nextTick(() => {
         document.querySelector('.select').scrollIntoViewIfNeeded()
@@ -259,20 +260,41 @@ export default {
     },
     async onRigth () {
       this.ignoreControls = true
-      let choix = [
-        {id: 1, title: this.IntlString('APP_WHATSAPP_NEXT_STEP'), icons: 'fa-arrow-right'},
-        {id: 2, title: this.IntlString('CANCEL'), icons: 'fa-undo', color: 'red'}
-      ]
-      const resp = await Modal.CreateModal({ choix })
-      switch (resp.id) {
-        case 1:
-          this.currentPage = this.STATES.INFO_GRUPPO
-          this.ignoreControls = false
-          break
-        case 2:
-          this.$router.push({ name: 'whatsapp' })
-          this.ignoreControls = false
-          break
+      // qui controllo: se premi destra mentre sei in fase di modifica (vedi whatsapp edit grouo)
+      // allora gli creo un modal custom
+      if (this.isAddingMembers === null || !this.isAddingMembers) {
+        let choix = [
+          {id: 1, title: this.IntlString('APP_WHATSAPP_NEXT_STEP'), icons: 'fa-arrow-right'},
+          {id: 2, title: this.IntlString('CANCEL'), icons: 'fa-undo', color: 'red'}
+        ]
+        const resp = await Modal.CreateModal({ choix })
+        switch (resp.id) {
+          case 1:
+            this.currentPage = this.STATES.INFO_GRUPPO
+            this.ignoreControls = false
+            break
+          case 2:
+            this.$router.push({ name: 'whatsapp' })
+            this.ignoreControls = false
+            break
+        }
+      } else {
+        let choix = [
+          {id: 1, title: this.IntlString('APP_WHATSAPP_ADD_MEMBERS'), icons: 'fa-check', color: 'green'},
+          {id: 2, title: this.IntlString('CANCEL'), icons: 'fa-undo', color: 'red'}
+        ]
+        const resp = await Modal.CreateModal({ choix })
+        switch (resp.id) {
+          case 1:
+            this.$router.push({ name: 'whatsapp.gruppo', params: { gruppo: this.gruppo } })
+            this.ignoreControls = false
+            this.addSelectedMembers({ contacts: this.contacts, gruppo: this.gruppo })
+            break
+          case 2:
+            this.$router.push({ name: 'whatsapp' })
+            this.ignoreControls = false
+            break
+        }
       }
     }
   },
@@ -282,6 +304,12 @@ export default {
     }
     this.updateGroupVars({ value: 'Nessun titolo', key: 'title' })
     this.updateGroupVars({ value: '/html/static/img/app_whatsapp/defaultgroup.png', key: 'image' })
+    // uso questa variabile per controllare
+    // se sei in fase di modifica o no
+    if (this.$route.params !== undefined && this.$route.params !== null) {
+      this.isAddingMembers = this.$route.params.isAddingMembers
+      this.gruppo = this.$route.params.gruppo
+    }
     this.$bus.$on('keyUpArrowDown', this.onDown)
     this.$bus.$on('keyUpArrowUp', this.onUp)
     this.$bus.$on('keyUpArrowRight', this.onRigth)

@@ -4,8 +4,8 @@
     <span class="time">
       <current-time style="font-size: 12px; margin-right: 2px;"></current-time>
     </span>
-    <div v-if="hasWifi" class="wifi-image"><img src="/html/static/img/dati/wifion.png" style="height: 14px; width: 14px;"></div>
-    <div v-else-if="!hasWifi" class="wifi-image"><img src="/html/static/img/dati/wifioff.png" style="height: 14px; width: 14px;"></div>
+    <div v-if="hasWifi" class="wifi-image"><img src="/html/static/img/app_dati/wifion.png" style="height: 14px; width: 14px;"></div>
+    <div v-else-if="!hasWifi" class="wifi-image"><img src="/html/static/img/app_dati/wifioff.png" style="height: 14px; width: 14px;"></div>
     <hr v-if="updateBars()" v-bind:style = "barra1">
     <hr v-bind:style = "barra2">
     <hr v-bind:style = "barra3">

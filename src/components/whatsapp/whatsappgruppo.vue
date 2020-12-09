@@ -182,7 +182,11 @@ export default {
         let isGPS = /(-?\d+(\.\d+)?), (-?\d+(\.\d+)?)/.test(message.message)
         let isSMSImage = this.isImage(message)
         // dopo aver controllato che tipo di messaggio è, creo il modal
-        let choix = [{ id: -1, title: this.IntlString('CANCEL'), icons: 'fa-undo', color: 'red' }]
+        let choix = [
+          { id: 1, title: this.IntlString('APP_WHATSAPP_SEND_GPS'), icons: 'fa-location-arrow' },
+          { id: 2, title: this.IntlString('APP_WHATSAPP_SEND_PHOTO'), icons: 'fa-picture-o' },
+          { id: -1, title: this.IntlString('CANCEL'), icons: 'fa-undo', color: 'red' }
+        ]
         if (isGPS === true) { choix = [{ id: 'gps', title: this.IntlString('APP_WHATSAPP_SET_GPS'), icons: 'fa-location-arrow' }, ...choix] }
         if (isSMSImage === true) { choix = [{ id: 'zoom', title: this.IntlString('APP_MESSAGE_ZOOM_IMG'), icons: 'fa-search' }, ...choix] }
         // disabilito i controlli
@@ -193,6 +197,17 @@ export default {
           this.$phoneAPI.setGPS(val[1], val[3])
         } else if (data.id === 'zoom') {
           this.imgZoom = message.message
+        } else if (data.id === 1) {
+          this.ignoreControls = false
+          if (this.myPhoneNumber.includes('#') || this.myPhoneNumber === 0 || this.myPhoneNumber === '0') {
+            this.$phoneAPI.onwhatsapp_showError({ title: 'Errore', message: 'Impossibile ottenere il numero di telefono' })
+          } else {
+            this.sendMessageInGroup({ gruppo: this.gruppo, message: '%pos%', phoneNumber: this.myPhoneNumber })
+          }
+        } else if (data.id === 2) {
+          this.ignoreControls = false
+          const { url } = await this.$phoneAPI.takePhoto()
+          if (url !== null && url !== undefined) { this.sendMessageInGroup({ gruppo: this.gruppo, message: url, phoneNumber: this.myPhoneNumber }) }
         }
       } catch (e) { } finally { this.ignoreControls = false }
     },
@@ -204,7 +219,7 @@ export default {
         this.scrollIntoViewIfNeeded()
         this.$refs.wh_update.hide()
         this.ignoreControls = false
-      }, 3000)
+      }, 1500)
     }
   },
   created () {

@@ -110,7 +110,6 @@ AddEventHandler('gcPhone:setEnableApp', function(appName, enable)
 end)
 
 RegisterNUICallback("updateNotifications", function(data, cb)
-    print(data)
     enabeGlobalNotification = data
 end)
 

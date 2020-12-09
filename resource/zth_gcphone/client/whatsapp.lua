@@ -140,3 +140,10 @@ RegisterNUICallback("sendAudioNotification", function(data, cb)
     end
     cb("ok")
 end)
+
+RegisterNUICallback("addGroupMembers", function(data, cb)
+    print(data.contacts)
+    print(data.gruppo.id)
+    TriggerServerEvent("gcphone:whatsapp_addGroupMembers", data)
+    cb("ok")
+end)

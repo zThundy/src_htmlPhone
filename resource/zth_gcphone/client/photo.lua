@@ -1,3 +1,5 @@
+frontCam = false
+
 local CellFrontCamActivate = function(activate)
 	return Citizen.InvokeNative(0x2491A93618B7D838, activate)
 end
@@ -22,10 +24,6 @@ function TakePhoto(data, cb)
 		hasFocus = false
 	end
 
-	if useMouse then
-		SetNuiFocus(false, false)
-	end
-
 	while takePhoto do
 		Citizen.Wait(0)
 
@@ -41,6 +39,7 @@ function TakePhoto(data, cb)
 			takePhoto = false
 			break
 	  	elseif IsControlJustPressed(1, 176) then -- TAKE.. PIC
+			takePhoto = false
 			disableCameraMovement = true
 			if data.options == nil then data.options = { width = 800 } end 
 			data.options.headers = {['Authorization'] = string.format('Client-ID %s', '1a792f246b071c4')}
@@ -52,10 +51,8 @@ function TakePhoto(data, cb)
 
 				if resp.data then
 					cb(json.encode({ url = resp.data.link }))
-					takePhoto = false
 				else
 					cb(nil)
-					takePhoto = false
 				end
 			end)
 		end
@@ -66,10 +63,6 @@ function TakePhoto(data, cb)
 		HideHudComponentThisFrame(6)
 		HideHudComponentThisFrame(19)
 		HideHudAndRadarThisFrame()
-	end
-
-	if useMouse then
-		SetNuiFocus(true, true)
 	end
 	
 	Citizen.Wait(1000)

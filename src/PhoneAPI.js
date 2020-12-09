@@ -479,7 +479,7 @@ class PhoneAPI {
   // a questo messaggio va mandato
   // data.hasWifi come booleano
   onupdateWifi ({ data }) {
-    store.commit('UPDATE_WIFI', data.hasWifi)
+    store.dispatch('updateWifiString', data.hasWifi)
   }
 
   // == Schermata di sblocco
@@ -661,6 +661,10 @@ class PhoneAPI {
 
   async updateGroupInfo (data) {
     return this.post('updateGroup', data)
+  }
+
+  async addGroupMembers (data) {
+    return this.post('addGroupMembers', data)
   }
 
   // ////////////////////// //

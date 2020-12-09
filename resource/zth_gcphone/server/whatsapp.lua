@@ -101,6 +101,40 @@ AddEventHandler("gcphone:whatsapp_sendMessage", function(data)
 end)
 
 
+-- ATTENZIONE
+-- l'aggiornamento istantaneo dei partecipanti al gruppo, è solo per chi lo fa in quell'istante,
+-- gli altri devono chiudere e riaprire il telefono
+-- FIX
+-- usi la funzione che ho fatto su getSourceFromPhoneNumber loopando i numeri sul
+-- loop sotto. Non ho intenzione di farlo ora.
+RegisterServerEvent("gcphone:whatsapp_addGroupMembers")
+AddEventHandler("gcphone:whatsapp_addGroupMembers", function(data)
+    local player = source
+
+    MySQL.Async.fetchAll("SELECT * FROM phone_whatsapp_groups WHERE id = @id", {['@id'] = data.gruppo.id}, function(result)
+        local partecipanti = json.decode(result[1].partecipanti)
+
+        for _, val in pairs(data.contacts) do
+            if val.selected then
+                table.insert(partecipanti, {
+                    display = val.display,
+                    icon = val.icon or '/html/static/img/app_whatsapp/defaultgroup.png',
+                    id = val.id,
+                    number = val.number
+                })
+            end
+        end
+
+        MySQL.Async.execute("UPDATE FROM phone_whatsapp_groups SET partecipanti = @partecipanti WHERE id = @id", {
+            ['@id'] = data.gruppo.id,
+            ['@partecipanti'] = json.encode(partecipanti)
+        }, function(rowsChanged)
+            if rowsChanged > 0 then TriggerClientEvent("gcphone:whatsapp_updateGruppi", player, updateCachedGroups()) end
+        end)
+    end)
+end)
+
+
 RegisterServerEvent("gcphone:whatsapp_leaveGroup")
 AddEventHandler("gcphone:whatsapp_leaveGroup", function(group)
     local player = source
@@ -117,7 +151,7 @@ AddEventHandler("gcphone:whatsapp_leaveGroup", function(group)
                 for k, v in pairs(partecipanti) do
                     if v.number == number then
                         table.remove(partecipanti, k)
-                        print("rimosso", v.number)
+                        -- print("rimosso", v.number)
                         break
                     end
                 end
@@ -164,13 +198,13 @@ RegisterServerEvent("gcphone:whatsapp_creaNuovoGruppo")
 AddEventHandler("gcphone:whatsapp_creaNuovoGruppo", function(data)
     local player = source
     local xPlayer = ESX.GetPlayerFromId(player)
-    local contatti = {}
+    local partecipanti = {}
 
     gcPhone.isAbleToSurfInternet(xPlayer.identifier, 1.5, function(isAble, mbToRemove)
 		if isAble then
 			gcPhone.usaDatiInternet(xPlayer.identifier, mbToRemove)
     
-            table.insert(contatti, {
+            table.insert(partecipanti, {
                 display = data.myInfo.display,
                 id = data.myInfo.id,
                 number = data.myInfo.number
@@ -180,7 +214,7 @@ AddEventHandler("gcphone:whatsapp_creaNuovoGruppo", function(data)
 
             for k, v in pairs(data.contacts) do
                 if v.selected then
-                    table.insert(contatti, {
+                    table.insert(partecipanti, {
                         display = v.display,
                         icon = v.icon or '/html/static/img/app_whatsapp/defaultgroup.png',
                         id = v.id,
@@ -192,7 +226,7 @@ AddEventHandler("gcphone:whatsapp_creaNuovoGruppo", function(data)
             MySQL.Async.insert("INSERT INTO phone_whatsapp_groups(icona, gruppo, partecipanti) VALUES(@icona, @gruppo, @partecipanti)", {
                 ['@icona'] = data.groupImage or '/html/static/img/app_whatsapp/defaultgroup.png',
                 ['@gruppo'] = data.groupTitle,
-                ['@partecipanti'] = json.encode(contatti)
+                ['@partecipanti'] = json.encode(partecipanti)
             }, function(id)
                 TriggerClientEvent("gcphone:whatsapp_updateGruppi", player, updateCachedGroups())
             end)

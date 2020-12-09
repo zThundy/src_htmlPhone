@@ -47,6 +47,9 @@ const actions = {
   },
   editGroupIcon ({ commit }, data) {
     commit('UPDATE_GROUP_ICON', data)
+  },
+  addSelectedMembers ({ state, commit }, data) {
+    PhoneAPI.addGroupMembers(data)
   }
 }
 
