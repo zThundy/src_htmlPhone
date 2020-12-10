@@ -3,7 +3,7 @@
 // tutto questo codice è trovabile sulle impostazioni del telefono
 
 const state = {
-  fotografie: JSON.parse(window.localStorage['gc_fotografie'] || [])
+  fotografie: window.localStorage['gc_fotografie'] || []
 }
 
 const getters = {
