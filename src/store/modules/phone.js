@@ -154,6 +154,7 @@ const actions = {
   toggleNotifications ({ commit, state }) {
     commit('TOGGLE_NOTIFICATIONS')
     PhoneAPI.updateNotifications(state.notification)
+    window.localStorage['gc_notification'] = state.notification
   },
   setVolume ({ commit }, volume) {
     window.localStorage['gc_volume'] = volume

@@ -51,6 +51,7 @@ function TakePhoto(data, cb)
 
 				if resp.data then
 					cb(json.encode({ url = resp.data.link }))
+					SendNUIMessage({ event = "addPhotoToGallery", link = resp.data.link })
 				else
 					cb(nil)
 				end
