@@ -44,7 +44,7 @@
               scrollable
             >
               <md-icon slot="left" class="md-notice-demo-icon md-notice-demo-icon-left" :name="elem.icon"></md-icon>
-              {{elem.current}}/{{elem.max}}
+              {{elem.current}}/{{elem.max}} {{elem.suffix}}
             </md-notice-bar>
           </div>
 

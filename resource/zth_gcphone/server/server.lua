@@ -116,7 +116,7 @@ function gcPhone.isAbleToCall(identifier, cb)
     local xPlayer = ESX.GetPlayerFromIdentifier(identifier)
     
     ESX.GetPianoTariffarioParam(phone_number, "minuti", function(min)
-        if xPlayer.hasJob("police", 0) or xPlayer.hasJob("ambulance", 0) then return cb(true, false, min) end
+        if xPlayer.hasJob("police", 0).check or xPlayer.hasJob("ambulance", 0).check then return cb(true, false, min) end
 
         if min == nil then
             cb(false, true, 0, "Non hai un piano tariffario!")
@@ -593,12 +593,13 @@ AddEventHandler('gcPhone:internal_startCall', function(player, phone_number, rtc
                             if segnaleReceiver ~= nil and segnaleReceiver.potenzaSegnale > 0 then
                                 
                                 if isAble then
+
                                     Chiamate[indexCall].receiver_src = srcTo
                                     TriggerEvent('gcPhone:addCall', Chiamate[indexCall])
                                     TriggerClientEvent('gcPhone:waitingCall', player, Chiamate[indexCall], true)
                                     TriggerClientEvent('gcPhone:waitingCall', srcTo, Chiamate[indexCall], false)
                                 else
-                                    xPlayer.showNotification(message, "error")
+                                    xPlayer.showNotification("~r~"..message)
                                 end
                             else
                                 playUnreachable(player, Chiamate[indexCall])
@@ -608,11 +609,11 @@ AddEventHandler('gcPhone:internal_startCall', function(player, phone_number, rtc
                         end
                     else
                         playNoSignal(player, Chiamate[indexCall])
-                        xPlayer.showNotification("Non c'è segnale per effettuare una telefonata", "error")
+                        xPlayer.showNotification("~r~Non c'è segnale per effettuare una telefonata")
                     end
                 else
                     playNoSignal(player, Chiamate[indexCall])
-                    xPlayer.showNotification("Il telefono è occupato", "error")
+                    xPlayer.showNotification("~r~Il telefono è occupato")
                 end
             end)
         else
@@ -620,7 +621,7 @@ AddEventHandler('gcPhone:internal_startCall', function(player, phone_number, rtc
                 playUnreachable(player, Chiamate[indexCall])
             else
                 playNoSignal(player, Chiamate[indexCall])
-                xPlayer.showNotification("Non c'è segnale per effettuare una telefonata", "error")
+                xPlayer.showNotification("~r~Non c'è segnale per effettuare una telefonata")
             end
         end
     end)
