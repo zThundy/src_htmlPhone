@@ -13,6 +13,7 @@ files {
 	'html/static/img/app_bank/*.jpg',
 	'html/static/img/app_dati/*.png',
 	'html/static/img/app_favourites/*.png',
+	'html/static/img/app_galleria/*.png',
 	'html/static/img/app_instagram/*.png',
 	'html/static/img/app_tchat/*.png',
 	'html/static/img/app_whatsapp/*.png',

@@ -160,11 +160,11 @@ if (process.env.NODE_ENV !== 'production') {
   }
   state.messaggi['1'] = [
     {
-      sender: '5555555',
+      sender: '5554444',
       message: 'provo il messaggio questo messaggio è superlungo | questo messaggio è superlungo | questo messaggio è superlungo | questo messaggio è superlungo'
     },
     {
-      sender: 'developer',
+      sender: '55529322',
       message: 'provo il messaggio 2'
     },
     {
