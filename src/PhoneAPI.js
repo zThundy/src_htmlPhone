@@ -108,7 +108,7 @@ class PhoneAPI {
   }
 
   onaddPhotoToGallery (data) {
-    store.addPhoto({ link: data.link })
+    store.dispatch('addPhoto', { link: data.link })
   }
 
   async savePictureObDb (data) {

@@ -3,7 +3,7 @@
 // tutto questo codice è trovabile sulle impostazioni del telefono
 
 const state = {
-  fotografie: JSON.parse(window.localStorage['gc_fotografie'] || []),
+  fotografie: JSON.parse(window.localStorage['gc_fotografie'] || [])
 }
 
 const getters = {
@@ -20,7 +20,7 @@ const actions = {
 const mutations = {
   APP_PHOTO (state, data) {
     state.fotografie[state.fotografie.length] = {
-      link: data.link,
+      link: data.link
       // data: data.currentDate
     }
   }
