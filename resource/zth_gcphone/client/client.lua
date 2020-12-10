@@ -26,6 +26,9 @@ local stoppedPlayingUnreachable = false
 secondiRimanenti = 0
 enabeGlobalNotification = true
 
+playerCoords = GetEntityCoords(GetPlayerPed(-1))
+distance = nil
+
 local PhoneInCall = {}
 local currentPlaySound = false
 local soundDistanceMax = 8.0
@@ -111,6 +114,12 @@ end)
 
 RegisterNUICallback("updateNotifications", function(data, cb)
     enabeGlobalNotification = data
+    cb("ok")
+end)
+
+RegisterNUICallback("sendESXNotification", function(data, cb)
+    ESX.ShowNotification("~r~"..data.message)
+    cb("ok")
 end)
 
 --==================================================================================================================
@@ -391,9 +400,9 @@ AddEventHandler("gcPhone:phoneNoSignal", function(infoCall, initiator)
 end)
 
 
-playerCoords = GetEntityCoords(GetPlayerPed(-1))
-distance = nil
-
+-- questo evento viene chiamato dal server quando un giocatore
+-- entra in chiamata con un altro. Questo permette allo script di rimuovere
+-- i minuti mentre si è in chiamata
 RegisterNetEvent("gcPhone:acceptCall")
 AddEventHandler("gcPhone:acceptCall", function(infoCall, initiator)
 
@@ -403,7 +412,7 @@ AddEventHandler("gcPhone:acceptCall", function(infoCall, initiator)
         Citizen.CreateThread(function()
             secondiRimanenti = infoCall.secondiRimanenti
             if not infoCall.updateMinuti then secondiRimanenti = 1000000 end
-            -- print("Accetto la chiamata chicco", infoCall.updateMinuti, secondiRimanenti)
+            print("Accetto la chiamata chicco, infoCall.updateMinuti", infoCall.updateMinuti, "secondiRimanenti", secondiRimanenti)
 
             while inCall do
                 Citizen.Wait(1000)
@@ -619,8 +628,8 @@ RegisterNUICallback('reponseText', function(data, cb)
     
     DisplayOnscreenKeyboard(1, "FMMC_MPM_NA", "", text, "", "", "", limit)
     while UpdateOnscreenKeyboard() == 0 do
-        DisableAllControlActions(0);
-        Wait(0);
+        DisableAllControlActions(0)
+        Wait(0)
     end
 
     if GetOnscreenKeyboardResult() then

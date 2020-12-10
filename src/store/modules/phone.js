@@ -110,7 +110,6 @@ const getters = {
       return config.language[lang][LABEL] || defaultValue || LABEL
     }
   }
-
 }
 
 const actions = {

@@ -31,13 +31,15 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['IntlString', 'fotografie'])
+    ...mapGetters(['IntlString', 'fotografie', 'closestPlayers', 'bluetooth'])
   },
   methods: {
     ...mapActions(['setBackground', 'clearGallery']),
     scrollIntoViewIfNeeded: function () {
       this.$nextTick(() => {
-        this.$el.querySelector('.select').scrollIntoViewIfNeeded()
+        var query = this.$el.querySelector('.select')
+        if (query === undefined || query === null) return
+        query.scrollIntoViewIfNeeded()
       })
     },
     onUp () {
@@ -69,14 +71,16 @@ export default {
       this.$router.push({ name: 'menu' })
     },
     async onEnter () {
+      if (this.fotografie.length === 0) return
       if (this.ignoredControls) return
-      var foto = this.fotografie[this.currentSelect]
+      var foto = this.fotografie[this.currentSelect - 1]
       this.ignoredControls = true
       try {
         let choix = [
           { id: 1, title: this.IntlString('APP_GALLERIA_SET_WALLPAPER'), icons: 'fa-mobile' },
           { id: 2, title: this.IntlString('APP_GALLERIA_INOLTRA'), icons: 'fa-paper-plane' },
-          { id: 3, title: this.IntlString('APP_GALLERIA_ELIMINA_TUTTO'), icons: 'fa-trash', color: 'red' },
+          { id: 4, title: this.IntlString('APP_GALLERIA_SEND_BLUETOOTH'), icons: 'fa-share-square' },
+          { id: 3, title: this.IntlString('APP_GALLERIA_ELIMINA_TUTTO'), icons: 'fa-trash', color: 'orange' },
           { id: -1, title: this.IntlString('CANCEL'), icons: 'fa-undo', color: 'red' }
         ]
         const data = await Modal.CreateModal({ choix })
@@ -92,6 +96,27 @@ export default {
           case 3:
             this.clearGallery()
             this.ignoredControls = false
+            break
+          case 4:
+            if (this.bluetooth) {
+              try {
+                this.ignoredControls = true
+                let choix = []
+                var cancel = { id: -1, title: this.IntlString('CANCEL'), icons: 'fa-undo', color: 'red' }
+                for (var i in this.closestPlayers) { choix.push({ id: this.closestPlayers[i].id, label: this.closestPlayers[i].name }) }
+                choix = [choix, ...cancel]
+                const data = await Modal.CreateModal({ choix })
+                if (data.id === -1) {
+                  this.ignoredControls = false
+                } else {
+                  this.ignoredControls = false
+                  this.$phoneAPI.sendPicToUser({ id: data.id, message: foto.link })
+                }
+              } catch (e) { } finally { this.ignoredControls = false }
+            } else {
+              this.$phoneAPI.sendErrorMessage('Il bluetooth è disattivo')
+              this.ignoredControls = false
+            }
             break
         }
       } catch (e) { } finally { this.ignoredControls = false }

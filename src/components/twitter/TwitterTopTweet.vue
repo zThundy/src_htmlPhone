@@ -121,10 +121,7 @@ export default {
       const authorName = tweet.author
       try {
         this.ignoreControls = true
-        const rep = await Modal.CreateTextModal({
-          title: 'Rispondi',
-          text: `@${authorName} `
-        })
+        const rep = await Modal.CreateTextModal({ title: 'Rispondi', text: `@${authorName} ` })
         if (rep !== undefined && rep.text !== undefined) {
           const message = rep.text.trim()
           if (message.length !== 0) {

@@ -35,11 +35,12 @@ export default {
       ignoreControls: false,
       currentSelect: 0,
       retiWifiRender: [],
+      closestPlayersRender: [],
       cover: []
     }
   },
   computed: {
-    ...mapGetters(['IntlString', 'myPhoneNumber', 'backgroundLabel', 'coqueLabel', 'sonidoLabel', 'zoom', 'config', 'volume', 'availableLanguages', 'wifiString', 'retiWifi', 'notification']),
+    ...mapGetters(['IntlString', 'myPhoneNumber', 'backgroundLabel', 'coqueLabel', 'sonidoLabel', 'zoom', 'config', 'volume', 'availableLanguages', 'wifiString', 'retiWifi', 'notification', 'bluetoothString', 'closestPlayers', 'bluetooth']),
     paramList () {
       // stringa di conferma reset
       const confirmResetStr = this.IntlString('APP_CONFIG_RESET_CONFIRM')
@@ -62,6 +63,13 @@ export default {
           title: this.IntlString('APP_CONFIG_WIFI'),
           value: this.wifiString,
           values: []
+        },
+        {
+          meta: 'bluetooth',
+          icons: 'fa-bluetooth-b',
+          onValid: 'toggleBluetooth',
+          title: this.IntlString('APP_CONFIG_BLUETOOTH'),
+          value: this.bluetoothString
         },
         {
           icons: 'fa-bell',
@@ -148,7 +156,7 @@ export default {
     }
   },
   methods: {
-    ...mapActions(['getIntlString', 'setZoon', 'setBackground', 'setCoque', 'setSonido', 'setVolume', 'setLanguage', 'toggleNotifications', 'updateWifiString']),
+    ...mapActions(['getIntlString', 'setZoon', 'setBackground', 'setCoque', 'setSonido', 'setVolume', 'setLanguage', 'toggleNotifications', 'updateWifiString', 'updateBluetooth']),
     scrollIntoViewIfNeeded: function () {
       this.$nextTick(() => {
         document.querySelector('.select').scrollIntoViewIfNeeded()
@@ -156,11 +164,21 @@ export default {
     },
 
     updateWifiTable () {
+      this.retiWifiRender = []
       for (var i in this.retiWifi) {
         this.retiWifiRender[this.retiWifi[i].label] = {id: i, icons: 'fa-wifi', label: this.retiWifi[i].label, password: this.retiWifi[i].password, value: this.retiWifi[i].password}
       }
       this.retiWifiRender['Annulla'] = {icons: 'fa-undo', label: 'Annulla', value: 'cancel', color: 'red'}
       return this.retiWifiRender
+    },
+
+    updateBluetoothTable () {
+      this.closestPlayersRender = []
+      for (var i in this.closestPlayers) {
+        this.closestPlayersRender[this.closestPlayers[i].name] = {id: i, icon: 'fa-bluetooth-b', label: this.closestPlayers[i].name, value: this.closestPlayers[i].userid}
+      }
+      this.closestPlayersRender['Annulla'] = {icons: 'fa-undo', label: 'Annulla', value: 'cancel', color: 'red'}
+      return this.closestPlayersRender
     },
 
     onBackspace () {
@@ -191,6 +209,9 @@ export default {
       // qui controllo se il parametro ha un submenu
       if (param.meta !== undefined && param.meta === 'wifi') {
         this.paramList[this.currentSelect].values = this.updateWifiTable()
+      }
+      if (param.meta !== undefined && param.meta === 'bluetooth') {
+        this.paramList[this.currentSelect].values = this.updateBluetoothTable()
       }
       this.actionItem(param)
     },
@@ -260,30 +281,21 @@ export default {
         if (resp.id === 1) {
           Modal.CreateTextModal({ text: 'https://i.imgur.com/' }).then(valueText => {
             if (valueText.text !== '' && valueText.text !== undefined && valueText.text !== null && valueText.text !== 'https://i.imgur.com/') {
-              this.setBackground({
-                label: 'Personalizzato',
-                value: valueText.text
-              })
+              this.setBackground({ label: 'Personalizzato', value: valueText.text })
               this.ignoreControls = false
             }
           })
         } else if (resp.id === 2) {
           const newAvatar = await PhoneAPI.takePhoto()
           if (newAvatar.url !== null) {
-            this.setBackground({
-              label: 'Personalizzato',
-              value: newAvatar.url
-            })
+            this.setBackground({ label: 'Personalizzato', value: newAvatar.url })
             this.ignoreControls = false
           }
         } else {
           this.ignoreControls = false
         }
       } else {
-        this.setBackground({
-          label: data.title,
-          value: data.value
-        })
+        this.setBackground({ label: data.title, value: data.value })
         this.ignoreControls = false
       }
     },
@@ -306,6 +318,14 @@ export default {
           }
         }
       })
+    },
+
+    async toggleBluetooth (param, data) {
+      if (this.bluetooth) {
+        this.updateBluetooth(false)
+      } else {
+        this.updateBluetooth(true)
+      }
     },
 
     onChangeCoque: function (param, data) {

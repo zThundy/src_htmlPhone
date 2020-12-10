@@ -3,6 +3,8 @@ Config = {}
 Config.KeyTakeCall = 46
 Config.IpUploader = "45.14.185.30"
 
+Config.BluetoothRange = 5.0
+
 Config.TelefoniFissi = {
     -- Telefono Fisso Gioielleria
     ['555889280'] = { name = "Gioielleria", coords = { x = -630.271, y = -230.216, z = 38.047 } },

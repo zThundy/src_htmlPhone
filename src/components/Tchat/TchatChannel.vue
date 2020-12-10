@@ -112,12 +112,14 @@ export default {
     },
     async addChannelOption () {
       try {
-        const rep = await Modal.CreateTextModal({limit: 20, title: this.IntlString('APP_DARKTCHAT_NEW_CHANNEL')})
+        this.ignoreControls = true
+        const rep = await Modal.CreateTextModal({ limit: 20, title: this.IntlString('APP_DARKTCHAT_NEW_CHANNEL') })
         let channel = (rep || {}).text || ''
         channel = channel.toLowerCase().replace(/[^a-z]/g, '')
         for (var i in this.tchatChannels) {
           if (this.tchatChannels[i].channel === channel) {
             PhoneAPI.sendErrorMessage(this.IntlString('APP_DARKCHAT_ERROR_NOTIFICATION'))
+            this.ignoreControls = false
             return
           }
         }
@@ -126,8 +128,9 @@ export default {
         if (channel.length > 0) {
           this.currentSelect = 0
           this.tchatAddChannel({ channel })
+          this.ignoreControls = false
         }
-      } catch (e) { }
+      } catch (e) { } finally { this.ignoreControls = false }
     },
     async removeChannelOption () {
       const channel = this.tchatChannels[this.currentSelect].channel

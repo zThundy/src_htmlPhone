@@ -16,16 +16,19 @@ const actions = {
     window.localStorage['gc_fotografie'] = state.fotografie
   },
   clearGallery ({ commit, state }) {
+    commit('CLEAR_GALLERY')
     window.localStorage['gc_fotografie'] = []
   }
 }
 
 const mutations = {
   APP_PHOTO (state, data) {
-    state.fotografie[state.fotografie.length] = {
-      link: data.link
-      // data: data.currentDate
-    }
+    var foto = { link: data.link }
+    // state.fotografie[state.fotografie.length] = { link: data.link, data: data.currentDate }
+    state.fotografie.push(foto)
+  },
+  CLEAR_GALLERY (state) {
+    state.fotografie = []
   }
 }
 
@@ -43,159 +46,19 @@ if (process.env.NODE_ENV !== 'production') {
       data: 'bo forse'
     },
     {
-      link: 'https://u.trs.tn/tohqw.jpg',
+      link: 'https://i.imgur.com/rNXepFS.jpeg',
       data: 'bo forse'
     },
     {
-      link: 'https://u.trs.tn/tohqw.jpg',
+      link: 'https://i.imgur.com/InUodqS.jpeg',
       data: 'bo forse'
     },
     {
-      link: 'https://u.trs.tn/tohqw.jpg',
+      link: 'https://i.imgur.com/LQukntX.jpeg',
       data: 'bo forse'
     },
     {
-      link: 'https://u.trs.tn/tohqw.jpg',
-      data: 'bo forse'
-    },
-    {
-      link: 'https://u.trs.tn/tohqw.jpg',
-      data: 'bo forse'
-    },
-    {
-      link: 'https://u.trs.tn/tohqw.jpg',
-      data: 'bo forse'
-    },
-    {
-      link: 'https://u.trs.tn/tohqw.jpg',
-      data: 'bo forse'
-    },
-    {
-      link: 'https://u.trs.tn/tohqw.jpg',
-      data: 'bo forse'
-    },
-    {
-      link: 'https://u.trs.tn/tohqw.jpg',
-      data: 'bo forse'
-    },
-    {
-      link: 'https://u.trs.tn/tohqw.jpg',
-      data: 'bo forse'
-    },
-    {
-      link: 'https://u.trs.tn/tohqw.jpg',
-      data: 'bo forse'
-    },
-    {
-      link: 'https://u.trs.tn/tohqw.jpg',
-      data: 'bo forse'
-    },
-    {
-      link: 'https://u.trs.tn/tohqw.jpg',
-      data: 'bo forse'
-    },
-    {
-      link: 'https://u.trs.tn/tohqw.jpg',
-      data: 'bo forse'
-    },
-    {
-      link: 'https://u.trs.tn/tohqw.jpg',
-      data: 'bo forse'
-    },
-    {
-      link: 'https://u.trs.tn/tohqw.jpg',
-      data: 'bo forse'
-    },
-    {
-      link: 'https://u.trs.tn/tohqw.jpg',
-      data: 'bo forse'
-    },
-    {
-      link: 'https://u.trs.tn/tohqw.jpg',
-      data: 'bo forse'
-    },
-    {
-      link: 'https://u.trs.tn/tohqw.jpg',
-      data: 'bo forse'
-    },
-    {
-      link: 'https://u.trs.tn/tohqw.jpg',
-      data: 'bo forse'
-    },
-    {
-      link: 'https://u.trs.tn/tohqw.jpg',
-      data: 'bo forse'
-    },
-    {
-      link: 'https://u.trs.tn/tohqw.jpg',
-      data: 'bo forse'
-    },
-    {
-      link: 'https://u.trs.tn/tohqw.jpg',
-      data: 'bo forse'
-    },
-    {
-      link: 'https://u.trs.tn/tohqw.jpg',
-      data: 'bo forse'
-    },
-    {
-      link: 'https://u.trs.tn/tohqw.jpg',
-      data: 'bo forse'
-    },
-    {
-      link: 'https://u.trs.tn/tohqw.jpg',
-      data: 'bo forse'
-    },
-    {
-      link: 'https://u.trs.tn/tohqw.jpg',
-      data: 'bo forse'
-    },
-    {
-      link: 'https://u.trs.tn/tohqw.jpg',
-      data: 'bo forse'
-    },
-    {
-      link: 'https://u.trs.tn/tohqw.jpg',
-      data: 'bo forse'
-    },
-    {
-      link: 'https://u.trs.tn/tohqw.jpg',
-      data: 'bo forse'
-    },
-    {
-      link: 'https://u.trs.tn/tohqw.jpg',
-      data: 'bo forse'
-    },
-    {
-      link: 'https://u.trs.tn/tohqw.jpg',
-      data: 'bo forse'
-    },
-    {
-      link: 'https://u.trs.tn/tohqw.jpg',
-      data: 'bo forse'
-    },
-    {
-      link: 'https://u.trs.tn/tohqw.jpg',
-      data: 'bo forse'
-    },
-    {
-      link: 'https://u.trs.tn/tohqw.jpg',
-      data: 'bo forse'
-    },
-    {
-      link: 'https://u.trs.tn/tohqw.jpg',
-      data: 'bo forse'
-    },
-    {
-      link: 'https://u.trs.tn/tohqw.jpg',
-      data: 'bo forse'
-    },
-    {
-      link: 'https://u.trs.tn/tohqw.jpg',
-      data: 'bo forse'
-    },
-    {
-      link: 'https://u.trs.tn/tohqw.jpg',
+      link: 'https://i.imgur.com/KIpi534.jpeg',
       data: 'bo forse'
     }
   ]

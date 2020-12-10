@@ -125,7 +125,7 @@ class PhoneAPI {
   }
 
   async sendErrorMessage (message) {
-    return this.post('sendESXNotification', message)
+    return this.post('sendESXNotification', { message: message })
   }
 
   async getReponseText (data) {
@@ -681,6 +681,26 @@ class PhoneAPI {
 
   async requestMyCovers () {
     return this.post('requestMyCovers')
+  }
+
+  // ////////////////////////// //
+  // SEZIONE BLUETOOTH TELEFONO //
+  // ////////////////////////// //
+
+  async requestClosestPlayers (bool) {
+    return this.post('requestBluetoothPlayers', { toggle: bool })
+  }
+
+  async sendPicToUser (data) {
+    this.post('sendPicToUser', data)
+  }
+
+  onsendClosestPlayers (users) {
+    store.commit('UPDATE_CLOSEST_PLAYERS', users)
+  }
+
+  onaddPicToGallery (data) {
+    store.dispatch('addPhoto', data)
   }
 }
 

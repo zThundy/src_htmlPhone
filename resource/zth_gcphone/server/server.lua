@@ -3,6 +3,7 @@ gcPhone = {}
 segnaliTelefoniPlayers = {}
 wifiConnectedPlayers = {}
 playersInCall = {}
+built_phones = false
 
 TriggerEvent('esx:getSharedObject', function(obj) ESX = obj end)
 
@@ -115,7 +116,7 @@ function gcPhone.isAbleToCall(identifier, cb)
     local xPlayer = ESX.GetPlayerFromIdentifier(identifier)
     
     ESX.GetPianoTariffarioParam(phone_number, "minuti", function(min)
-        if xPlayer.hasJob("police") or xPlayer.hasJob("ambulance") then return cb(true, false, min) end
+        if xPlayer.hasJob("police", 0) or xPlayer.hasJob("ambulance", 0) then return cb(true, false, min) end
 
         if min == nil then
             cb(false, true, 0, "Non hai un piano tariffario!")
@@ -437,10 +438,12 @@ function getHistoriqueCall(num)
     return result
 end
 
+
 function sendHistoriqueCall(src, num) 
     local histo = getHistoriqueCall(num)
     TriggerClientEvent('gcPhone:historiqueCall', src, histo)
 end
+
 
 function salvaChiamata(appelInfo)
     if appelInfo.extraData == nil or appelInfo.extraData.useNumber == nil then
@@ -473,6 +476,7 @@ function salvaChiamata(appelInfo)
     end
 end
 
+
 RegisterServerEvent('gcPhone:getHistoriqueCall')
 AddEventHandler('gcPhone:getHistoriqueCall', function()
     local player = tonumber(source)
@@ -481,6 +485,7 @@ AddEventHandler('gcPhone:getHistoriqueCall', function()
 
     sendHistoriqueCall(player, num)
 end)
+
 
 RegisterServerEvent("gcPhone:requestOffertaFromDatabase")
 AddEventHandler("gcPhone:requestOffertaFromDatabase", function()
@@ -508,10 +513,13 @@ AddEventHandler("gcPhone:requestOffertaFromDatabase", function()
     TriggerClientEvent('gcPhone:getBourse', player, getInfoBorsa())
 end)
 
+
 RegisterServerEvent('gcPhone:startCall')
 AddEventHandler('gcPhone:startCall', function(phone_number, rtcOffer, extraData)
-    TriggerEvent('gcPhone:internal_startCall', source, phone_number, rtcOffer, extraData)
+    local player = source
+    TriggerEvent('gcPhone:internal_startCall', player, phone_number, rtcOffer, extraData)
 end)
+
 
 RegisterServerEvent('gcPhone:register_FixePhone')
 AddEventHandler('gcPhone:register_FixePhone', function(phone_number, coords)
@@ -520,14 +528,16 @@ AddEventHandler('gcPhone:register_FixePhone', function(phone_number, coords)
 end)
 
 
+
+-- evento che controlla le chiamate tra giocatori
+-- e giocatori e telefoni fissi
 RegisterServerEvent('gcPhone:internal_startCall')
-AddEventHandler('gcPhone:internal_startCall', function(source, phone_number, rtcOffer, extraData)
+AddEventHandler('gcPhone:internal_startCall', function(player, phone_number, rtcOffer, extraData)
     if Config.TelefoniFissi[phone_number] ~= nil then
         onCallFixePhone(source, phone_number, rtcOffer, extraData)
         return
     end
 
-    local player = tonumber(source)
     local xPlayer = ESX.GetPlayerFromId(player)
     local srcIdentifier = gcPhone.getPlayerID(player)
     
@@ -614,8 +624,8 @@ AddEventHandler('gcPhone:internal_startCall', function(source, phone_number, rtc
             end
         end
     end)
-
 end)
+
 
 function playUnreachable(player, infoCall)
     infoCall.updateMinuti = false
@@ -625,6 +635,7 @@ function playUnreachable(player, infoCall)
     TriggerClientEvent('gcPhone:phoneUnreachable', player, infoCall, true)
 end
 
+
 function playNoSignal(player, infoCall)
     infoCall.updateMinuti = false
 
@@ -633,25 +644,28 @@ function playNoSignal(player, infoCall)
     TriggerClientEvent('gcPhone:phoneNoSignal', player, infoCall, true)
 end
 
+
 RegisterServerEvent('gcPhone:candidates')
 AddEventHandler('gcPhone:candidates', function(callId, candidates)
     if Chiamate[callId] ~= nil then
-        local source = source
-        local to = Chiamate[callId].transmitter_src
+        local player = source
 
-        if source == to then 
-            to = Chiamate[callId].receiver_src
-        end
+        local to = Chiamate[callId].transmitter_src
+        if player == to then  to = Chiamate[callId].receiver_src end
+
+        if to == nil then return end
         TriggerClientEvent('gcPhone:candidates', to, candidates)
     end
 end)
 
 RegisterServerEvent('gcPhone:acceptCall')
 AddEventHandler('gcPhone:acceptCall', function(infoCall, rtcAnswer)
+    local player = source
     local id = infoCall.id
+
     if Chiamate[id] ~= nil then
         if PhoneFixeInfo[id] ~= nil then
-            onAcceptFixePhone(source, infoCall, rtcAnswer)
+            onAcceptFixePhone(player, infoCall, rtcAnswer)
             return
         end
 
@@ -667,16 +681,19 @@ AddEventHandler('gcPhone:acceptCall', function(infoCall, rtcAnswer)
             TriggerClientEvent('gcPhone:acceptCall', Chiamate[id].transmitter_src, Chiamate[id], true)
             SetTimeout(250, function() TriggerClientEvent('gcPhone:acceptCall', Chiamate[id].receiver_src, Chiamate[id], false) end)
             salvaChiamata(Chiamate[id])
-
         end
     end
 end)
+
 
 RegisterServerEvent('gcPhone:ignoreCall')
 AddEventHandler('gcPhone:ignoreCall', function(infoCall)
     local id = infoCall.id
 end)
 
+
+-- evento che toglie i minuti a chi ha
+-- fatto la telefonata
 RegisterServerEvent('gcPhone:rejectCall')
 AddEventHandler('gcPhone:rejectCall', function(infoCall)
     local id = infoCall.id
@@ -704,14 +721,15 @@ AddEventHandler('gcPhone:rejectCall', function(infoCall)
             salvaChiamata(Chiamate[id])
         end
 
-        TriggerEvent('gcPhone:removeCall', Chiamate)
+        -- TriggerEvent('gcPhone:removeCall', Chiamate)
         Chiamate[id] = nil
     end
 end)
 
+
 RegisterServerEvent('gcPhone:appelsDeleteHistorique')
 AddEventHandler('gcPhone:appelsDeleteHistorique', function(numero)
-    local player = tonumber(source)
+    local player = source
     local identifier = gcPhone.getPlayerID(player)
     local num = gcPhone.getPhoneNumber(identifier)
 
@@ -721,15 +739,17 @@ AddEventHandler('gcPhone:appelsDeleteHistorique', function(numero)
     })
 end)
 
+
 function appelsDeleteAllHistorique(identifier)
     local num = gcPhone.getPhoneNumber(identifier)
 
     MySQL.Sync.execute("DELETE FROM phone_calls WHERE `owner` = @owner", { ['@owner'] = num })
 end
 
+
 RegisterServerEvent('gcPhone:appelsDeleteAllHistorique')
 AddEventHandler('gcPhone:appelsDeleteAllHistorique', function()
-    local player = tonumber(source)
+    local player = source
     local identifier = gcPhone.getPlayerID(player)
 
     appelsDeleteAllHistorique(identifier)
@@ -739,7 +759,6 @@ end)
 -------- Funzioni e Eventi chiamati al load della risorsa e al caricamento di un player
 --==================================================================================================================
 
-built_phones = false
 
 function buildPhones()
     for telefono, info_telefono in pairs(Config.TelefoniFissi) do
@@ -747,6 +766,7 @@ function buildPhones()
     end
     built_phones = true
 end
+
 
 AddEventHandler('esx:playerLoaded', function(source, xPlayer)
     local player = tonumber(source)
@@ -765,6 +785,7 @@ AddEventHandler('esx:playerLoaded', function(source, xPlayer)
     TriggerClientEvent("gcPhone:allMessage", player, getMessages(identifier), notReceivedMessages)
 end)
 
+
 RegisterServerEvent("gcPhone:updateAvatarContatto")
 AddEventHandler("gcPhone:updateAvatarContatto", function(data)
     local player = source
@@ -775,6 +796,7 @@ AddEventHandler("gcPhone:updateAvatarContatto", function(data)
         TriggerClientEvent("gcPhone:contactList", player, getContacts(xPlayer.identifier))
     end)
 end)
+
 
 RegisterServerEvent('gcPhone:allUpdate')
 AddEventHandler('gcPhone:allUpdate', function()
@@ -793,6 +815,7 @@ AddEventHandler('gcPhone:allUpdate', function()
 
     sendHistoriqueCall(player, num)
 end)
+
 
 function getUnreceivedMessages(identifier)
     local messages = getMessages(identifier)
@@ -847,7 +870,7 @@ end
 --====================================================================================
 
 
-function onCallFixePhone(source, phone_number, rtcOffer, extraData)
+function onCallFixePhone(player, phone_number, rtcOffer, extraData)
     local indexCall = lastIndexCall
     lastIndexCall = lastIndexCall + 1
 
@@ -855,8 +878,8 @@ function onCallFixePhone(source, phone_number, rtcOffer, extraData)
     if hidden == true then
         phone_number = string.sub(phone_number, 2)
     end
-    local player = tonumber(source)
-	local xPlayer = ESX.GetPlayerFromId(source)
+    
+	local xPlayer = ESX.GetPlayerFromId(player)
     local identifier = xPlayer.identifier
 
     local srcPhone = ''
@@ -892,6 +915,7 @@ function onCallFixePhone(source, phone_number, rtcOffer, extraData)
     end
 end
 
+
 function isNumberInCall(phone_number)
     for k, infoCall in pairs(Chiamate) do
         if infoCall.receiver_num == phone_number then return true end
@@ -899,6 +923,7 @@ function isNumberInCall(phone_number)
 
     return false
 end
+
 
 function onAcceptFixePhone(source, infoCall, rtcAnswer)
     local id = infoCall.id
@@ -923,6 +948,7 @@ function onAcceptFixePhone(source, infoCall, rtcAnswer)
         end
     end
 end
+
 
 function onRejectFixePhone(source, infoCall, rtcAnswer)
     local id = infoCall.id

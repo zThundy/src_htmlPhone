@@ -14,6 +14,7 @@ import wifi from './modules/wifi'
 import instagram from './modules/instagram'
 import whatsapp from './modules/whatsapp'
 import galleria from './modules/galleria'
+import bluetooth from './modules/bluetooth'
 
 Vue.use(Vuex)
 
@@ -31,7 +32,8 @@ export default new Vuex.Store({
     wifi,
     instagram,
     whatsapp,
-    galleria
+    galleria,
+    bluetooth
   },
   strict: true
 })
