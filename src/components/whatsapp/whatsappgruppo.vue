@@ -206,7 +206,7 @@ export default {
           }
         } else if (data.id === 2) {
           this.ignoreControls = false
-          const { url } = await this.$phoneAPI.takePhoto()
+          const url = await this.$phoneAPI.takePhoto()
           if (url !== null && url !== undefined) { this.sendMessageInGroup({ gruppo: this.gruppo, message: url, phoneNumber: this.myPhoneNumber }) }
         }
       } catch (e) { } finally { this.ignoreControls = false }

@@ -1,8 +1,14 @@
 <script>
-import PhoneAPI from './../../PhoneAPI'
+import { mapActions } from 'vuex'
+
 export default {
-  created () {
-    PhoneAPI.faketakePhoto()
+  methods: {
+    ...mapActions(['addPhoto'])
+  },
+
+  async created () {
+    const url = await this.$phoneAPI.takePhoto()
+    this.addPhoto({ link: url })
   }
 }
 </script>

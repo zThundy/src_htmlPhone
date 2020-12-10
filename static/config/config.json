@@ -410,6 +410,13 @@
       "icons": "/html/static/img/icons_app/tor.png",
       "routeName": "tchat",
       "enabled": true
+    },
+    {
+      "name": "Fotocamera",
+      "it_IT__name": "Fotocamera",
+      "icons": "/html/static/img/icons_app/photo.png",
+      "routeName": "photo",
+      "enabled": true
     }
   ],
   "defaultLanguage": "it_IT",
