@@ -330,7 +330,15 @@
       "icons": "/html/static/img/icons_app/insta.png",
       "routeName": "instagram.splash",
       "inHomePage": false,
-      "enabled": false
+      "enabled": true
+    },
+    {
+      "name": "Galleria",
+      "it_IT__name": "Galleria",
+      "icons": "/html/static/img/icons_app/galleria.png",
+      "routeName": "galleria.splash",
+      "inHomePage": false,
+      "enabled": true
     },
     {
       "name": "Whatsapp",
@@ -581,6 +589,10 @@
       "APP_WHATSAPP_ADD_MEMBERS": "Aggiungi membri",
       "APP_WHATSAPP_GROUP_NAME": "Nome del gruppo",
       "APP_WHATSAPP_GROUP_AVATAR": "Immagine del gruppo",
+      "APP_GALLERIA_TITLE": "Galleria",
+      "APP_GALLERIA_SET_WALLPAPER": "Imposta come sfondo",
+      "APP_GALLERIA_INOLTRA": "Inoltra",
+      "APP_GALLERIA_INOLTRA_WHATSAPP": "Inoltra su whatsapp",
 
       "TIMEAGO": [
         "Proprio adesso",

@@ -41,6 +41,9 @@ import whatsappgruppo from '@/components/whatsapp/whatsappgruppo'
 import whatsappnewgruppo from '@/components/whatsapp/whatsappnewgroup'
 import whatsappgroupedit from '@/components/whatsapp/whatsappgroupedit'
 
+import galleria from '@/components/galleria/galleria'
+import galleriasplash from '@/components/galleria/galleriasplash'
+
 Vue.use(Router)
 
 export default new Router({
@@ -209,6 +212,18 @@ export default new Router({
       path: '/whatsapp',
       name: 'whatsapp',
       component: whatsapp
+    },
+    {
+      meta: { depth: 2, transitionName: 'slide' },
+      path: '/galleria',
+      name: 'galleria',
+      component: galleria
+    },
+    {
+      meta: { depth: 1, transitionName: 'slide' },
+      path: '/galleria/splash',
+      name: 'galleria.splash',
+      component: galleriasplash
     },
     {
       path: '*',

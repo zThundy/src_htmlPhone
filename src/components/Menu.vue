@@ -12,7 +12,7 @@
                 v-for="(but, key) of Apps" 
                 v-bind:key="but.name" 
 
-                v-bind:class="{ select: key === currentSelect}"
+                v-bind:class="{select: key === currentSelect}"
                 v-bind:style="{backgroundImage: 'url(' + but.icons +')'}"
               >
                 {{but.intlName}}
@@ -122,6 +122,7 @@ export default {
   background-position: center !important;
   filter: blur(6px);
 }
+
 .menu_content {
   display: flex;
   flex-direction: column;

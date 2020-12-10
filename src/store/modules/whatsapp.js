@@ -18,8 +18,9 @@ const actions = {
     PhoneAPI.abbandonaGruppo(gruppo)
     commit('EXIT_GRUPPO', gruppo)
   },
-  requestWhatsappInfo ({ state, commit }, groupId) {
+  requestWhatsappInfo ({ state, commit }, groupId, contacts) {
     PhoneAPI.requestWhatsappMessaggi(groupId)
+    commit('UPDATE_USER_NUMBER_IF_REGISTERED', contacts)
   },
   sendMessageInGroup ({ state, commit }, data) {
     PhoneAPI.sendMessageOnGroup(data.message, data.gruppo.id, data.phoneNumber)
@@ -108,6 +109,18 @@ const mutations = {
         break
       }
     }
+  },
+  UPDATE_USER_NUMBER_IF_REGISTERED (state, contacts) {
+    // con questa doppia iterazione controllo se il contatto che
+    // ha scritto il messaggio, è salvato in rubrica. Se si lo
+    // sostituisco. Tutto sto bordello perché non voglio cambiare il lua
+    for (var key in contacts) {
+      for (var index in state.messaggi) {
+        if (contacts[key].number === state.messaggi[index].sender) {
+          state.messaggi[index].sender = contacts[key].display
+        }
+      }
+    }
   }
 }
 
@@ -124,13 +137,13 @@ if (process.env.NODE_ENV !== 'production') {
       id: 1,
       icona: 'https://u.trs.tn/tohqw.jpg',
       gruppo: 'Provo',
-      partecipanti: ['5552828', '5552828'],
+      partecipanti: ['55529322'],
       partecipantiString: 'tanto questa viene rimpiazzata dal lua'
     },
     {
       id: 2,
       gruppo: 'Sto testando',
-      partecipanti: ['5554444'],
+      partecipanti: ['5554444', '55529322'],
       partecipantiString: 'tanto questa viene rimpiazzata dal lua'
     },
     {

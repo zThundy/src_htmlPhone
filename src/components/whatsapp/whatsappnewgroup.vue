@@ -300,7 +300,7 @@ export default {
   },
   created () {
     for (var key in this.contacts) {
-      this.selectedContacts[key] = false
+      this.selectedContacts[this.contacts[key].id] = false
     }
     this.updateGroupVars({ value: 'Nessun titolo', key: 'title' })
     this.updateGroupVars({ value: '/html/static/img/app_whatsapp/defaultgroup.png', key: 'image' })
@@ -309,6 +309,13 @@ export default {
     if (this.$route.params !== undefined && this.$route.params !== null) {
       this.isAddingMembers = this.$route.params.isAddingMembers
       this.gruppo = this.$route.params.gruppo
+      for (var index in this.contacts) {
+        for (var index2 in this.gruppo.partecipanti) {
+          if (this.contacts[index].number === this.gruppo.partecipanti[index2]) {
+            this.selectedContacts[this.contacts[index].id] = true
+          }
+        }
+      }
     }
     this.$bus.$on('keyUpArrowDown', this.onDown)
     this.$bus.$on('keyUpArrowUp', this.onUp)

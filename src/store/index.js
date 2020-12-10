@@ -13,6 +13,7 @@ import dati from './modules/dati'
 import wifi from './modules/wifi'
 import instagram from './modules/instagram'
 import whatsapp from './modules/whatsapp'
+import galleria from './modules/galleria'
 
 Vue.use(Vuex)
 
@@ -29,7 +30,8 @@ export default new Vuex.Store({
     dati,
     wifi,
     instagram,
-    whatsapp
+    whatsapp,
+    galleria
   },
   strict: true
 })

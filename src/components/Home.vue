@@ -18,10 +18,8 @@
       <button style=" top: 73px; font-family:initial; margin-left: 10px; margin-right: 10px;"
         v-for="(but, key) of AppsHome" 
         v-bind:key="but.name" 
-        v-bind:class="{ select: key === currentSelect}"
+        v-bind:class="{select: key === currentSelect}"
         v-bind:style="{backgroundImage: 'url(' + but.icons +')'}"
-        
-        @click="openApp(but)"
       >
           <!--{{but.intlName}}-->
         <span class="puce" v-if="but.puce !== undefined && but.puce !== 0">{{but.puce}}</span>
@@ -32,7 +30,6 @@
           class="btn_menu" 
           :class="{ select: AppsHome.length === currentSelect}" 
           v-bind:style="{backgroundImage: 'url(' + '/html/static/img/icons_app/menu.png' +')'}"
-          @click="openApp({routeName: 'menu'})"
         >
 
         </button>

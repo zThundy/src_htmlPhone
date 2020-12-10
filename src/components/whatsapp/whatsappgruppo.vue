@@ -76,7 +76,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['IntlString', 'messaggi', 'myPhoneNumber', 'enableTakePhoto'])
+    ...mapGetters(['IntlString', 'messaggi', 'myPhoneNumber', 'enableTakePhoto', 'contacts'])
   },
   methods: {
     ...mapActions(['requestWhatsappInfo', 'sendMessageInGroup']),
@@ -224,7 +224,7 @@ export default {
   },
   created () {
     this.gruppo = this.$route.params.gruppo
-    this.requestWhatsappInfo(this.gruppo.id)
+    this.requestWhatsappInfo(this.gruppo.id, this.contacts)
     // qui imposto il messaggio all'ultimo e con la funzione
     // lo "metto in mostra"
     setTimeout(() => {
