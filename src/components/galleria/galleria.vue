@@ -34,7 +34,7 @@ export default {
     ...mapGetters(['IntlString', 'fotografie'])
   },
   methods: {
-    ...mapActions(['setBackground']),
+    ...mapActions(['setBackground', 'clearGallery']),
     scrollIntoViewIfNeeded: function () {
       this.$nextTick(() => {
         this.$el.querySelector('.select').scrollIntoViewIfNeeded()
@@ -76,7 +76,7 @@ export default {
         let choix = [
           { id: 1, title: this.IntlString('APP_GALLERIA_SET_WALLPAPER'), icons: 'fa-mobile' },
           { id: 2, title: this.IntlString('APP_GALLERIA_INOLTRA'), icons: 'fa-paper-plane' },
-          // { id: 3, title: this.IntlString('APP_GALLERIA_INOLTRA_WHATSAPP'), icons: 'fa-paper-plane' },
+          { id: 3, title: this.IntlString('APP_GALLERIA_ELIMINA_TUTTO'), icons: 'fa-trash', color: 'red' },
           { id: -1, title: this.IntlString('CANCEL'), icons: 'fa-undo', color: 'red' }
         ]
         const data = await Modal.CreateModal({ choix })
@@ -90,6 +90,7 @@ export default {
             this.ignoredControls = false
             break
           case 3:
+            this.clearGallery()
             this.ignoredControls = false
             break
         }

@@ -219,12 +219,12 @@ export default {
         this.scrollIntoViewIfNeeded()
         this.$refs.wh_update.hide()
         this.ignoreControls = false
-      }, 1500)
+      }, 1000)
     }
   },
   created () {
     this.gruppo = this.$route.params.gruppo
-    this.requestWhatsappInfo(this.gruppo.id, this.contacts)
+    this.requestWhatsappInfo({ groupId: this.gruppo.id, contacts: this.contacts })
     // qui imposto il messaggio all'ultimo e con la funzione
     // lo "metto in mostra"
     setTimeout(() => {

@@ -14,6 +14,9 @@ const actions = {
   addPhoto ({ commit, state }, data) {
     commit('APP_PHOTO', data)
     window.localStorage['gc_fotografie'] = state.fotografie
+  },
+  clearGallery ({ commit, state }) {
+    window.localStorage['gc_fotografie'] = []
   }
 }
 

@@ -18,9 +18,9 @@ const actions = {
     PhoneAPI.abbandonaGruppo(gruppo)
     commit('EXIT_GRUPPO', gruppo)
   },
-  requestWhatsappInfo ({ state, commit }, groupId, contacts) {
-    PhoneAPI.requestWhatsappMessaggi(groupId)
-    commit('UPDATE_USER_NUMBER_IF_REGISTERED', contacts)
+  requestWhatsappInfo ({ state, commit }, data) {
+    PhoneAPI.requestWhatsappMessaggi(data.groupId)
+    commit('UPDATE_USER_NUMBER_IF_REGISTERED', data)
   },
   sendMessageInGroup ({ state, commit }, data) {
     PhoneAPI.sendMessageOnGroup(data.message, data.gruppo.id, data.phoneNumber)
@@ -110,14 +110,16 @@ const mutations = {
       }
     }
   },
-  UPDATE_USER_NUMBER_IF_REGISTERED (state, contacts) {
+  UPDATE_USER_NUMBER_IF_REGISTERED (state, data) {
+    if (state.messaggi[data.groupId] === undefined || state.messaggi[data.groupId] === null) return
+    var messaggi = state.messaggi[data.groupId]
     // con questa doppia iterazione controllo se il contatto che
     // ha scritto il messaggio, è salvato in rubrica. Se si lo
     // sostituisco. Tutto sto bordello perché non voglio cambiare il lua
-    for (var key in contacts) {
-      for (var index in state.messaggi) {
-        if (contacts[key].number === state.messaggi[index].sender) {
-          state.messaggi[index].sender = contacts[key].display
+    for (var key in data.contacts) {
+      for (var index in messaggi) {
+        if (String(data.contacts[key].number) === String(messaggi[index].sender)) {
+          state.messaggi[data.groupId][index].sender = data.contacts[key].display
         }
       }
     }
@@ -168,87 +170,7 @@ if (process.env.NODE_ENV !== 'production') {
       message: 'provo il messaggio 2'
     },
     {
-      sender: '5555555',
-      message: 'provo il messaggio questo messaggio è superlungo | questo messaggio è superlungo | questo messaggio è superlungo | questo messaggio è superlungo'
-    },
-    {
-      sender: 'developer',
-      message: 'provo il messaggio 2'
-    },
-    {
-      sender: 'developer',
-      message: 'provo il messaggio 2'
-    },
-    {
-      sender: '5555555',
-      message: 'provo il messaggio questo messaggio è superlungo | questo messaggio è superlungo | questo messaggio è superlungo | questo messaggio è superlungo'
-    },
-    {
-      sender: 'developer',
-      message: 'provo il messaggio 2'
-    },
-    {
-      sender: 'developer',
-      message: 'provo il messaggio 2'
-    },
-    {
-      sender: 'developer',
-      message: 'provo il messaggio 2'
-    },
-    {
-      sender: '5555555',
-      message: 'provo il messaggio questo messaggio è superlungo | questo messaggio è superlungo | questo messaggio è superlungo | questo messaggio è superlungo'
-    },
-    {
-      sender: 'developer',
-      message: 'provo il messaggio 2'
-    },
-    {
-      sender: 'developer',
-      message: 'provo il messaggio 2'
-    },
-    {
-      sender: '5555555',
-      message: 'provo il messaggio questo messaggio è superlungo | questo messaggio è superlungo | questo messaggio è superlungo | questo messaggio è superlungo'
-    },
-    {
-      sender: 'developer',
-      message: 'provo il messaggio 2'
-    },
-    {
-      sender: 'developer',
-      message: 'provo il messaggio 2'
-    },
-    {
-      sender: 'developer',
-      message: 'provo il messaggio 2'
-    },
-    {
-      sender: '5555555',
-      message: 'provo il messaggio questo messaggio è superlungo | questo messaggio è superlungo | questo messaggio è superlungo | questo messaggio è superlungo'
-    },
-    {
-      sender: 'developer',
-      message: 'provo il messaggio 2'
-    },
-    {
-      sender: 'developer',
-      message: 'provo il messaggio 2'
-    },
-    {
-      sender: '5555555',
-      message: 'provo il messaggio questo messaggio è superlungo | questo messaggio è superlungo | questo messaggio è superlungo | questo messaggio è superlungo'
-    },
-    {
-      sender: 'developer',
-      message: 'provo il messaggio 2'
-    },
-    {
-      sender: 'developer',
-      message: 'provo il messaggio 2'
-    },
-    {
-      sender: 'developer',
+      sender: '55529322',
       message: 'https://i.imgur.com/gthahbs.png'
     }
   ]
@@ -258,79 +180,11 @@ if (process.env.NODE_ENV !== 'production') {
       message: 'provo il messaggio questo messaggio è superlungo | questo messaggio è superlungo | questo messaggio è superlungo | questo messaggio è superlungo'
     },
     {
-      sender: 'developer',
+      sender: '55529322',
       message: 'provo il messaggio 2'
     },
     {
-      sender: 'developer',
-      message: 'provo il messaggio 2'
-    },
-    {
-      sender: 'developer',
-      message: 'provo il messaggio 2'
-    },
-    {
-      sender: 'developer',
-      message: 'provo il messaggio 2'
-    },
-    {
-      sender: 'developer',
-      message: 'provo il messaggio 2'
-    },
-    {
-      sender: 'developer',
-      message: 'provo il messaggio 2'
-    },
-    {
-      sender: 'developer',
-      message: 'provo il messaggio 2'
-    },
-    {
-      sender: 'developer',
-      message: 'provo il messaggio 2'
-    },
-    {
-      sender: 'developer',
-      message: 'provo il messaggio 2'
-    },
-    {
-      sender: 'developer',
-      message: 'provo il messaggio 2'
-    },
-    {
-      sender: 'developer',
-      message: 'provo il messaggio 2'
-    },
-    {
-      sender: 'developer',
-      message: 'provo il messaggio 2'
-    },
-    {
-      sender: 'developer',
-      message: 'provo il messaggio 2'
-    },
-    {
-      sender: 'developer',
-      message: 'provo il messaggio 2'
-    },
-    {
-      sender: 'developer',
-      message: 'provo il messaggio 2'
-    },
-    {
-      sender: 'developer',
-      message: 'provo il messaggio 2'
-    },
-    {
-      sender: 'developer',
-      message: 'provo il messaggio 2'
-    },
-    {
-      sender: 'developer',
-      message: 'provo il messaggio 2'
-    },
-    {
-      sender: 'developer',
+      sender: '55529322',
       message: 'provo il messaggio 2'
     }
   ]

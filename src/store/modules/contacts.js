@@ -56,6 +56,11 @@ if (process.env.NODE_ENV !== 'production') {
       id: 2,
       number: '55529322',
       display: 'questoenuovo'
+    },
+    {
+      id: 3,
+      number: '55587422',
+      display: 'altrocontatto'
     }
   ]
 }

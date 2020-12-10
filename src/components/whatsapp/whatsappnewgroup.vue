@@ -309,10 +309,14 @@ export default {
     if (this.$route.params !== undefined && this.$route.params !== null) {
       this.isAddingMembers = this.$route.params.isAddingMembers
       this.gruppo = this.$route.params.gruppo
-      for (var index in this.contacts) {
-        for (var index2 in this.gruppo.partecipanti) {
-          if (this.contacts[index].number === this.gruppo.partecipanti[index2]) {
-            this.selectedContacts[this.contacts[index].id] = true
+      if (this.gruppo !== undefined && this.gruppo !== null) {
+        if (this.gruppo.partecipanti !== undefined && this.gruppo.partecipanti !== null) {
+          for (var index in this.contacts) {
+            for (var index2 in this.gruppo.partecipanti) {
+              if (this.contacts[index].number === this.gruppo.partecipanti[index2]) {
+                this.selectedContacts[this.contacts[index].id] = true
+              }
+            }
           }
         }
       }
