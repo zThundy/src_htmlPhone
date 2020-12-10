@@ -103,8 +103,8 @@ export default {
                 this.ignoredControls = true
                 let choix = []
                 var cancel = { id: -1, title: this.IntlString('CANCEL'), icons: 'fa-undo', color: 'red' }
-                for (var i in this.closestPlayers) { choix.push({ id: this.closestPlayers[i].id, label: this.closestPlayers[i].name }) }
-                choix = [choix, ...cancel]
+                for (var i in this.closestPlayers) { choix.push({ id: this.closestPlayers[i].id, label: this.closestPlayers[i].name, title: this.closestPlayers[i].name, icons: 'fa-share-square' }) }
+                choix.push(cancel)
                 const data = await Modal.CreateModal({ choix })
                 if (data.id === -1) {
                   this.ignoredControls = false

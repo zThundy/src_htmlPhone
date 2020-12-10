@@ -2,10 +2,12 @@ ESX.RegisterServerCallback("gcphone:bluetooth_getPlayersLabel", function(source,
     local users = {}
 
     for _, player in pairs(players) do
-        table.insert(users, {
-            name = GetPlayerName(player),
-            id = player
-        })
+        if player ~= source then
+            table.insert(users, {
+                name = GetPlayerName(player),
+                id = player
+            })
+        end
     end
 
     cb(users)

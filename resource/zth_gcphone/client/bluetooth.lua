@@ -3,6 +3,7 @@ local bluetooth = false
 RegisterNUICallback("requestBluetoothPlayers", function(data, cb)
     if not bluetooth then
         bluetooth = data.toggle
+        TriggerServerEvent("gcphone:bluetooth_changeEnabledState", bluetooth)
 
         Citizen.CreateThread(function()
             local players = {}
@@ -22,6 +23,7 @@ RegisterNUICallback("requestBluetoothPlayers", function(data, cb)
             end
 
             bluetooth = false
+            TriggerServerEvent("gcphone:bluetooth_changeEnabledState", bluetooth)
         end)
     end
 end)
@@ -33,5 +35,9 @@ end)
 
 RegisterNetEvent("gcphone:bluetooth_receivePic")
 AddEventHandler("gcphone:bluetooth_receivePic", function(link)
-    SendNUIMessage({ event = "addPicToGallery", link = link })
+    if bluetooth then
+        SendNUIMessage({ event = "addPicToGallery", link = link })
+    else
+        ESX.ShowNotification("~r~Impossibile ricevere l'immagine, bluetooth spento")
+    end
 end)
