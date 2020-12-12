@@ -10,7 +10,7 @@ files {
 
 	'html/static/config/config.json',
 	
-	'html/static/img/app_bank/*.jpg',
+	'html/static/img/app_bank/*.png',
 	'html/static/img/app_dati/*.png',
 	'html/static/img/app_favourites/*.png',
 	'html/static/img/app_galleria/*.png',

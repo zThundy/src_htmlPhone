@@ -28,9 +28,11 @@ import InstaSpashScreen from '@/components/instagram/InstagramSpashScreen'
 import InstaScreen from '@/components/instagram/InstagramScreen'
 
 import Parametre from '@/components/parametre/Parametre'
-import Bank from '@/components/Bank/Bank'
 import Bourse from '@/components/Bourse/Bourse'
 import Photo from '@/components/Photo/Photo'
+
+import Bank from '@/components/Bank/Bank'
+import BankSplash from '@/components/Bank/BankSplash'
 
 import dati from '@/components/dati/dati'
 import datisplash from '@/components/dati/datisplash'
@@ -120,6 +122,12 @@ export default new Router({
       path: '/bank',
       name: 'bank',
       component: Bank
+    },
+    {
+      meta: { depth: 2, transitionName: 'slide' },
+      path: '/banksplash',
+      name: 'bank.splash',
+      component: BankSplash
     },
     {
       meta: { depth: 2, transitionName: 'slide' },

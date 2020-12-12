@@ -27,7 +27,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['IntlString', 'gruppi', 'myPhoneNumber'])
+    ...mapGetters(['IntlString', 'gruppi', 'myPhoneNumber', 'hasWifi'])
   },
   methods: {
     // ...mapMutations(['SET_DATI_INFO']),
@@ -70,6 +70,12 @@ export default {
     },
     async onRight () {
       if (this.ignoreControls === true) return
+      // con questo controllo se il telefono
+      // ha il wifi attivo
+      if (!this.hasWifi) {
+        this.$phoneAPI.sendErrorMessage('Non sei connesso al wifi')
+        return
+      }
       // qui controllo se il numero che ha salvato il telefono in memoria
       // è valido oppure no
       if (this.myPhoneNumber.includes('#') || this.myPhoneNumber === 0 || this.myPhoneNumber === '0') {
@@ -118,6 +124,10 @@ export default {
       if (this.ignoreControls === true) return
       // qui invio il gruppo al router
       // console.log(this.gruppi[this.currentSelected])
+      if (!this.hasWifi) {
+        this.$phoneAPI.sendErrorMessage('Non sei connesso al wifi')
+        return
+      }
       this.$router.push({ name: 'whatsapp.gruppo', params: { gruppo: this.gruppi[this.currentSelected] } })
     }
   },
@@ -155,10 +165,6 @@ export default {
 }
 
 .whatsapp-menu-item.select {
-  background-color: #00ac0e62;
-}
-
-.whatsapp-menu-item:hover {
   background-color: #00ac0e62;
 }
 

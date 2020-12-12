@@ -1,6 +1,6 @@
 <template>
   <div class="phone_app">
-    <PhoneTitle :title="IntlString('APP_CONFIG_TITLE')" @back="onBackspace"/>
+    <PhoneTitle :title="IntlString('APP_CONFIG_TITLE')" :textColor="'black'" @back="onBackspace"/>
 
     <div class='phone_content elements'>
       <div class='element'

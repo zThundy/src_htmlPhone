@@ -173,21 +173,27 @@ function gcPhone.getSourceFromIdentifier(identifier, cb)
 end
 
 function gcPhone.getPhoneNumber(identifier)
-    local result = MySQL.Sync.fetchAll("SELECT * FROM users WHERE identifier = @identifier", { ['@identifier'] = identifier })
+    local result = MySQL.Sync.fetchAll("SELECT * FROM users WHERE identifier = @identifier", {['@identifier'] = identifier })
     if #result > 0 then return result[1].phone_number end
 
     return nil
 end
 
 function gcPhone.getIdentifierByPhoneNumber(phone_number) 
-    local result = MySQL.Sync.fetchAll("SELECT users.identifier FROM users WHERE users.phone_number = @phone_number", { ['@phone_number'] = phone_number })
-    if result[1] ~= nil then return result[1].identifier end
+    local result = MySQL.Sync.fetchAll("SELECT identifier FROM users WHERE phone_number = @phone_number", {['@phone_number'] = phone_number })
+    local isInstalled = true
+    if result[1] == nil then
+        result = MySQL.Sync.fetchAll("SELECT identifier FROM sim WHERE phone_number = @phone_number", {['@phone_number'] = phone_number})
+        isInstalled = false
+    end
 
-    return nil
+    if result[1] ~= nil then return result[1].identifier, isInstalled end
+
+    return nil, isInstalled
 end
 
 function gcPhone.getSourceFromPhoneNumber(phone_number)
-    local identifier = gcPhone.getIdentifierByPhoneNumber(phone_number)
+    local identifier, _ = gcPhone.getIdentifierByPhoneNumber(phone_number)
     local xPlayer = ESX.GetPlayerFromIdentifier(identifier)
     if xPlayer == nil then return nil end
 
@@ -290,11 +296,12 @@ function addMessage(source, identifier, phone_number, message)
     local player = tonumber(source)
     local xPlayer = ESX.GetPlayerFromId(player)
 
-    local otherIdentifier = gcPhone.getIdentifierByPhoneNumber(phone_number)
+    local otherIdentifier, isInstalled = gcPhone.getIdentifierByPhoneNumber(phone_number)
     local myPhone = gcPhone.getPhoneNumber(identifier)
     
     if otherIdentifier ~= nil then
         segnaleTransmitter = segnaliTelefoniPlayers[gcPhone.getPlayerSegnaleIndex(segnaliTelefoniPlayers, identifier)]
+
     	if segnaleTransmitter ~= nil and segnaleTransmitter.potenzaSegnale > 0 then
             ESX.GetPianoTariffarioParam(myPhone, "messaggi", function(messaggi)
                 if messaggi > 0 then
@@ -308,13 +315,22 @@ function addMessage(source, identifier, phone_number, message)
 
                     gcPhone.getSourceFromIdentifier(otherIdentifier, function(target_source)
                         if tonumber(target_source) ~= nil then
-
-                            segnaleReceiver = segnaliTelefoniPlayers[gcPhone.getPlayerSegnaleIndex(segnaliTelefoniPlayers, otherIdentifier)]
-                            if segnaleReceiver ~= nil and segnaleReceiver.potenzaSegnale > 0 then
-                                TriggerClientEvent("gcPhone:receiveMessage", tonumber(target_source), tomess)
+                            
+                            -- qui controllo se la sim a cui stai mandando il
+                            -- messaggio è installata o no
+                            if isInstalled then
+                                -- se la sim è installata allora mando il telefono e gli mando la notifica
+                                segnaleReceiver = segnaliTelefoniPlayers[gcPhone.getPlayerSegnaleIndex(segnaliTelefoniPlayers, otherIdentifier)]
+                                if segnaleReceiver ~= nil and segnaleReceiver.potenzaSegnale > 0 then
+                                    TriggerClientEvent("gcPhone:receiveMessage", tonumber(target_source), tomess)
+                                    setMessageReceived(phone_number, myPhone)
+                                end
+                            else
+                                -- questo è l'evento che ti fa il bing quando invii il messaggio
+                                -- lo ho tolto così non fa la notifica
+                                -- TriggerClientEvent("gcPhone:receiveMessage", tonumber(target_source), tomess)
                                 setMessageReceived(phone_number, myPhone)
                             end
-
                         end
                     end)
                 else
@@ -809,8 +825,7 @@ AddEventHandler('gcPhone:allUpdate', function()
     TriggerClientEvent("gcPhone:contactList", player, getContacts(identifier))
 
     local notReceivedMessages = getUnreceivedMessages(identifier)
-
-    if notReceivedMessages > 0 then setMessagesReceived(num) end
+    -- if notReceivedMessages > 0 then setMessagesReceived(num) end
 
     TriggerClientEvent("gcPhone:allMessage", player, getMessages(identifier), notReceivedMessages)
 

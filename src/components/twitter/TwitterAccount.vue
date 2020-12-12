@@ -589,7 +589,7 @@ input:focus ~ .highlight {
   font-size: 19px;
 }
 
-.group.select .btn.btn-blue, .group:hover .btn.btn-blue{
+.group.select .btn.btn-blue, .btn.btn-blue{
   background-color: #007aff;
   color: white;
   border: none;
@@ -605,7 +605,7 @@ input:focus ~ .highlight {
   margin: 0 auto;
   margin-bottom: 50px;
 }
-.group.select .btn.btn-red, .group:hover .btn.btn-red{
+.group.select .btn.btn-red, .btn.btn-red{
   background-color: #ee3838;
   color: white;
   border: none;
@@ -618,7 +618,7 @@ input:focus ~ .highlight {
   font-weight: 500;
   border-radius: 10px;
 }
-.group.select .btn.btn-gray, .group:hover .btn.btn-gray{
+.group.select .btn.btn-gray, .btn.btn-gray{
   background-color: #757575;
   color: white;
   border: none;
@@ -629,10 +629,12 @@ input:focus ~ .highlight {
 	from { background:#007aff; }
   to 	{ width:0; background:transparent; }
 }
+
 @-moz-keyframes inputHighlighter {
 	from { background:#007aff; }
   to 	{ width:0; background:transparent; }
 }
+
 @keyframes inputHighlighter {
 	from { background:#007aff; }
   to 	{ width:0; background:transparent; }

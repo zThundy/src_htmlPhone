@@ -1,25 +1,14 @@
 <template>
-  <div class="phone_title_content" :style="style" :class="{'hasInfoBare': showInfoBare}" >
-    <InfoBare v-if="showInfoBare" />
-
-    <div v-if="showSlice === true">
-      <div class="slice" :style="{backgroundColor: backgroundColor, color: textColor}">
-        <i style="padding-top: 15px; padding-right: 25px;" class="fas fa-angle-left"></i>
+  <div class="phone_title_content" :style="style" :class="{'hasInfoBare': showSegnaleSection}" >
+    <InfoBare v-if="showSegnaleSection" />
+    
+    <div class="phone_title" :style="{backgroundColor: backgroundColor}">
+      <div :style="{color: textColor}" class="title">
+        {{title}}
       </div>
-
-      <div class="title">{{title}}</div>
+      
+      <i class="backIcon fas fa-angle-left"/>
     </div>
-
-    <div v-else>
-      <div class="phone_title" :style="{backgroundColor: backgroundColor, color: textColor}">
-        <button class="btn-back">
-          <i style="padding-top: 15px; padding-right: 25px;" class="fas fa-angle-left"></i>
-        </button>
-
-        <div class="title">{{title}}</div>
-      </div>
-    </div>
-
   
   </div>
 </template>
@@ -33,9 +22,7 @@ export default {
     ...mapGetters([]),
     style () {
       return {
-        backgroundColor: this.backgroundColor,
-        textColor: this.textColor,
-        showSlice: this.showSlice
+        backgroundColor: this.backgroundColor
       }
     }
   },
@@ -49,7 +36,7 @@ export default {
       type: String,
       required: true
     },
-    showInfoBare: {
+    showSegnaleSection: {
       type: Boolean,
       default: true
     },
@@ -69,38 +56,24 @@ export default {
 </script>
 <style scoped>
 .title {
-  padding-top: 10px;
-  font-family: Arial, Helvetica, sans-serif;
+  padding-top: 5px;
+  font-family: Helvetica;
   text-align: center;
-  padding-right: 90px;
-}
-
-.phone_title {
-  padding-top: 4px;
+  position: relative;
 }
 
 .btn-back {
-  padding-top: 4px;
+  color: black;
+}
+
+.backIcon {
+  position: absolute;
+  left: 15px;
+  margin: auto;
+  top: 22px;
 }
 
 .btn-back:hover {
-  background-color: rgba(0, 255, 255, 0);
-}
-
-.phone_title_content {
-  font-size: 10px;
-}
-
-.slice {
-  position: absolute;
-  padding: 2rem 20%;
-}
-
-.slice:nth-child(2) {
-  top: 27px;
-  background: rgba(255, 164, 103, 0.541);
-  color: white;
-  clip-path: polygon(0 0, 100% 0, 100% 20%, 0 100%);
-  padding: 3rem 70% 25%;
+  background-color: rgba(0, 0, 0, 0);
 }
 </style>

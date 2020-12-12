@@ -7,7 +7,6 @@ const constraints = {
 class VoiceRTC {
 
   constructor (RTCConfig) {
-    console.log(RTCConfig)
     this.myPeerConnection = null
     this.candidates = []
     this.listener = {}

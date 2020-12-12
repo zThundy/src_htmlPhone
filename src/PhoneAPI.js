@@ -125,7 +125,7 @@ class PhoneAPI {
   }
 
   async sendErrorMessage (message) {
-    return this.post('sendESXNotification', { message: message })
+    return this.post('sendErrorMessage', { message: message })
   }
 
   async getReponseText (data) {
@@ -227,6 +227,10 @@ class PhoneAPI {
     store.commit('SET_BANK_AMONT', data.soldi, data.iban)
   }
 
+  async requestBankInfo () {
+    return this.post('requestBankInfo')
+  }
+
   async postUpdateMoney (money, iban) {
     return this.post('sendMoneyToIban', {money, iban})
   }
@@ -294,6 +298,14 @@ class PhoneAPI {
       this.voiceRTC.close()
     }
     store.commit('SET_APPELS_INFO', null)
+  }
+
+  async updateVolume (data) {
+    return this.post('updateVolume', data)
+  }
+
+  async sendStartupValues (data) {
+    return this.post('sendStartupValues', data)
   }
 
   // Tchat Event
@@ -400,7 +412,7 @@ class PhoneAPI {
     })
   }
 
-  onplaySound ({ sound, volume = 1 }) {
+  onplaySound ({ sound, volume }) {
     var path = '/html/static/sound/' + sound
     if (!sound) return
     if (this.soundList[sound] !== undefined) {
@@ -416,7 +428,7 @@ class PhoneAPI {
     }
   }
 
-  onsetSoundVolume ({ sound, volume = 1 }) {
+  onsetSoundVolume ({ sound, volume }) {
     if (this.soundList[sound] !== undefined) {
       this.soundList[sound].volume = volume
     }
@@ -594,9 +606,10 @@ class PhoneAPI {
     })
   }
 
-  // ==========================================================================
-  //  Zona eventi e funzioni Whatsapp
-  // ==========================================================================
+  // ///////////////////////// //
+  // SEZIONE WHATSAPP TELEFONO //
+  // ///////////////////////// //
+
   // notifica di errore
   onwhatsapp_showError (data) {
     Vue.notify({

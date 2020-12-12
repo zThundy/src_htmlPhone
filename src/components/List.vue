@@ -1,6 +1,6 @@
 <template>
   <div class="phone_app">
-    <PhoneTitle :title="title" :showInfoBare="showInfoBare" v-if="showHeader" @back="back"/>
+    <PhoneTitle :title="title" :showSegnaleSection="showSegnaleSection" v-if="showHeader" @back="back"/>
 
     <div style="width: 324px; height: 595px;" class="phone_content elements">
 
@@ -41,7 +41,7 @@ export default {
       type: Boolean,
       default: true
     },
-    showInfoBare: {
+    showSegnaleSection: {
       type: Boolean,
       default: true
     },

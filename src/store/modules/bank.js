@@ -31,7 +31,7 @@ export default {
 }
 
 if (process.env.NODE_ENV !== 'production') {
-  state.bankAmount = 2000
+  state.bankAmount = 2000000
   state.iban = 'FJEN35K'
 }
 

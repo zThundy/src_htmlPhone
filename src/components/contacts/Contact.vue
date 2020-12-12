@@ -105,16 +105,9 @@ export default {
     },
     save () {
       if (this.id === -1 || this.id === 0) {
-        this.addContact({
-          display: this.contact.display,
-          number: this.contact.number
-        })
+        this.addContact({ display: this.contact.display, number: this.contact.number })
       } else {
-        this.updateContact({
-          id: this.id,
-          display: this.contact.display,
-          number: this.contact.number
-        })
+        this.updateContact({ id: this.id, display: this.contact.display, number: this.contact.number })
       }
       history.back()
     },

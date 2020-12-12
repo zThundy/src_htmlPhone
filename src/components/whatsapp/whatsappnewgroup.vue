@@ -286,7 +286,7 @@ export default {
         const resp = await Modal.CreateModal({ choix })
         switch (resp.id) {
           case 1:
-            this.$router.push({ name: 'whatsapp.gruppo', params: { gruppo: this.gruppo } })
+            this.$router.push({ name: 'whatsapp.gruppo', params: { gruppo: this.gruppo, updategroups: true } })
             this.ignoreControls = false
             this.addSelectedMembers({ contacts: this.contacts, gruppo: this.gruppo })
             break
@@ -313,7 +313,7 @@ export default {
         if (this.gruppo.partecipanti !== undefined && this.gruppo.partecipanti !== null) {
           for (var index in this.contacts) {
             for (var index2 in this.gruppo.partecipanti) {
-              if (this.contacts[index].number === this.gruppo.partecipanti[index2]) {
+              if (String(this.contacts[index].number) === String(this.gruppo.partecipanti[index2].number)) {
                 this.selectedContacts[this.contacts[index].id] = true
               }
             }

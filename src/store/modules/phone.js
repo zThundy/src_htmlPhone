@@ -158,6 +158,7 @@ const actions = {
   setVolume ({ commit }, volume) {
     window.localStorage['gc_volume'] = volume
     commit('SET_VOLUME', volume)
+    PhoneAPI.updateVolume({ volume: volume })
   },
   setLanguage ({ commit }, lang) {
     window.localStorage['gc_language'] = lang
@@ -174,6 +175,10 @@ const actions = {
     dispatch('setCoque', getters.config.coque_default)
     dispatch('setSonido', getters.config.sonido_default)
     dispatch('setLanguage', 'it_IT')
+  },
+  sendStartupValues ({ state }) {
+    var data = { volume: state.volume, notification: state.notification }
+    PhoneAPI.sendStartupValues(data)
   }
 }
 

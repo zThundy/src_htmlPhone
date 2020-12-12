@@ -85,13 +85,15 @@ export default {
       const isValid = numero.startsWith('#') === false
       this.updateIgnoredControls(true)
       let choix = [
+        {id: 4, title: this.IntlString('APP_PHONE_ADD'), icons: 'fa-plus'},
         {id: 1, title: this.IntlString('APP_PHONE_DELETE'), icons: 'fa-trash', color: 'orange'},
         {id: 2, title: this.IntlString('APP_PHONE_DELETE_ALL'), icons: 'fa-trash', color: 'red'},
-        {id: 4, title: this.IntlString('APP_PHONE_ADD'), icons: 'fa-plus'},
         {id: 3, title: this.IntlString('APP_PHONE_CANCEL'), icons: 'fa-undo', color: 'red'}
       ]
       if (isValid === true) {
+        choix = [{id: 5, title: this.IntlString('APP_PHONE_SEND_MESSAGE'), icons: 'fa-sms'}, ...choix]
         choix = [{id: 0, title: this.IntlString('APP_PHONE_CALL'), icons: 'fa-phone'}, ...choix]
+        choix = [{id: 6, title: this.IntlString('APP_PHONE_CALL_ANONYMOUS'), icons: 'fa-mask'}, ...choix]
       }
       const rep = await Modal.CreateModal({ choix })
       switch (rep.id) {
@@ -103,13 +105,22 @@ export default {
           this.appelsDeleteHistorique({ numero })
           this.updateIgnoredControls(false)
           break
-        case 2 :
+        case 2:
           this.appelsDeleteAllHistorique()
           this.updateIgnoredControls(false)
           break
-        case 4 :
+        case 4:
           this.save(numero)
           this.updateIgnoredControls(false)
+          break
+        case 5:
+          this.$router.push({ name: 'messages.view', params: { display: item.display, number: numero } })
+          this.updateIgnoredControls(false)
+          break
+        case 6:
+          this.startCall({ numero: '#' + numero })
+          this.updateIgnoredControls(false)
+          break
       }
       if (rep.title === 'cancel') {
         this.updateIgnoredControls(false)
@@ -143,7 +154,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['IntlString', 'appelsHistorique', 'contacts', 'ignoreControls']),
+    ...mapGetters(['IntlString', 'appelsHistorique', 'contacts', 'ignoreControls', 'contacts', 'messages']),
     historique () {
       let grpHist = groupBy(this.appelsHistorique, 'num')
       let hist = []

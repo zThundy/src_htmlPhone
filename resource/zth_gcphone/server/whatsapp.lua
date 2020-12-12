@@ -101,6 +101,17 @@ AddEventHandler("gcphone:whatsapp_sendMessage", function(data)
 end)
 
 
+function isUserInGroup(number, partecipanti)
+    for k, v in pairs(partecipanti) do
+        if tostring(v.number) == tostring(number) then
+            return true
+        end
+    end
+
+    return false
+end
+
+
 -- ATTENZIONE
 -- l'aggiornamento istantaneo dei partecipanti al gruppo, è solo per chi lo fa in quell'istante,
 -- gli altri devono chiudere e riaprire il telefono
@@ -116,34 +127,32 @@ AddEventHandler("gcphone:whatsapp_addGroupMembers", function(data)
 		if isAble then
             gcPhone.usaDatiInternet(xPlayer.identifier, mbToRemove)
             
-            MySQL.Async.fetchAll("SELECT * FROM phone_whatsapp_groups WHERE id = @id", {['@id'] = data.gruppo.id}, function(result)
-                local partecipanti = json.decode(result[1].partecipanti)
+            local partecipanti = {}
 
-                for _, val in pairs(data.contacts) do
-                    if val.selected then
-                        table.insert(partecipanti, {
-                            display = val.display,
-                            icon = val.icon or '/html/static/img/app_whatsapp/defaultgroup.png',
-                            id = val.id,
-                            number = val.number
-                        })
-                    end
+            for index, val in pairs(data.contacts) do
+                if val.selected then
+                    table.insert(partecipanti, {
+                        display = val.display,
+                        icon = val.icon or '/html/static/img/app_whatsapp/defaultgroup.png',
+                        id = val.id,
+                        number = val.number
+                    })
                 end
+            end
 
-                gcPhone.isAbleToSurfInternet(xPlayer.identifier, #partecipanti * 0.2, function(isAble, mbToRemove)
-                    if isAble then
-                        gcPhone.usaDatiInternet(xPlayer.identifier, mbToRemove)
+            gcPhone.isAbleToSurfInternet(xPlayer.identifier, #partecipanti * 0.2, function(isAble, mbToRemove)
+                if isAble then
+                    gcPhone.usaDatiInternet(xPlayer.identifier, mbToRemove)
 
-                        MySQL.Async.execute("UPDATE FROM phone_whatsapp_groups SET partecipanti = @partecipanti WHERE id = @id", {
-                            ['@id'] = data.gruppo.id,
-                            ['@partecipanti'] = json.encode(partecipanti)
-                        }, function(rowsChanged)
-                            if rowsChanged > 0 then TriggerClientEvent("gcphone:whatsapp_updateGruppi", player, updateCachedGroups()) end
-                        end)
-                    else
-                        TriggerClientEvent("gcphone:whatsapp_showError", "Errore", "Non hai abbastanza giga per farlo!")
-                    end
-                end)
+                    MySQL.Async.execute("UPDATE phone_whatsapp_groups SET partecipanti = @partecipanti WHERE id = @id", {
+                        ['@id'] = data.gruppo.id,
+                        ['@partecipanti'] = json.encode(partecipanti)
+                    }, function(rowsChanged)
+                        if rowsChanged > 0 then TriggerClientEvent("gcphone:whatsapp_updateGruppi", player, updateCachedGroups()) end
+                    end)
+                else
+                    TriggerClientEvent("gcphone:whatsapp_showError", "Errore", "Non hai abbastanza giga per farlo!")
+                end
             end)
         else
             TriggerClientEvent("gcphone:whatsapp_showError", "Errore", "Non hai abbastanza giga per farlo!")

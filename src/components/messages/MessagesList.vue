@@ -51,9 +51,9 @@ export default {
         } else if (rep.id === 5) {
           this.startCall({ numero: '#' + data.number })
         } else if (rep.id === 6) {
-          this.$router.push({name: 'messages.view', params: data})
+          this.$router.push({ name: 'messages.view', params: data })
         } else if (rep.id === 7) {
-          this.$router.push({name: 'contacts.view', params: {id: 0, number: data.number}})
+          this.$router.push({ name: 'contacts.view', params: { id: 0, number: data.number } })
         }
         this.disableList = false
       })
@@ -70,11 +70,7 @@ export default {
       let contacts = this.contacts
       let messGroup = messages.reduce((rv, x) => {
         if (rv[x['transmitter']] === undefined) {
-          const data = {
-            noRead: 0,
-            lastMessage: 0,
-            display: x.transmitter
-          }
+          const data = { noRead: 0, lastMessage: 0, display: x.transmitter }
           let contact = contacts.find(e => e.number === x.transmitter)
           data.unknowContact = contact === undefined
           if (contact !== undefined) {

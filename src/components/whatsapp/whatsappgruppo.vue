@@ -1,6 +1,6 @@
 <template>
   <div style="width: 326px; height: 743px;" class="sfondo">
-    <PhoneTitle :title="this.gruppo.gruppo" :titleColor="'black'" :backgroundColor="'rgb(112,255,125)'" @back="onBackspace" :showInfoBare="true"/>
+    <PhoneTitle :title="this.gruppo.gruppo" :titleColor="'black'" :backgroundColor="'rgb(112,255,125)'" @back="onBackspace"/>
 
     <div style="position: absolute;" class="groupImage" data-type="button">
       <img :src="gruppo.icona" />
@@ -223,6 +223,7 @@ export default {
     }
   },
   created () {
+    if (this.$route.params.updategroups) { this.$phoneAPI.requestInfoOfGroups() }
     this.gruppo = this.$route.params.gruppo
     this.requestWhatsappInfo({ groupId: this.gruppo.id, contacts: this.contacts })
     // qui imposto il messaggio all'ultimo e con la funzione

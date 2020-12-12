@@ -40,7 +40,7 @@ export default {
     ...mapGetters(['nbMessagesUnread', 'backgroundURL', 'Apps'])
   },
   methods: {
-    ...mapGetters(['closePhone']),
+    ...mapGetters(['closePhone', 'hasWifi']),
     onLeft () {
       const l = Math.floor(this.currentSelect / this.nBotonesMenu)
       const newS = (this.currentSelect + this.nBotonesMenu - 1) % this.nBotonesMenu + l * this.nBotonesMenu

@@ -352,51 +352,50 @@ export default {
 
 <style scoped>
 .messages{
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    width: 326px;
-    height: 678px;
-    right: 0;
-    height: calc(100% - 20px);
-    background-color: #DDD;    
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 326px;
+  height: 678px;
+  right: 0;
+  height: calc(100% - 20px);
+  background-color: #DDD;
 }
 #sms_contact{
-    background-color: #4CAF50;
-    color: white;
-    height: 34px;
-    line-height: 34px;
-    padding-left: 5px;
+  background-color: #4CAF50;
+  color: white;
+  height: 34px;
+  line-height: 34px;
+  padding-left: 5px;
 }
 #sms_list{
-    height: calc(100% - 34px - 26px);
-    overflow-y: auto;
-    padding-bottom: 8px;
+  height: calc(100% - 34px - 26px);
+  overflow-y: auto;
+  padding-bottom: 8px;
 }
 
-  .name_other_sms_other{
-    margin-bottom: -9px;
-    margin-left: 42px;
-    font-size: 14px;
-    font-weight: 500;
-    color: lightgrey;
-  }
+.name_other_sms_other {
+  margin-bottom: -9px;
+  margin-left: 42px;
+  font-size: 14px;
+  font-weight: 500;
+  color: lightgrey;
+}
 
- .name_other_sms_me{
+ .name_other_sms_me {
   display: none;
 }
 
-.name_other_sms_other.sms_me{
+.name_other_sms_other.sms_me {
   display: none;
-
 }
 
-.sms{
+.sms {
   overflow: auto;
   zoom: 1;
 }
 
-.sms-img{
+.sms-img {
   width: 100%;
   height: auto;
   padding-top: 12px;
@@ -424,7 +423,7 @@ export default {
   border-style: solid;
 }
 
-.sms_me{
+.sms_me {
   float: right;
   background-color: #e9e9eb;
   border-radius: 17px;
@@ -434,74 +433,69 @@ export default {
   margin-top: 10px;
 }
 
-.sms_other{
-    background-color: #0b81ff;
-    border-radius: 17px;
-    font-family: -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
-    color:white;
-    float: left;
-    padding: 5px 10px;
-    max-width: 90%;
-    margin-left: 5%;
-    margin-top: 10px;
+.sms_other {
+  background-color: #0b81ff;
+  border-radius: 17px;
+  font-family: -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  color:white;
+  float: left;
+  padding: 5px 10px;
+  max-width: 90%;
+  margin-left: 5%;
+  margin-top: 10px;
 }
 
 
-.sms_time{
-    display: block;
-    font-size: 12px;
+.sms_time {
+  display: block;
+  font-size: 12px;
 }
 
-.sms_me .sms_time{
-    color: #AAA;
-    margin-left: 4px;
-    margin-top: -5px;
-    display: none;
-    font-size: 9px;
-    
+.sms_me .sms_time {
+  color: #AAA;
+  margin-left: 4px;
+  margin-top: -5px;
+  display: none;
+  font-size: 9px; 
 }
-.sms_other .sms_time{
-    color: white;
-    display: none;
-    margin-left: 4px;
-    margin-top: -5px;
-    font-size: 9px;
+.sms_other .sms_time {
+  color: white;
+  display: none;
+  margin-left: 4px;
+  margin-top: -5px;
+  font-size: 9px;
 }
 
 
-.messages{
+.messages {
   position: relative;
   left: 0;
   top: 0;
   width: 100%;
   height: 100%;
 }
-.sms.select .sms_message, .sms_message:hover{
-  background-color:  #373B3C !important;
 
-  color: #E4E3E2  !important;
-}
-
-.sms.select .sms_message, .sms_message:hover{
+.sms.select .sms_message {
   background-color: #373B3C !important;
-  color: white !important;
+  color: #E4E3E2 !important;
 }
 
-.sms_message{
+.sms_message {
   word-wrap: break-word;
   max-width: 80%;
   font-size: 24px;
   padding-top: 0.1px;
 }
 
-#sms_write{
+#sms_write {
   height: 56px;
   margin: 10px;
   width: 380px;
   background-color: #e9e9eb;
   border-radius: 56px;
 }
-#sms_write input{
+
+#sms_write input {
   height: 56px;
   border: none;
   outline: none;
@@ -511,11 +505,12 @@ export default {
   background-color: rgba(236, 236, 241, 0)
 }
 
-.sms_send{
+.sms_send {
   float: right;
   margin-right: 10px;
 }
-.sms_send svg{
+
+.sms_send svg {
   margin: 8px; 
   width: 36px;
   height: 36px;

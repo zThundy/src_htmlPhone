@@ -24,7 +24,7 @@ hasFocus = false
 local inCall = false
 local stoppedPlayingUnreachable = false
 secondiRimanenti = 0
-enabeGlobalNotification = true
+enableGlobalNotification = true
 
 playerCoords = GetEntityCoords(GetPlayerPed(-1))
 distance = nil
@@ -32,6 +32,8 @@ distance = nil
 local PhoneInCall = {}
 local currentPlaySound = false
 local soundDistanceMax = 8.0
+
+local volume = 1
 
 segnaleRadio = 0
 retiWifi = {}
@@ -43,7 +45,7 @@ myPhoneNumber = ''
 ESX = nil
 Citizen.CreateThread(function()
 	while ESX == nil do
-		TriggerEvent('esx:getSharedObject', function(obj) ESX = obj end)
+		ESX = exports["es_extended"]:getSharedObject()
 		Citizen.Wait(0)
     end
 
@@ -113,12 +115,24 @@ AddEventHandler('gcPhone:setEnableApp', function(appName, enable)
 end)
 
 RegisterNUICallback("updateNotifications", function(data, cb)
-    enabeGlobalNotification = data
+    enableGlobalNotification = data
     cb("ok")
 end)
 
-RegisterNUICallback("sendESXNotification", function(data, cb)
+RegisterNUICallback("sendErrorMessage", function(data, cb)
     ESX.ShowNotification("~r~"..data.message)
+    cb("ok")
+end)
+
+RegisterNUICallback("updateVolume", function(data, cb)
+    volume = data.volume
+    cb("ok")
+end)
+
+RegisterNUICallback("sendStartupValues", function(data, cb)
+    volume = data.volume
+    enableGlobalNotification = data.notification
+    print(volume, enableGlobalNotification)
     cb("ok")
 end)
 
@@ -126,18 +140,19 @@ end)
 --------  Funzioni per i suoni
 --==================================================================================================================
 
-function PlaySoundJS (sound, volume)
+function PlaySoundJS(sound)
     SendNUIMessage({ event = 'playSound', sound = sound, volume = volume })
 end
 
 
-function SetSoundVolumeJS (sound, volume)
-    SendNUIMessage({ event = 'setSoundVolume', sound = sound, volume = volume})
+function SetSoundVolumeJS(sound, vol)
+    volume = vol
+    SendNUIMessage({ event = 'setSoundVolume', sound = sound, volume = volume })
 end
 
 
-function StopSoundJS (sound)
-    SendNUIMessage({ event = 'stopSound', sound = sound})
+function StopSoundJS(sound)
+    SendNUIMessage({ event = 'stopSound', sound = sound })
 end
 
 
@@ -155,20 +170,20 @@ end)
 RegisterNetEvent("gcPhone:updatePhoneNumber")
 AddEventHandler("gcPhone:updatePhoneNumber", function(phone_number)
     myPhoneNumber = phone_number
-    SendNUIMessage({event = 'updateMyPhoneNumber', myPhoneNumber = myPhoneNumber})
+    SendNUIMessage({ event = 'updateMyPhoneNumber', myPhoneNumber = myPhoneNumber })
 end)
 
 
 RegisterNetEvent("gcPhone:contactList")
 AddEventHandler("gcPhone:contactList", function(_contacts)
     contacts = _contacts
-    SendNUIMessage({event = 'updateContacts', contacts = contacts})
+    SendNUIMessage({ event = 'updateContacts', contacts = contacts })
 end)
 
 
 RegisterNetEvent("gcPhone:allMessage")
 AddEventHandler("gcPhone:allMessage", function(allmessages, notReceivedMessages)
-    SendNUIMessage({event = 'updateMessages', messages = allmessages})
+    SendNUIMessage({ event = 'updateMessages', messages = allmessages })
     messages = allmessages
 
     if notReceivedMessages ~= nil then
@@ -179,9 +194,9 @@ AddEventHandler("gcPhone:allMessage", function(allmessages, notReceivedMessages)
                 ESX.ShowNotification("Hai "..notReceivedMessages.." nuovi messaggi")
             end
 
-            if enabeGlobalNotification then
+            if enableGlobalNotification then
                 DrawNotification(false, false)
-                PlaySoundJS('msgnotify.ogg', 0.05)
+                PlaySoundJS('msgnotify.ogg')
                 Citizen.Wait(3000)
                 StopSoundJS('msgnotify.ogg')
             end
@@ -237,8 +252,8 @@ AddEventHandler("gcPhone:receiveMessage", function(message)
         end
 
         ESX.ShowNotification(text)
-        if enabeGlobalNotification then
-            PlaySoundJS('msgnotify.ogg', 0.05)
+        if enableGlobalNotification then
+            PlaySoundJS('msgnotify.ogg')
             Citizen.Wait(3000)
             StopSoundJS('msgnotify.ogg')
         end
@@ -344,7 +359,7 @@ AddEventHandler("gcPhone:phoneUnreachable", function(infoCall, initiator)
         SendNUIMessage({event = 'acceptCall', infoCall = infoCall, initiator = initiator})
 
         if stoppedPlayingUnreachable == false then
-            PlaySoundJS('phoneunreachable.ogg', 0.25)
+            PlaySoundJS('phoneunreachable.ogg')
             count = 0
                 
             while true do
@@ -376,7 +391,7 @@ AddEventHandler("gcPhone:phoneNoSignal", function(infoCall, initiator)
         Citizen.Wait(2000)
 
         if stoppedPlayingUnreachable == false then
-            PlaySoundJS('phonenosignal.ogg', 0.25)
+            PlaySoundJS('phonenosignal.ogg')
             count = 0
             
             while true do
@@ -434,7 +449,7 @@ AddEventHandler("gcPhone:acceptCall", function(infoCall, initiator)
                 end
             end
         
-            PlaySoundJS('callend.ogg', 0.25)
+            PlaySoundJS('callend.ogg')
             Wait(2000)
             StopSoundJS('callend.ogg')
         end)
@@ -842,7 +857,7 @@ end)
 
 
 RegisterNUICallback('soundLockscreen', function(data, cb)
-	PlaySoundJS('phoneUnlock.ogg', 0.25)
+	PlaySoundJS('phoneUnlock.ogg')
     Wait(1000)
     StopSoundJS('phoneUnlock.ogg')
     cb("ok")

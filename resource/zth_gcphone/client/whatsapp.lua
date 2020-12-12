@@ -12,6 +12,7 @@ AddEventHandler("gcPhone:whatsapp_showSuccess", function(title, message) SendNUI
 RegisterNetEvent("gcphone:whatsapp_updateGruppi")
 AddEventHandler("gcphone:whatsapp_updateGruppi", function(groups)
     SendNUIMessage({ event = "whatsappClearGroups" })
+
     ESX.TriggerServerCallback("gcPhone:getPhoneNumber", function(number)
 
         for group_id, group in pairs(groups) do
@@ -133,10 +134,12 @@ RegisterNUICallback("updateGroup", function(data, cb)
 end)
 
 RegisterNUICallback("sendAudioNotification", function(data, cb)
-    if enabeGlobalNotification then
-        PlaySoundJS('msgnotify.ogg', 0.05)
-        Citizen.Wait(3000)
-        StopSoundJS('msgnotify.ogg')
+    if isConnected then
+        if enableGlobalNotification then
+            PlaySoundJS('msgnotify.ogg')
+            Citizen.Wait(3000)
+            StopSoundJS('msgnotify.ogg')
+        end
     end
     cb("ok")
 end)

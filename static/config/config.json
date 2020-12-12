@@ -353,7 +353,7 @@
       "it_IT__name": "Piano tariffario",
       "icons": "/html/static/img/icons_app/dati.png",
       "routeName": "dati.splash",
-      "inHomePage": true,
+      "inHomePage": false,
       "enabled": true
     },
     {
@@ -377,7 +377,7 @@
       "it_IT__name": "Messaggi",
       "icons": "/html/static/img/icons_app/sms.png",
       "routeName": "messages",
-      "inHomePage": false,
+      "inHomePage": true,
       "puceRef": "nbMessagesUnread",
       "enabled": true
     },
@@ -393,9 +393,9 @@
       "name": "Banca",
       "it_IT__name": "Banca",
       "icons": "/html/static/img/icons_app/banco.png",
-      "routeName": "bank",
+      "routeName": "bank.splash",
       "inHomePage": false,
-      "enabled": false
+      "enabled": true
     },
     {
       "name": "Borsa",
@@ -453,6 +453,7 @@
       "APP_PHONE_DELETE": "Elimina",
       "APP_PHONE_DELETE_ALL": "Elimina tutto",
       "APP_PHONE_TITLE": "Telefono",
+      "APP_PHONE_SEND_MESSAGE": "Invia messaggio",
       "APP_CONTACT_ADD_PICTURE": "Scatta fotografia",
       "APP_PHONE_MENU_FAVORITES": "Preferiti",
       "APP_PHONE_MENU_RECENTS": "Recenti",

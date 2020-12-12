@@ -99,7 +99,7 @@ export default {
 </script>
 
 <style scoped="true">
-.home{
+.home {
   background-size: cover !important;
   background-position: center !important;
   
@@ -113,7 +113,8 @@ export default {
   justify-content: center;
   color: gray;
 }
-.warningMess{
+
+.warningMess {
   background-color: white;
   position: absolute;
   left: 12px;
@@ -125,7 +126,8 @@ export default {
   border-radius: 4px;
   box-shadow: 0 2px 2px 0 rgba(0,0,0,.14), 0 3px 1px -2px rgba(0,0,0,.2), 0 1px 5px 0 rgba(0,0,0,.12);
 }
-.warningMess .warningMess_icon{
+
+.warningMess .warningMess_icon {
   display: flex;
   width: 16%;
   align-items: center;
@@ -135,22 +137,26 @@ export default {
   width: 42px;
   border-radius: 50%;
 }
+
 .warningMess .warningMess_icon .fa {
   text-align: center;
   color: #F94B42;
 }
-.warningMess .warningMess_content{
+
+.warningMess .warningMess_content {
   padding-left: 12px;
   background-color: rgba(255,255,255, 0.2);
 }
+
 .warningMess_title {
   font-size: 20px;
 }
+
 .warningMess_mess {
   font-size: 16px;
 }
 
-.home_buttons{
+.home_buttons {
   display: flex;
   padding: 6px; 
   width: 100%;
@@ -163,7 +169,8 @@ export default {
   justify-content: space-between;
   transition: all 0.5s ease-in-out;
 }
-button{
+
+button {
   position: relative;
   margin: 0px;
   border: none;
@@ -185,16 +192,15 @@ button{
 }
 
 
-button .puce{
-  
- position: absolute;
+button .puce {
+  position: absolute;
   display: block;
   background-color: #EE3838;
   font-size: 14px;
   width: 26px;
   height: 26px;
   top: -5px;
-    left: 51px;
+  left: 51px;
   font-family: none;
   line-height: 28px;
   text-align: center;
@@ -207,12 +213,13 @@ button .puce{
   bottom: 32px;
   right: 12px;
 }
-button.select, button:hover{
+
+button.select{
   background-color: rgba(255,255,255, 0.2);
   border-radius: 22%;
 }
 
-.btn_menu_ctn{
+.btn_menu_ctn {
   width: 100%;
   display: flex;
   height: 70px;

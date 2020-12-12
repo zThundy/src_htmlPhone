@@ -59,7 +59,7 @@ export default {
     ...mapGetters(['IntlString', 'nbMessagesUnread', 'backgroundURL', 'messages', 'unreadMessages'])
   },
   methods: {
-    ...mapActions(['closePhone', 'setupUnreadMessages', 'resetUnreadMessages']),
+    ...mapActions(['closePhone', 'setupUnreadMessages', 'resetUnreadMessages', 'sendStartupValues']),
     onEnter () {
       this.hasPressed = true
       setTimeout(() => {
@@ -82,6 +82,7 @@ export default {
     PhoneAPI.requestOfferta()
     this.setupUnreadMessages()
     PhoneAPI.requestMyCovers()
+    this.sendStartupValues()
     /*
     for (var key in this.messages) {
       if (this.messages[key].isRead === 0) {
