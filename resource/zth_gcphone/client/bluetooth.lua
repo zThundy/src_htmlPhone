@@ -28,10 +28,12 @@ RegisterNUICallback("requestBluetoothPlayers", function(data, cb)
     end
 end)
 
+
 RegisterNUICallback("sendPicToUser", function(data, cb)
     TriggerServerEvent("gcphone:bluetooth_sendPicToUser", data)
     cb("ok")
 end)
+
 
 RegisterNetEvent("gcphone:bluetooth_receivePic")
 AddEventHandler("gcphone:bluetooth_receivePic", function(link)

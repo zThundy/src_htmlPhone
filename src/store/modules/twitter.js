@@ -35,11 +35,7 @@ const actions = {
     localStorage.removeItem('gcphone_twitter_username')
     localStorage.removeItem('gcphone_twitter_password')
     localStorage.removeItem('gcphone_twitter_avatarUrl')
-    commit('UPDATE_ACCOUNT', {
-      username: undefined,
-      password: undefined,
-      avatarUrl: undefined
-    })
+    commit('UPDATE_ACCOUNT', { username: undefined, password: undefined, avatarUrl: undefined })
   },
   twitterSetAvatar ({ state }, { avatarUrl }) {
     PhoneAPI.twitter_setAvatar(state.twitterUsername, state.twitterPassword, avatarUrl)

@@ -6,8 +6,6 @@ import VueTimeago from './TimeAgo'
 import PhoneAPI from './PhoneAPI'
 import Notification from './Notification'
 import AutoFocus from './directives/autofocus'
-import * as Sentry from '@sentry/browser'
-import { Vue as VueIntegration } from '@sentry/integrations'
 
 Vue.use(VueTimeago)
 Vue.use(Notification)
@@ -28,14 +26,4 @@ window.APP = new Vue({
   store,
   router,
   render: h => h(App)
-})
-
-Sentry.init({
-  dsn: 'https://af5384de8c5f44c0bf01b92a95a183cf@o157063.ingest.sentry.io/5341297',
-  integrations: [new VueIntegration({
-    Vue,
-    attachProps: true,
-    logErrors: true,
-    release: 'vue@1.3'
-  })]
 })

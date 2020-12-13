@@ -4,15 +4,18 @@ const state = {
   datiInfo: [{
     current: 0,
     max: 0,
-    icon: 'phone'
+    icon: 'phone',
+    suffix: 'Minuti'
   }, {
     current: 0,
     max: 0,
-    icon: 'message'
+    icon: 'message',
+    suffix: 'Messaggi'
   }, {
     current: 0,
     max: 0,
-    icon: 'discovery'
+    icon: 'discovery',
+    suffix: 'Internet'
   }],
   segnale: 0,
   hasWifi: false
@@ -62,14 +65,17 @@ if (process.env.NODE_ENV !== 'production') {
   state.datiInfo = [{
     current: 500,
     max: 1000,
-    icon: 'phone'
+    icon: 'phone',
+    suffix: 'Minuti'
   }, {
     current: 1000,
     max: 2000,
-    icon: 'message'
+    icon: 'message',
+    suffix: 'Messaggi'
   }, {
     current: 10000,
     max: 20000,
-    icon: 'discovery'
+    icon: 'discovery',
+    suffix: 'Internet'
   }]
 }

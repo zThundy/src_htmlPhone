@@ -1,7 +1,7 @@
 RegisterNetEvent('esx:playerLoaded')
 AddEventHandler('esx:playerLoaded', function(PlayerData)
     ESX.TriggerServerCallback("gcphone:bank_getBankInfo", function(bank, iban)
-        SendNUIMessage({event = 'updateBankbalance', soldi = PlayerData.bank, iban = PlayerData.iban})
+        SendNUIMessage({event = 'updateBankbalance', soldi = bank, iban = iban})
     end)
 end)
 

@@ -1,7 +1,3 @@
---====================================================================================
--- #Author: Jonathan D @ Gannon
---====================================================================================
-
 RegisterNetEvent("gcPhone:twitter_getTweets")
 AddEventHandler("gcPhone:twitter_getTweets", function(tweets)
     SendNUIMessage({event = 'twitter_tweets', tweets = tweets})
@@ -36,12 +32,12 @@ end)
 
 RegisterNetEvent("gcPhone:twitter_showError")
 AddEventHandler("gcPhone:twitter_showError", function(title, message)
-    SendNUIMessage({event = 'twitter_showError', message = message, title = title})
+    SendNUIMessage({event = 'twitter_showError', message = message, title = title, volume = volume})
 end)
 
 RegisterNetEvent("gcPhone:twitter_showSuccess")
 AddEventHandler("gcPhone:twitter_showSuccess", function(title, message)
-    SendNUIMessage({event = 'twitter_showSuccess', message = message, title = title})
+    SendNUIMessage({event = 'twitter_showSuccess', message = message, title = title, volume = volume})
 end)
 
 RegisterNetEvent("gcPhone:twitter_setTweetLikes")

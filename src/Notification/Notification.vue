@@ -18,7 +18,7 @@
 
 <script>
 import events from './events'
-import {Howl} from 'howler'
+import { Howl } from 'howler'
 
 export default {
   data () {
@@ -47,6 +47,9 @@ export default {
             audio.src = null
           }
         })
+        // qui controllo se viene passato il volume.
+        // se si lo imposto al valore, altrimenti lo metto a 0.5
+        console.log('event.volume dentro notification', event.volume)
         if (event.volume !== undefined || event.volume !== null) {
           audio.volume(Number(event.volume))
         } else {
@@ -68,23 +71,26 @@ export default {
 </script>
 
 <style scoped>
-  .notifications {
-    position: absolute;
-    margin-left: 55%; 
-    margin-top: 12%;
-  }
-  .notification {
-    width: 450px;
-    background-color: rgba(29, 161, 242, 0.6);
-    color: white;
-    padding: 8px 16px;
-    margin-bottom: 8px;
-    border-radius: 6px;
-  }
-  .title {
-    font-size: 18px;
-  }
-  .message {
-    font-size: 16px;
-  }
+.notifications {
+  position: absolute;
+  margin-left: 55%; 
+  margin-top: 12%;
+}
+
+.notification {
+  width: 450px;
+  background-color: rgba(29, 161, 242, 0.6);
+  color: white;
+  padding: 8px 16px;
+  margin-bottom: 8px;
+  border-radius: 6px;
+}
+
+.title {
+  font-size: 18px;
+}
+
+.message {
+  font-size: 16px;
+}
 </style>

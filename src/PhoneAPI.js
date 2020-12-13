@@ -30,10 +30,12 @@ class PhoneAPI {
   // attenzione: per evitare l'Uncaught (in promise) error sulla console, è
   // necessario inserire il cb("ok") sul lua, visto che si aspetta qualcosa in ritorno
   async post (method, data) {
-    const ndata = data === undefined ? '{}' : JSON.stringify(data)
-    const response = await window.jQuery.post(BASE_URL + method, ndata)
-    if (response === undefined) return 'ok'
-    return JSON.parse(response)
+    try {
+      const ndata = data === undefined ? '{}' : JSON.stringify(data)
+      const response = await window.jQuery.post(BASE_URL + method, ndata)
+      if (response === undefined || response === 'ok') return 'ok'
+      return JSON.parse(response)
+    } catch (e) { console.log(BASE_URL + method) }
   }
 
   async log (...data) {
@@ -301,6 +303,7 @@ class PhoneAPI {
   }
 
   async updateVolume (data) {
+    data.volume = Math.floor10(data.volume, -2)
     return this.post('updateVolume', data)
   }
 
@@ -400,7 +403,8 @@ class PhoneAPI {
       title: store.getters.IntlString(data.title, ''),
       message: store.getters.IntlString(data.message),
       icon: 'twitter',
-      backgroundColor: '#e0245e80'
+      backgroundColor: '#e0245e80',
+      volume: data.volume
     })
   }
 
@@ -408,7 +412,8 @@ class PhoneAPI {
     Vue.notify({
       title: store.getters.IntlString(data.title, ''),
       message: store.getters.IntlString(data.message),
-      icon: 'twitter'
+      icon: 'twitter',
+      volume: data.volume
     })
   }
 
@@ -546,7 +551,7 @@ class PhoneAPI {
     Vue.notify({
       sound: 'Instagram_Like_Sound.ogg',
       backgroundColor: 'rgba(0, 0, 0, 0)',
-      volume: 0.4
+      volume: 0.2
     })
     return this.post('togglePostLike', { username, password, postId })
   }
@@ -591,7 +596,8 @@ class PhoneAPI {
       message: store.getters.IntlString(data.message),
       icon: 'instagram',
       backgroundColor: '#66000080',
-      sound: 'Instagram_Error.ogg'
+      sound: 'Instagram_Error.ogg',
+      volume: data.volume
     })
   }
 
@@ -602,7 +608,8 @@ class PhoneAPI {
       message: store.getters.IntlString(data.message),
       icon: 'instagram',
       backgroundColor: '#FF66FF80',
-      sound: 'Instagram_Notification.ogg'
+      sound: 'Instagram_Notification.ogg',
+      volume: data.volume
     })
   }
 
@@ -617,7 +624,8 @@ class PhoneAPI {
       message: store.getters.IntlString(data.message),
       icon: 'whatsapp',
       backgroundColor: '#00996680',
-      sound: 'Whatsapp_Error.ogg'
+      sound: 'Whatsapp_Error.ogg',
+      volume: data.volume
     })
   }
 
@@ -628,7 +636,8 @@ class PhoneAPI {
       message: store.getters.IntlString(data.message),
       icon: 'whatsapp',
       backgroundColor: '#33CC6680',
-      sound: 'Whatsapp_Notification.ogg'
+      sound: 'Whatsapp_Notification.ogg',
+      volume: data.volume
     })
   }
 
@@ -714,6 +723,38 @@ class PhoneAPI {
 
   onaddPicToGallery (data) {
     store.dispatch('addPhoto', data)
+  }
+}
+
+function decimalAdjust (type, value, exp) {
+  // If the exp is undefined or zero...
+  if (typeof exp === 'undefined' || +exp === 0) {
+    return Math[type](value)
+  }
+  value = +value
+  exp = +exp
+  // If the value is not a number or the exp is not an integer...
+  if (isNaN(value) || !(typeof exp === 'number' && exp % 1 === 0)) {
+    return NaN
+  }
+  // Shift
+  value = value.toString().split('e')
+  value = Math[type](+(value[0] + 'e' + (value[1] ? (+value[1] - exp) : -exp)))
+  // Shift back
+  value = value.toString().split('e')
+  return +(value[0] + 'e' + (value[1] ? (+value[1] + exp) : exp))
+}
+
+// Decimal ceil
+if (!Math.ceil10) {
+  Math.ceil10 = function (value, exp) {
+    return decimalAdjust('ceil', value, exp)
+  }
+}
+// Decimal floor
+if (!Math.floor10) {
+  Math.floor10 = function (value, exp) {
+    return decimalAdjust('floor', value, exp)
   }
 }
 

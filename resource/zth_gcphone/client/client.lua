@@ -33,7 +33,7 @@ local PhoneInCall = {}
 local currentPlaySound = false
 local soundDistanceMax = 8.0
 
-local volume = 1
+volume = 0.5
 
 segnaleRadio = 0
 retiWifi = {}
@@ -71,7 +71,7 @@ Citizen.CreateThread(function()
         if IsControlJustPressed(1, 311) then -- K
             hasPhone(function(hasPhone)
                 if hasPhone == true then
-                    TooglePhone()
+                    TogglePhone()
                 else
                     ESX.ShowNotification("~r~Non hai un telefono con te")
                 end
@@ -111,7 +111,7 @@ end)
 
 RegisterNetEvent('gcPhone:setEnableApp')
 AddEventHandler('gcPhone:setEnableApp', function(appName, enable)
-    SendNUIMessage({event = 'setEnableApp', appName = appName, enable = enable })
+    SendNUIMessage({ event = 'setEnableApp', appName = appName, enable = enable })
 end)
 
 RegisterNUICallback("updateNotifications", function(data, cb)
@@ -146,8 +146,7 @@ end
 
 
 function SetSoundVolumeJS(sound, vol)
-    volume = vol
-    SendNUIMessage({ event = 'setSoundVolume', sound = sound, volume = volume })
+    SendNUIMessage({ event = 'setSoundVolume', sound = sound, volume = vol })
 end
 
 
@@ -159,7 +158,7 @@ end
 RegisterNetEvent("gcPhone:forceOpenPhone")
 AddEventHandler("gcPhone:forceOpenPhone", function(_myPhoneNumber)
     if menuIsOpen == false then
-        TooglePhone()
+        TogglePhone()
     end
 end)
  
@@ -342,7 +341,7 @@ AddEventHandler("gcPhone:waitingCall", function(infoCall, initiator)
         PhonePlayCall()
 
         if menuIsOpen == false then
-            TooglePhone()
+            TogglePhone()
         end
     end
 end)
@@ -459,7 +458,7 @@ AddEventHandler("gcPhone:acceptCall", function(infoCall, initiator)
     end
 
     if menuIsOpen == false then 
-        TooglePhone()
+        TogglePhone()
     end
 
     PhonePlayCall()
@@ -774,7 +773,7 @@ RegisterNUICallback('deleteALL', function(data, cb)
 end)
 
 
-function TooglePhone()
+function TogglePhone()
     menuIsOpen = not menuIsOpen
     SendNUIMessage({show = menuIsOpen})
 
@@ -936,7 +935,7 @@ end
 
 
 function TakeAppel(infoCall)
-    TooglePhone()
+    TogglePhone()
     SendNUIMessage({event = 'waitingCall', infoCall = infoCall, initiator = initiator})
     acceptCall(infoCall, nil)
 end

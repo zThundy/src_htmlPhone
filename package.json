@@ -2,7 +2,7 @@
   "name": "src_htmlphone",
   "version": "1.0.0",
   "description": "A Vue.js project",
-  "author": "Jonathan <gannon.hlw@gmail.com>",
+  "author": "zThundy__",
   "private": true,
   "scripts": {
     "dev": "node build/dev-server.js",
@@ -11,8 +11,6 @@
     "lint": "eslint --ext .js,.vue src"
   },
   "dependencies": {
-    "@sentry/browser": "^5.19.2",
-    "@sentry/integrations": "^5.19.2",
     "babel-preset-es2017": "^6.24.1",
     "howler": "^2.2.0",
     "mand-mobile": "^2.5.13",

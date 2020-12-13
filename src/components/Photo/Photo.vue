@@ -9,6 +9,7 @@ export default {
   async created () {
     const url = await this.$phoneAPI.takePhoto()
     this.addPhoto({ link: url })
+    this.$router.push({ name: 'galleria.slpash' })
   }
 }
 </script>

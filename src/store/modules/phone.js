@@ -9,7 +9,7 @@ const state = {
   coque: JSON.parse(window.localStorage['gc_coque'] || null),
   sonido: JSON.parse(window.localStorage['gc_sonido'] || null),
   zoom: window.localStorage['gc_zoom'] || '100%',
-  volume: parseFloat(window.localStorage['gc_volume']) || 1,
+  volume: parseFloat(window.localStorage['gc_volume']) || 0.5,
   lang: window.localStorage['gc_language'],
   notification: (window.localStorage['gc_notification'] === null || window.localStorage['gc_notification'] === undefined) ? true : window.localStorage['gc_notification'],
   config: {

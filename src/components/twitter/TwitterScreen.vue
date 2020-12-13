@@ -25,6 +25,7 @@ import TwitterPostTweet from './TwitterPostTweet'
 import TwitterAccount from './TwitterAccount'
 import TwitterTopTweet from './TwitterTopTweet'
 import { mapGetters } from 'vuex'
+// import Vue from 'vue'
 
 export default {
   components: {
@@ -70,9 +71,21 @@ export default {
   methods: {
     onLeft () {
       this.currentScreenIndex = Math.max(0, this.currentScreenIndex - 1)
+      // Vue.notify({
+      //   message: 'messaggio',
+      //   title: 'autore' + ' :',
+      //   icon: 'twitter',
+      //   sound: 'Twitter_Sound_Effect.ogg'
+      // })
     },
     onRight () {
       this.currentScreenIndex = Math.min(this.screen.length - 1, this.currentScreenIndex + 1)
+      // Vue.notify({
+      //   message: 'messaggio',
+      //   title: 'autore' + ' :',
+      //   icon: 'twitter',
+      //   sound: 'Twitter_Sound_Effect.ogg'
+      // })
     },
     home () {
       this.currentScreenIndex = 0

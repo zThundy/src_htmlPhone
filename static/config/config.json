@@ -26,6 +26,8 @@
 
   "useSentryErroTracking": false,
 
+  "defaultVolume": 0.2,
+
   "useWebRTCVocal": true,
   "RTCConfig": {
     "iceServers": [{

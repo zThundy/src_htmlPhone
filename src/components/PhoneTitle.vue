@@ -3,9 +3,7 @@
     <InfoBare v-if="showSegnaleSection" />
     
     <div class="phone_title" :style="{backgroundColor: backgroundColor}">
-      <div :style="{color: textColor}" class="title">
-        {{title}}
-      </div>
+      <div :style="{color: textColor}" class="title">{{title}}</div>
       
       <i class="backIcon fas fa-angle-left"/>
     </div>
@@ -56,7 +54,8 @@ export default {
 </script>
 <style scoped>
 .title {
-  padding-top: 5px;
+  padding-top: 7px;
+  padding-right: 10px;
   font-family: Helvetica;
   text-align: center;
   position: relative;
@@ -68,9 +67,9 @@ export default {
 
 .backIcon {
   position: absolute;
-  left: 15px;
+  left: 28px;
   margin: auto;
-  top: 22px;
+  top: 24px;
 }
 
 .btn-back:hover {

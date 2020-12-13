@@ -2,6 +2,18 @@
 -- #Author: zThundy__
 --====================================================================================
 
+-- notifiche
+
+RegisterNetEvent("gcPhone:instagram_showError")
+AddEventHandler("gcPhone:instagram_showError", function(title, message)
+    SendNUIMessage({ event = 'instagram_showError', message = message, title = title, volume = volume })
+end)
+
+RegisterNetEvent("gcPhone:instagram_showSuccess")
+AddEventHandler("gcPhone:instagram_showSuccess", function(title, message)
+    SendNUIMessage({ event = 'instagram_showSuccess', message = message, title = title, volume = volume })
+end)
+
 -- nuovi post e request dei post
 
 RegisterNUICallback('nuovoPost', function(data, cb)
@@ -62,18 +74,6 @@ end)
 RegisterNUICallback('instagram_changeAvatar', function(data, cb)
     TriggerServerEvent("gcPhone:instagram_setAvatarurl", data.username, data.password, data.avatarUrl)
     cb()
-end)
-
--- notifiche
-
-RegisterNetEvent("gcPhone:instagram_showError")
-AddEventHandler("gcPhone:instagram_showError", function(title, message)
-    SendNUIMessage({event = 'instagram_showError', message = message, title = title})
-end)
-
-RegisterNetEvent("gcPhone:instagram_showSuccess")
-AddEventHandler("gcPhone:instagram_showSuccess", function(title, message)
-    SendNUIMessage({event = 'instagram_showSuccess', message = message, title = title})
 end)
 
 
