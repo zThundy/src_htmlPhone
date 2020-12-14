@@ -10,24 +10,25 @@
     <textarea ref="copyTextarea" class="copyTextarea"/>
     
     <div style="width: 326px; height: 678px; backgroundColor: white"  id='sms_list'>
+      <div style="position: absolute;" class="groupImage" data-type="button">
+        <img v-if="isSMSImage(getContactIcon())" :src="getContactIcon()" />
+      </div>
 
-        <div class="sms" v-bind:class="{ select: key === selectMessage}" v-for='(mess, key) in messagesListApp' v-bind:key="mess.id">
-
-          <div class="sms_message_time">
-              <h6 v-bind:class="{ sms_me : mess.owner === 1}"  class="name_other_sms_me">{{displayContact}}</h6>
-              <h6 v-bind:class="{ sms_me : mess.owner === 1}"  class="name_other_sms_other"><timeago style="font-weight: 500" class="sms_time" :since='mess.time' :auto-update="20"></timeago></h6>
-          </div>
-
-            <span class='sms_message sms_me' v-bind:class="{ sms_other : mess.owner === 0}">
-              
-              <img v-if="isSMSImage(mess)" class="sms-img" :src="mess.message">
-              <span v-else>{{mess.message}}</span>
-                
-                <!--<span style="color: white; font-size: 17px; margin: 24px;" @click.stop="onActionMessage(mess)" ><timeago class="sms_time" :since='mess.time' :auto-update="20"></timeago></span>-->
-            </span>
-
+      <div class="sms" v-bind:class="{ select: key === selectMessage}" v-for='(mess, key) in messagesListApp' v-bind:key="mess.id">
+        <div class="sms_message_time">
+            <h6 v-bind:class="{ sms_me : mess.owner === 1}"  class="name_other_sms_me">{{displayContact}}</h6>
+            <h6 v-bind:class="{ sms_me : mess.owner === 1}"  class="name_other_sms_other"><timeago style="font-weight: 500" class="sms_time" :since='mess.time' :auto-update="20"></timeago></h6>
         </div>
 
+        <span class='sms_message sms_me' v-bind:class="{ sms_other : mess.owner === 0}">
+          
+          <img v-if="isSMSImage(mess.message)" class="sms-img" :src="mess.message">
+          <span v-else>{{mess.message}}</span>
+            
+            <!--<span style="color: white; font-size: 17px; margin: 24px;" @click.stop="onActionMessage(mess)" ><timeago class="sms_time" :since='mess.time' :auto-update="20"></timeago></span>-->
+        </span>
+
+      </div>
     </div>
 
     <div style="width: 306px;" id='sms_write'>
@@ -61,12 +62,11 @@ export default {
       display: '',
       phoneNumber: '',
       imgZoom: undefined,
-      message: ''
+      message: '',
+      letter: ''
     }
   },
-  components: {
-    PhoneTitle
-  },
+  components: { PhoneTitle },
   methods: {
     ...mapActions(['setMessageRead', 'sendMessage', 'deleteMessage', 'startCall']),
     resetScroll () {
@@ -126,14 +126,28 @@ export default {
       this.sendMessage({ phoneNumber: this.phoneNumber, message })
     },
     isSMSImage (mess) {
-      return /^https?:\/\/.*\.(png|jpg|jpeg|gif)/.test(mess.message)
+      return /^https?:\/\/.*\.(png|jpg|jpeg|gif)/.test(mess)
+    },
+    getContactIcon () {
+      for (var key in this.contacts) {
+        if (this.contacts[key].number === this.phoneNumber) {
+          if (this.contacts[key].icon !== undefined && this.contacts[key].icon !== null) {
+            return this.contacts[key].icon
+          } else {
+            this.letter = this.display.charAt(0)
+            return {
+              backgroundColor: this.color
+            }
+          }
+        }
+      }
     },
     async onActionMessage (message) {
       try {
         // let message = this.messagesListApp[this.selectMessage]
         let isGPS = /(-?\d+(\.\d+)?), (-?\d+(\.\d+)?)/.test(message.message)
         let hasNumber = /#([0-9]+)/.test(message.message)
-        let isSMSImage = this.isSMSImage(message)
+        let isSMSImage = this.isSMSImage(message.message)
         let choix = [
           {
             id: 'delete',
@@ -217,12 +231,12 @@ export default {
             title: this.IntlString('CANCEL'),
             icons: 'fa-undo',
             color: 'red'
-          },
-          {
-            id: 'copy',
-            title: this.IntlString('APP_MESSAGE_MESS_COPY'),
-            icons: 'fa-copy'
-          }
+          }// ,
+          // {
+          //   id: 'copy',
+          //   title: this.IntlString('APP_MESSAGE_MESS_COPY'),
+          //   icons: 'fa-copy'
+          // }
         ]
 
         const data = await Modal.CreateModal({ choix })
@@ -231,17 +245,17 @@ export default {
           this.display = undefined
         } else if (data.id === 'call') {
           this.startCall({ numero: number })
-        } else if (data.id === 'copy') {
-          try {
-            const $copyTextarea = this.$refs.copyTextarea
-            $copyTextarea.value = number
-            $copyTextarea.style.height = '20px'
-            $copyTextarea.focus()
-            $copyTextarea.select()
-            await document.execCommand('copy')
-            $copyTextarea.style.height = '0'
-          } catch (error) {
-          }
+        // } else if (data.id === 'copy') {
+        //   try {
+        //     const $copyTextarea = this.$refs.copyTextarea
+        //     $copyTextarea.value = number
+        //     $copyTextarea.style.height = '20px'
+        //     $copyTextarea.focus()
+        //     $copyTextarea.select()
+        //     await document.execCommand('copy')
+        //     $copyTextarea.style.height = '0'
+        //   } catch (error) {
+        //   }
         }
       } catch (e) {
       } finally {
@@ -259,6 +273,12 @@ export default {
         this.selectMessage = -1
       } else {
         this.quit()
+      }
+    },
+    onRight: function () {
+      if (this.ignoreControls === true) return
+      if (this.selectMessage === -1) {
+        this.showOptions()
       }
     },
     async showOptions () {
@@ -289,12 +309,6 @@ export default {
       } catch (e) {
       } finally {
         this.ignoreControls = false
-      }
-    },
-    onRight: function () {
-      if (this.ignoreControls === true) return
-      if (this.selectMessage === -1) {
-        this.showOptions()
       }
     }
   },
@@ -361,6 +375,7 @@ export default {
   height: calc(100% - 20px);
   background-color: #DDD;
 }
+
 #sms_contact{
   background-color: #4CAF50;
   color: white;
@@ -368,6 +383,7 @@ export default {
   line-height: 34px;
   padding-left: 5px;
 }
+
 #sms_list{
   height: calc(100% - 34px - 26px);
   overflow-y: auto;
@@ -426,7 +442,7 @@ export default {
 .sms_me {
   float: right;
   background-color: #e9e9eb;
-  border-radius: 17px;
+  border-radius: 7px;
   padding: 5px 10px;
   max-width: 90%;
   margin-right: 5%;
@@ -435,7 +451,7 @@ export default {
 
 .sms_other {
   background-color: #0b81ff;
-  border-radius: 17px;
+  border-radius: 7px;
   font-family: -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
   color:white;
   float: left;
@@ -458,6 +474,7 @@ export default {
   display: none;
   font-size: 9px; 
 }
+
 .sms_other .sms_time {
   color: white;
   display: none;
@@ -521,5 +538,22 @@ export default {
   height: 0;
   border: 0;
   padding: 0;
+}
+
+.groupImage {
+  top: 35px;
+  right: 15px;
+}
+
+.groupImage img {
+  border-radius: 50%;
+  border-style: solid;
+  border-color: rgb(87, 87, 87);
+  height: 50px;
+  width: 50px;
+  overflow: hidden;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 </style>

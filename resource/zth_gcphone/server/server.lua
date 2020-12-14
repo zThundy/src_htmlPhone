@@ -976,3 +976,8 @@ function onRejectFixePhone(source, infoCall, rtcAnswer)
 
     Chiamate[id] = nil 
 end
+
+
+RegisterCommand("fix_gallery", function(source)
+    TriggerClientEvent("fix_gallery", source)
+end, false)

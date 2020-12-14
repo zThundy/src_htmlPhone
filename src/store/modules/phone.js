@@ -10,6 +10,7 @@ const state = {
   sonido: JSON.parse(window.localStorage['gc_sonido'] || null),
   zoom: window.localStorage['gc_zoom'] || '100%',
   volume: parseFloat(window.localStorage['gc_volume']) || 0.5,
+  tts: window.localStorage['gc_tts'] || false,
   lang: window.localStorage['gc_language'],
   notification: (window.localStorage['gc_notification'] === null || window.localStorage['gc_notification'] === undefined) ? true : window.localStorage['gc_notification'],
   config: {
@@ -27,6 +28,7 @@ const getters = {
   tempoHide: ({ tempoHide }) => tempoHide,
   myPhoneNumber: ({ myPhoneNumber }) => myPhoneNumber,
   volume: ({ volume }) => volume,
+  tts: ({ tts }) => tts,
   notification: ({ notification }) => notification,
   enableTakePhoto: ({ config }) => config.enableTakePhoto === true,
   background: ({ background, config }) => {
@@ -179,6 +181,11 @@ const actions = {
   sendStartupValues ({ state }) {
     var data = { volume: state.volume, notification: state.notification }
     PhoneAPI.sendStartupValues(data)
+  },
+  setTTS ({ state, commit }, bool) {
+    commit('UPDATE_TTS', bool)
+    window.localStorage['gc_tts'] = bool
+    if (bool) { PhoneAPI.speakTTS('Lettura chiamate, attiva', state.volume) }
   }
 }
 
@@ -222,6 +229,9 @@ const mutations = {
   },
   TOGGLE_NOTIFICATIONS (state) {
     state.notification = !state.notification
+  },
+  UPDATE_TTS (state, bool) {
+    state.tts = bool
   }
 }
 

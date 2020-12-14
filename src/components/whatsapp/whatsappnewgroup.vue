@@ -108,7 +108,7 @@ export default {
         number: this.myPhoneNumber,
         display: 'Amministratore'
       }
-      this.creaGruppo({ contacts: this.contacts, groupTitle: groupInfo.title, groupImage: groupInfo.image, myInfo })
+      this.creaGruppo({ selected: this.selectedContacts, contacts: this.contacts, groupTitle: groupInfo.title, groupImage: groupInfo.image, myInfo })
       this.$router.push({ name: 'whatsapp' })
     },
     onUp: function () {
@@ -288,7 +288,7 @@ export default {
           case 1:
             this.$router.push({ name: 'whatsapp.gruppo', params: { gruppo: this.gruppo, updategroups: true } })
             this.ignoreControls = false
-            this.addSelectedMembers({ contacts: this.contacts, gruppo: this.gruppo })
+            this.addSelectedMembers({ contacts: this.contacts, gruppo: this.gruppo, selected: this.selectedContacts })
             break
           case 2:
             this.$router.push({ name: 'whatsapp' })
@@ -312,9 +312,11 @@ export default {
       if (this.gruppo !== undefined && this.gruppo !== null) {
         if (this.gruppo.partecipanti !== undefined && this.gruppo.partecipanti !== null) {
           for (var index in this.contacts) {
-            for (var index2 in this.gruppo.partecipanti) {
-              if (String(this.contacts[index].number) === String(this.gruppo.partecipanti[index2].number)) {
-                this.selectedContacts[this.contacts[index].id] = true
+            let contatto = this.contacts[index]
+            if (this.gruppo.partecipanti[Number(contatto.id)] !== undefined && this.gruppo.partecipanti[Number(contatto.id)] !== null) {
+              // console.log(String(contatto.number), String(this.gruppo.partecipanti[Number(contatto.id)].number))
+              if (String(contatto.number) === String(this.gruppo.partecipanti[Number(contatto.id)].number)) {
+                this.selectedContacts[contatto.id] = true
               }
             }
           }

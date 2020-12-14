@@ -447,6 +447,7 @@
       "APP_CONFIG_LANGUAGE": "Lingua",
       "APP_CONFIG_RESET": "Formatta",
       "APP_CONFIG_WIFI": "Wi-Fi",
+      "APP_CONFIG_TEXT_TO_SPEECH": "Lettura chiamate",
       "APP_CONFIG_BLUETOOTH": "Bluetooth",
       "APP_CONFIG_RESET_CONFIRM": "Formatta",
       "APP_PHONE_DIALING_MESSAGE": ". . .",

@@ -40,7 +40,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['IntlString', 'myPhoneNumber', 'backgroundLabel', 'coqueLabel', 'sonidoLabel', 'zoom', 'config', 'volume', 'availableLanguages', 'wifiString', 'retiWifi', 'notification', 'bluetoothString', 'closestPlayers', 'bluetooth']),
+    ...mapGetters(['IntlString', 'myPhoneNumber', 'backgroundLabel', 'coqueLabel', 'sonidoLabel', 'zoom', 'config', 'volume', 'availableLanguages', 'wifiString', 'retiWifi', 'notification', 'bluetoothString', 'closestPlayers', 'bluetooth', 'tts']),
     paramList () {
       // stringa di conferma reset
       const confirmResetStr = this.IntlString('APP_CONFIG_RESET_CONFIRM')
@@ -64,13 +64,13 @@ export default {
           value: this.wifiString,
           values: []
         },
-        {
-          meta: 'bluetooth',
-          icons: 'fa-bluetooth-b',
-          onValid: 'toggleBluetooth',
-          title: this.IntlString('APP_CONFIG_BLUETOOTH'),
-          value: this.bluetoothString
-        },
+        // {
+        //   meta: 'bluetooth',
+        //   icons: 'fa-bluetooth-b',
+        //   onValid: 'toggleBluetooth',
+        //   title: this.IntlString('APP_CONFIG_BLUETOOTH'),
+        //   value: this.bluetoothString
+        // },
         {
           icons: 'fa-bell',
           onValid: 'toggleNotifications',
@@ -131,6 +131,12 @@ export default {
           }
         },
         {
+          icons: 'fa-microphone',
+          onValid: 'toggleTextToSpeech',
+          title: this.IntlString('APP_CONFIG_TEXT_TO_SPEECH'),
+          value: (this.tts) ? 'Attiva' : 'Disattiva'
+        },
+        {
           icons: 'fa-globe',
           title: this.IntlString('APP_CONFIG_LANGUAGE'),
           onValid: 'onChangeLanguages',
@@ -156,7 +162,7 @@ export default {
     }
   },
   methods: {
-    ...mapActions(['getIntlString', 'setZoon', 'setBackground', 'setCoque', 'setSonido', 'setVolume', 'setLanguage', 'toggleNotifications', 'updateWifiString', 'updateBluetooth']),
+    ...mapActions(['getIntlString', 'setZoon', 'setBackground', 'setCoque', 'setSonido', 'setVolume', 'setLanguage', 'toggleNotifications', 'updateWifiString', 'updateBluetooth', 'setTTS']),
     scrollIntoViewIfNeeded: function () {
       this.$nextTick(() => {
         document.querySelector('.select').scrollIntoViewIfNeeded()
@@ -368,6 +374,10 @@ export default {
       if (data.value !== 'cancel') {
         this.setLanguage(data.value)
       }
+    },
+
+    toggleTextToSpeech (param, data) {
+      this.setTTS(!this.tts)
     },
 
     resetPhone: function (param, data) {

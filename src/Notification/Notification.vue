@@ -43,13 +43,11 @@ export default {
         var path = '/html/static/sound/' + event.sound
         const audio = new Howl({
           src: path,
-          onend: function () {
-            audio.src = null
-          }
+          onend: function () { audio.src = null }
         })
         // qui controllo se viene passato il volume.
         // se si lo imposto al valore, altrimenti lo metto a 0.5
-        console.log('event.volume dentro notification', event.volume)
+        // console.log('event.volume dentro notification', event.volume)
         if (event.volume !== undefined || event.volume !== null) {
           audio.volume(Number(event.volume))
         } else {

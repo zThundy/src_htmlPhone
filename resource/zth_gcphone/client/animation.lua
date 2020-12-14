@@ -13,6 +13,7 @@ local phoneModel = GetHashKey("prop_npc_phone_02")
 local currentStatus = 'out'
 local lastDict = nil
 local lastAnim = nil
+local lastFlag = nil
 
 local lib = {
 	['cellphone@'] = {
@@ -46,6 +47,13 @@ local lib = {
 }
 
 
+AddEventHandler("onResourceStop", function(res)
+	if res == GetCurrentResourceName() then
+		deletePhone()
+	end
+end)
+
+
 function newPhoneProp()
 	deletePhone()
 
@@ -70,6 +78,7 @@ end
 	out || text || Call ||
 --]]
 function PhonePlayAnim(status, freeze)
+	print(status, currentStatus)
 	if currentStatus == status then
 		return
 	end
@@ -96,6 +105,7 @@ function PhonePlayAnim(status, freeze)
 
 	lastDict = dict
 	lastAnim = anim
+	lastFlag = flag
 	currentStatus = status
 
 	if status == 'out' then
@@ -107,17 +117,17 @@ end
 
 
 function PhonePlayOut()
-	PhonePlayAnim('out')
+	PhonePlayAnim('out', false)
 end
 
 
 function PhonePlayText()
-	PhonePlayAnim('text')
+	PhonePlayAnim('text', false)
 end
 
 
-function PhonePlayCall(freeze)
-	PhonePlayAnim('call', freeze)
+function PhonePlayCall()
+	PhonePlayAnim('call', false)
 end
 
 

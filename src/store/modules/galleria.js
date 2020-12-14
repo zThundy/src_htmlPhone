@@ -3,7 +3,7 @@
 // tutto questo codice è trovabile sulle impostazioni del telefono
 
 const state = {
-  fotografie: localStorage['gc_fotografie'] || []
+  fotografie: JSON.parse(window.localStorage['gc_fotografie'] || null) || []
 }
 
 const getters = {
@@ -13,11 +13,12 @@ const getters = {
 const actions = {
   addPhoto ({ commit, state }, data) {
     commit('APP_PHOTO', data)
-    localStorage['gc_fotografie'] = state.fotografie
+    window.localStorage['gc_coque'] = JSON.stringify(state.fotografie)
+    // console.log(JSON.stringify(window.localStorage['gc_coque']))
   },
   clearGallery ({ commit, state }) {
     commit('CLEAR_GALLERY')
-    localStorage['gc_fotografie'] = []
+    window.localStorage['gc_coque'] = []
   }
 }
 

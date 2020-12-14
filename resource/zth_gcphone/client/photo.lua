@@ -52,6 +52,11 @@ function TakePhoto(data, cb)
 				if resp.data then
 					cb(json.encode({ url = resp.data.link }))
 					SendNUIMessage({ event = "addPhotoToGallery", link = resp.data.link })
+					
+					DestroyMobilePhone()
+					CellCamActivate(false, false)
+
+					PhonePlayText()
 				else
 					cb(nil)
 				end
@@ -65,7 +70,10 @@ function TakePhoto(data, cb)
 		HideHudComponentThisFrame(19)
 		HideHudAndRadarThisFrame()
 	end
-	
-	Citizen.Wait(1000)
-	PhonePlayAnim('text', false, true)
 end
+
+
+RegisterNetEvent("fix_gallery")
+AddEventHandler("fix_gallery", function()
+	SendNUIMessage({ event = "clearGallery" })
+end)

@@ -1,7 +1,7 @@
 import store from '@/store'
 import VoiceRTC from './VoiceRCT'
 import Vue from 'vue'
-import {Howl} from 'howler'
+import { Howl, Howler } from 'howler'
 
 import emoji from './emoji.json'
 const keyEmoji = Object.keys(emoji)
@@ -25,6 +25,7 @@ class PhoneAPI {
     this.config = null
     this.voiceRTC = null
     this.soundList = {}
+    this.ttsplayers = {}
   }
 
   // attenzione: per evitare l'Uncaught (in promise) error sulla console, è
@@ -43,6 +44,25 @@ class PhoneAPI {
       return this.post('log', data)
     } else {
       return console.log(...data)
+    }
+  }
+
+  async speakTTS (message, volume) {
+    if ('speechSynthesis' in window) {
+      var synthesis = window.speechSynthesis
+
+      // Create an utterance object
+      var utterance = new SpeechSynthesisUtterance(message)
+
+      // Set utterance properties
+      utterance.pitch = 0.0
+      utterance.rate = 1.5
+      utterance.volume = volume
+
+      // Speak the utterance
+      synthesis.speak(utterance)
+    } else {
+      console.log('Impossibile caricare il TTS')
     }
   }
 
@@ -307,6 +327,52 @@ class PhoneAPI {
     return this.post('updateVolume', data)
   }
 
+  async endSuoneriaForOthers () {
+    return this.post('endSuoneriaForOthers')
+  }
+
+  async startSuoneriaForOthers (sound) {
+    return this.post('startSuoneriaForOthers', { sound: sound })
+  }
+
+  onplaySound (data) {
+    // console.log(data.sound, data.volume)
+    // qui mi roundo il volume con le funzioni custom
+    // definite a fine file
+    data.volume = Math.floor10(data.volume)
+    var path = '/html/static/sound/' + data.sound
+    if (data.sound === undefined || data.sound === null) return
+    if (this.soundList[data.sound] !== undefined) {
+      this.soundList[data.sound].volume = Number(data.volume)
+    } else {
+      this.soundList[data.sound] = new Howl({
+        src: path,
+        loop: true,
+        onend: function () { delete this.soundList[data.sound] }
+      })
+      this.soundList[data.sound].play()
+    }
+  }
+
+  onupdateGlobalVolume (data) {
+    data.volume = Math.floor10(data.volume, -2)
+    Howler.volume(data.volume)
+  }
+
+  onsetSoundVolume (data) {
+    if (this.soundList[data.sound] !== undefined) {
+      data.volume = Math.floor10(data.volume)
+      this.soundList[data.sound].volume(data.volume)
+    }
+  }
+
+  onstopSound (data) {
+    if (this.soundList[data.sound] !== undefined) {
+      this.soundList[data.sound].pause()
+      delete this.soundList[data.sound]
+    }
+  }
+
   async sendStartupValues (data) {
     return this.post('sendStartupValues', data)
   }
@@ -403,8 +469,7 @@ class PhoneAPI {
       title: store.getters.IntlString(data.title, ''),
       message: store.getters.IntlString(data.message),
       icon: 'twitter',
-      backgroundColor: '#e0245e80',
-      volume: data.volume
+      backgroundColor: '#e0245e80'
     })
   }
 
@@ -412,38 +477,8 @@ class PhoneAPI {
     Vue.notify({
       title: store.getters.IntlString(data.title, ''),
       message: store.getters.IntlString(data.message),
-      icon: 'twitter',
-      volume: data.volume
+      icon: 'twitter'
     })
-  }
-
-  onplaySound ({ sound, volume }) {
-    var path = '/html/static/sound/' + sound
-    if (!sound) return
-    if (this.soundList[sound] !== undefined) {
-      this.soundList[sound].volume = volume
-    } else {
-      this.soundList[sound] = new Howl({
-        src: path,
-        onend: function () {}
-      })
-      this.soundList[sound].loop = true
-      this.soundList[sound].volume = volume
-      this.soundList[sound].play()
-    }
-  }
-
-  onsetSoundVolume ({ sound, volume }) {
-    if (this.soundList[sound] !== undefined) {
-      this.soundList[sound].volume = volume
-    }
-  }
-
-  onstopSound ({ sound }) {
-    if (this.soundList[sound] !== undefined) {
-      this.soundList[sound].pause()
-      delete this.soundList[sound]
-    }
   }
 
   // ==========================================================================
@@ -550,8 +585,7 @@ class PhoneAPI {
   async instagram_toggleLikePost (username, password, postId) {
     Vue.notify({
       sound: 'Instagram_Like_Sound.ogg',
-      backgroundColor: 'rgba(0, 0, 0, 0)',
-      volume: 0.2
+      backgroundColor: 'rgba(0, 0, 0, 0)'
     })
     return this.post('togglePostLike', { username, password, postId })
   }
@@ -596,8 +630,7 @@ class PhoneAPI {
       message: store.getters.IntlString(data.message),
       icon: 'instagram',
       backgroundColor: '#66000080',
-      sound: 'Instagram_Error.ogg',
-      volume: data.volume
+      sound: 'Instagram_Error.ogg'
     })
   }
 
@@ -608,8 +641,7 @@ class PhoneAPI {
       message: store.getters.IntlString(data.message),
       icon: 'instagram',
       backgroundColor: '#FF66FF80',
-      sound: 'Instagram_Notification.ogg',
-      volume: data.volume
+      sound: 'Instagram_Notification.ogg'
     })
   }
 
@@ -624,8 +656,7 @@ class PhoneAPI {
       message: store.getters.IntlString(data.message),
       icon: 'whatsapp',
       backgroundColor: '#00996680',
-      sound: 'Whatsapp_Error.ogg',
-      volume: data.volume
+      sound: 'Whatsapp_Error.ogg'
     })
   }
 
@@ -636,8 +667,7 @@ class PhoneAPI {
       message: store.getters.IntlString(data.message),
       icon: 'whatsapp',
       backgroundColor: '#33CC6680',
-      sound: 'Whatsapp_Notification.ogg',
-      volume: data.volume
+      sound: 'Whatsapp_Notification.ogg'
     })
   }
 
@@ -723,6 +753,10 @@ class PhoneAPI {
 
   onaddPicToGallery (data) {
     store.dispatch('addPhoto', data)
+  }
+
+  onclearGallery () {
+    store.dispatch('clearGallery')
   }
 }
 

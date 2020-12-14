@@ -101,6 +101,12 @@ if (process.env.NODE_ENV !== 'production') {
     {id: 4, transmitter: numRandom, time, message: 'Zatutto ?', isRead: 1, owner: 0},
     {id: 5, transmitter: numRandom, time, message: 'Zatutto ?', isRead: 1, owner: 0},
     {id: 6, transmitter: numRandom, time, message: 'Zatutto ?', isRead: 0, owner: 0},
-    {id: 7, transmitter: numRandom, time, message: 'Tu sais pas !', isRead: 1, owner: 0}
+    {id: 7, transmitter: numRandom, time, message: 'Cazz c fai ca? !', isRead: 1, owner: 0},
+    {id: 1, transmitter: '5554444', time, message: 'Cazz c fai ca? !', isRead: 1, owner: 0},
+    {id: 2, transmitter: '5554444', time, message: 'Cazz c fai ca? !', isRead: 1, owner: 1},
+    {id: 3, transmitter: '5554444', time, message: 'Cazz c fai ca? !', isRead: 1, owner: 0},
+    {id: 4, transmitter: '5554444', time, message: 'Cazz c fai ca? !', isRead: 1, owner: 1},
+    {id: 5, transmitter: '55589231', time, message: 'Cazz c fai ca? !', isRead: 1, owner: 0},
+    {id: 6, transmitter: '55589231', time, message: 'Cazz c fai ca? !', isRead: 1, owner: 1}
   ]
 }

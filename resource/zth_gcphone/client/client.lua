@@ -21,12 +21,12 @@ local useMouse = false
 local ignoreFocus = false
 hasFocus = false
 
-local inCall = false
+inCall = false
 local stoppedPlayingUnreachable = false
 secondiRimanenti = 0
 enableGlobalNotification = true
 
-playerCoords = GetEntityCoords(GetPlayerPed(-1))
+playerCoords = nil
 distance = nil
 
 local PhoneInCall = {}
@@ -79,7 +79,6 @@ Citizen.CreateThread(function()
         end
 
         if menuIsOpen == true then
-
             for _, value in ipairs(KeyToucheCloseEvent) do
                 if IsControlJustPressed(1, value.code) then
                     SendNUIMessage({keyUp = value.event})
@@ -126,13 +125,14 @@ end)
 
 RegisterNUICallback("updateVolume", function(data, cb)
     volume = data.volume
+    UpdateGlobalVolume()
     cb("ok")
 end)
 
 RegisterNUICallback("sendStartupValues", function(data, cb)
     volume = data.volume
     enableGlobalNotification = data.notification
-    print(volume, enableGlobalNotification)
+    UpdateGlobalVolume()
     cb("ok")
 end)
 
@@ -141,12 +141,18 @@ end)
 --==================================================================================================================
 
 function PlaySoundJS(sound)
+    -- print("riproduco suono", sound, volume)
     SendNUIMessage({ event = 'playSound', sound = sound, volume = volume })
 end
 
 
 function SetSoundVolumeJS(sound, vol)
     SendNUIMessage({ event = 'setSoundVolume', sound = sound, volume = vol })
+end
+
+
+function UpdateGlobalVolume()
+    SendNUIMessage({ event = 'updateGlobalVolume', volume = volume })
 end
 
 
@@ -335,7 +341,7 @@ RegisterNetEvent("gcPhone:waitingCall")
 AddEventHandler("gcPhone:waitingCall", function(infoCall, initiator)
     if inCall then return end
 
-    SendNUIMessage({event = 'waitingCall', infoCall = infoCall, initiator = initiator})
+    SendNUIMessage({ event = 'waitingCall', infoCall = infoCall, initiator = initiator })
 
     if initiator == true then
         PhonePlayCall()
@@ -355,7 +361,7 @@ AddEventHandler("gcPhone:phoneUnreachable", function(infoCall, initiator)
     Citizen.CreateThreadNow(function()
         stoppedPlayingUnreachable = false
         Citizen.Wait(2000)
-        SendNUIMessage({event = 'acceptCall', infoCall = infoCall, initiator = initiator})
+        SendNUIMessage({ event = 'acceptCall', infoCall = infoCall, initiator = initiator })
 
         if stoppedPlayingUnreachable == false then
             PlaySoundJS('phoneunreachable.ogg')
@@ -426,7 +432,7 @@ AddEventHandler("gcPhone:acceptCall", function(infoCall, initiator)
         Citizen.CreateThread(function()
             secondiRimanenti = infoCall.secondiRimanenti
             if not infoCall.updateMinuti then secondiRimanenti = 1000000 end
-            print("Accetto la chiamata chicco, infoCall.updateMinuti", infoCall.updateMinuti, "secondiRimanenti", secondiRimanenti)
+            -- print("Accetto la chiamata chicco, infoCall.updateMinuti", infoCall.updateMinuti, "secondiRimanenti", secondiRimanenti)
 
             while inCall do
                 Citizen.Wait(1000)
@@ -519,7 +525,7 @@ function requestHistoriqueCall()
 end
 
 
-function appelsDeleteHistorique (num)
+function appelsDeleteHistorique(num)
     TriggerServerEvent('gcPhone:appelsDeleteHistorique', num)
 end
 
@@ -643,17 +649,24 @@ RegisterNUICallback('reponseText', function(data, cb)
     DisplayOnscreenKeyboard(1, "FMMC_MPM_NA", "", text, "", "", "", limit)
     while UpdateOnscreenKeyboard() == 0 do
         DisableAllControlActions(0)
+        DisableAllControlActions(1)
+        DisableAllControlActions(2)
         Wait(0)
     end
 
     if GetOnscreenKeyboardResult() then
         text = GetOnscreenKeyboardResult()
     end
+
     cb(json.encode({text = text}))
 end)
+
+
 --====================================================================================
 --  Event - Messages
 --====================================================================================
+
+
 RegisterNUICallback('getMessages', function(data, cb)
     cb(json.encode(messages))
 end)
@@ -695,8 +708,10 @@ end)
 
 
 --====================================================================================
---  Event - Contacts
+--  Contatti
 --====================================================================================
+
+
 RegisterNUICallback('addContact', function(data, cb) 
     TriggerServerEvent('gcPhone:addContact', data.display, data.phoneNumber)
     cb("ok")
@@ -736,7 +751,6 @@ RegisterNUICallback('setGPS', function(data, cb)
 end)
 
 
--- Add security for event (leuit#0100)
 RegisterNUICallback('callEvent', function(data, cb)
     local eventName = data.eventName or ''
 
@@ -915,7 +929,7 @@ end
 ---------------------------------------------------------------------------------
 
 
-function startFixeCall (fixeNumber)
+function startFixeCall(fixeNumber)
     local number = ''
     DisplayOnscreenKeyboard(1, "FMMC_MPM_NA", "", "", "", "", "", 10)
     while UpdateOnscreenKeyboard() == 0 do
@@ -936,7 +950,7 @@ end
 
 function TakeAppel(infoCall)
     TogglePhone()
-    SendNUIMessage({event = 'waitingCall', infoCall = infoCall, initiator = initiator})
+    SendNUIMessage({ event = 'waitingCall', infoCall = infoCall, initiator = initiator })
     acceptCall(infoCall, nil)
 end
 

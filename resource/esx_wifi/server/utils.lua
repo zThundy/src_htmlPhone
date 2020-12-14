@@ -1,32 +1,38 @@
-Reti = {}
-
 function Reti.loadTorriRadio()
-	
-	torriRadioFunzionanti = {}
-	torriRadioRotte = {}
+	local torriRadioFunzionanti = {}
+	local torriRadioRotte = {}
+	local query = false
 	
 	MySQL.Async.fetchAll('SELECT * FROM cell_towers', {}, function(result)
-		for i=1, #result do
+		for i = 1, #result do
 			if result[i].broken == false then
 				torriRadioFunzionanti[i] = result[i]
 			else
 				torriRadioRotte[i] = result[i]
 			end
 		end
+
+		query = true
 	end)
+
+	while not query do Citizen.Wait(1000) end
 	
 	return torriRadioFunzionanti, torriRadioRotte
 end
 
 function Reti.loadRetiWifi()
-
-	retiWifi = {}
+	local retiWifi = {}
+	local query = false
 	
 	MySQL.Async.fetchAll('SELECT * FROM home_wifi_nets', {}, function(result)
-		for i=1, #result do
+		for i = 1, #result do
 			retiWifi[i] = result[i]
 		end
+
+		query = true
 	end)
+
+	while not query do Citizen.Wait(1000) end
 	
 	return retiWifi
 end
@@ -74,7 +80,7 @@ function Reti.updateReteWifi(rete, param)
 end
 
 function Reti.getRandomWiFiSSID()
-	ssid = "Hydra-"
+	ssid = "Code-"
 	
 	for i=1, 8 do
 		ssid = ssid..tostring(math.random(0,9))

@@ -4,6 +4,7 @@ Config.KeyTakeCall = 46
 Config.IpUploader = "45.14.185.30"
 
 Config.BluetoothRange = 5.0
+Config.MaxSunoeriaDistance = 10.0
 
 Config.TelefoniFissi = {
     -- Telefono Fisso Gioielleria

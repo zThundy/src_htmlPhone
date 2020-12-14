@@ -92,8 +92,8 @@ export default {
       ]
       if (isValid === true) {
         choix = [{id: 5, title: this.IntlString('APP_PHONE_SEND_MESSAGE'), icons: 'fa-sms'}, ...choix]
-        choix = [{id: 0, title: this.IntlString('APP_PHONE_CALL'), icons: 'fa-phone'}, ...choix]
         choix = [{id: 6, title: this.IntlString('APP_PHONE_CALL_ANONYMOUS'), icons: 'fa-mask'}, ...choix]
+        choix = [{id: 0, title: this.IntlString('APP_PHONE_CALL'), icons: 'fa-phone'}, ...choix]
       }
       const rep = await Modal.CreateModal({ choix })
       switch (rep.id) {
@@ -205,7 +205,7 @@ export default {
   margin-left: -8px
 }
 
-.element{
+.element {
   height: 58px;
   line-height: 58px;
   display: flex;
@@ -219,7 +219,7 @@ export default {
   background: radial-gradient(rgba(3, 168, 244, 0.14), rgba(3, 169, 244, 0.26));
 }
 
-.elem-pic{
+.elem-pic {
   margin-left: 12px;
   height: 48px;
   width: 48px;
@@ -230,27 +230,27 @@ export default {
   color: white;
 }
 
-.time{
+.time {
   margin-right: 12px;
   font-size: 13px;
   font-weight: 500;
   color: #c8c7cb;
 }
 
-.elem-content{
+.elem-content {
   margin-left: 12px;
   width: auto;
   flex-grow: 1;
   margin-top: 13px;
 }
 
-.elem-content-p{
+.elem-content-p {
   font-size: 20px;
   line-height: 20px;
   width: 153px;
 }
 
-.elem-content-s{
+.elem-content-s {
   font-size: 12px;
   line-height: 18px;
   width: 137px;
@@ -272,7 +272,7 @@ export default {
   padding-left: 4px;
 }
 
-.elem-icon{
+.elem-icon {
   width: 28px;
 }
 </style>

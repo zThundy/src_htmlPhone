@@ -206,8 +206,8 @@ export default {
           }
         } else if (data.id === 2) {
           this.ignoreControls = false
-          const url = await this.$phoneAPI.takePhoto()
-          if (url !== null && url !== undefined) { this.sendMessageInGroup({ gruppo: this.gruppo, message: url, phoneNumber: this.myPhoneNumber }) }
+          const pic = await this.$phoneAPI.takePhoto()
+          if (pic !== null && pic !== undefined) { this.sendMessageInGroup({ gruppo: this.gruppo, message: pic.url, phoneNumber: this.myPhoneNumber }) }
         }
       } catch (e) { } finally { this.ignoreControls = false }
     },

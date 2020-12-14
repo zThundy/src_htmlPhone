@@ -54,7 +54,10 @@ export default {
           this.soundCall = new Howl({
             src: path,
             onend: function () {
-              console.log('Finished!')
+              this.$phoneAPI.endSuoneriaForOthers()
+            },
+            onplay: function () {
+              this.$phoneAPI.startSuoneriaForOthers('Phone_Call_Sound_Effect.ogg')
             }
           })
         } else {
@@ -62,7 +65,10 @@ export default {
           this.soundCall = new Howl({
             src: path,
             onend: function () {
-              console.log('Finished!')
+              this.$phoneAPI.endSuoneriaForOthers()
+            },
+            onplay: function () {
+              this.$phoneAPI.startSuoneriaForOthers(this.sonido.value)
             }
           })
         }

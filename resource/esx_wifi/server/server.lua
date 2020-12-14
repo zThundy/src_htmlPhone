@@ -1,119 +1,123 @@
 ESX = nil
-TriggerEvent('esx:getSharedObject', function(obj) ESX = obj end)
 
-raggioWifi = Config.raggioWifi
-
-distanzaWifi = Config.distanzaWifi
-
-torriRadioFunzionanti = {}
-torriRadioRotte = {}
-torriRadioCaricate = false
+torriRadioFunzionanti = nil
+torriRadioRotte = nil
 retiWifi = {}
-retiWifiCaricate = false
 
+-- non utilizzate per il momento
 utentiTorriRadio = {}
 utentiRetiWifi = {}
 
 Citizen.CreateThread(function()
-	t_torriRadioRotte, t_torriRadioCaricate = Reti.loadTorriRadio()
+	ESX = exports["es_extended"]:getSharedObject()
+
+	local torriRadioCaricate, retiWifiCaricate = false, false
+
 	while true do
-		Wait(100)
+		Citizen.Wait(1000)
+
 		if torriRadioCaricate then
 			break
 		else
-			torriRadioRotte = t_torriRadioRotte
-			torriRadioCaricate = t_torriRadioCaricate
+			torriRadioFunzionanti, torriRadioRotte = Reti.loadTorriRadio()
 			torriRadioCaricate = true
 		end
 	end
 
-	t_retiWifi = Reti.loadRetiWifi()
+	Reti.Debug("Finished loading towers from database")
+
 	while true do
-		Wait(100)
+		Citizen.Wait(1000)
+
 		if retiWifiCaricate then
 			break
 		else
-			retiWifi = t_retiWifi
+			retiWifi = Reti.loadRetiWifi()
 			retiWifiCaricate = true
 		end
 	end
 
-end)
+	Reti.Debug("Finished loading routers from database")
 
-RegisterServerEvent('esx_wifi:richiediTorriRadio')
-AddEventHandler('esx_wifi:richiediTorriRadio', function(player)
-	if player ~= nil then
-		TriggerClientEvent('esx_wifi:riceviTorriRadio', player, torriRadioFunzionanti)
+	if Config.EnableSyncThread then
+		while true do
+			Citizen.Wait(Config.SyncThreadWait * 1000)
+
+			torriRadioFunzionanti, torriRadioRotte = Reti.loadTorriRadio()
+			retiWifi = Reti.loadRetiWifi()
+
+			TriggerClientEvent('esx_wifi:riceviTorriRadio', -1, torriRadioFunzionanti, torriRadioRotte)
+			TriggerClientEvent('esx_wifi:riceviRetiWifi', -1, retiWifi)
+
+			Reti.Debug("SyncThread: towers and wifi synced")
+		end
 	end
 end)
 
+
+RegisterServerEvent('esx_wifi:richiediTorriRadio')
+AddEventHandler('esx_wifi:richiediTorriRadio', function()
+	local player = source
+
+	while torriRadioFunzionanti == nil do Citizen.Wait(500) end
+	while torriRadioRotte == nil do Citizen.Wait(500) end
+
+	TriggerClientEvent('esx_wifi:riceviTorriRadio', player, torriRadioFunzionanti, torriRadioRotte)
+end)
+
+
+RegisterServerEvent('esx_wifi:richiediRetiWifi')
+AddEventHandler('esx_wifi:richiediRetiWifi', function()
+	local player = source
+
+	if player ~= nil then
+		TriggerClientEvent('esx_wifi:riceviRetiWifi', player, retiWifi)
+	end
+end)
+
+
 RegisterServerEvent('esx_wifi:connettiAllaTorre')
 AddEventHandler('esx_wifi:connettiAllaTorre', function(player, labelTorreRadio, potenza)
-	table.insert(utentiTorriRadio, {player, labelTorreRadio, potenza})
+	-- table.insert(utentiTorriRadio, {player, labelTorreRadio, potenza})
+	utentiTorriRadio[player] = {player, labelTorreRadio, potenza}
+
 	TriggerClientEvent('gcphone:aggiornameAConnessione', player, potenza)
 end)
+
 
 RegisterServerEvent('esx_wifi:cambiaTorreRadio')
 AddEventHandler('esx_wifi:cambiaTorreRadio', function(player, labelTorreRadio, potenza)
-	for k, info in pairs(utentiTorriRadio) do
-		if info.source == player then
-			info.labelTorreRadio = labelTorreRadio
-			info.potenza = potenza 
-			break
+	utentiTorriRadio[player].labelTorreRadio = labelTorreRadio
+	utentiTorriRadio[player].potenza = potenza
+
+	--[[
+		for k, info in pairs(utentiTorriRadio) do
+			if info.source == player then
+				info.labelTorreRadio = labelTorreRadio
+				info.potenza = potenza 
+				break
+			end
 		end
-	end
+	]]
 
 	TriggerClientEvent('gcphone:aggiornameAConnessione', player, potenza)
 end)
+
 
 RegisterServerEvent('esx_wifi:disconnettiDallaTorre')
 AddEventHandler('esx_wifi:disconnettiDallaTorre', function(player)
-	local utente = nil
-	for i=1, #utentiTorriRadio do
-		utente = utentiTorriRadio[i]
-		if utente.source == player then
-			table.remove(utentiTorriRadio, i)
-			break
-		end
-	end
-
-	TriggerClientEvent('gcphone:aggiornameAConnessione', player, 0)
-end)
-
-RegisterServerEvent('esx_wifi:richiediRetiWifi')
-AddEventHandler('esx_wifi:richiediRetiWifi', function(player, coords)
-	local retiWifiVicine = {}
+	utentiTorriRadio[player] = nil
 	
-	distanza = 0
-	for i=1, #retiWifi do
-		distanza = ESX.vectorDistance({x = retiWifi[i].x, y = retiWifi[i].y, z = retiWifi[i].z}, coords)
-		if distanza < raggioWifi then
-			if #retiWifiVicine > 0 then
-				for reverseI = #retiWifiVicine, 1, -1 do
-					if distanza > retiWifiVicine[reverseI].distanza then
-						retiWifi[i].distanza = distanza
-						table.insert(retiWifiVicine, retiWifi[i])
-						break
-					else
-						if reverseI == #retiWifiVicine - 1 then
-							retiWifi[i].distanza = distanza
-							table.insert(retiWifiVicine, reverseI, retiWifi[i])
-							break
-						end
-					end
-				end
-			else
-				retiWifi[i].distanza = distanza
-				table.insert(retiWifiVicine, retiWifi[i])
+	--[[
+		local utente = nil
+		for i=1, #utentiTorriRadio do
+			utente = utentiTorriRadio[i]
+			if utente.source == player then
+				table.remove(utentiTorriRadio, i)
+				break
 			end
 		end
-	end
-	
-	TriggerClientEvent('gcphone:aggiornaRetiWifi', player, retiWifiVicine)
-end)
+	]]
 
-RegisterServerEvent('esx_wifi:connettiAllaTorre')
-AddEventHandler('esx_wifi:connettiAllaTorre', function(player, labelTorreRadio, potenza)
-	table.insert(utentiTorriRadio, {player, labelTorreRadio, potenza})
-	TriggerClientEvent('gcphone:aggiornameAConnessione', player, potenza)
+	TriggerClientEvent('gcphone:aggiornameAConnessione', player, 0)
 end)

@@ -20,10 +20,11 @@ AddEventHandler("gcphone:whatsapp_updateGruppi", function(groups)
     ESX.TriggerServerCallback("gcPhone:getPhoneNumber", function(number)
 
         for group_id, group in pairs(groups) do
+            local index = 1
             group.partecipanti = json.decode(group.partecipanti)
 
             group.partecipantiString = ""
-            for index, contact in pairs(group.partecipanti) do
+            for _, contact in pairs(group.partecipanti) do
                 -- se il numero che loopa è il tuo, allora sostituisce il display
                 -- con "Tu"
                 if contact.number == number then contact.display = "Tu" end
@@ -33,6 +34,8 @@ AddEventHandler("gcphone:whatsapp_updateGruppi", function(groups)
                 else
                     group.partecipantiString = group.partecipantiString..", "..contact.display
                 end
+
+                index = index + 1
             end
 
             if string.len(group.partecipantiString) > 50 then
@@ -40,7 +43,7 @@ AddEventHandler("gcphone:whatsapp_updateGruppi", function(groups)
                 group.partecipantiString = group.partecipantiString.."..."
             end
 
-            for index, contact in pairs(group.partecipanti) do
+            for _, contact in pairs(group.partecipanti) do
 
                 -- if contact.number == myPhoneNumber then
                 if contact.number == number then
@@ -149,8 +152,8 @@ RegisterNUICallback("sendAudioNotification", function(data, cb)
 end)
 
 RegisterNUICallback("addGroupMembers", function(data, cb)
-    print(data.contacts)
-    print(data.gruppo.id)
+    -- print(data.contacts)
+    -- print(data.gruppo.id)
     TriggerServerEvent("gcphone:whatsapp_addGroupMembers", data)
     cb("ok")
 end)

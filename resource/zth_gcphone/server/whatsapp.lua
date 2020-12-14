@@ -9,7 +9,7 @@ function updateCachedGroups()
     local query = false
     MySQL.Async.fetchAll("SELECT * FROM phone_whatsapp_groups", {}, function(r)
         for k, v in pairs(r) do
-            cachedGroups[v.id] = v
+            cachedGroups[tonumber(v.id)] = v
         end
 
         query = true
@@ -18,6 +18,19 @@ function updateCachedGroups()
     while not query do Citizen.Wait(1000) end
 
     return cachedGroups
+end
+
+
+function formatTableIndex(table)
+    local tb = {}
+    for k, v in pairs(table) do
+        if k ~= "creator" then
+            tb[tonumber(k)] = v
+        else
+            tb["creator"] = v
+        end
+    end
+    return tb
 end
 
 
@@ -80,7 +93,7 @@ AddEventHandler("gcphone:whatsapp_sendMessage", function(data)
             }, function(id)
                 -- print("ho fatto la query. id è", id)
                 if id > 0 then
-                    local group = cachedGroups[data.id]
+                    local group = cachedGroups[tonumber(data.id)]
 
                     for _, val in pairs(json.decode(group.partecipanti)) do
                         -- print(val.number, "il numero del partecipante è questo")
@@ -112,6 +125,13 @@ function isUserInGroup(number, partecipanti)
 end
 
 
+function getPartecipanti(groupid)
+    local result = MySQL.Sync.fetchAll("SELECT * FROM phone_whatsapp_groups WHERE id = @id", {['@id'] = groupid})
+    if result[1] == nil then return nil end
+    return json.decode(result[1].partecipanti)
+end
+
+
 -- ATTENZIONE
 -- l'aggiornamento istantaneo dei partecipanti al gruppo, è solo per chi lo fa in quell'istante,
 -- gli altri devono chiudere e riaprire il telefono
@@ -122,23 +142,37 @@ RegisterServerEvent("gcphone:whatsapp_addGroupMembers")
 AddEventHandler("gcphone:whatsapp_addGroupMembers", function(data)
     local player = source
     local xPlayer = ESX.GetPlayerFromId(player)
+    local myNumber = gcPhone.getPhoneNumber(xPlayer.identifier)
 
     gcPhone.isAbleToSurfInternet(xPlayer.identifier, 1, function(isAble, mbToRemove)
 		if isAble then
             gcPhone.usaDatiInternet(xPlayer.identifier, mbToRemove)
             
-            local partecipanti = {}
+            local partecipanti = formatTableIndex(getPartecipanti(data.gruppo.id))
 
-            for index, val in pairs(data.contacts) do
-                if val.selected then
-                    table.insert(partecipanti, {
-                        display = val.display,
-                        icon = val.icon or '/html/static/img/app_whatsapp/defaultgroup.png',
-                        id = val.id,
-                        number = val.number
-                    })
+            -- print(ESX.DumpTable(partecipanti))
+            -- print(ESX.DumpTable(data.selected))
+            -- print("---------------------------------------------")
+
+            for _, val in pairs(data.contacts) do
+                if partecipanti[tostring(val.id)] ~= nil then partecipanti[tostring(val.id)] = nil end
+                if partecipanti[tonumber(val.id)] ~= nil then partecipanti[tonumber(val.id)] = nil end
+                -- visto che nel js non ho voglia di passare contacts su i mutuate states
+                -- controllo qua se il contatto non è stato toccato
+                if val.number ~= myNumber then
+                    -- + 1 A CAZZIO DIOCAN MA PORCODDIO
+                    if data.selected[tonumber(val.id) + 1] then
+                        partecipanti[tonumber(val.id)] = {
+                            display = val.display,
+                            icon = val.icon or '/html/static/img/app_whatsapp/defaultgroup.png',
+                            id = val.id,
+                            number = val.number
+                        }
+                    end
                 end
             end
+
+            -- print(ESX.DumpTable(partecipanti))
 
             gcPhone.isAbleToSurfInternet(xPlayer.identifier, #partecipanti * 0.2, function(isAble, mbToRemove)
                 if isAble then
@@ -173,14 +207,22 @@ AddEventHandler("gcphone:whatsapp_leaveGroup", function(group)
             gcPhone.usaDatiInternet(xPlayer.identifier, mbToRemove)
 
             MySQL.Async.fetchAll("SELECT * FROM phone_whatsapp_groups WHERE id = @id", {['@id'] = group.id}, function(r)
-                local partecipanti = json.decode(r[1].partecipanti)
-                for k, v in pairs(partecipanti) do
+                if r[1] == nil then return end
+
+                local partecipanti = formatTableIndex(json.decode(r[1].partecipanti))
+
+                -- print(ESX.DumpTable(partecipanti))
+                -- print("-------------------------------------------")
+                
+                for id, v in pairs(partecipanti) do
                     if v.number == number then
-                        table.remove(partecipanti, k)
-                        -- print("rimosso", v.number)
+                        partecipanti[tonumber(id)] = nil
                         break
                     end
                 end
+
+                -- print(ESX.DumpTable(partecipanti))
+                -- print(#partecipanti)
 
                 if #partecipanti == 0 then
                     MySQL.Async.execute("DELETE FROM phone_whatsapp_groups WHERE id = @id", {['@id'] = group.id}, function() updateCachedGroups() end)
@@ -228,26 +270,32 @@ AddEventHandler("gcphone:whatsapp_creaNuovoGruppo", function(data)
 
     gcPhone.isAbleToSurfInternet(xPlayer.identifier, 1.5, function(isAble, mbToRemove)
 		if isAble then
-			gcPhone.usaDatiInternet(xPlayer.identifier, mbToRemove)
-    
-            table.insert(partecipanti, {
-                display = data.myInfo.display,
-                id = data.myInfo.id,
-                number = data.myInfo.number
-            })
+            gcPhone.usaDatiInternet(xPlayer.identifier, mbToRemove)
 
-            -- print(json.encode(data.contacts))
+            -- print(ESX.DumpTable(partecipanti))
+            -- print(ESX.DumpTable(data.selected))
+            -- print("--------------------------------------------")
 
-            for k, v in pairs(data.contacts) do
-                if v.selected then
-                    table.insert(partecipanti, {
-                        display = v.display,
-                        icon = v.icon or '/html/static/img/app_whatsapp/defaultgroup.png',
-                        id = v.id,
-                        number = v.number
-                    })
+            for _, val in pairs(data.contacts) do
+                if data.selected[tonumber(val.id) + 1] then
+                    partecipanti[tonumber(val.id)] = {
+                        display = val.display,
+                        icon = val.icon or '/html/static/img/app_whatsapp/defaultgroup.png',
+                        id = val.id,
+                        number = val.number
+                    }
                 end
             end
+
+            partecipanti = formatTableIndex(partecipanti)
+            -- print(ESX.DumpTable(partecipanti))
+
+            partecipanti["creator"] = {
+                display = data.myInfo.display,
+                number = data.myInfo.number,
+                id = lastId,
+                icon = '/html/static/img/app_whatsapp/defaultgroup.png'
+            }
 
             MySQL.Async.insert("INSERT INTO phone_whatsapp_groups(icona, gruppo, partecipanti) VALUES(@icona, @gruppo, @partecipanti)", {
                 ['@icona'] = data.groupImage or '/html/static/img/app_whatsapp/defaultgroup.png',

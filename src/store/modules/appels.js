@@ -12,7 +12,7 @@ const getters = {
   appelsInfo: ({ appelsInfo }) => appelsInfo,
   appelsDisplayName (state, getters) {
     if (state.appelsInfo === null) {
-      return 'ERROR'
+      return 'Errore'
     }
     if (state.appelsInfo.hidden === true) {
       return getters.IntlString('APP_PHONE_NUMBER_HIDDEN')
@@ -23,13 +23,13 @@ const getters = {
   },
   appelsDisplayNumber (state, getters) {
     if (state.appelsInfo === null) {
-      return 'ERROR'
+      return 'Errore'
     }
     if (getters.isInitiatorCall === true) {
       return state.appelsInfo.receiver_num
     }
     if (state.appelsInfo.hidden === true) {
-      return '###-####'
+      return 'Numero nascosco'
     }
     return state.appelsInfo.transmitter_num
   },

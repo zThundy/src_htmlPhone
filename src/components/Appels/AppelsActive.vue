@@ -2,11 +2,11 @@
    <div style="width: 326px; height: 743px;"  class="phone_app">
     <div class="backblur" v-bind:style="{background: 'url(' + backgroundURL +')'}"></div>
     <InfoBare />
-    <div class="num">{{appelsDisplayNumber}}</div>
-    <div class="contactName">{{appelsDisplayName}}</div>
+    <div class="num">{{ appelsDisplayNumber }}</div>
+    <div class="contactName">{{ appelsDisplayName }}</div>
 
     <div class="time"></div>
-    <div class="time-display">{{timeDisplay}}</div>
+    <div class="time-display">{{ timeDisplay }}</div>
 
     <!--
     <div 
@@ -134,7 +134,7 @@ export default {
   },
 
   computed: {
-    ...mapGetters(['IntlString', 'backgroundURL', 'appelsInfo', 'appelsDisplayName', 'appelsDisplayNumber', 'myPhoneNumber']),
+    ...mapGetters(['IntlString', 'backgroundURL', 'appelsInfo', 'appelsDisplayName', 'appelsDisplayNumber', 'myPhoneNumber', 'tts']),
     timeDisplay () {
       if (this.time < 0) {
         return this.IntlString('APP_PHONE_DIALING_MESSAGE')
@@ -156,6 +156,11 @@ export default {
   },
 
   created () {
+    if (this.tts) {
+      var numbstring = this.appelsDisplayNumber.split('').join(' ')
+      var text = 'Chiamata in arrivo.' + numbstring
+      this.$phoneAPi.speakTTS(text)
+    }
     this.$bus.$on('keyUpEnter', this.onEnter)
     this.$bus.$on('keyUpArrowLeft', this.onLeft)
     this.$bus.$on('keyUpArrowRight', this.onRight)
@@ -175,7 +180,7 @@ export default {
 </script>
 
 <style scoped>
-.backblur{
+.backblur {
   top: -6px;
   left: -6px;
   right:-6px;
@@ -184,7 +189,8 @@ export default {
   background-size: cover !important;
   filter: blur(6px);
 }
-.num{
+
+.num {
   position: absolute;
   text-shadow: 0px 0px 15px black, 0px 0px 15px black;
   top: 60px;
@@ -194,7 +200,8 @@ export default {
   text-align: center;
   font-size: 46px;
 }
-.contactName{
+
+.contactName {
   position: absolute;
   text-shadow: 0px 0px 15px black, 0px 0px 15px black;
   top: 100px;
@@ -206,7 +213,7 @@ export default {
   font-size: 26px;
 }
 
-.time{
+.time {
   position: relative;
   margin: 0 auto;
   top: 280px;
@@ -217,7 +224,8 @@ export default {
   border-radius: 50%;
   animation: rond 1.8s infinite linear;
 }
-.time-display{
+
+.time-display {
   text-shadow: 0px 0px 15px black, 0px 0px 15px black;
   position: relative;
   top: 187px;
@@ -264,6 +272,7 @@ export default {
   height: 70px;
   width: 70px;
 }
+
 .deccrocher:hover {
   background-color: #ffffff !important;
   height: 90px;
@@ -283,13 +292,12 @@ export default {
   width: 70px;
 }
 
-.action svg{
+.action svg {
   width: 60px;
   height: 60px;
   margin: 5px;
   fill: #EEE;
 }
-
 
 .ignore {
   position: absolute;
@@ -307,6 +315,7 @@ export default {
   left: 15%;
   color: #CCC;
 }
+
 .ignore:hover {
   background-color: #818080;
 }

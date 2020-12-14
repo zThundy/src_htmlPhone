@@ -42,7 +42,8 @@ client_script {
 	"client/instagram.lua",
 	"client/whatsapp.lua",
 	"client/cover.lua",
-	"client/bluetooth.lua"
+	"client/bluetooth.lua",
+	"client/suoneria.lua"
 }
 
 server_script {
@@ -56,5 +57,6 @@ server_script {
 	"server/bank.lua",
 	"server/whatsapp.lua",
 	"server/cover.lua",
-	"server/bluetooth.lua"
+	"server/bluetooth.lua",
+	"server/suoneria.lua"
 }
