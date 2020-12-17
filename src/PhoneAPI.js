@@ -735,6 +735,19 @@ class PhoneAPI {
     return this.post('requestMyCovers')
   }
 
+  async changingCover (cover) {
+    return this.post('changingCover', { cover: cover })
+  }
+
+  onchangePhoneCover (data) {
+    // console.log(data.label, data.cover)
+    store.commit('SET_CURRENT_COVER', { label: data.label, value: data.cover })
+  }
+
+  onreceiveCovers (data) {
+    store.commit('UPDATE_MY_COVERS', data.covers)
+  }
+
   // ////////////////////////// //
   // SEZIONE BLUETOOTH TELEFONO //
   // ////////////////////////// //

@@ -17,9 +17,7 @@ services_names = {
 	["truckdealer"] = "Concessionario Camion",
 	["autousate"] = "Concessionario Usate",
 	["burgershot"] = "Burger Shot",
-	["azienda1"] = "Azienda 1",
-	["azienda2"] = "Azienda 2",
-	["azienda3"] = "Azienda 3"
+	["import"] = "Import"
 }
 
 

@@ -3,7 +3,7 @@
     <notification />
     <div v-if="show === true && tempoHide === false" :style="{zoom: zoom}" @contextmenu.stop>
       <div class="phone_wrapper">
-        <div v-if="coque" class="phone_coque" :style="{backgroundImage: 'url(/html/static/img/cover/' + coque.value + ')'}"></div>
+        <div v-if="currentCover" class="phone_coque" :style="{backgroundImage: 'url(/html/static/img/cover/' + currentCover.value + ')'}"></div>
         
           <div id="app" class="phone_screen noselect">
             <transition-page>
@@ -40,7 +40,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['show', 'zoom', 'coque', 'sonido', 'appelsInfo', 'myPhoneNumber', 'volume', 'tempoHide'])
+    ...mapGetters(['show', 'zoom', 'currentCover', 'sonido', 'appelsInfo', 'myPhoneNumber', 'volume', 'tempoHide'])
   },
   watch: {
     appelsInfo (newValue, oldValue) {
@@ -51,15 +51,7 @@ export default {
         var path = null
         if (this.appelsInfo.initiator === true) {
           path = '/html/static/sound/Phone_Call_Sound_Effect.ogg'
-          this.soundCall = new Howl({
-            src: path,
-            onend: function () {
-              this.$phoneAPI.endSuoneriaForOthers()
-            },
-            onplay: function () {
-              this.$phoneAPI.startSuoneriaForOthers('Phone_Call_Sound_Effect.ogg')
-            }
-          })
+          this.soundCall = new Howl({ src: path, loop: true })
         } else {
           path = '/html/static/sound/' + this.sonido.value
           this.soundCall = new Howl({
@@ -80,18 +72,18 @@ export default {
         this.soundCall = null
       }
       if (newValue === null && oldValue !== null) {
-        this.$router.push({name: 'lockscreen'})
+        this.$router.push({ name: 'lockscreen' })
         return
       }
       if (newValue !== null) {
-        this.$router.push({name: 'appels.active'})
+        this.$router.push({ name: 'appels.active' })
       }
     },
     show () {
       if (this.appelsInfo !== null) {
-        this.$router.push({name: 'appels.active'})
+        this.$router.push({ name: 'appels.active' })
       } else {
-        this.$router.push({name: 'lockscreen'})
+        this.$router.push({ name: 'lockscreen' })
       }
       if (this.show === false && this.appelsInfo !== null) {
         this.rejectCall()
@@ -117,7 +109,7 @@ export default {
     })
   },
   created () {
-    this.$router.push({name: 'lockscreen'})
+    this.$router.push({ name: 'lockscreen' })
   }
 }
 </script>

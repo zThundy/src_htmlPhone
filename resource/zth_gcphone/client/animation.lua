@@ -5,7 +5,8 @@
 local ped = nil
 
 local phoneProp = 0
-local phoneModel = GetHashKey("prop_npc_phone_02")
+local phoneModel = 0
+local cachedProps = {}
 -- OR "prop_npc_phone"
 -- OR "prop_npc_phone_02"
 -- OR "prop_cs_phone_01"
@@ -14,6 +15,7 @@ local currentStatus = 'out'
 local lastDict = nil
 local lastAnim = nil
 local lastFlag = nil
+
 
 local lib = {
 	['cellphone@'] = {
@@ -47,15 +49,16 @@ local lib = {
 }
 
 
-AddEventHandler("onResourceStop", function(res)
-	if res == GetCurrentResourceName() then
-		deletePhone()
-	end
-end)
-
-
 function newPhoneProp()
+	ped = GetPlayerPed(-1)
+	
 	deletePhone()
+
+	if Config.Covers[myCover] ~= nil then
+		phoneModel = GetHashKey(Config.Covers[myCover].prop)
+	else
+		phoneModel = GetHashKey(Config.BaseCover.prop)
+	end
 
 	RequestModel(phoneModel)
 	while not HasModelLoaded(phoneModel) do Citizen.Wait(1) end
@@ -63,6 +66,15 @@ function newPhoneProp()
 	phoneProp = CreateObject(phoneModel, 1.0, 1.0, 1.0, 1, 1, 0)
 	local bone = GetPedBoneIndex(ped, 28422)
 	AttachEntityToEntity(phoneProp, ped, bone, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1, 1, 0, 0, 2, 1)
+
+	table.insert(cachedProps, phoneProp)
+end
+
+
+function onCoverChange()
+	if #cachedProps > 2 then doCleanup() end
+
+	newPhoneProp()
 end
 
 
@@ -74,17 +86,30 @@ function deletePhone()
 end
 
 
+function doCleanup()
+	for k, v in pairs(cachedProps) do
+		if DoesEntityExist(v) then
+			Citizen.InvokeNative(0xAE3CBE5BF394C9C9 , Citizen.PointerValueIntInitialized(v))
+		end
+	end
+
+	cachedProps = {}
+	print("^1[ZTH_Phone] ^0Cleared extra props for restart or overflow")
+end
+
+
 --[[
 	out || text || Call ||
 --]]
 function PhonePlayAnim(status, freeze)
-	print(status, currentStatus)
 	if currentStatus == status then
 		return
 	end
 
 	ped = GetPlayerPed(-1)
 	local freeze = freeze or false
+
+	if IsPedInAnyVehicle(ped, false) then freeze = false end
 
 	local dict = "cellphone@"
 	if IsPedInAnyVehicle(ped, false) then dict = "anim@cellphone@in_car@ps" end
@@ -144,3 +169,12 @@ function loadAnimDict(dict)
 		Citizen.Wait(1)
 	end
 end
+
+
+AddEventHandler("onResourceStop", function(res)
+	if res == GetCurrentResourceName() then
+		deletePhone()
+
+		doCleanup()
+	end
+end)

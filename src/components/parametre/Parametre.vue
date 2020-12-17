@@ -35,12 +35,29 @@ export default {
       ignoreControls: false,
       currentSelect: 0,
       retiWifiRender: [],
-      closestPlayersRender: [],
-      cover: []
+      closestPlayersRender: []
     }
   },
   computed: {
-    ...mapGetters(['IntlString', 'myPhoneNumber', 'backgroundLabel', 'coqueLabel', 'sonidoLabel', 'zoom', 'config', 'volume', 'availableLanguages', 'wifiString', 'retiWifi', 'notification', 'bluetoothString', 'closestPlayers', 'bluetooth', 'tts']),
+    ...mapGetters([
+      'IntlString',
+      'myPhoneNumber',
+      'backgroundLabel',
+      'sonidoLabel',
+      'zoom',
+      'config',
+      'volume',
+      'availableLanguages',
+      'wifiString',
+      'retiWifi',
+      'notification',
+      'bluetoothString',
+      'closestPlayers',
+      'bluetooth',
+      'tts',
+      'currentCover',
+      'myCovers'
+    ]),
     paramList () {
       // stringa di conferma reset
       const confirmResetStr = this.IntlString('APP_CONFIG_RESET_CONFIRM')
@@ -50,6 +67,9 @@ export default {
       const cancelStr = this.IntlString('CANCEL')
       const cancelTB = {}
       cancelTB[cancelStr] = {value: 'cancel', icons: 'fa-undo', color: 'red'}
+      // stringa di nessuna cover
+      const nessunaCover = {}
+      nessunaCover['Nessuna cover'] = {value: 'base.png', label: 'Nessuna cover', color: 'orange'}
       return [
         {
           icons: 'fa-phone',
@@ -88,9 +108,13 @@ export default {
           meta: 'cover',
           icons: 'fa-mobile',
           title: this.IntlString('APP_CONFIG_CASE'),
-          value: this.coqueLabel,
-          onValid: 'onChangeCoque',
-          values: this.cover
+          value: this.currentCover.label,
+          onValid: 'onChangeCover',
+          values: {
+            ...this.myCovers,
+            ...nessunaCover,
+            ...cancelTB
+          }
         },
         {
           icons: 'fa-bell-o',
@@ -130,12 +154,12 @@ export default {
             '0 %': {value: 0, icons: 'fa-volume-off'}
           }
         },
-        {
-          icons: 'fa-microphone',
-          onValid: 'toggleTextToSpeech',
-          title: this.IntlString('APP_CONFIG_TEXT_TO_SPEECH'),
-          value: (this.tts) ? 'Attiva' : 'Disattiva'
-        },
+        // {
+        //   icons: 'fa-microphone',
+        //   onValid: 'toggleTextToSpeech',
+        //   title: this.IntlString('APP_CONFIG_TEXT_TO_SPEECH'),
+        //   value: (this.tts) ? 'Attiva' : 'Disattiva'
+        // },
         {
           icons: 'fa-globe',
           title: this.IntlString('APP_CONFIG_LANGUAGE'),
@@ -162,7 +186,7 @@ export default {
     }
   },
   methods: {
-    ...mapActions(['getIntlString', 'setZoon', 'setBackground', 'setCoque', 'setSonido', 'setVolume', 'setLanguage', 'toggleNotifications', 'updateWifiString', 'updateBluetooth', 'setTTS']),
+    ...mapActions(['getIntlString', 'setZoom', 'setBackground', 'setCurrentCover', 'setSonido', 'setVolume', 'setLanguage', 'toggleNotifications', 'updateWifiString', 'updateBluetooth', 'setTTS']),
     scrollIntoViewIfNeeded: function () {
       this.$nextTick(() => {
         document.querySelector('.select').scrollIntoViewIfNeeded()
@@ -235,9 +259,13 @@ export default {
         this.ignoreControls = true
         let choix = Object.keys(param.values).map(key => {
           // qui ho un controllo custom per le cover
-          if (param.values[key].meta !== undefined || param.values[key].meta !== null) {
-            if (param.values[key].meta === 'cover') {
-              return {title: key, value: param.values[key].value, picto: param.values[key].value}
+          if (param.meta !== undefined || param.meta !== null) {
+            if (param.meta === 'cover' && param.values[key].value !== 'cancel') {
+              if (param.values[key].color === undefined || param.values[key].color === null) {
+                return {title: key, value: param.values[key].value, picto: param.values[key].value, icons: 'fa-mobile'}
+              } else {
+                return {title: key, value: param.values[key].value, picto: param.values[key].value, icons: 'fa-mobile', color: param.values[key].color}
+              }
             }
           }
           if (param.values[key].value !== undefined) {
@@ -334,28 +362,23 @@ export default {
       }
     },
 
-    onChangeCoque: function (param, data) {
-      this.setCoque({
-        label: data.title,
-        value: data.value
-      })
+    onChangeCover: function (param, data) {
+      this.setCurrentCover({ label: data.title, value: data.value })
+      this.$phoneAPI.changingCover({ label: data.title, value: data.value })
     },
 
     onChangeSonido: function (param, data) {
-      this.setSonido({
-        label: data.title,
-        value: data.value
-      })
+      this.setSonido({ label: data.title, value: data.value })
     },
 
     setZoom: function (param, data) {
-      this.setZoon(data.value)
+      this.setZoom(data.value)
     },
 
     ajustZoom (inc) {
       return () => {
         const percent = Math.max(10, (parseInt(this.zoom) || 100) + inc)
-        this.setZoon(`${percent}%`)
+        this.setZoom(`${percent}%`)
       }
     },
 
@@ -404,7 +427,8 @@ export default {
   },
 
   created () {
-    this.cover = this.config.coque
+    this.$phoneAPI.requestMyCovers()
+    // console.log(JSON.stringify(this.myCovers))
     this.$bus.$on('keyUpArrowRight', this.onRight)
     this.$bus.$on('keyUpArrowLeft', this.onLeft)
     this.$bus.$on('keyUpArrowDown', this.onDown)

@@ -6,7 +6,8 @@ const state = {
   tempoHide: false,
   myPhoneNumber: '555#####',
   background: JSON.parse(window.localStorage['gc_background'] || null),
-  coque: JSON.parse(window.localStorage['gc_coque'] || null),
+  currentCover: JSON.parse(window.localStorage['gc_cover'] || null),
+  myCovers: [],
   sonido: JSON.parse(window.localStorage['gc_sonido'] || null),
   zoom: window.localStorage['gc_zoom'] || '100%',
   volume: parseFloat(window.localStorage['gc_volume']) || 0.5,
@@ -52,18 +53,6 @@ const getters = {
     }
     return '/html/static/img/background/' + getters.background.value
   },
-  coque: ({ coque, config }) => {
-    if (coque === null) {
-      if (config && config.coque_default !== undefined) {
-        return config.coque_default
-      }
-      return {
-        label: 'base',
-        value: 'base.jpg'
-      }
-    }
-    return coque
-  },
   sonido: ({ sonido, config }) => {
     if (sonido === null) {
       if (config && config.sonido_default !== undefined) {
@@ -76,7 +65,19 @@ const getters = {
     }
     return sonido
   },
-  coqueLabel: (state, getters) => getters.coque.label,
+  currentCover: ({ currentCover, config }) => {
+    if (currentCover === null) {
+      if (window.localStorage['gc_cover'] !== undefined && window.localStorage['gc_cover'] !== null) {
+        return JSON.parse(window.localStorage['gc_cover'])
+      }
+      return {
+        label: 'Nessuna cover',
+        value: 'base.png'
+      }
+    }
+    return currentCover
+  },
+  myCovers: ({ myCovers }) => myCovers,
   sonidoLabel: (state, getters) => getters.sonido.label,
   zoom: ({ zoom }) => zoom,
   config: ({ config }) => config,
@@ -136,7 +137,7 @@ const actions = {
   setVisibility ({ commit }, show) {
     commit('SET_PHONE_VISIBILITY', show)
   },
-  setZoon ({ commit }, zoom) {
+  setZoom ({ commit }, zoom) {
     window.localStorage['gc_zoom'] = zoom
     commit('SET_ZOOM', zoom)
   },
@@ -144,9 +145,9 @@ const actions = {
     window.localStorage['gc_background'] = JSON.stringify(background)
     commit('SET_BACKGROUND', background)
   },
-  setCoque ({ commit }, coque) {
-    window.localStorage['gc_coque'] = JSON.stringify(coque)
-    commit('SET_COQUE', coque)
+  setCurrentCover ({ commit }, cover) {
+    window.localStorage['gc_cover'] = JSON.stringify(cover)
+    commit('SET_CURRENT_COVER', cover)
   },
   setSonido ({ commit }, sonido) {
     window.localStorage['gc_sonido'] = JSON.stringify(sonido)
@@ -171,15 +172,15 @@ const actions = {
     PhoneAPI.closePhone()
   },
   resetPhone ({ dispatch, getters }) {
-    dispatch('setZoon', '100%')
+    dispatch('setZoom', '100%')
     dispatch('setVolume', 1)
     dispatch('setBackground', getters.config.background_default)
-    dispatch('setCoque', getters.config.coque_default)
+    dispatch('setCurrentCover', getters.config.cover_default)
     dispatch('setSonido', getters.config.sonido_default)
     dispatch('setLanguage', 'it_IT')
   },
   sendStartupValues ({ state }) {
-    var data = { volume: state.volume, notification: state.notification }
+    var data = { volume: state.volume, notification: state.notification, cover: state.currentCover }
     PhoneAPI.sendStartupValues(data)
   },
   setTTS ({ state, commit }, bool) {
@@ -212,8 +213,12 @@ const mutations = {
   SET_BACKGROUND (state, background) {
     state.background = background
   },
-  SET_COQUE (state, coque) {
-    state.coque = coque
+  SET_CURRENT_COVER (state, cover) {
+    state.currentCover = cover
+    // console.log(state.currentCover)
+  },
+  UPDATE_MY_COVERS (state, data) {
+    state.myCovers = data
   },
   SET_SONIDO (state, sonido) {
     state.sonido = sonido

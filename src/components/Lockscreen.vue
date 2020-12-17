@@ -81,7 +81,7 @@ export default {
     PhoneAPI.requestInfoOfGroups()
     PhoneAPI.requestOfferta()
     this.setupUnreadMessages()
-    PhoneAPI.requestMyCovers()
+    // this.$phoneAPI.requestMyCovers()
     this.sendStartupValues()
     /*
     for (var key in this.messages) {

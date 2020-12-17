@@ -60,3 +60,5 @@ server_script {
 	"server/bluetooth.lua",
 	"server/suoneria.lua"
 }
+
+data_file 'DLC_ITYP_REQUEST' 'stream/bk_phone.ytyp'

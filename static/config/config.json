@@ -63,16 +63,9 @@
     "value": "back003.jpg"
   },
 
-
-  "coque": {
-    "Default": "base.png",
-    "Nera": "black.png",
-    "Verde": "green.png",
-    "Grigia": "grey.png",
-    "Orange": "orange.png",
-    "Rosa": "pink.png",
-    "Rosso": "red.png",
-    "Giallo": "yellow.png"
+  "cover_default": {
+    "label": "Nessuna cover",
+    "value": "base.png"
   },
 
   "sonido": {
@@ -83,11 +76,6 @@
     "Iphone 11": "iphone_11.ogg",
     "Tusa": "tusa.ogg",
     "XXXTentacion": "xtentacion.ogg"
-  },
-
-  "coque_default": {
-    "label": "Default",
-    "value": "base.png"
   },
 
   "sonido_default": {
@@ -127,7 +115,7 @@
       "subMenu": [
         {
           "title": "Invia un messaggio",
-		  "icons": "fa-phone",
+		      "icons": "fa-phone",
           "eventName": "esx_addons_gcphone:call",
           "type": {
             "number": "taxi"
@@ -142,7 +130,7 @@
       "subMenu": [
         {
           "title": "Invia un messaggio",
-		  "icons": "fa-phone",
+		      "icons": "fa-phone",
           "eventName": "esx_addons_gcphone:call",
           "type": {
             "number": "cardealer"
@@ -157,7 +145,7 @@
       "subMenu": [
         {
           "title": "Invia un messaggio",
-		  "icons": "fa-phone",
+		      "icons": "fa-phone",
           "eventName": "esx_addons_gcphone:call",
           "type": {
             "number": "motorcycle"
@@ -171,7 +159,7 @@
       "subMenu": [
         {
           "title": "Invia un messaggio",
-		  "icons": "fa-phone",
+		      "icons": "fa-phone",
           "eventName": "esx_addons_gcphone:call",
           "type": {
             "number": "reporter"
@@ -186,7 +174,7 @@
       "subMenu": [
         {
           "title": "Invia un messaggio",
-		  "icons": "fa-phone",
+		      "icons": "fa-phone",
           "eventName": "esx_addons_gcphone:call",
           "type": {
             "number": "lolly"
@@ -201,7 +189,7 @@
       "subMenu": [
         {
           "title": "Invia un messaggio",
-		  "icons": "fa-phone",
+		      "icons": "fa-phone",
           "eventName": "esx_addons_gcphone:call",
           "type": {
             "number": "realestateagent"
@@ -216,7 +204,7 @@
       "subMenu": [
         {
           "title": "Invia un messaggio",
-		  "icons": "fa-phone",
+		      "icons": "fa-phone",
           "eventName": "esx_addons_gcphone:call",
           "type": {
             "number": "armeria"
@@ -231,7 +219,7 @@
       "subMenu": [
         {
           "title": "Invia un messaggio",
-		  "icons": "fa-phone",
+		      "icons": "fa-phone",
           "eventName": "esx_addons_gcphone:call",
           "type": {
             "number": "truckdealer"
@@ -246,7 +234,7 @@
       "subMenu": [
         {
           "title": "Invia un messaggio",
-		  "icons": "fa-phone",
+		      "icons": "fa-phone",
           "eventName": "esx_addons_gcphone:call",
           "type": {
             "number": "autousate"
@@ -261,7 +249,7 @@
       "subMenu": [
         {
           "title": "Invia un messaggio",
-		  "icons": "fa-phone",
+		      "icons": "fa-phone",
           "eventName": "esx_addons_gcphone:call",
           "type": {
             "number": "burgershot"
@@ -270,46 +258,16 @@
       ]
     },
     {
-      "display": "Azienda 1",
-      "backgroundColor": "blue",
-      "icon": "/html/static/img/app_favourites/company1.png",
-      "subMenu": [
-        {
-          "title": "Invia un messaggio",
-		  "icons": "fa-phone",
-          "eventName": "esx_addons_gcphone:call",
-          "type": {
-            "number": "azienda1"
-          }
-        }
-      ]
-    },
-    {
-      "display": "Azienda 2",
-      "backgroundColor": "blue",
-      "icon": "/html/static/img/app_favourites/company2.png",
-      "subMenu": [
-        {
-          "title": "Invia un messaggio",
-		  "icons": "fa-phone",
-          "eventName": "esx_addons_gcphone:call",
-          "type": {
-            "number": "azienda2"
-          }
-        }
-      ]
-    },
-    {
-      "display": "Azienda 3",
+      "display": "Import",
       "backgroundColor": "blue",
       "icon": "/html/static/img/app_favourites/company3.png",
       "subMenu": [
         {
           "title": "Invia un messaggio",
-		  "icons": "fa-phone",
+		      "icons": "fa-phone",
           "eventName": "esx_addons_gcphone:call",
           "type": {
-            "number": "azienda3"
+            "number": "import"
           }
         }
       ]

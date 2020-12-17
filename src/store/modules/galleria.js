@@ -13,12 +13,12 @@ const getters = {
 const actions = {
   addPhoto ({ commit, state }, data) {
     commit('APP_PHOTO', data)
-    window.localStorage['gc_coque'] = JSON.stringify(state.fotografie)
-    // console.log(JSON.stringify(window.localStorage['gc_coque']))
+    window.localStorage['gc_fotografie'] = JSON.stringify(state.fotografie)
+    // console.log(JSON.stringify(window.localStorage['gc_fotografie']))
   },
   clearGallery ({ commit, state }) {
     commit('CLEAR_GALLERY')
-    window.localStorage['gc_coque'] = []
+    window.localStorage['gc_fotografie'] = []
   }
 }
 

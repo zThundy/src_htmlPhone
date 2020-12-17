@@ -113,15 +113,18 @@ AddEventHandler('gcPhone:setEnableApp', function(appName, enable)
     SendNUIMessage({ event = 'setEnableApp', appName = appName, enable = enable })
 end)
 
+
 RegisterNUICallback("updateNotifications", function(data, cb)
     enableGlobalNotification = data
     cb("ok")
 end)
 
+
 RegisterNUICallback("sendErrorMessage", function(data, cb)
     ESX.ShowNotification("~r~"..data.message)
     cb("ok")
 end)
+
 
 RegisterNUICallback("updateVolume", function(data, cb)
     volume = data.volume
@@ -129,9 +132,12 @@ RegisterNUICallback("updateVolume", function(data, cb)
     cb("ok")
 end)
 
+
 RegisterNUICallback("sendStartupValues", function(data, cb)
     volume = data.volume
     enableGlobalNotification = data.notification
+    myCover = string.gsub(data.cover.value, ".png", "")
+    
     UpdateGlobalVolume()
     cb("ok")
 end)
@@ -230,7 +236,7 @@ AddEventHandler("gcphone:aggiornameAConnessione", function(potenzaSegnale)
 
     segnaleRadio = potenzaSegnale
     local data = { potenza = potenzaSegnale }
-    SendNUIMessage({event = "updateSegnale", data = data})
+    SendNUIMessage({ event = "updateSegnale", data = data })
     TriggerServerEvent('gcPhone:updateSegnaleTelefono', potenzaSegnale)
 end)
 
@@ -238,7 +244,7 @@ end)
 RegisterNetEvent("gcPhone:receiveMessage")
 AddEventHandler("gcPhone:receiveMessage", function(message)
 
-    SendNUIMessage({event = 'newMessage', message = message})
+    SendNUIMessage({ event = 'newMessage', message = message })
     table.insert(messages, message)
 
     if message.owner == 0 then
@@ -789,7 +795,7 @@ end)
 
 function TogglePhone()
     menuIsOpen = not menuIsOpen
-    SendNUIMessage({show = menuIsOpen})
+    SendNUIMessage({ show = menuIsOpen })
 
     if menuIsOpen == true then 
         PhonePlayIn()

@@ -1,10 +1,10 @@
 <template>
   <transition name="modal">
 
-    <div class="modal-mask" @click.stop="cancel">
+    <div class="modal-mask">
       <div class="modal-container">
 
-        <div class="modal-choix" v-bind:class="{ select: index === currentSelect}" v-for="(val, index) in choix" :key='index' v-bind:style="{color: val.color}" @click.stop="selectItem(val)">
+        <div class="modal-choix" v-bind:class="{ select: index === currentSelect}" v-for="(val, index) in choix" :key='index' v-bind:style="{color: val.color}">
           <i @click.stop="selectItem(val)" class="fas" :class="val.icons" ></i>{{val.title}}
         </div>
 
@@ -83,16 +83,16 @@ export default {
 
 <style scoped>
 .modal-mask {
-    position: absolute;
-    z-index: 99;
-    top: 0;
-    left: 0;
-    width: 334px;
-    height: 738px;
-    background-color: rgba(0, 0, 0, .3);
-    display: flex;
-    align-items: flex-end;
-    transition: opacity .3s ease;
+  position: absolute;
+  z-index: 99;
+  top: 0;
+  left: 0;
+  width: 334px;
+  height: 738px;
+  background-color: rgba(0, 0, 0, .3);
+  display: flex;
+  align-items: flex-end;
+  transition: opacity .3s ease;
 }
 
 .modal-container {
@@ -111,35 +111,39 @@ export default {
 }
 
 .modal-title {
-    text-align: center;
-    height: 32px;
-    line-height: 32px;
-    color: #42B2DC;
-    border-bottom: 2px solid #42B2DC;
+  text-align: center;
+  height: 32px;
+  line-height: 32px;
+  color: #42B2DC;
+  border-bottom: 2px solid #42B2DC;
 }
+
 .modal-choix {
-    font-size: 15px;
-    height: 56px;
-    line-height: 56px;
-    color: gray;
-    position: relative;
-    font-weight: 400;
+  font-size: 15px;
+  height: 56px;
+  line-height: 56px;
+  color: gray;
+  position: relative;
+  font-weight: 400;
 }
+
 .modal-choix .fa, .modal-choix .fas {
-    font-size: 18px;
-    line-height: 24px;
-    margin-left: 12px;
-    margin-right: 12px;
+  font-size: 18px;
+  line-height: 24px;
+  margin-left: 12px;
+  margin-right: 12px;
 }
+
 .modal-choix .picto {
-    z-index: 500;
-    position: absolute;
-    width: 42px;
-    background-size: 100% !important;
-    background-position-y: 100%;
-    height: 42px;
+  z-index: 500;
+  position: absolute;
+  width: 42px;
+  background-size: 100% !important;
+  background-position-y: 100%;
+  height: 42px;
 }
-.modal-choix.select, .modal-choix:hover {
+
+.modal-choix.select {
     background-color: #E3E3E3;
     color: #0079d3
 }
