@@ -17,7 +17,7 @@ ShowNumberNotification = false
 
 Config.CoverShop = vector3(53.04392, -1730.249, 29.30295)
 
-Config.BaseCover = {prop = "prop_npc_phone", label = "Nessuna cover"}
+Config.BaseCover = {prop = "prop_amb_phone", label = "Nessuna cover"}
 
 -- ["nomecover"] = price
 Config.Covers = {
