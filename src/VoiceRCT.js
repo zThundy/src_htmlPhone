@@ -52,37 +52,42 @@ class VoiceRTC {
     await this.init()
     this.newConnection()
     this.initiator = true
-    // creazione dell'audiocontext per gli effetti
-    this.audioContext = null
-    this.audioContext = await this.getAudioContext()
-    // qui mi prendo lo streamsource dalla stream promise per applicarci poi
-    // i vari filtri
-    const mediaStreamSource = this.audioContext.createMediaStreamSource(this.stream)
-    // dopo aver preso il mediasource, mi creo le promise con i vari
-    // filtri
-    var biquadFilter = this.audioContext.createBiquadFilter()
-    var gainNode = this.audioContext.createGain()
-    var distortion = this.audioContext.createWaveShaper()
-    // applico in ordine il filtro gain
-    gainNode.gain.value = Number(this.RTCFilters.gain)
-    mediaStreamSource.connect(gainNode)
-    // poi il tipo di filtro biquadro
-    biquadFilter.type = this.RTCFilters.biquadType
-    biquadFilter.frequency.value = Number(this.RTCFilters.biquadFrequency)
-    biquadFilter.detune.value = Number(this.RTCFilters.biquadDetune)
-    biquadFilter.Q.value = Number(this.RTCFilters.biquadQuality)
-    gainNode.connect(biquadFilter)
-    // e infine applico la distorsione
-    distortion.curve = makeDistortionCurve(this.RTCFilters.distortion)
-    distortion.oversample = this.RTCFilters.oversample
-    biquadFilter.connect(distortion)
-    // Dopo aver applicato i filtri mi prendo la destinazione
-    // e la collego al filtro completando la chain
-    const mediaStreamDestination = this.audioContext.createMediaStreamDestination()
-    distortion.connect(mediaStreamDestination)
-
-    // this.myPeerConnection.addStream(this.stream)
-    this.myPeerConnection.addStream(mediaStreamDestination.stream)
+    // controllo se da config i filtri sono attivi o no
+    if (this.RTCConfig.enable) {
+      // creazione dell'audiocontext per gli effetti
+      this.audioContext = null
+      this.audioContext = await this.getAudioContext()
+      // qui mi prendo lo streamsource dalla stream promise per applicarci poi
+      // i vari filtri
+      const mediaStreamSource = this.audioContext.createMediaStreamSource(this.stream)
+      // dopo aver preso il mediasource, mi creo le promise con i vari
+      // filtri
+      var biquadFilter = this.audioContext.createBiquadFilter()
+      var gainNode = this.audioContext.createGain()
+      var distortion = this.audioContext.createWaveShaper()
+      // applico in ordine il filtro gain
+      gainNode.gain.value = Number(this.RTCFilters.gain)
+      mediaStreamSource.connect(gainNode)
+      // poi il tipo di filtro biquadro
+      biquadFilter.type = this.RTCFilters.biquadType
+      biquadFilter.frequency.value = Number(this.RTCFilters.biquadFrequency)
+      biquadFilter.detune.value = Number(this.RTCFilters.biquadDetune)
+      biquadFilter.Q.value = Number(this.RTCFilters.biquadQuality)
+      gainNode.connect(biquadFilter)
+      // e infine applico la distorsione
+      distortion.curve = makeDistortionCurve(this.RTCFilters.distortion)
+      distortion.oversample = this.RTCFilters.oversample
+      biquadFilter.connect(distortion)
+      // Dopo aver applicato i filtri mi prendo la destinazione
+      // e la collego al filtro completando la chain
+      const mediaStreamDestination = this.audioContext.createMediaStreamDestination()
+      distortion.connect(mediaStreamDestination)
+      // infine collego l'intera chain di filtri allo stream
+      // sull'rtc
+      this.myPeerConnection.addStream(mediaStreamDestination.stream)
+    } else {
+      this.myPeerConnection.addStream(this.stream)
+    }
 
     this.myPeerConnection.onicecandidate = this.onicecandidate.bind(this)
     this.offer = await this.myPeerConnection.createOffer()
@@ -96,41 +101,47 @@ class VoiceRTC {
     this.newConnection()
     this.initiator = false
     this.stream = await navigator.mediaDevices.getUserMedia(constraints)
-    // creazione dell'audiocontext per gli effetti
-    this.audioContext = null
-    this.audioContext = await this.getAudioContext()
-    // qui mi prendo lo streamsource dalla stream promise per applicarci poi
-    // i vari filtri
-    const mediaStreamSource = this.audioContext.createMediaStreamSource(this.stream)
-    // dopo aver preso il mediasource, mi creo le promise con i vari
-    // filtri
-    var biquadFilter = this.audioContext.createBiquadFilter()
-    var gainNode = this.audioContext.createGain()
-    var distortion = this.audioContext.createWaveShaper()
-    // applico in ordine il filtro gain
-    gainNode.gain.value = Number(this.RTCFilters.gain)
-    mediaStreamSource.connect(gainNode)
-    // poi il tipo di filtro biquadro
-    biquadFilter.type = this.RTCFilters.biquadType
-    biquadFilter.frequency.value = Number(this.RTCFilters.biquadFrequency)
-    biquadFilter.detune.value = Number(this.RTCFilters.biquadDetune)
-    biquadFilter.Q.value = Number(this.RTCFilters.biquadQuality)
-    gainNode.connect(biquadFilter)
-    // e infine applico la distorsione
-    distortion.curve = makeDistortionCurve(this.RTCFilters.distortion)
-    distortion.oversample = this.RTCFilters.oversample
-    biquadFilter.connect(distortion)
-    // Dopo aver applicato i filtri mi prendo la destinazione
-    // e la collego al filtro completando la chain
-    const mediaStreamDestination = this.audioContext.createMediaStreamDestination()
-    distortion.connect(mediaStreamDestination)
+    // controllo se da config i filtri sono attivi o no
+    if (this.RTCConfig.enable) {
+      // creazione dell'audiocontext per gli effetti
+      this.audioContext = null
+      this.audioContext = await this.getAudioContext()
+      // qui mi prendo lo streamsource dalla stream promise per applicarci poi
+      // i vari filtri
+      const mediaStreamSource = this.audioContext.createMediaStreamSource(this.stream)
+      // dopo aver preso il mediasource, mi creo le promise con i vari
+      // filtri
+      var biquadFilter = this.audioContext.createBiquadFilter()
+      var gainNode = this.audioContext.createGain()
+      var distortion = this.audioContext.createWaveShaper()
+      // applico in ordine il filtro gain
+      gainNode.gain.value = Number(this.RTCFilters.gain)
+      mediaStreamSource.connect(gainNode)
+      // poi il tipo di filtro biquadro
+      biquadFilter.type = this.RTCFilters.biquadType
+      biquadFilter.frequency.value = Number(this.RTCFilters.biquadFrequency)
+      biquadFilter.detune.value = Number(this.RTCFilters.biquadDetune)
+      biquadFilter.Q.value = Number(this.RTCFilters.biquadQuality)
+      gainNode.connect(biquadFilter)
+      // e infine applico la distorsione
+      distortion.curve = makeDistortionCurve(this.RTCFilters.distortion)
+      distortion.oversample = this.RTCFilters.oversample
+      biquadFilter.connect(distortion)
+      // Dopo aver applicato i filtri mi prendo la destinazione
+      // e la collego al filtro completando la chain
+      const mediaStreamDestination = this.audioContext.createMediaStreamDestination()
+      distortion.connect(mediaStreamDestination)
 
-    this.myPeerConnection.onicecandidate = this.onicecandidate.bind(this)
-    this.myPeerConnection.addStream(mediaStreamDestination.stream)
+      this.myPeerConnection.addStream(mediaStreamDestination.stream)
+    } else {
+      this.myPeerConnection.addStream(this.stream)
+    }
 
     // offerta icecandidates
+    this.myPeerConnection.onicecandidate = this.onicecandidate.bind(this)
     this.offer = new RTCSessionDescription(offer)
     this.myPeerConnection.setRemoteDescription(this.offer)
+    // creo la risposta dal server e aspetto la promise
     this.answer = await this.myPeerConnection.createAnswer()
     this.myPeerConnection.setLocalDescription(this.answer)
     return btoa(JSON.stringify(this.answer))

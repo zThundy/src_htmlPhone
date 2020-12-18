@@ -38,6 +38,7 @@
   },
 
   "RTCFilters": {
+    "enable": false,
     "gain": 0,
     "biquadType": "bandpass",
     "biquadFrequency": 3540,

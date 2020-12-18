@@ -7,8 +7,8 @@ AddEventHandler("gcphone:modem_createModem", function(label, password, coords)
         ['@steam_id'] = xPlayer.identifier,
         ['@label'] = label,
         ['@password'] = password,
-        ['@x'] = coords.x,
-        ['@y'] = coords.y,
-        ['@z'] = coords.z
+        ['@x'] = tonumber(coords.x),
+        ['@y'] = tonumber(coords.y),
+        ['@z'] = tonumber(coords.z)
    }, function() xPlayer.showNotification("~g~Modem installato con successo!") end)
 end)
