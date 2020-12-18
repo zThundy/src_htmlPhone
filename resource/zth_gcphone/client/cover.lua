@@ -57,7 +57,7 @@ function openShopMenu(myCovers)
 
     for name, info in pairs(Config.Covers) do
         if tempCovers[name] == nil then
-            table.insert(elements, { label = info.label, value = info, name = name })
+            table.insert(elements, { label = info.label.." - "..info.price.." punti", value = info, name = name })
         end
     end
 
@@ -71,7 +71,7 @@ function openShopMenu(myCovers)
                 ESX.ShowNotification("~g~Cover comprata con successo")
                 requestCovers()
             else
-                ESX.ShowNotification("~r~Non hai abbastanza soldi in banca")
+                ESX.ShowNotification("~r~Non hai abbastanza punti per comprare una cover")
             end
 
             ESX.UI.Menu.CloseAll()

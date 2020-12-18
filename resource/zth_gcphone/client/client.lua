@@ -250,7 +250,7 @@ AddEventHandler("gcPhone:receiveMessage", function(message)
     if message.owner == 0 then
         local text = 'Hai ricevuto un messaggio'
 
-        if ShowNumberNotification == true then
+        if Config.ShowNumberNotification == true then
             text = 'Hai ricevuto un messaggio da '..message.transmitter
 
             for _,contact in pairs(contacts) do
@@ -824,6 +824,10 @@ RegisterNUICallback('closePhone', function(data, cb)
     menuIsOpen = false
     SendNUIMessage({ show = false })
     PhonePlayOut()
+
+    if Config.SurePropCleanup then
+        doCleanup()
+    end
 
     cb("ok")
 end)

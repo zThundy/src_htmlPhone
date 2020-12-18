@@ -24,8 +24,6 @@
 
   "useFormatNumberFrance": true,
 
-  "useSentryErroTracking": false,
-
   "defaultVolume": 0.2,
 
   "useWebRTCVocal": true,

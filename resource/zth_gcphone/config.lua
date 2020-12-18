@@ -13,13 +13,21 @@ Config.TelefoniFissi = {
     ['555621458'] = { name = "Fleeca Autostrada", coords = { x = -2958.855, y = 479.614, z = 15.790 } },
 }
 
-ShowNumberNotification = false
+Config.ShowNumberNotification = false
+Config.SurePropCleanup = false
 
 Config.CoverShop = vector3(53.04392, -1730.249, 29.30295)
 
 Config.BaseCover = {prop = "prop_amb_phone", label = "Nessuna cover"}
 
--- ["nomecover"] = price
+--[[
+    @nomecover = è il nome dell'immagine senza il .png finale NON MODIFICARE
+    [nomecover] = {
+        @price = il prezzo da pagare in punti per comperare quella cover
+        @prop = il nome del prop della cover da mostrare in gioco. NON MODIFICARE
+        @label = cosa verrà mostrato sul telefono e sullo shop
+    }
+]]
 Config.Covers = {
     ["aquagreen"] = {price = 5000, prop = "prop_acquagreen_phone", label = "Verde acqua"},
     ["aquagreen_dark"] = {price = 5000, prop = "prop_acquagreen_dark_phone", label = "Verde acqua scuro"},
