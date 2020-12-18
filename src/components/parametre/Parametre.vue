@@ -127,7 +127,7 @@ export default {
           icons: 'fa-search',
           title: this.IntlString('APP_CONFIG_ZOOM'),
           value: this.zoom,
-          onValid: 'setZoom',
+          onValid: 'setLocalZoom',
           onLeft: this.ajustZoom(-1),
           onRight: this.ajustZoom(1),
           values: {
@@ -371,7 +371,7 @@ export default {
       this.setSonido({ label: data.title, value: data.value })
     },
 
-    setZoom: function (param, data) {
+    setLocalZoom: function (param, data) {
       this.setZoom(data.value)
     },
 

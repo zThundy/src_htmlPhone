@@ -37,6 +37,16 @@
     }]
   },
 
+  "RTCFilters": {
+    "gain": 2.2,
+    "biquadType": "lowpass",
+    "biquadFrequency": 900,
+    "biquadDetune": 0,
+    "biquadQuality": 1,
+    "oversample": "4x",
+    "distortion": 5
+  },
+
   "enableTakePhoto": true,
   "fileUploadService_Url": "https://api.imgur.com/3/upload",
   "fileUploadService_Field": "image",

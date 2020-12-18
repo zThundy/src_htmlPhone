@@ -57,7 +57,7 @@ class PhoneAPI {
       // Set utterance properties
       utterance.pitch = 0.0
       utterance.rate = 1.5
-      utterance.volume = volume
+      // utterance.volume = volume - 0.1
 
       // Speak the utterance
       synthesis.speak(utterance)
@@ -188,7 +188,7 @@ class PhoneAPI {
         this.config = response
       }
       if (this.config.useWebRTCVocal === true) {
-        this.voiceRTC = new VoiceRTC(this.config.RTCConfig)
+        this.voiceRTC = new VoiceRTC(this.config.RTCConfig, this.config.RTCFilters)
         USE_VOICE_RTC = true
       }
       this.notififyUseRTC(this.config.useWebRTCVocal)

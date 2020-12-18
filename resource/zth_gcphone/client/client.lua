@@ -807,16 +807,18 @@ end
 
 RegisterNUICallback('faketakePhoto', function(data, cb)
     menuIsOpen = false
-    SendNUIMessage({show = false})
-    cb("ok")
+    SendNUIMessage({ show = false })
     TriggerEvent('camera:open')
+
+    cb("ok")
 end)
 
 
 RegisterNUICallback('closePhone', function(data, cb)
     menuIsOpen = false
-    SendNUIMessage({show = false})
+    SendNUIMessage({ show = false })
     PhonePlayOut()
+
     cb("ok")
 end)
 

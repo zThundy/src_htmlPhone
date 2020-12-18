@@ -159,7 +159,7 @@ export default {
     if (this.tts) {
       var numbstring = this.appelsDisplayNumber.split('').join(' ')
       var text = 'Chiamata in arrivo.' + numbstring
-      this.$phoneAPi.speakTTS(text)
+      this.$phoneAPI.speakTTS(text)
     }
     this.$bus.$on('keyUpEnter', this.onEnter)
     this.$bus.$on('keyUpArrowLeft', this.onLeft)

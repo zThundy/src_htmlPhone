@@ -14,7 +14,6 @@ local cachedProps = {}
 local currentStatus = 'out'
 local lastDict = nil
 local lastAnim = nil
-local lastFlag = nil
 
 
 local lib = {
@@ -101,27 +100,23 @@ end
 --[[
 	out || text || Call ||
 --]]
-function PhonePlayAnim(status, freeze)
+function PhonePlayAnim(status)
 	if currentStatus == status then
 		return
 	end
 
 	ped = GetPlayerPed(-1)
-	local freeze = freeze or false
-
-	if IsPedInAnyVehicle(ped, false) then freeze = false end
 
 	local dict = "cellphone@"
 	if IsPedInAnyVehicle(ped, false) then dict = "anim@cellphone@in_car@ps" end
 
-	loadAnimDict(dict)
+	RequestAnimDict(dict)
+	while not HasAnimDictLoaded(dict) do Citizen.Wait(1) end
 
 	local anim = lib[dict][currentStatus][status]
 	if currentStatus ~= 'out' then StopAnimTask(ped, lastDict, lastAnim, 1.0) end
 
-	local flag = 50
-	if freeze == true then flag = 14 end
-	TaskPlayAnim(ped, dict, anim, 3.0, -1, -1, flag, 0, false, false, false)
+	TaskPlayAnim(ped, dict, anim, 3.0, -1, -1, 50, 0, false, false, false)
 
 	if status ~= 'out' and currentStatus == 'out' then
 		Citizen.Wait(380)
@@ -130,7 +125,6 @@ function PhonePlayAnim(status, freeze)
 
 	lastDict = dict
 	lastAnim = anim
-	lastFlag = flag
 	currentStatus = status
 
 	if status == 'out' then
@@ -142,31 +136,23 @@ end
 
 
 function PhonePlayOut()
-	PhonePlayAnim('out', false)
+	PhonePlayAnim('out')
 end
 
 
 function PhonePlayText()
-	PhonePlayAnim('text', false)
+	PhonePlayAnim('text')
 end
 
 
 function PhonePlayCall()
-	PhonePlayAnim('call', false)
+	PhonePlayAnim('call')
 end
 
 
 function PhonePlayIn() 
 	if currentStatus == 'out' then
 		PhonePlayText()
-	end
-end
-
-
-function loadAnimDict(dict)
-	RequestAnimDict(dict)
-	while not HasAnimDictLoaded(dict) do
-		Citizen.Wait(1)
 	end
 end
 
@@ -178,3 +164,17 @@ AddEventHandler("onResourceStop", function(res)
 		doCleanup()
 	end
 end)
+
+
+--[[Citizen.CreateThread(function()
+	local idle = 0
+	while true do
+		if not menuIsOpen then idle = 2000 end
+
+		if currentStatus == "out" and not IsEntityPlayingAnim(ped, "cellphone@", "cellphone_text_in", 50) then
+			
+		end
+
+		Citizen.Wait(idle)
+	end
+end)]]

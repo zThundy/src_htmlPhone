@@ -24,6 +24,7 @@ import './assets/css/font-awesome.min.css'
 import { mapGetters, mapActions } from 'vuex'
 import { Howl } from 'howler'
 import TransitionPage from './components/TransitionPage'
+import PhoneAPI from './PhoneAPI.js'
 
 export default {
   name: 'app',
@@ -57,10 +58,10 @@ export default {
           this.soundCall = new Howl({
             src: path,
             onend: function () {
-              this.$phoneAPI.endSuoneriaForOthers()
+              PhoneAPI.endSuoneriaForOthers()
             },
             onplay: function () {
-              this.$phoneAPI.startSuoneriaForOthers(this.sonido.value)
+              PhoneAPI.startSuoneriaForOthers(this.sonido.value)
             }
           })
         }

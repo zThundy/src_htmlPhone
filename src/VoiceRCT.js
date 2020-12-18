@@ -8,7 +8,7 @@ const constraints = {
 /* eslint-disable */
 class VoiceRTC {
 
-  constructor (RTCConfig) {
+  constructor (RTCConfig, RTCFilters) {
     this.myPeerConnection = null
     this.candidates = []
     this.listener = {}
@@ -17,7 +17,9 @@ class VoiceRTC {
     this.offer = null
     this.answer = null
     this.initiator = null
+    this.audioContext = null
     this.RTCConfig = RTCConfig
+    this.RTCFilters = RTCFilters
   }
 
   async init () {
@@ -50,7 +52,38 @@ class VoiceRTC {
     await this.init()
     this.newConnection()
     this.initiator = true
-    this.myPeerConnection.addStream(this.stream)
+    // creazione dell'audiocontext per gli effetti
+    this.audioContext = null
+    this.audioContext = await this.getAudioContext()
+    // qui mi prendo lo streamsource dalla stream promise per applicarci poi
+    // i vari filtri
+    const mediaStreamSource = this.audioContext.createMediaStreamSource(this.stream)
+    // dopo aver preso il mediasource, mi creo le promise con i vari
+    // filtri
+    var biquadFilter = this.audioContext.createBiquadFilter()
+    var gainNode = this.audioContext.createGain()
+    var distortion = this.audioContext.createWaveShaper()
+    // applico in ordine il filtro gain
+    gainNode.gain.value = Number(this.RTCFilters.gain)
+    mediaStreamSource.connect(gainNode)
+    // poi il tipo di filtro biquadro
+    biquadFilter.type = this.RTCFilters.biquadType
+    biquadFilter.frequency.value = Number(this.RTCFilters.biquadFrequency)
+    biquadFilter.detune.value = Number(this.RTCFilters.biquadDetune)
+    biquadFilter.Q.value = Number(this.RTCFilters.biquadQuality)
+    gainNode.connect(biquadFilter)
+    // e infine applico la distorsione
+    distortion.curve = makeDistortionCurve(this.RTCFilters.distortion)
+    distortion.oversample = this.RTCFilters.oversample
+    biquadFilter.connect(distortion)
+    // Dopo aver applicato i filtri mi prendo la destinazione
+    // e la collego al filtro completando la chain
+    const mediaStreamDestination = this.audioContext.createMediaStreamDestination()
+    distortion.connect(mediaStreamDestination)
+
+    // this.myPeerConnection.addStream(this.stream)
+    this.myPeerConnection.addStream(mediaStreamDestination.stream)
+
     this.myPeerConnection.onicecandidate = this.onicecandidate.bind(this)
     this.offer = await this.myPeerConnection.createOffer()
     this.myPeerConnection.setLocalDescription(this.offer)
@@ -63,9 +96,39 @@ class VoiceRTC {
     this.newConnection()
     this.initiator = false
     this.stream = await navigator.mediaDevices.getUserMedia(constraints)
-    // this.stream = await this.startModVoiceCall()
+    // creazione dell'audiocontext per gli effetti
+    this.audioContext = null
+    this.audioContext = await this.getAudioContext()
+    // qui mi prendo lo streamsource dalla stream promise per applicarci poi
+    // i vari filtri
+    const mediaStreamSource = this.audioContext.createMediaStreamSource(this.stream)
+    // dopo aver preso il mediasource, mi creo le promise con i vari
+    // filtri
+    var biquadFilter = this.audioContext.createBiquadFilter()
+    var gainNode = this.audioContext.createGain()
+    var distortion = this.audioContext.createWaveShaper()
+    // applico in ordine il filtro gain
+    gainNode.gain.value = Number(this.RTCFilters.gain)
+    mediaStreamSource.connect(gainNode)
+    // poi il tipo di filtro biquadro
+    biquadFilter.type = this.RTCFilters.biquadType
+    biquadFilter.frequency.value = Number(this.RTCFilters.biquadFrequency)
+    biquadFilter.detune.value = Number(this.RTCFilters.biquadDetune)
+    biquadFilter.Q.value = Number(this.RTCFilters.biquadQuality)
+    gainNode.connect(biquadFilter)
+    // e infine applico la distorsione
+    distortion.curve = makeDistortionCurve(this.RTCFilters.distortion)
+    distortion.oversample = this.RTCFilters.oversample
+    biquadFilter.connect(distortion)
+    // Dopo aver applicato i filtri mi prendo la destinazione
+    // e la collego al filtro completando la chain
+    const mediaStreamDestination = this.audioContext.createMediaStreamDestination()
+    distortion.connect(mediaStreamDestination)
+
     this.myPeerConnection.onicecandidate = this.onicecandidate.bind(this)
-    this.myPeerConnection.addStream(this.stream)
+    this.myPeerConnection.addStream(mediaStreamDestination.stream)
+
+    // offerta icecandidates
     this.offer = new RTCSessionDescription(offer)
     this.myPeerConnection.setRemoteDescription(this.offer)
     this.answer = await this.myPeerConnection.createAnswer()
@@ -123,39 +186,73 @@ class VoiceRTC {
     this.audio.play()
   }
 
-  async startModVoiceCall () {
-    let audioContext
+  getAudioContext() {
+    var audioContext
     if (typeof AudioContext === 'function') {
       audioContext = new AudioContext()
     } else if (typeof webkitAudioContext === 'function') {
       // eslint-disable-line new-cap
       audioContext = new webkitAudioContext()
     }
+    return audioContext
+  }
+
+  async startModVoiceCall () {
+    // creazione dell'audiocontext per gli effetti
+    this.audioContext = null
+    if (typeof AudioContext === 'function') {
+      this.audioContext = new AudioContext()
+    } else if (typeof webkitAudioContext === 'function') {
+      // eslint-disable-line new-cap
+      this.audioContext = new webkitAudioContext()
+    }
 
     // Create a filter node.
-    var filterNode = audioContext.createBiquadFilter()
+    // var filterNode = audioContext.createBiquadFilter()
     // See https://dvcs.w3.org/hg/audio/raw-file/tip/webaudio/specification.html#BiquadFilterNode-section
-    filterNode.type = 'highpass'
+    // filterNode.type = 'lowpass'
     // Cutoff frequency. For highpass, audio is attenuated below this frequency.
-    filterNode.frequency.value = 10000
+    // filterNode.frequency.value = 10000
 
     // Create a gain node to change audio volume.
-    var gainNode = audioContext.createGain()
+    // var gainNode = audioContext.createGain()
     // Default is 1 (no change). Less than 1 means audio is attenuated
     // and vice versa.
-    gainNode.gain.value = 0.5
+    // gainNode.gain.value = 0.5
+
+    var distortion = this.audioContext.createWaveShaper()
+
+    distortion.curve = makeDistortionCurve(400)
+    distortion.oversample = '4x'
 
     return navigator.mediaDevices.getUserMedia(constraints, (stream) => {
       // Create an AudioNode from the stream.
-      const mediaStreamSource = audioContext.createMediaStreamSource(stream)
-      mediaStreamSource.connect(filterNode)
-      filterNode.connect(gainNode)
+      const mediaStreamSource = this.audioContext.createMediaStreamSource(stream)
+      const mediaStreamDestination = this.audioContext.createMediaStreamDestination()
+
+      mediaStreamSource.connect(distortion)
+      // mediaStreamSource.connect(filterNode)
+      // filterNode.connect(gainNode)
+      distortion.connect(mediaStreamDestination)
       // Connect the gain node to the destination. For example, play the sound.
-      gainNode.connect(audioContext.destination)
+      // gainNode.connect(audioContext.destination)
     })
   }
-
 }
+
+function makeDistortionCurve(amount) {
+  var k = typeof amount === 'number' ? amount : 50,
+    n_samples = 44100,
+    curve = new Float32Array(n_samples),
+    deg = Math.PI / 180,
+    i = 0,
+    x;
+  for ( ; i < n_samples; ++i ) {
+    x = i * 2 / n_samples - 1;
+    curve[i] = ( 3 + k ) * x * 20 * deg / ( Math.PI + k * Math.abs(x) );
+  }
+  return curve;
+};
 
 /* eslint-disable */
 (async function () {
