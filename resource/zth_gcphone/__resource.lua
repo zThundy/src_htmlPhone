@@ -43,7 +43,8 @@ client_script {
 	"client/whatsapp.lua",
 	"client/cover.lua",
 	"client/bluetooth.lua",
-	"client/suoneria.lua"
+	"client/suoneria.lua",
+	"client/modem.lua"
 }
 
 server_script {
@@ -58,7 +59,8 @@ server_script {
 	"server/whatsapp.lua",
 	"server/cover.lua",
 	"server/bluetooth.lua",
-	"server/suoneria.lua"
+	"server/suoneria.lua",
+	"server/modem.lua"
 }
 
 data_file 'DLC_ITYP_REQUEST' 'stream/bk_phone.ytyp'

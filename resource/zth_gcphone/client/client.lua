@@ -649,8 +649,14 @@ end)
 
 
 RegisterNUICallback('reponseText', function(data, cb)
-    local limit = data.limit or 255
-    local text = data.text or ''
+    local resp = GetResponseText(data.limit, data.text)
+
+    cb(json.encode({ text = resp }))
+end)
+
+function GetResponseText(l, t)
+    local limit = l or 255
+    local text = t or ''
     
     DisplayOnscreenKeyboard(1, "FMMC_MPM_NA", "", text, "", "", "", limit)
     while UpdateOnscreenKeyboard() == 0 do
@@ -664,8 +670,8 @@ RegisterNUICallback('reponseText', function(data, cb)
         text = GetOnscreenKeyboardResult()
     end
 
-    cb(json.encode({text = text}))
-end)
+    return text
+end
 
 
 --====================================================================================
@@ -941,8 +947,8 @@ function startFixeCall(fixeNumber)
     local number = ''
     DisplayOnscreenKeyboard(1, "FMMC_MPM_NA", "", "", "", "", "", 10)
     while UpdateOnscreenKeyboard() == 0 do
-        DisableAllControlActions(0);
-        Wait(0);
+        DisableAllControlActions(0)
+        Wait(0)
     end
 
     if GetOnscreenKeyboardResult() then

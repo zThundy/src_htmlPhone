@@ -38,13 +38,13 @@
   },
 
   "RTCFilters": {
-    "gain": 2.2,
-    "biquadType": "lowpass",
-    "biquadFrequency": 900,
+    "gain": 0,
+    "biquadType": "bandpass",
+    "biquadFrequency": 3540,
     "biquadDetune": 0,
     "biquadQuality": 1,
     "oversample": "4x",
-    "distortion": 5
+    "distortion": 15
   },
 
   "enableTakePhoto": true,
