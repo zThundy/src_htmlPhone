@@ -119,6 +119,7 @@ function OpenSimMenu()
 	end)
 end
 
+
 function openOfferteMenu()
 	ESX.UI.Menu.CloseAll()
 	local elementi = {}
@@ -139,7 +140,8 @@ function openOfferteMenu()
 				if offerta.piano_tariffario == "nessuno" then
 					elementi2 = {
 						{label = "Offerta: Nessun'offerta"},
-						{label = "Scegli un'offerta", value = "scegli_offerta", icon = 22}
+						{label = "Scegli un'offerta", value = "scegli_offerta", icon = 22},
+						{label = "Scegli un'offerta premium", value = "scegli_offerta_premium", icon = 22}
 					}
 				else
 					for k, v in pairs(Config.pianiTariffari) do
@@ -164,6 +166,10 @@ function openOfferteMenu()
 
 					if v == "scegli_offerta" then
 						openListaOfferte(val.number)
+					end
+
+					if v == "scegli_offerta_premium" then
+						openListaOffertePremium(val.number)
 					end
 
 					if v == "rinnova_offerta" then
@@ -193,7 +199,7 @@ function openListaOfferte(number)
 	ESX.UI.Menu.CloseAll()
 
 	local elementi = {}
-	for k, v in pairs(Config.pianiTariffari) do
+	for k, v in pairs(Config.pianiTariffari["standard"]) do
 		table.insert(elementi, {label = v.label, value = v})
 	end
 	
@@ -220,10 +226,58 @@ function openListaOfferte(number)
 			if v == "acquista" then
 				ESX.TriggerServerCallback("esx_cartesim:acquistaOffertaCheckSoldi", function(ok)
 					if ok then
-						ESX.ShowNotification("Offerta comprata con successo!", "success")
+						ESX.ShowNotification("~g~Offerta comprata con successo!")
 					else
-						ESX.ShowNotification("Non hai abbatsanza soldi per completare l'acquisto", "error")
+						ESX.ShowNotification("~r~Non hai abbatsanza soldi per completare l'acquisto")
 						openListaOfferte(number)
+					end
+				end, val, number)
+			end
+	
+		end, function(data2, menu2)
+			menu2.close()
+		end)
+
+	end, function(data, menu)
+		menu.close()
+	end)
+end
+
+function openListaOffertePremium(number)
+	ESX.UI.Menu.CloseAll()
+
+	local elementi = {}
+	for k, v in pairs(Config.pianiTariffari["premium"]) do
+		table.insert(elementi, {label = v.label, value = v})
+	end
+
+	ESX.UI.Menu.Open('default', GetCurrentResourceName(), 'sim_scegli_piano_premium', {
+		title = number,
+		elements = elementi
+	  }, function(data, menu)
+		local val = data.current.value
+
+		local lista = {
+			{label = "Minuti: "..val.minuti.." s"},
+			{label = "Messaggi: "..val.messaggi.." sms"},
+			{label = "Internet: "..val.dati.." mb"},
+			{label = "Prezzo: "..val.price.." punti vip"},
+			{label = "Acquista l'offerta", value = "acquista", icon = 22}
+		}
+
+		ESX.UI.Menu.Open('default', GetCurrentResourceName(), 'sim_compra_piano_premium', {
+			title = number,
+			elements = lista
+		  }, function(data2, menu2)
+			local v = data2.current.value
+	
+			if v == "acquista" then
+				ESX.TriggerServerCallback("esx_cartesim:acquistaOffertaCheckPunti", function(ok)
+					if ok then
+						ESX.ShowNotification("~g~Offerta comprata con successo!")
+					else
+						ESX.ShowNotification("~r~Non hai abbatsanza soldi per completare l'acquisto")
+						openListaOffertePremium(number)
 					end
 				end, val, number)
 			end

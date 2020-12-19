@@ -55,6 +55,7 @@ AddEventHandler('esx:playerLoaded', function(source, xPlayer)
 										suffix = "Gigabyte"
 									}
 								}
+
 								TriggerClientEvent("gcphone:updateValoriDati", xPlayer.source, data)
 								break
 							end
@@ -194,21 +195,6 @@ ESX.RegisterServerCallback('esx_cartesim:GetList', function(source, cb)
 end)
 
 
-ESX.RegisterServerCallback('esx_cartesim:GetNameZ', function(source, cb, id)
-	local id = tostring(id)
-	local test = {}
-
-	MySQL.Async.fetchAll("SELECT * FROM users WHERE identifier=@identifier", {['@identifier'] = id}, function(data) 
-		if data ~= nil then
-			for _,v in pairs(data) do
-				table.insert(test, {name = v.name, identifier = v.identifier})
-			end
-			cb(test)
-		end
-	end)
-end)
-
-
 ESX.RegisterServerCallback("esx_cartesim:GetOffertaByNumber", function(source, cb, number)
 	MySQL.Async.fetchAll("SELECT * FROM sim WHERE phone_number = @phone_number", {['@phone_number'] = number}, function(result)
 		if #result > 0 then
@@ -220,18 +206,21 @@ end)
 
 ESX.RegisterServerCallback("esx_cartesim:rinnovaOfferta", function(source, cb, label, number)
 	local xPlayer = ESX.GetPlayerFromId(source)
-	local moneys = xPlayer.getBank()
+	local moneys = xPlayer.getAccount("bank").money
 
 	for k, v in pairs(Config.pianiTariffari) do
 		if v.label == label then
 			if moneys >= v.price then
-				xPlayer.removeBank(v.price)
+				xPlayer.removeAccountMoney("bank", v.price)
+
 				MySQL.Async.execute("UPDATE sim SET minuti = @minuti, messaggi = @messaggi, dati = @dati WHERE phone_number = @phone_number", {
 					['@phone_number'] = number,
 					['@minuti'] = v.minuti * 60,
 					['@messaggi'] = v.messaggi,
 					['@dati'] = v.dati
 				})
+
+				break
 				cb(true)
 			else
 				cb(false)
@@ -253,10 +242,11 @@ end)
 
 ESX.RegisterServerCallback("esx_cartesim:acquistaOffertaCheckSoldi", function(source, cb, table, number)
 	local xPlayer = ESX.GetPlayerFromId(source)
-	local moneys = xPlayer.getBank()
+	local moneys = xPlayer.getAccount("bank").money
 
 	if moneys >= table.price then
-		xPlayer.removeBank(table.price)
+		xPlayer.removeAccountMoney("bank", v.price)
+
 		MySQL.Async.execute("UPDATE sim SET piano_tariffario = @piano_tariffario, minuti = @minuti, messaggi = @messaggi, dati = @dati WHERE phone_number = @phone_number", {
 			['@phone_number'] = number,
 			['@piano_tariffario'] = table.label,
@@ -264,6 +254,31 @@ ESX.RegisterServerCallback("esx_cartesim:acquistaOffertaCheckSoldi", function(so
 			['@messaggi'] = table.messaggi,
 			['@dati'] = table.dati
 		})
+
+		break
+		cb(true)
+	else
+		cb(false)
+	end
+end)
+
+
+ESX.RegisterServerCallback("esx_cartesim:acquistaOffertaCheckPunti", function(source, cb, table, number)
+	local xPlayer = ESX.GetPlayerFromId(source)
+	local punti = exports["vip_points"]:getPoints(source)
+
+	if punti >= table.price then
+		exports["vip_points"]:removePoints(source, table.price)
+
+		MySQL.Async.execute("UPDATE sim SET piano_tariffario = @piano_tariffario, minuti = @minuti, messaggi = @messaggi, dati = @dati WHERE phone_number = @phone_number", {
+			['@phone_number'] = number,
+			['@piano_tariffario'] = table.label,
+			['@minuti'] = table.minuti * 60,
+			['@messaggi'] = table.messaggi,
+			['@dati'] = table.dati
+		})
+
+		break
 		cb(true)
 	else
 		cb(false)
