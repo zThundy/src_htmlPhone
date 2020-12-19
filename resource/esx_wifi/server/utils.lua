@@ -20,22 +20,16 @@ function Reti.loadTorriRadio()
 	return torriRadioFunzionanti, torriRadioRotte
 end
 
+
 function Reti.loadRetiWifi()
-	local retiWifi = {}
-	local query = false
-	
-	MySQL.Async.fetchAll('SELECT * FROM home_wifi_nets', {}, function(result)
-		for i = 1, #result do
-			retiWifi[i] = result[i]
-		end
+	local query = nil
 
-		query = true
-	end)
-
-	while not query do Citizen.Wait(1000) end
+	MySQL.Async.fetchAll('SELECT * FROM home_wifi_nets', {}, function(result) query = retiWifi end)
+	while query == nil do Citizen.Wait(1000) end
 	
-	return retiWifi
+	return query
 end
+
 
 function Reti.doesReteExist(retiWifi, owner_id)
 	local rete = nil
@@ -49,20 +43,29 @@ function Reti.doesReteExist(retiWifi, owner_id)
 	return false
 end
 
-function Reti.addReteWifi(rete)
-	MySQL.Async.execute('INSERT IGNORE INTO home_wifi_nets (steam_id, ssid, password, x, y, z) VALUES (@steam_id, @ssid, @password, @x, @y, @z)', {
-		['@steam_id'] = rete.owner_id,
-		['@label'] = rete.ssid,
+
+function Reti.AddReteWifi(source, rete)
+	local xPlayer = ESX.GetPlayerFromId(source)
+
+	MySQL.Async.execute('INSERT INTO home_wifi_nets (steam_id, ssid, password, x, y, z, due_date) VALUES (@steam_id, @ssid, @password, @x, @y, @z, @due_date)', {
+		['@steam_id'] = xPlayer.identifier,
+		['@label'] = rete.label,
 		['@password'] = rete.password,
-		['@x'] = rete.x,
-		['@y'] = rete.y,
-		['@z'] = rete.z
+		['@x'] = rete.coords.x,
+		['@y'] = rete.coords.y,
+		['@z'] = rete.coords.z,
+		['@due_date'] = rete.due_date
 	}, function(rowsChanged)
-		return "Rete aggiunta con successo"
+		if rowsChanged > 0 then
+			xPlayer.showNotification("~g~Rete creata con successo!")
+		else
+			xPlayer.showNotification("~r~Impossibile creare la rete. Ne hai già una a tuo nome!")
+		end
 	end)
 end
 
-function Reti.removeReteWifi(rete)
+
+function Reti.RemoveReteWifi(rete)
 	MySQL.Async.execute('DELETE * FROM home_wifi_nets WHERE steam_id = @steam_id', {
 		['@steam_id'] = rete.owner_id
 	}, function(rowsChanged)
@@ -70,14 +73,22 @@ function Reti.removeReteWifi(rete)
 	end)
 end
 
-function Reti.updateReteWifi(rete, param)
+
+function Reti.UpdateReteWifi(source, rete, param)
+	local xPlayer = ESX.GetPlayerFromId(source)
+
 	MySQL.Async.execute('UPDATE home_wifi_nets SET '..param..' = @'..param..' WHERE steam_id = @steam_id', {
-		['@steam_id'] = rete.owner_id,
+		['@steam_id'] = xPlayer.identifier,
 		['@'..param] = rete[param]
 	}, function(rowsChanged)
-		return "Rete aggiornata con successo"
+		if rowsChanged > 0 then
+			xPlayer.showNotification("~g~Rete aggiornata con successo!")
+		else
+			xPlayer.showNotification("~r~Impossibile aggiornare la rete!")
+		end
 	end)
 end
+
 
 function Reti.getRandomWiFiSSID()
 	ssid = "Code-"
@@ -88,6 +99,7 @@ function Reti.getRandomWiFiSSID()
 	
 	return ssid
 end
+
 
 function Reti.getRandomChar()
 	randomChar = nil
@@ -106,6 +118,7 @@ function Reti.getRandomChar()
 	return randomChar
 end
 
+
 function Reti.getRandomWiFiPassword()
 	password = ""
 	
@@ -115,6 +128,7 @@ function Reti.getRandomWiFiPassword()
 	
 	return password
 end
+
 
 function Reti.creaReteWifi(identifier, x, y)
 	rete = {}
@@ -129,6 +143,36 @@ function Reti.creaReteWifi(identifier, x, y)
 	
 	return rete
 end
+
+
+function Reti.RinnovaRete(startingDate)
+	local day = 86400
+    local days = day * Config.AddDaysOnRenewal
+
+    return os.time(os.date('*t', startingDate)) + days
+end
+
+
+function Reti.CheckDueDate()
+	for index, rete in pairs(retiWifi) do
+		if rete.not_expire == 0 then
+			local due_date = math.floor(rete.due_date / 1000)
+			
+			if os.difftime(os.time(), due_date) < 0 then
+				Reti.Debug("Modem owned by "..value.steam_id.." has expired. Removing it from databse")
+
+				table.remove(retiWifi, index)
+				MySQL.Async.execute("DELETE FROM home_wifi_nets WHERE steam_id = @steam_id AND label = @label", {
+					['@steam_id'] = rete.steam_id,
+					['@label'] = rete.label
+				})
+			end
+		else
+			Reti.Debug("Modem owned by "..value.steam_id.." cannot expire")
+		end
+	end
+end
+
 
 RegisterServerEvent("esx_wifi:getSharedObject")
 AddEventHandler("esx_wifi:getSharedObject", function(cb)

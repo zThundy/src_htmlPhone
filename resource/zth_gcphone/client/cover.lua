@@ -89,7 +89,6 @@ function openShopMenu(myCovers)
     -- onMenuClose
     onMenuClose = function(data, _)
         ESX.UI.Menu.CloseAll()
-        -- ChangeCover("Nessuna cover", "base")
         SendNUIMessage({ show = false })
     end
 
@@ -100,8 +99,7 @@ function openShopMenu(myCovers)
     ESX.UI.Menu.Open('default', GetCurrentResourceName(), 'negozio_cover', {
         title = "Negozio di cover",
         elements = elements
-    -- }, onMenuSelect, onMenuClose, onMenuChangeIndex)
-    }, onMenuSelect, onMenuClose, nil, onMenuChangeIndex)
+    }, onMenuSelect, onMenuClose, onMenuChangeIndex)
 end
 
 

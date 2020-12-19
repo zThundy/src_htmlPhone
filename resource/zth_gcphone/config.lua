@@ -66,3 +66,13 @@ Config.Covers = {
     ["yellow"] = {price = 5000, prop = "prop_yellow_phone", label = "Gialla"},
     ["yellow_pastel"] = {price = 5000, prop = "prop_yellow_pastel_phone", label = "Gialla pastello"},
 }
+
+Config.BuyModemPoints = 2000
+Config.RinnovaModemPoints = 1000
+Config.ChangePasswordPoints = 500
+Config.AddDaysOnRenewal = 30
+
+-- in secondi
+Config.WaitBeforeCreatingAgaing = 600
+
+Config.ModemManagement = vector3(99.0, 99.0, 99.0)
