@@ -71,9 +71,3 @@ function TakePhoto(data, cb)
 		HideHudAndRadarThisFrame()
 	end
 end
-
-
-RegisterNetEvent("fix_gallery")
-AddEventHandler("fix_gallery", function()
-	SendNUIMessage({ event = "clearGallery" })
-end)

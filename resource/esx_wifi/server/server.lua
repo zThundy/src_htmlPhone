@@ -37,8 +37,8 @@ Citizen.CreateThread(function()
 		end
 	end
 
-	Reti.CheckDueDate()
 	Reti.Debug("Finished loading routers from database")
+	Reti.CheckDueDate()
 
 	if Config.EnableSyncThread then
 		while true do

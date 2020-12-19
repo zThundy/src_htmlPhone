@@ -10,7 +10,7 @@ Citizen.CreateThread(function()
         action = function()
             OpenModemManagement()
 		end,
-		msg = "Premi ~INPUT_CONTEXT~ per acquistare una cover",
+		msg = "Premi ~INPUT_CONTEXT~ per acquistare un modem",
 	})
 end)
 
@@ -24,7 +24,15 @@ AddEventHandler("gcphone:modem_chooseCredentials", function()
 end)
 
 
+RegisterNetEvent("gcphone:modem_updateMenu")
+AddEventHandler("gcphone:modem_updateMenu", function()
+	OpenModemManagement()
+end)
+
+
 function OpenModemManagement()
+	ESX.UI.Menu.CloseAll()
+
 	ESX.TriggerServerCallback("gcphone:modem_getMenuInfo", function(elements)
 		onMenuSelect = function(data, _)
 			if data.current.value == "aggiorna_password" then
@@ -46,11 +54,15 @@ function OpenModemManagement()
 			ESX.UI.Menu.CloseAll()
 		end
 
-		ESX.UI.Menu.CloseAll()
-
 		ESX.UI.Menu.Open('default', GetCurrentResourceName(), 'modem_management', {
 			title = "Informazioni modem",
 			elements = elements
 		}, onMenuSelect, onMenuClose)
 	end)
 end
+
+
+AddEventHandler("gridsystem:hasExitedMarker", function(marker)
+    if marker == nil then return end
+    if marker.name == "modem_management" then ESX.UI.Menu.CloseAll() end
+end)

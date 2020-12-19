@@ -12,6 +12,7 @@ AddEventHandler('esx_phone:getShILovePizzaaredObjILovePizzaect', function(cb)
     cb(gcPhone)
 end)
 
+
 MySQL.ready(function()
     MySQL.Async.fetchAll("DELETE FROM phone_messages WHERE (DATEDIFF(CURRENT_DATE, time) > 15)")
     MySQL.Async.fetchAll("DELETE FROM twitter_tweets WHERE (DATEDIFF(CURRENT_DATE, time) > 20)")
@@ -19,9 +20,11 @@ MySQL.ready(function()
     print("^1[ZTH_Phone] ^0Phone initialized")
 end)
 
+
 --==================================================================================================================
 -------- Eventi e Funzioni del segnale radio e del WiFi
 --==================================================================================================================
+
 
 RegisterServerEvent('gcPhone:updateSegnaleTelefono')
 AddEventHandler('gcPhone:updateSegnaleTelefono', function(potenza)
@@ -35,6 +38,7 @@ AddEventHandler('gcPhone:updateSegnaleTelefono', function(potenza)
 		segnaliTelefoniPlayers[iSegnalePlayer].potenzaSegnale = potenza
     end
 end)
+
 
 RegisterServerEvent('gcPhone:updateReteWifi')
 AddEventHandler('gcPhone:updateReteWifi', function(connected, rete)
@@ -50,6 +54,7 @@ AddEventHandler('gcPhone:updateReteWifi', function(connected, rete)
     end
 end)
 
+
 function gcPhone.getPlayerSegnaleIndex(tabella, identifier)
 	index = nil
 	
@@ -62,6 +67,7 @@ function gcPhone.getPlayerSegnaleIndex(tabella, identifier)
 	return index
 end
 
+
 function gcPhone.usaDatiInternet(identifier, value)
     local phone_number = gcPhone.getPhoneNumber(identifier)
     
@@ -69,6 +75,7 @@ function gcPhone.usaDatiInternet(identifier, value)
         TriggerEvent("gcPhone:updateParametroTariffa", phone_number, "dati", dati - value)
     end)
 end
+
 
 function gcPhone.isAbleToSurfInternet(identifier, neededMB, cb)
 	local phone_number = gcPhone.getPhoneNumber(identifier)
@@ -93,6 +100,7 @@ function gcPhone.isAbleToSurfInternet(identifier, neededMB, cb)
     end
 end
 
+
 function gcPhone.isAbleToSendMessage(identifier, cb)
 	local phone_number = gcPhone.getPhoneNumber(identifier)
 	
@@ -110,6 +118,7 @@ function gcPhone.isAbleToSendMessage(identifier, cb)
         cb(false)
     end
 end
+
 
 function gcPhone.isAbleToCall(identifier, cb)
 	local phone_number = gcPhone.getPhoneNumber(identifier)
@@ -130,14 +139,17 @@ function gcPhone.isAbleToCall(identifier, cb)
     end)
 end
 
+
 RegisterServerEvent('gcPhone:updateParametroTariffa')
 AddEventHandler('gcPhone:updateParametroTariffa', function(phone_number, param, value)
 	ESX.UpdatePianoTariffario(phone_number, param, value)
 end)
 
+
 --==================================================================================================================
 -------- 
 --==================================================================================================================
+
 
 ESX.RegisterServerCallback('gcphone:getItemAmount', function(source, cb, item)
     local xPlayer = ESX.GetPlayerFromId(source)
@@ -150,6 +162,7 @@ ESX.RegisterServerCallback('gcphone:getItemAmount', function(source, cb, item)
     end
 end)
 
+
 ESX.RegisterServerCallback("gcphone:getNumberFromIdentifier", function(source, cb)
     local identifier = gcPhone.getPlayerID(source)
     local number = gcPhone.getPhoneNumber(identifier)
@@ -157,20 +170,24 @@ ESX.RegisterServerCallback("gcphone:getNumberFromIdentifier", function(source, c
     cb(number)
 end)
 
+
 ESX.RegisterServerCallback("gcphone:getPianoTariffarioLabel", function(source, cb, phone_number, label)
     ESX.GetPianoTariffarioParam(phone_number, label, function(piano_tariffario)
         cb(piano_tariffario)
     end)
 end)
 
+
 --==================================================================================================================
 -------- Utils
 --==================================================================================================================
+
 
 function gcPhone.getSourceFromIdentifier(identifier, cb)
     local xPlayer = ESX.GetPlayerFromIdentifier(identifier)
     if xPlayer ~= nil then cb(xPlayer.source) else cb(nil) end
 end
+
 
 function gcPhone.getPhoneNumber(identifier)
     local result = MySQL.Sync.fetchAll("SELECT * FROM users WHERE identifier = @identifier", {['@identifier'] = identifier })
@@ -178,6 +195,7 @@ function gcPhone.getPhoneNumber(identifier)
 
     return nil
 end
+
 
 function gcPhone.getIdentifierByPhoneNumber(phone_number) 
     local result = MySQL.Sync.fetchAll("SELECT identifier FROM users WHERE phone_number = @phone_number", {['@phone_number'] = phone_number })
@@ -192,6 +210,7 @@ function gcPhone.getIdentifierByPhoneNumber(phone_number)
     return nil, isInstalled
 end
 
+
 function gcPhone.getSourceFromPhoneNumber(phone_number)
     local identifier, _ = gcPhone.getIdentifierByPhoneNumber(phone_number)
     local xPlayer = ESX.GetPlayerFromIdentifier(identifier)
@@ -200,6 +219,7 @@ function gcPhone.getSourceFromPhoneNumber(phone_number)
     return xPlayer.source
 end
 
+
 function gcPhone.getPlayerID(source)
     local xPlayer = ESX.GetPlayerFromId(source)
     if xPlayer == nil then return nil end
@@ -207,14 +227,17 @@ function gcPhone.getPlayerID(source)
     return xPlayer.identifier
 end
 
+
 --==================================================================================================================
 -------- Funzioni Contatti
 --==================================================================================================================
+
 
 function getContacts(identifier)
     local result = MySQL.Sync.fetchAll("SELECT * FROM phone_users_contacts WHERE phone_users_contacts.identifier = @identifier", { ['@identifier'] = identifier })
     return result
 end
+
 
 function addContact(source, identifier, number, display)
     local player = tonumber(source)
@@ -230,6 +253,7 @@ function addContact(source, identifier, number, display)
     end
 end
 
+
 function updateContact(source, identifier, id, number, display)
     local player = tonumber(source)
 
@@ -242,6 +266,7 @@ function updateContact(source, identifier, id, number, display)
     end)
 end
 
+
 function deleteContact(source, identifier, id)
     local player = tonumber(source)
 
@@ -252,6 +277,7 @@ function deleteContact(source, identifier, id)
     notifyContactChange(player, identifier)
 end
 
+
 function notifyContactChange(source, identifier)
     local player = tonumber(source)
 
@@ -259,6 +285,7 @@ function notifyContactChange(source, identifier)
         TriggerClientEvent("gcPhone:contactList", player, getContacts(identifier))
     end
 end
+
 
 RegisterServerEvent('gcPhone:addContact')
 AddEventHandler('gcPhone:addContact', function(display, phoneNumber)
@@ -268,6 +295,7 @@ AddEventHandler('gcPhone:addContact', function(display, phoneNumber)
     addContact(player, identifier, phoneNumber, display)
 end)
 
+
 RegisterServerEvent('gcPhone:updateContact')
 AddEventHandler('gcPhone:updateContact', function(id, display, phoneNumber)
     local player = tonumber(source)
@@ -275,6 +303,7 @@ AddEventHandler('gcPhone:updateContact', function(id, display, phoneNumber)
 
     updateContact(player, identifier, id, phoneNumber, display)
 end)
+
 
 RegisterServerEvent('gcPhone:deleteContact')
 AddEventHandler('gcPhone:deleteContact', function(id)
@@ -284,13 +313,16 @@ AddEventHandler('gcPhone:deleteContact', function(id)
     deleteContact(player, identifier, id)
 end)
 
+
 --==================================================================================================================
 -------- Eventi e Funzioni dei Messaggi
 --==================================================================================================================
 
+
 function getMessages(identifier)
     return MySQL.Sync.fetchAll("SELECT phone_messages.* FROM phone_messages LEFT JOIN users ON users.identifier = @identifier WHERE phone_messages.receiver = users.phone_number", { ['@identifier'] = identifier })
 end
+
 
 function addMessage(source, identifier, phone_number, message)
     local player = tonumber(source)
@@ -345,6 +377,7 @@ function addMessage(source, identifier, phone_number, message)
     end 
 end
 
+
 RegisterServerEvent('gcPhone:sendMessage')
 AddEventHandler('gcPhone:sendMessage', function(phoneNumber, message)
     local player = tonumber(source)
@@ -352,6 +385,7 @@ AddEventHandler('gcPhone:sendMessage', function(phoneNumber, message)
 
     addMessage(player, identifier, phoneNumber, message)
 end)
+
 
 function _internalAddMessage(transmitter, receiver, message, owner)
     local id = MySQL.Sync.insert("INSERT INTO phone_messages (`transmitter`, `receiver`,`message`, `isRead`, `owner`) VALUES(@transmitter, @receiver, @message, @isRead, @owner)", {
@@ -365,10 +399,12 @@ function _internalAddMessage(transmitter, receiver, message, owner)
     return MySQL.Sync.fetchAll('SELECT * from phone_messages WHERE `id` = @id', {['@id'] = id})[1]
 end
 
+
 RegisterServerEvent('gcPhone:_internalAddMessage')
 AddEventHandler('gcPhone:_internalAddMessage', function(transmitter, receiver, message, owner, cb)
     cb(_internalAddMessage(transmitter, receiver, message, owner))
 end)
+
 
 function setReadMessageNumber(identifier, num)
     local mePhoneNumber = gcPhone.getPhoneNumber(identifier)
@@ -379,6 +415,7 @@ function setReadMessageNumber(identifier, num)
     })
 end
 
+
 function setMessageReceived(phone_number, num)
     MySQL.Sync.execute("UPDATE phone_messages SET phone_messages.received = 1 WHERE phone_messages.receiver = @receiver AND phone_messages.transmitter = @transmitter", {
         ['@receiver'] = phone_number,
@@ -386,11 +423,13 @@ function setMessageReceived(phone_number, num)
     })
 end
 
+
 function setMessagesReceived(phone_number)
     MySQL.Sync.execute("UPDATE phone_messages SET phone_messages.received = 1 WHERE phone_messages.receiver = @receiver", {
         ['@receiver'] = phone_number
     })
 end
+
 
 RegisterServerEvent('gcPhone:setReadMessageNumber')
 AddEventHandler('gcPhone:setReadMessageNumber', function(num)
@@ -399,10 +438,12 @@ AddEventHandler('gcPhone:setReadMessageNumber', function(num)
     setReadMessageNumber(identifier, num)
 end)
 
+
 RegisterServerEvent('gcPhone:deleteMessage')
 AddEventHandler('gcPhone:deleteMessage', function(msgId)
     MySQL.Async.execute("DELETE FROM phone_messages WHERE `id` = @id", { ['@id'] = msgId })
 end)
+
 
 RegisterServerEvent('gcPhone:deleteMessageNumber')
 AddEventHandler('gcPhone:deleteMessageNumber', function(number)
@@ -415,9 +456,11 @@ AddEventHandler('gcPhone:deleteMessageNumber', function(number)
     })
 end)
 
+
 function gcPhone.deleteReceivedMessages(identifier)
     MySQL.Async.execute("DELETE FROM phone_messages WHERE `receiver` = @receiver", { ['@receiver'] = gcPhone.getPhoneNumber(identifier) })
 end
+
 
 RegisterServerEvent('gcPhone:deleteAllMessage')
 AddEventHandler('gcPhone:deleteAllMessage', function()
@@ -426,6 +469,7 @@ AddEventHandler('gcPhone:deleteAllMessage', function()
 
     gcPhone.deleteReceivedMessages(identifier)
 end)
+
 
 RegisterServerEvent('gcPhone:deleteALL')
 AddEventHandler('gcPhone:deleteALL', function()
@@ -441,6 +485,7 @@ AddEventHandler('gcPhone:deleteALL', function()
     TriggerClientEvent("appelsDeleteAllHistorique", player, {})
 end)
 
+
 --==================================================================================================================
 -------- Eventi e Funzioni delle chiamate
 --==================================================================================================================
@@ -448,6 +493,7 @@ end)
 Chiamate = {}
 local PhoneFixeInfo = {}
 local lastIndexCall = 10
+
 
 function getHistoriqueCall(num)
     local result = MySQL.Sync.fetchAll("SELECT * FROM phone_calls WHERE phone_calls.owner = @num ORDER BY time DESC LIMIT 120", { ['@num'] = num })
@@ -675,6 +721,7 @@ AddEventHandler('gcPhone:candidates', function(callId, candidates)
     end
 end)
 
+
 RegisterServerEvent('gcPhone:acceptCall')
 AddEventHandler('gcPhone:acceptCall', function(infoCall, rtcAnswer)
     local player = source
@@ -771,6 +818,7 @@ AddEventHandler('gcPhone:appelsDeleteAllHistorique', function()
 
     appelsDeleteAllHistorique(identifier)
 end)
+
 
 --==================================================================================================================
 -------- Funzioni e Eventi chiamati al load della risorsa e al caricamento di un player
@@ -881,6 +929,7 @@ function getInfoBorsa()
     return tavola
 end
 
+
 --====================================================================================
 --  Telefoni Fissi
 --====================================================================================
@@ -976,8 +1025,3 @@ function onRejectFixePhone(source, infoCall, rtcAnswer)
 
     Chiamate[id] = nil 
 end
-
-
-RegisterCommand("fix_gallery", function(source)
-    TriggerClientEvent("fix_gallery", source)
-end, false)

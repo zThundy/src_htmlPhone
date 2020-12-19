@@ -24,7 +24,7 @@ end
 function Reti.loadRetiWifi()
 	local query = nil
 
-	MySQL.Async.fetchAll('SELECT * FROM home_wifi_nets', {}, function(result) query = retiWifi end)
+	MySQL.Async.fetchAll('SELECT * FROM home_wifi_nets', {}, function(result) query = result end)
 	while query == nil do Citizen.Wait(1000) end
 	
 	return query
@@ -47,17 +47,20 @@ end
 function Reti.AddReteWifi(source, rete)
 	local xPlayer = ESX.GetPlayerFromId(source)
 
-	MySQL.Async.execute('INSERT INTO home_wifi_nets (steam_id, ssid, password, x, y, z, due_date) VALUES (@steam_id, @ssid, @password, @x, @y, @z, @due_date)', {
+	MySQL.Async.execute('INSERT INTO home_wifi_nets (steam_id, label, password, x, y, z, due_date) VALUES (@steam_id, @label, @password, @x, @y, @z, @due_date)', {
 		['@steam_id'] = xPlayer.identifier,
 		['@label'] = rete.label,
 		['@password'] = rete.password,
-		['@x'] = rete.coords.x,
-		['@y'] = rete.coords.y,
-		['@z'] = rete.coords.z,
-		['@due_date'] = rete.due_date
+		['@x'] = tonumber(string.format("%." .. 3 .. "f", rete.coords.x)),
+		['@y'] = tonumber(string.format("%." .. 3 .. "f", rete.coords.y)),
+		['@z'] = tonumber(string.format("%." .. 3 .. "f", rete.coords.z)),
+		['@due_date'] = os.date("%Y-%m-%d %H:%m:%S", rete.due_date)
 	}, function(rowsChanged)
 		if rowsChanged > 0 then
 			xPlayer.showNotification("~g~Rete creata con successo!")
+
+			retiWifi = Reti.loadRetiWifi()
+			Reti.Debug("Wifi modems updated succesfully")
 		else
 			xPlayer.showNotification("~r~Impossibile creare la rete. Ne hai già una a tuo nome!")
 		end
@@ -65,11 +68,20 @@ function Reti.AddReteWifi(source, rete)
 end
 
 
-function Reti.RemoveReteWifi(rete)
+function Reti.RemoveReteWifi(source, rete)
+	local xPlayer = ESX.GetPlayerFromId(source)
+
 	MySQL.Async.execute('DELETE * FROM home_wifi_nets WHERE steam_id = @steam_id', {
 		['@steam_id'] = rete.owner_id
 	}, function(rowsChanged)
-		return "Rete aggiunta con successo"
+		if rowsChanged > 0 then
+			xPlayer.showNotification("~g~Rete rimossa con successo!")
+
+			retiWifi = Reti.loadRetiWifi()
+			Reti.Debug("Wifi modems updated succesfully")
+		else
+			xPlayer.showNotification("~r~Impossibile rimuovere la rete!")
+		end
 	end)
 end
 
@@ -78,11 +90,14 @@ function Reti.UpdateReteWifi(source, rete, param)
 	local xPlayer = ESX.GetPlayerFromId(source)
 
 	MySQL.Async.execute('UPDATE home_wifi_nets SET '..param..' = @'..param..' WHERE steam_id = @steam_id', {
-		['@steam_id'] = xPlayer.identifier,
+		['@steam_id'] = tostring(xPlayer.identifier),
 		['@'..param] = rete[param]
 	}, function(rowsChanged)
 		if rowsChanged > 0 then
 			xPlayer.showNotification("~g~Rete aggiornata con successo!")
+
+			retiWifi = Reti.loadRetiWifi()
+			Reti.Debug("Wifi modems updated succesfully")
 		else
 			xPlayer.showNotification("~r~Impossibile aggiornare la rete!")
 		end
@@ -154,21 +169,23 @@ end
 
 
 function Reti.CheckDueDate()
+	Reti.Debug("Checking expired routers")
+	
 	for index, rete in pairs(retiWifi) do
 		if rete.not_expire == 0 then
 			local due_date = math.floor(rete.due_date / 1000)
-			
-			if os.difftime(os.time(), due_date) < 0 then
-				Reti.Debug("Modem owned by "..value.steam_id.." has expired. Removing it from databse")
+			local created = math.floor(rete.created / 1000)
 
-				table.remove(retiWifi, index)
+			if os.difftime(created, due_date) >= 0 then
+				Reti.Debug("Modem owned by "..rete.steam_id.." has expired. Removing it from databse")
+
 				MySQL.Async.execute("DELETE FROM home_wifi_nets WHERE steam_id = @steam_id AND label = @label", {
 					['@steam_id'] = rete.steam_id,
 					['@label'] = rete.label
 				})
 			end
 		else
-			Reti.Debug("Modem owned by "..value.steam_id.." cannot expire")
+			Reti.Debug("Modem owned by "..rete.steam_id.." cannot expire")
 		end
 	end
 end

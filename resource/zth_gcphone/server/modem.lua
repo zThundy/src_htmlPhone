@@ -6,6 +6,8 @@ local creationTimeout = {}
 RegisterServerEvent("gcphone:modem_createModem")
 AddEventHandler("gcphone:modem_createModem", function(label, password, coords)
     local player = source
+    local xPlayer = ESX.GetPlayerFromId(player)
+
     if creationTimeout[player] == nil or not creationTimeout[player] then
         local day = 86400
         local days = day * Config.AddDaysOnRenewal
@@ -19,6 +21,7 @@ AddEventHandler("gcphone:modem_createModem", function(label, password, coords)
         })
 
         creationTimeout[player] = true
+        xPlayer.removeInventoryItem("modem", 1)
 
         Citizen.CreateThreadNow(function()
             local cachedPlayer = player
@@ -38,16 +41,19 @@ AddEventHandler("gcphone:modem_rinnovaModem", function()
     local xPlayer = ESX.GetPlayerFromId(player)
 
     if points >= Config.RinnovaModemPoints then
-        local day = 86400
-        local days = day * Config.AddDaysOnRenewal
 
         MySQL.Async.fetchAll("SELECT * FROM home_wifi_nets WHERE steam_id = @identifier", {
             ['@identifier'] = xPlayer.identifier
         }, function(result)
             if #result > 0 then
-                local new_date = os.time(os.date('*t', result[1].due_date)) + days
+                local day = 86400
+                local days = day * Config.AddDaysOnRenewal
+                local new_date = os.time(os.date('*t', math.floor(result[1].due_date / 1000))) + days
 
-                Reti.UpdateReteWifi(player, { due_date = new_date }, "due_date")
+                Reti.UpdateReteWifi(player, { due_date = os.date("%Y-%m-%d %H:%m:%S", new_date) }, "due_date")
+                TriggerClientEvent("gcphone:modem_updateMenu", player)
+
+                exports["vip_points"]:removePoints(source, Config.RinnovaModemPoints)
             end
         end)
     else
@@ -63,7 +69,10 @@ AddEventHandler("gcphone:modem_cambiaPassword", function(password)
     local xPlayer = ESX.GetPlayerFromId(player)
 
     if points >= Config.ChangePasswordPoints then
+        exports["vip_points"]:removePoints(source, Config.ChangePasswordPoints)
+
         Reti.UpdateReteWifi(player, { password = password }, "password")
+        TriggerClientEvent("gcphone:modem_updateMenu", player)
     else
         xPlayer.showNotification("~r~Non hai abbastanza punti")
     end
@@ -77,8 +86,11 @@ AddEventHandler("gcphone:modem_compraModem", function()
     local xPlayer = ESX.GetPlayerFromId(player)
 
     if points >= Config.BuyModemPoints then
-        xPlayer.giveInventoryItem("modem", 1)
+        xPlayer.addInventoryItem("modem", 1)
         xPlayer.showNotification("~g~Hai comprato un modem nuovo di zecca")
+
+        exports["vip_points"]:removePoints(source, Config.BuyModemPoints)
+        TriggerClientEvent("gcphone:modem_updateMenu", player)
     else
         xPlayer.showNotification("~r~Non hai abbastanza punti per poter comprare un modem")
     end
@@ -92,14 +104,15 @@ ESX.RegisterServerCallback("gcphone:modem_getMenuInfo", function(source, cb)
     MySQL.Async.fetchAll("SELECT * FROM home_wifi_nets WHERE steam_id = @identifier", {
         ['@identifier'] = xPlayer.identifier
     }, function(result)
+        local points = exports["vip_points"]:getPoints(source)
+
         if #result > 0 then
-            local points = exports["vip_points"]:getPoints(source)
             table.insert(elements, { label = "Punti vip: "..points })
 
-            local createdString = os.date("%d/%m/%Y - %X", result[1].created)
-            local dueString = os.date("%d/%m/%Y - %X", result[1].due_date)
-            table.insert(elements, { label = "Comprato il giorno "..createdString })
-            table.insert(elements, { label = "Scade il giorno "..dueString })
+            local createdString = os.date("%d/%m/%Y - %X", math.floor(result[1].created / 1000))
+            local dueString = os.date("%d/%m/%Y - %X", math.floor(result[1].due_date / 1000))
+            table.insert(elements, { label = "Comprato il "..createdString })
+            table.insert(elements, { label = "Scade il "..dueString })
             if result[1].not_expire then
                 table.insert(elements, { label = "Il tuo modem non scadrà" })
             end
@@ -111,6 +124,8 @@ ESX.RegisterServerCallback("gcphone:modem_getMenuInfo", function(source, cb)
 
             table.insert(elements, { label = "Rinnova il modem per "..Config.RinnovaModemPoints.." punti", value = "rinnova_modem" })
         else
+            table.insert(elements, { label = "Punti vip: "..points })
+            
             table.insert(elements, { label = "Non hai acquistato un modem" })
             table.insert(elements, { label = "Compra un modem per "..Config.BuyModemPoints.." punti", value = "buy_modem" })
         end

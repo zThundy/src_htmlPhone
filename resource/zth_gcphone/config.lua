@@ -75,4 +75,4 @@ Config.AddDaysOnRenewal = 30
 -- in secondi
 Config.WaitBeforeCreatingAgaing = 600
 
-Config.ModemManagement = vector3(99.0, 99.0, 99.0)
+Config.ModemManagement = vector3(-1083.502, -248.6952, 37.76329)
