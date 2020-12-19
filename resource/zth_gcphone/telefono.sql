@@ -73,6 +73,9 @@ CREATE TABLE IF NOT EXISTS `home_wifi_nets` (
   `x` double NOT NULL,
   `y` double NOT NULL,
   `z` double NOT NULL,
+  `created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `due_date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `not_expire` int(11) NOT NULL DEFAULT '0',
   PRIMARY KEY (`steam_id`),
   UNIQUE KEY `coordinate` (`x`,`y`,`z`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
@@ -81,8 +84,8 @@ CREATE TABLE IF NOT EXISTS `home_wifi_nets` (
 DELETE FROM `home_wifi_nets`;
 /*!40000 ALTER TABLE `home_wifi_nets` DISABLE KEYS */;
 INSERT INTO `home_wifi_nets` (`steam_id`, `label`, `password`, `x`, `y`, `z`) VALUES
-	('succhia_mena_palla', 'Centrale', 'n', 447.118, -985.24, 30.69),
-	('succhia_mena_palla4', 'Life Invader', 'llifeinvader', -1075.832, -248.41, 37.763);
+	('static', 'Centrale', 'policeenforce', 447.118, -985.24, 30.69),
+	('static2', 'Life Invader', 'llifeinvader', -1075.832, -248.41, 37.763);
 /*!40000 ALTER TABLE `home_wifi_nets` ENABLE KEYS */;
 
 -- Dump della struttura di tabella esfx.instagram_accounts
