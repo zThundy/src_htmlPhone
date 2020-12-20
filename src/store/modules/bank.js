@@ -32,9 +32,9 @@ const actions = {
 }
 
 const mutations = {
-  SET_BANK_AMONT (state, bankAmount, iban) {
-    state.bankAmount = Number(bankAmount)
-    state.iban = iban
+  SET_BANK_AMONT (state, data) {
+    state.bankAmount = Number(data.money)
+    state.iban = data.iban
   },
   UPDATE_FATTURE (state, fatture) {
     state.fatture = fatture

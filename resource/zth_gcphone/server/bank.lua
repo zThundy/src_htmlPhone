@@ -10,34 +10,42 @@ end)
 RegisterServerEvent("gcPhone:sendMoneyToUser")
 AddEventHandler("gcPhone:sendMoneyToUser", function(data)
     local iban = data.iban
-    data.money = string.gsub(data.money, "$", "")
-    local amount = tonumber(data.money)
 
     local player = source
     local xPlayer = ESX.GetPlayerFromId(player)
 
     getUserFromIban(iban, function(user)
+        print(user)
+        
         if user ~= nil then
-            local c_xPlayer = ESX.GetPlayerFromIdentifier(user.identifier)
+            if type(tonumber(data.money)) == "number" then
+                data.money = string.gsub(data.money, "$", "")
+                local amount = tonumber(data.money)
+                local c_xPlayer = ESX.GetPlayerFromIdentifier(user.identifier)
 
-            if c_xPlayer ~= nil and xPlayer ~= nil then
-                if xPlayer.getAccount("bank").money >= amount then
+                if c_xPlayer ~= nil and xPlayer ~= nil then
+                    if xPlayer.getAccount("bank").money >= amount then
 
-                    xPlayer.showNotification("~g~Hai inviato "..amount.."$ all'iban "..iban)
-                    c_xPlayer.showNotification("~g~Hai ricevuto un bonifico di "..amount.."$ dall'iban "..xPlayer.iban)
+                        xPlayer.showNotification("~g~Hai inviato "..amount.."$ all'iban "..iban)
+                        c_xPlayer.showNotification("~g~Hai ricevuto un bonifico di "..amount.."$ dall'iban "..xPlayer.iban)
 
-                    c_xPlayer.addAccountMoney("bank", amount)
-                    xPlayer.removeAccountMoney("bank", amount)
+                        c_xPlayer.addAccountMoney("bank", amount)
+                        xPlayer.removeAccountMoney("bank", amount)
 
-                    TriggerClientEvent("gcPhone:updateBankAmount", xPlayer.source, xPlayer.getAccount("bank").money, xPlayer.iban)
-                    TriggerClientEvent("gcPhone:updateBankAmount", c_xPlayer.source, c_xPlayer.getAccount("bank").money, c_xPlayer.iban)
+                        TriggerClientEvent("gcPhone:updateBankAmount", xPlayer.source, xPlayer.getAccount("bank").money, xPlayer.iban)
+                        TriggerClientEvent("gcPhone:updateBankAmount", c_xPlayer.source, c_xPlayer.getAccount("bank").money, c_xPlayer.iban)
 
-                    updateBankMovements(xPlayer.source, xPlayer.identifier, amount, "negative", c_xPlayer.iban)
-                    updateBankMovements(c_xPlayer.source, c_xPlayer.identifier, amount, "positive", xPlayer.iban)
+                        updateBankMovements(xPlayer.source, xPlayer.identifier, amount, "negative", c_xPlayer.iban, xPlayer.iban)
+                        updateBankMovements(c_xPlayer.source, c_xPlayer.identifier, amount, "positive", xPlayer.iban, c_xPlayer.iban)
+                    end
+                else
+                    xPlayer.showNotification("~r~Iban non trovato o non valido")
                 end
             else
-                xPlayer.showNotification("~r~Iban non trovato o non valido")
+                xPlayer.showNotification("~r~Il valore inserito non è un numero")
             end
+        else
+            xPlayer.showNotification("~r~Iban non trovato o non valido")
         end
     end)
 end)
@@ -45,20 +53,22 @@ end)
 
 function getUserFromIban(iban, cb)
     MySQL.Async.fetchAll("SELECT * FROM users WHERE iban = '"..iban.."'", {}, function(result)
-        cb(result[1])
+        if result == nil or result[1] == nil then cb(nil) else cb(result[1]) end
     end)
 end
 
 
-function updateBankMovements(source, identifier, amount, type, iban)
-    MySQL.Async.insert("INSERT INTO phone_bank_movements(amount, type, to) VALUES(@amount, @type, @to)", {
+function updateBankMovements(source, identifier, amount, type, iban, iban_from)
+    MySQL.Async.insert("INSERT INTO phone_bank_movements(amount, `type`, `to`, `from`) VALUES(@amount, @type, @to, @from)", {
         ['@amount'] = amount,
         ['@type'] = type,
-        ['@to'] = iban
+        ['@to'] = iban,
+        ['@from'] = iban_from
     }, function(id)
         if id > 0 then
-            MySQL.Async.fetchAll("SELECT * FROM phone_bank_movements WHERE identifier = @identifier", {
-                ['@identifier'] = identifier
+            MySQL.Async.fetchAll("SELECT * FROM phone_bank_movements WHERE `from` = @from OR `to` = @to ORDER BY id DESC", {
+                ['@from'] = iban,
+                ['@to'] = iban
             }, function(result)
                 TriggerClientEvent("gcphone:bank_sendBankMovements", source, result)
             end)
@@ -69,6 +79,14 @@ end
 
 ESX.RegisterServerCallback("gcphone:bank_getBankInfo", function(source, cb)
     local xPlayer = ESX.GetPlayerFromId(source)
+
+    MySQL.Async.fetchAll("SELECT * FROM phone_bank_movements WHERE `from` = @from OR `to` = @to ORDER BY id DESC", {
+        ['@from'] = xPlayer.iban,
+        ['@to'] = xPlayer.iban
+    }, function(result)
+        TriggerClientEvent("gcphone:bank_sendBankMovements", source, result)
+    end)
+
     cb(xPlayer.getAccount("bank").money, xPlayer.iban)
 end)
 

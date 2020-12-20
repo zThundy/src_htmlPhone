@@ -80,6 +80,7 @@ export default {
             this.listaFatture()
           } else if (resp.id === 2) {
             this.createPagamento()
+            this.ignoreControls = false
           } else if (resp.id === -1) { this.ignoreControls = false }
         })
       } catch (e) { }
@@ -125,6 +126,7 @@ export default {
     }
   },
   created () {
+    this.$phoneAPI.requestBankInfo()
     this.$bus.$on('keyUpBackspace', this.onBackspace)
     this.$bus.$on('keyUpArrowRight', this.onRight)
     this.$bus.$on('keyUpArrowDown', this.onDown)

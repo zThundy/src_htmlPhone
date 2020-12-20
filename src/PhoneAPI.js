@@ -246,7 +246,7 @@ class PhoneAPI {
   }
 
   onupdateBankbalance (data) {
-    store.commit('SET_BANK_AMONT', data.soldi, data.iban)
+    store.commit('SET_BANK_AMONT', { money: data.soldi, iban: data.iban })
   }
 
   onupdateBankMovements (data) {
