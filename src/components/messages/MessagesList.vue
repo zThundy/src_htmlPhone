@@ -35,12 +35,14 @@ export default {
         choix: [
           {id: 4, title: this.IntlString('APP_PHONE_CALL'), icons: 'fa-phone'},
           {id: 5, title: this.IntlString('APP_PHONE_CALL_ANONYMOUS'), icons: 'fa-mask'},
-          {id: 6, title: this.IntlString('APP_MESSAGE_NEW_MESSAGE'), icons: 'fa-sms'},
-          {id: 1, title: this.IntlString('APP_MESSAGE_ERASE_CONVERSATION'), icons: 'fa-trash', color: 'orange'},
-          {id: 2, title: this.IntlString('APP_MESSAGE_ERASE_ALL_CONVERSATIONS'), icons: 'fa-trash', color: 'red'}
+          {id: 6, title: this.IntlString('APP_MESSAGE_NEW_MESSAGE'), icons: 'fa-sms'}
         ]
         .concat(data.unknowContact ? [{id: 7, title: this.IntlString('APP_MESSAGE_SAVE_CONTACT'), icons: 'fa-save'}] : [])
-        .concat([{id: 3, title: this.IntlString('CANCEL'), icons: 'fa-undo', color: 'red'}])
+        .concat([
+          {id: 1, title: this.IntlString('APP_MESSAGE_ERASE_CONVERSATION'), icons: 'fa-trash', color: 'orange'},
+          {id: 2, title: this.IntlString('APP_MESSAGE_ERASE_ALL_CONVERSATIONS'), icons: 'fa-trash', color: 'red'},
+          {id: 3, title: this.IntlString('CANCEL'), icons: 'fa-undo', color: 'red'}
+        ])
       }).then(rep => {
         if (rep.id === 1) {
           this.deleteMessagesNumber({num: data.number})

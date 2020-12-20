@@ -155,18 +155,18 @@ export default {
 }
 
 
-.elements{
+.elements {
   overflow-y: auto;
 }
 
-.element{
+.element {
   height: 58px;
   line-height: 58px;
   display: flex;
   align-items: center;
   position: relative;
   font-weight: 300;
-    font-size: 18px;
+  font-size: 18px;
 }
 
 .element.select {

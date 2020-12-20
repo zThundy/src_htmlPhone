@@ -1,5 +1,5 @@
 <template>
-  <div class="phone_title_content" :style="style" :class="{'hasInfoBare': showSegnaleSection}" >
+  <div class="phone_title_content" :style="style" :class="{'showSegnaleSection': showSegnaleSection}" >
     <InfoBare v-if="showSegnaleSection" />
     
     <div class="phone_title" :style="{backgroundColor: backgroundColor}">

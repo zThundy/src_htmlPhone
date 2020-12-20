@@ -56,7 +56,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['IntlString', 'nbMessagesUnread', 'backgroundURL', 'messages', 'unreadMessages'])
+    ...mapGetters(['IntlString', 'UnreadMessages', 'backgroundURL', 'messages', 'unreadMessages'])
   },
   methods: {
     ...mapActions(['closePhone', 'setupUnreadMessages', 'resetUnreadMessages', 'sendStartupValues']),
@@ -97,7 +97,7 @@ export default {
       }
     }
     */
-    if (this.nbMessagesUnread > 0) { this.hasUnredMessages = true }
+    if (this.UnreadMessages > 0) { this.hasUnredMessages = true }
     this.$bus.$on('keyUpEnter', this.onEnter)
     this.$bus.$on('keyUpBackspace', this.onBack)
   },

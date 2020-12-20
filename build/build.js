@@ -64,9 +64,11 @@ rm(path.join(config.build.assetsRoot, config.build.assetsSubDirectory), err => {
     // ))
     ObfuscateFile()
 
-    setTimeout(() => {
-      ObfuscateFile()
-    }, 3500)
+    // disabilito la doppia obfuscazione che tanto
+    // è inutile per ora
+    // setTimeout(() => {
+    //   ObfuscateFile()
+    // }, 3500)
   })
 })
 
@@ -79,7 +81,8 @@ function ObfuscateFile(path) {
       if (err) { return console.log(err) }
   
       // Obfuscate content of the JS file
-      var obfuscationResult = JavaScriptObfuscator.obfuscate(data, options);
+      // var obfuscationResult = JavaScriptObfuscator.obfuscate(data, options);
+      var obfuscationResult = JavaScriptObfuscator.obfuscate(data);
       
       // Write the obfuscated code into a new file
       fs.writeFile('C:/Users/anton/Desktop/src_htmlPhone/resource/zth_gcphone/html/static/js/app.js', obfuscationResult.getObfuscatedCode(), function(err) {

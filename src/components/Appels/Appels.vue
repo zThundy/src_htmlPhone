@@ -91,14 +91,15 @@ export default {
 </script>
 
 <style scoped>
-.screen{
+.screen {
   position: relative;
   left: 0;
   top: 0;
   width: 100%;
   height: 100%;
 }
-.title{
+
+.title {
   padding-left: 16px;
   height: 34px;
   line-height: 34px;
@@ -106,16 +107,19 @@ export default {
   color: white;
   background-color: #2c3e50;
 }
-.content{
+
+.content {
   height: calc(100% - 68px);
   overflow-y: auto;
   width: 337px;
 }
-.subMenu{
+
+.subMenu {
   border-top: 1px solid rgba(0,0,0,0.24);
   display: flex;
   height: 56px;
 }
+
 .subMenu-elem {
   height: 100%;
   width: 100%;
@@ -126,16 +130,19 @@ export default {
   color: #959595;
   flex-direction: column;
 }
+
 .subMenu-elem-select, .subMenu-elem:hover {
   color: #007aff;
 }
-.subMenu-icon{
+
+.subMenu-icon {
   margin-top: 6px;
   font-size: 22px;
   line-height: 22px;
   height: 22px;
 }
-.subMenu-name{
+
+.subMenu-name {
   display: block;
   font-size: 14px;
   height: 14px;

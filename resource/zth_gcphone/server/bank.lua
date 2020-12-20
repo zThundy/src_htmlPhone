@@ -1,3 +1,12 @@
+RegisterServerEvent("gcphone:bank_pagaFattura")
+AddEventHandler("gcphone:bank_pagaFattura", function(fattura)
+    local player = source
+    local xPlayer = ESX.GetPlayerFromId(player)
+
+
+end)
+
+
 RegisterServerEvent("gcPhone:sendMoneyToUser")
 AddEventHandler("gcPhone:sendMoneyToUser", function(data)
     local iban = data.iban
@@ -22,6 +31,9 @@ AddEventHandler("gcPhone:sendMoneyToUser", function(data)
 
                     TriggerClientEvent("gcPhone:updateBankAmount", xPlayer.source, xPlayer.getAccount("bank").money, xPlayer.iban)
                     TriggerClientEvent("gcPhone:updateBankAmount", c_xPlayer.source, c_xPlayer.getAccount("bank").money, c_xPlayer.iban)
+
+                    updateBankMovements(xPlayer.source, xPlayer.identifier, amount, "negative", c_xPlayer.iban)
+                    updateBankMovements(c_xPlayer.source, c_xPlayer.identifier, amount, "positive", xPlayer.iban)
                 end
             else
                 xPlayer.showNotification("~r~Iban non trovato o non valido")
@@ -38,9 +50,35 @@ function getUserFromIban(iban, cb)
 end
 
 
+function updateBankMovements(source, identifier, amount, type, iban)
+    MySQL.Async.insert("INSERT INTO phone_bank_movements(amount, type, to) VALUES(@amount, @type, @to)", {
+        ['@amount'] = amount,
+        ['@type'] = type,
+        ['@to'] = iban
+    }, function(id)
+        if id > 0 then
+            MySQL.Async.fetchAll("SELECT * FROM phone_bank_movements WHERE identifier = @identifier", {
+                ['@identifier'] = identifier
+            }, function(result)
+                TriggerClientEvent("gcphone:bank_sendBankMovements", source, result)
+            end)
+        end
+    end)
+end
+
+
 ESX.RegisterServerCallback("gcphone:bank_getBankInfo", function(source, cb)
     local xPlayer = ESX.GetPlayerFromId(source)
-    cb(xPlayer.getAccount("bank").money, xPlayer.getIban())
+    cb(xPlayer.getAccount("bank").money, xPlayer.iban)
+end)
+
+
+ESX.RegisterServerCallback("gcphone:bank_requestMyFatture", function(source, cb)
+    local xPlayer = ESX.GetPlayerFromId(source)
+
+    MySQL.Async.fetchAll("SELECT * FROM billing WHERE identifier = @identifier", {['@identifier'] = xPlayer.identifier}, function(result)
+        cb(result)
+    end)
 end)
 
 

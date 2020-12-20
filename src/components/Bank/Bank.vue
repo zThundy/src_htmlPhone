@@ -1,278 +1,309 @@
 <template>
-  <div style="width: 326px; height: 765px;" class="screen">
-    
-    <div class='elements'>
-      <InfoBare style="width: 326px;top: -207px; margin-left: -17px;"/>
-      <img class="logo_maze" src="/html/static/img/app_bank/fleeca_tar.png">
-      <div class="money-div" >
-        <span class="moneyTitle">{{ IntlString('APP_BANK_TITLE_BALANCE') }}:</span>
-        <md-amount class="moneyTitle" :value="bankAmount" :duration="2500" transition has-separator></md-amount>$
-        <!-- <span class="moneyTitle">{{ bankAmount }}$</span> -->
-      </div>
+  <div class="phone_app">
+    <PhoneTitle :title="IntlString('APP_BANK_TITLE')" v-on:back="onBackspace" backgroundColor="rgb(40, 90, 43)" />
 
-      <div class="iban">
-        <span class="ibanTitle">{{ IntlString('APP_BANK_TITLE_IBAN') }}:</span>
-        <span class="ibanTitle">{{ iban }}</span>
-      </div>
-      
-      <div class="hr"></div>
-      
-      <div class='element'>
-        <div class="element-content">
-          
-        </div>
+    <div class="slice"></div>
+    <div class="slice2"></div>
 
-        <div class="element-content" ref="form"> 
-          <input style=" border-radius: 23px; font-size: 16px;" v-bind:class="{ select: 0 === currentSelect}" v-autofocus oninput="this.value = this.value.toUpperCase();" ref="form0" v-model="id" class="paragonder" placeholder="IBAN">
-        </div> 
-
-        <div class="element-content">           
-          <input style=" border-radius: 23px; font-size: 16px;" v-bind:class="{ select: 1 === currentSelect}" oninput="this.value = this.value.replace(/[^0-9.]/g, ''); this.value = this.value.replace(/(\..*)\./g, '$1'); this.value = this.value + '$'" ref="form1" v-model="soldi" class="paragonder" placeholder="$">
-          <button v-bind:class="{ select: 2 === currentSelect}" ref="form2" id="gonder" class="buton-transfer">{{ IntlString('APP_BANK_BUTTON_TRANSFER') }}</button><br/>
-          <button v-bind:class="{ select: 3 === currentSelect}" ref="form3" id="cancella" class="buton-cancel">{{ IntlString('APP_BANK_BUTTON_CANCEL') }}</button>
-        </div>
-        
-      </div>
-      
+    <div class="dividerRectangle md-example-child md-example-child-amount">
+      <i class="fas fa-credit-card"></i>
+      <md-amount class="bankAmount" :value="bankAmount" :duration="1500" has-separator transition></md-amount> $
     </div>
-    <img class="logo_tarj_end" src="/html/static/img/app_bank/tarjetas.png">
+
+    <div class="dividerRectangle2">
+      <i class="fas fa-id-card"></i>
+      <span class="bankAmount">{{ iban }}</span>
+    </div>
+
+    <hr class="separator">
+
+    <div class="movementsCards">
+
+      <div class="movementsCard" v-for="(elem, key) in movements" :key="key" v-bind:class="{selected: key === currentSelect}">
+        <i v-if="elem.type == 'positive'" style="color: lime;" class="fas fa-arrow-up"></i>
+        <i v-else style="color: red;" class="fas fa-arrow-down"></i>
+        <label class="to">{{ IntlString('APP_BANK_MOVEMENTS_TO') }}: {{ elem.to }}</label>
+        <label class="from">{{ IntlString('APP_BANK_MOVEMENTS_FROM') }}: {{ elem.from }}</label>
+        <label class="amount">{{ IntlString('APP_BANK_MOVEMENTS_AMOUNT') }}: {{ elem.amount }} $</label>
+        <hr class="mov-separator">
+      </div>
+
+    </div>
+    
   </div>
 </template>
 
 <script>
 import { mapGetters, mapActions } from 'vuex'
-import InfoBare from '../InfoBare'
+import PhoneTitle from '@/components/PhoneTitle'
 import { Amount } from 'mand-mobile'
+import 'mand-mobile/lib/mand-mobile.css'
+import Modal from '@/components/Modal/index.js'
 
 export default {
+  name: 'app_banca',
   components: {
-    InfoBare,
+    PhoneTitle,
     [Amount.name]: Amount
   },
   data () {
     return {
-      id: '',
-      soldi: '',
-      currentSelect: 0
+      ignoreControls: false,
+      currentSelect: -1
     }
   },
   computed: {
-    ...mapGetters(['bankAmount', 'iban', 'IntlString'])
+    ...mapGetters(['bankAmount', 'iban', 'IntlString', 'fatture', 'movements'])
   },
   methods: {
-    ...mapActions(['inviaSoldiAPI']),
+    ...mapActions(['requestFatture', 'createPagamento']),
     scrollIntoViewIfNeeded: function () {
       this.$nextTick(() => {
-        document.querySelector('focus').scrollIntoViewIfNeeded()
+        document.querySelector('.selected').scrollIntoViewIfNeeded()
       })
     },
     onBackspace () {
+      if (this.ignoreControls) { this.ignoreControls = false; return }
+      if (this.currentSelect !== -1) { this.currentSelect = -1; return }
       this.$router.push({ name: 'menu' })
     },
-    cancella () {
-      // this.$router.push({path: '/messages'})
-      this.$router.push({ name: 'menu' })
+    onRight () {
+      if (this.ignoreControls) return
+      this.ignoreControls = true
+      try {
+        Modal.CreateModal({ choix: [
+          {id: 1, title: this.IntlString('APP_BANK_LISTA_FATTURE'), icons: 'fa-list-alt'},
+          {id: 2, title: this.IntlString('APP_BANK_CREATE_MOVEMENT'), icons: 'fa-plus'},
+          {id: -1, title: this.IntlString('CANCEL'), icons: 'fa-undo', color: 'red'}
+        ] }).then(resp => {
+          if (resp.id === 1) {
+            this.listaFatture()
+          } else if (resp.id === 2) {
+            this.createPagamento()
+          } else if (resp.id === -1) { this.ignoreControls = false }
+        })
+      } catch (e) { }
     },
-    inviaSoldi () {
-      const soldi = this.soldi.substring(1, this.soldi.length).trim()
-      if (soldi === '') return
-      this.soldi = ''
-      this.inviaSoldiAPI({
-        money: soldi,
-        iban: this.id
-      })
-    },
-    onUp: function () {
-      if ((this.currentSelect - 1) >= 0) {
-        this.currentSelect = this.currentSelect - 1
-      }
-      this.$refs['form' + this.currentSelect].focus()
+    onUp () {
+      if (this.ignoreControls) return
+      if (this.currentSelect === 0) return
+      this.currentSelect = this.currentSelect - 1
+      this.scrollIntoViewIfNeeded()
     },
     onDown () {
-      if ((this.currentSelect + 1) <= 3) {
-        this.currentSelect = this.currentSelect + 1
-      }
-      this.$refs['form' + this.currentSelect].focus()
+      if (this.ignoreControls) return
+      if (this.currentSelect === this.movements.length - 1) return
+      this.currentSelect = this.currentSelect + 1
+      this.scrollIntoViewIfNeeded()
     },
-    onEnter () {
-      if (this.ignoreControls === true) return
-      if (this.currentSelect === 2) {
-        this.inviaSoldi()
-      } else if (this.currentSelect === 0) {
-        this.$phoneAPI.getReponseText().then(data => {
-          let message = data.text.trim()
-          this.id = message.toUpperCase()
+    async listaFatture () {
+      this.ignoreControls = true
+      try {
+        // DEV this.requestFatture()
+        var choix = []
+        for (var key in this.fatture) { choix.push({ id: this.fatture[key].id, title: this.fatture[key].label + ' - ' + this.fatture[key].amount, icons: 'fa-money', fattura: this.fatture[key] }) }
+        choix.push({ id: -1, title: this.IntlString('CANCEL'), icons: 'fa-undo', color: 'red' })
+        // dopo essermi creato la lista delle fatture, mi buildo il menù
+        Modal.CreateModal({ choix }).then(resp => {
+          if (resp.id === -1) { this.ignoreControls = false } else { this.selectedFatturaOptions(resp.fattura) }
         })
-      } else if (this.currentSelect === 1) {
-        this.$phoneAPI.getReponseText().then(data => {
-          let message = data.text.trim()
-          this.soldi = '$' + message
+      } catch (e) { }
+    },
+    selectedFatturaOptions (fattura) {
+      this.ignoreControls = true
+      try {
+        Modal.CreateModal({ choix: [
+          {id: 1, title: this.IntlString('APP_BANK_MODAL_PAGA_FATTURE'), icons: 'fa-check-square'},
+          {id: -1, title: this.IntlString('CANCEL'), icons: 'fa-undo', color: 'red'}
+        ] }).then(resp => {
+          if (resp.id === 1) {
+            this.phoneAPI.pagaFattura(fattura)
+            this.ignoreControls = false
+          }
         })
-      } else if (this.currentSelect === 3) {
-        this.cancella()
-      }
+      } catch (e) { }
     }
   },
   created () {
-    this.$phoneAPI.requestBankInfo()
+    this.$bus.$on('keyUpBackspace', this.onBackspace)
+    this.$bus.$on('keyUpArrowRight', this.onRight)
     this.$bus.$on('keyUpArrowDown', this.onDown)
     this.$bus.$on('keyUpArrowUp', this.onUp)
-    this.$bus.$on('keyUpEnter', this.onEnter)
-    this.$bus.$on('keyUpBackspace', this.onBackspace)
   },
   beforeDestroy () {
+    this.$bus.$off('keyUpBackspace', this.onBackspace)
+    this.$bus.$off('keyUpArrowRight', this.onRight)
     this.$bus.$off('keyUpArrowDown', this.onDown)
     this.$bus.$off('keyUpArrowUp', this.onUp)
-    this.$bus.$off('keyUpEnter', this.onEnter)
-    this.$bus.$off('keyUpBackspace', this.onBackspace)
   }
 }
 </script>
 
 <style scoped>
-.screen {
+.phone_app {
+  background-color: rgb(36, 37, 41); 
+}
+
+.bankAmount {
   position: relative;
-  left: 0;
-  top: 0;
-  width: 100%;
-  height: 100%;
-  padding: 18px;
-  background-color: white;
+  font-weight: bold;
 }
 
-.money-div {
-  margin-top: -88px; 
-  margin-left: 40px;
-  color: white;
-  font-size: 16px;
+.dividerRectangle {
+  top: 140px;
+  left: 10px;
+  text-align: right;
+  background-color: rgb(65, 65, 65);
+  border-radius: 25px;
+  width: 94%;
+  height: 5%;
+  position: sticky;
+  font-weight: 500;
+
+  -moz-box-shadow: 0 0 5px 5px rgb(55, 55, 55);
+  -webkit-box-shadow: 0 0 5px 5px rgb(55, 55, 55);
+  box-shadow: 0 0 5px 5px rgb(55, 55, 55);
+
+  padding-top: 5px;
+  padding-right: 20px;
+  color: rgb(156, 156, 156);
 }
 
-.moneyTitle {
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-  font-weight: 200;
-  color: white;
-  font-size: 16px;
+.dividerRectangle2 {
+  top: 200px;
+  left: 10px;
+  text-align: right;
+  background-color: rgb(65, 65, 65);
+  border-radius: 25px;
+  width: 94%;
+  height: 5%;
+  position: sticky;
+  font-weight: 500;
+
+  -moz-box-shadow: 0 0 5px 5px rgb(55, 55, 55);
+  -webkit-box-shadow: 0 0 5px 5px rgb(55, 55, 55);
+  box-shadow: 0 0 5px 5px rgb(55, 55, 55);
+
+  padding-top: 5px;
+  padding-right: 20px;
+  color: rgb(156, 156, 156);
 }
 
-.iban {
- margin-left: 40px
+i {
+  position: absolute;
+  left: 15px;
+  padding-top: 4px;
+  color: rgb(156, 156, 156);
 }
 
-.ibanTitle {
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-  font-weight: 200;
-  color: white;
-  font-size: 16px;
+.separator {
+  position: absolute;
+  top: 260px;
+  left: 15px;
+
+  border-radius: 10px;
+  border: 1px solid rgb(94, 94, 94);
+  width: 91%;
 }
 
-.title {
-  padding-left: 16px;
-  height: 34px;
-  line-height: 34px;
-  font-weight: 700;
-  color: white;
-  background-color: rgb(76, 175, 80);
-}
-
-.elements {
-  display: flex;
+.movementsCards {
   position: relative;
+  margin: 10px;
+  top: 115px;
   width: 100%;
-  flex-direction: column;
-  height: 100%;
+  height: 42%;
+  overflow-y: auto;
+}
+
+.movementsCard {
+  padding-top: 5px;
+  background-color: rgb(65, 65, 65);
+  border-radius: 15px;
+  margin-top: 10px;
+  width: 94%;
+  height: 65px;
+
+  color: rgb(156, 156, 156);
+}
+
+.movementsCard .from {
+  position: absolute;
+  justify-content: left;
+  text-align: left;
+  font-weight: 400;
+  font-size: 16px;
+  padding-top: 2px;
+  left: 42px;
+}
+
+.movementsCard .to {
+  justify-content: right;
+  text-align: right;
+  position: absolute;
+  font-weight: 400;
+  font-size: 16px;
+  padding-top: 2px;
+  right: 50px;
+}
+
+.movementsCard .amount {
   justify-content: center;
-}
-
-.hr {
-  width: 100;
-  height: 4px;
-  margin-top: 73px;
-  background-image: linear-gradient(to right, #a9cc2e, #7cb732, #3a5d0d);  
-}
-
-.logo_maze {
-  width: 100%; 
-  height: auto;
-  flex-shrink: 0;
-  
-  width: 113%;
-  margin-left: -18px;
-  margin-top: -207px
-}
-
-.logo_tarj_end {
-  width: 100%; 
-  height: auto;
-  flex-shrink: 0;
-  
-  width: 113%;
-  margin-left: -18px;
-  margin-top: -77px
-}
-
-.element-content {
-  margin-top: 24px;
-  display: block; 
-  width: 100%;
   text-align: center;
-  font-weight: 700;
-  font-size: 24px;
-  color: black;
-  
-}
-.paragonder {
-  display: block;
-      
-  width: 100%;
-  height: calc(1.5em + .75rem + 2px);
-  padding: .375rem .75rem;
-  font-size: 1rem;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-  font-weight: 300;
-  line-height: 1.5;
-  color: #495057;
-  background-color: #fff;
-  background-clip: padding-box;
-  border: 1px solid #ced4da;
-  border-radius: .25rem;
-  transition: border-color .15s ease-in-out, box-shadow .15s ease-in-out;
-}
-.buton-transfer {
-  border: none;
-  width: 220px;
-  color: #fff;
-  background-image: linear-gradient(to right, #a9cc2e, #7cb732, #3a5d0d); 
-  padding: .5rem 1rem;
-  font-size: 17px;
-  line-height: 1.5;
-  margin-top: 1.25rem;
-  font-weight: 300;
-  margin-bottom: .25rem;
-  cursor: pointer;
-  border-radius: 1.3rem;
-  transition: color .15s ease-in-out, background-color .15s ease-in-out, border-color .15s ease-in-out, box-shadow .15s ease-in-out;
-  text-transform: none;
+  position: absolute;
+  font-weight: 400;
+  font-size: 16px;
+  left: 105px;
+  padding-top: 34px;
 }
 
-.buton-cancel {
-  border: none;
-  width: 220px;
-  color: #fff;
-  background-image: linear-gradient(to right, #747474, #747474 , #5f5f5f); 
-  padding: .5rem 1rem;
-  font-size: 17px;
-  line-height: 1.5;
-  margin-top: 1.25rem;
-  font-weight: 300;
-  margin-bottom: .25rem;
-  cursor: pointer;
-  border-radius: 1.3rem;
-  transition: color .15s ease-in-out, background-color .15s ease-in-out, border-color .15s ease-in-out, box-shadow .15s ease-in-out;
-  text-transform: none;
+.movementsCard .mov-separator {
+  position: relative;
+  top: 20px;
+
+  border-radius: 10px;
+  border: 1px solid rgb(156, 156, 156);
+  width: 75%;
+  left: 5px;
 }
 
-.select {
-  overflow: auto;
-  border: 3px solid #7cb732;
+.movementsCard.selected {
+  background-color: rgb(94, 94, 94);
+}
+
+
+
+
+
+
+
+
+
+
+/* SLICE SOPRA E SOTTO */
+
+.slice {
+  position: absolute;
+  padding: 2rem 20%;
+}
+
+.slice:nth-child(2) {
+  top: 2px;
+  background: rgb(40, 90, 43);
+  color: white;
+  clip-path: polygon(0% 0%, 0% 55%, 200% 40%, 0 90%);
+  padding: 3rem 70% 25%;
+}
+
+.slice2 {
+  position: absolute;
+  padding: 2rem 20%;
+}
+
+.slice2:nth-child(3) {
+  bottom: 2px;
+  background:rgb(40, 90, 43);
+  color: white;
+  clip-path: polygon(0 20%, 100% 80%, 40% 200%, 0 100%);
+  padding: 3rem 70% 25%;
 }
 </style>

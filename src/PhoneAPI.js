@@ -249,12 +249,24 @@ class PhoneAPI {
     store.commit('SET_BANK_AMONT', data.soldi, data.iban)
   }
 
+  onupdateBankMovements (data) {
+    store.commit('UPDATE_BANK_MOVEMENTS', data.movements)
+  }
+
   async requestBankInfo () {
     return this.post('requestBankInfo')
   }
 
+  async requestFatture () {
+    return this.post('requestFatture')
+  }
+
+  async pagaFattura (fattura) {
+    return this.post('pagaFattura', fattura)
+  }
+
   async postUpdateMoney (money, iban) {
-    return this.post('sendMoneyToIban', {money, iban})
+    return this.post('sendMoneyToIban', { money, iban })
   }
 
   onupdateBourse (data) {

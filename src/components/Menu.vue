@@ -7,19 +7,17 @@
       
       <div class="menu_content">
       
-          <div class='menu_buttons'>
-            <button class="letra"  
-                v-for="(but, key) of Apps" 
-                v-bind:key="but.name" 
+        <div class='menu_buttons'>
+          <button class="letra" v-for="(but, key) of Apps" v-bind:key="but.name" 
+            v-bind:class="{select: key === currentSelect}"
+            v-bind:style="{backgroundImage: 'url(' + but.icons +')'}"
+          >{{but.intlName}}
+            <span class="puce" v-if="but.puce !== undefined && but.puce !== 0">{{but.puce}}</span>
+          </button>
+        </div>
 
-                v-bind:class="{select: key === currentSelect}"
-                v-bind:style="{backgroundImage: 'url(' + but.icons +')'}"
-              >
-                {{but.intlName}}
-                <span class="puce" v-if="but.puce !== undefined && but.puce !== 0">{{but.puce}}</span>
-            </button>
-          </div>
-      </div> 
+      </div>
+
     </div>
   </div>
 </template>
@@ -37,7 +35,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['nbMessagesUnread', 'backgroundURL', 'Apps'])
+    ...mapGetters(['UnreadMessages', 'backgroundURL', 'Apps'])
   },
   methods: {
     ...mapGetters(['closePhone', 'hasWifi']),
@@ -104,7 +102,7 @@ export default {
 </script>
 
 <style scoped>
-.menu{
+.menu {
   position: relative;
   left: 0;
   top: 0;
@@ -112,7 +110,8 @@ export default {
   height: 100%;
   padding: 6px 8px;
 }
-.backblur{
+
+.backblur {
   top: -6px;
   left: -6px;
   right:-6px;
@@ -120,7 +119,7 @@ export default {
   position: absolute;
   background-size: cover !important;
   background-position: center !important;
-  filter: blur(6px);
+  filter: blur(8px);
 }
 
 .menu_content {
@@ -128,7 +127,7 @@ export default {
   flex-direction: column;
 }
 
-.menu_buttons{
+.menu_buttons {
   margin-top: 24px;
   display: flex;
   width: 100%;
@@ -147,7 +146,7 @@ export default {
   animation-name: up;
   animation-duration: 0.6s;
   animation-fill-mode: forwards;
-  /*transition: all 0.5s ease-in-out;*/
+  /* transition: all 0.5s ease-in-out; */
 }
 
 @keyframes up {
@@ -156,7 +155,7 @@ export default {
 }
 
 
-button{
+button {
   position: relative;
   margin: 0px;
   border: none;
@@ -181,7 +180,7 @@ button{
 button .puce{
   position: absolute;
   display: block;
-  background-color: #e21c1c;
+  background-color: #ff3939;
   font-size: 14px;
   width: 26px;
   height: 26px;
@@ -191,8 +190,8 @@ button .puce{
   line-height: 28px;
   text-align: center;
   border-radius: 50%;
-      font-weight: 400;
-    font-family: -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  font-weight: 400;
+  font-family: -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
   bottom: 32px;
   right: 12px;
   
@@ -201,7 +200,7 @@ button .puce{
 }
 
 button.select {
-  background-color: rgba(190, 190, 190, 0.2);
+  background-color: rgba(190, 190, 190, 0.37);
   border-radius: 12px;
 }
 

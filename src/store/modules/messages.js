@@ -7,7 +7,7 @@ const state = {
 
 const getters = {
   messages: ({ messages }) => messages,
-  nbMessagesUnread: ({ messages }) => { return messages.filter(e => e.isRead !== 1).length },
+  UnreadMessages: ({ messages }) => { return messages.filter(e => e.isRead !== 1).length },
   unreadMessages: ({ unreadMessages }) => unreadMessages
 }
 

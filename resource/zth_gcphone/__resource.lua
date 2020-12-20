@@ -18,7 +18,7 @@ files {
 	'html/static/img/app_tchat/*.png',
 	'html/static/img/app_whatsapp/*.png',
 	'html/static/img/app_wifi/*.png',
-	'html/static/img/background/*.jpg',
+	'html/static/img/background/*.png',
 	'html/static/img/cover/*.png',
 	'html/static/img/dati/*.png',
 	'html/static/img/icons_app/*.png',

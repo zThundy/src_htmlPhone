@@ -52,7 +52,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['IntlString', 'nbMessagesUnread', 'backgroundURL', 'messages', 'AppsHome', 'warningMessageCount'])
+    ...mapGetters(['IntlString', 'UnreadMessages', 'backgroundURL', 'messages', 'AppsHome', 'warningMessageCount'])
   },
   methods: {
     ...mapActions(['closePhone', 'setMessages']),
@@ -195,7 +195,7 @@ button {
 button .puce {
   position: absolute;
   display: block;
-  background-color: #EE3838;
+  background-color: #ff3939;
   font-size: 14px;
   width: 26px;
   height: 26px;

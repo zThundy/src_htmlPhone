@@ -21,7 +21,7 @@
 
     <div style="width: 326px; height: 575px;" id='sms_list'>
 
-      <div v-for="(s, i) of messaggi[String(gruppo.id)]" :key="i" v-bind:class="{ select: i === currentSelected}" class="whatsapp-menu-item">
+      <div v-for="(s, i) of messaggi[String(gruppo.id)]" :key="i" v-bind:class="{select: i === currentSelected}" class="whatsapp-menu-item">
 
         <div v-if="!isImage(s)" style="overflow: auto;">
           <div v-if="isSentByMe(s)" class="bubble daMe" :class="{select: i === currentSelected}">{{s.sender}}: {{s.message}}</div>

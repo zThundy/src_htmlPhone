@@ -94,7 +94,8 @@ const getters = {
       const keyName = `${lang}__name`
       app.intlName = app[keyName] || app.name
       return app
-    }),
+    }
+  ),
   AppsHome: (state, getters) => getters.Apps.filter(app => app.inHomePage === true),
   availableLanguages ({ config }) {
     const langKey = Object.keys(config.language)

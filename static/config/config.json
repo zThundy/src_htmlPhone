@@ -51,25 +51,13 @@
   "fileUploadService_Field": "image",
 
   "background": {
-    "White desert": "back001.jpg",
-    "Palms": "back002.jpg",
-    "Santa Mónica Beach": "back003.jpg",
-
-    "Route 66": "color.jpg",
-    "Classic tokyo": "humo.jpg",
-    "Dark planet": "iluminacion.jpg",
-
-    "AstroNeon": "neon.jpg",
-    "Illuminated planet": "oscuridad.jpg",
-    "Wild beach": "playa.jpg",
-    "Winter landscape": "paisajes.jpg",
-    "Tokio neon": "tokio.jpg",
+    "Explicit Code": "code.png",
     "Personalizzato": "Link"
   },
 
   "background_default": {
-    "label": "Santa Mónica Beach",
-    "value": "back003.jpg"
+    "label": "Explicit Code",
+    "value": "code.png"
   },
 
   "cover_default": {
@@ -347,7 +335,7 @@
       "icons": "/html/static/img/icons_app/sms.png",
       "routeName": "messages",
       "inHomePage": true,
-      "puceRef": "nbMessagesUnread",
+      "puceRef": "UnreadMessages",
       "enabled": true
     },
     {
@@ -432,7 +420,6 @@
       "APP_PHONE_NUMBER_HIDDEN": "Numero nascosto",
       "APP_PHONE_NUMBER_UNKNOWN": "Sconosciuto",
       "APP_PHONE_CALL_IGNORE": "Ignora",
-      "APP_BANK_TITLE": "Banca",
       "APP_BOURSE_TITLE": "Borsa",
       "APP_CONTACT_TITLE": "Contatti",
       "APP_CONTACT_NEW": "Nuovo contatto",
@@ -546,11 +533,18 @@
       "APP_INSTAGRAM_NOTIFICATION": "Notifiche",
       "APP_INSTAGRAM_ACCOUNT_PARAM": "Account",
       "APP_INSTAGRAM_ACCOUNT_NEW": "Nuovo account",
+      "APP_BANK_TITLE": "Banca",
       "APP_BANK_TITLE_BALANCE": "Saldo del conto",
       "APP_BANK_TITLE_IBAN": "Iban del conto",
       "APP_BANK_TITLE_ENTER_MONEY": "Numero di conto",
       "APP_BANK_BUTTON_TRANSFER": "Trasferisci",
       "APP_BANK_BUTTON_CANCEL": "Cancella",
+      "APP_BANK_MODAL_PAGA_FATTURE": "Paga fattura",
+      "APP_BANK_LISTA_FATTURE": "Lista fatture",
+      "APP_BANK_CREATE_MOVEMENT": "Trasferisci denaro",
+      "APP_BANK_MOVEMENTS_FROM": "Da",
+      "APP_BANK_MOVEMENTS_TO": "Per",
+      "APP_BANK_MOVEMENTS_AMOUNT": "Soldi",
       "APP_WIFI_TITLE": "Reti Wifi",
       "APP_WHATSAPP_TITLE": "Whatsapp",
       "APP_WHATSAPP_QUIT_GROUP": "Abbandona il gruppo",
