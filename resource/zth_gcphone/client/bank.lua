@@ -34,7 +34,13 @@ end)
 
 
 RegisterNUICallback("pagaFattura", function(data, cb)
-    TriggerServerEvent("gcphone:bank_pagaFattura", data)
+    ESX.TriggerServerCallback("esx_billing:payBill", function(ok)
+        if ok then
+            print("^1[ZTH_Phone] ^0Bill payed")
+        end
+    end, data.id)
+    
+    -- TriggerServerEvent("gcphone:bank_pagaFattura", data)
     cb("ok")
 end)
 
