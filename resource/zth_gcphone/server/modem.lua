@@ -18,10 +18,11 @@ AddEventHandler("gcphone:modem_createModem", function(label, password, coords)
             password = password, 
             coords = coords,
             due_date = os.time(os.date('*t', currentTime)) + days
-        })
+        }, function(ok)
+            if ok then xPlayer.removeInventoryItem("modem", 1) end
+        end)
 
         creationTimeout[player] = true
-        xPlayer.removeInventoryItem("modem", 1)
 
         Citizen.CreateThreadNow(function()
             local cachedPlayer = player
@@ -30,6 +31,8 @@ AddEventHandler("gcphone:modem_createModem", function(label, password, coords)
                 creationTimeout[cachedPlayer] = nil
             end)
         end)
+    else
+        xPlayer.showNotification("~r~Devi aspettare almeno "..Config.WaitBeforeCreatingAgaing.." secondi prima di creare una rete")
     end
 end)
 
@@ -112,9 +115,10 @@ ESX.RegisterServerCallback("gcphone:modem_getMenuInfo", function(source, cb)
             local createdString = os.date("%d/%m/%Y - %X", math.floor(result[1].created / 1000))
             local dueString = os.date("%d/%m/%Y - %X", math.floor(result[1].due_date / 1000))
             table.insert(elements, { label = "Comprato il "..createdString })
-            table.insert(elements, { label = "Scade il "..dueString })
-            if result[1].not_expire then
+            if result[1].not_expire == 1 then
                 table.insert(elements, { label = "Il tuo modem non scadrà" })
+            else
+                table.insert(elements, { label = "Scade il "..dueString })
             end
 
             local password = result[1].password

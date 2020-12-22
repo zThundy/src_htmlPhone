@@ -44,7 +44,7 @@ function Reti.doesReteExist(retiWifi, owner_id)
 end
 
 
-function Reti.AddReteWifi(source, rete)
+function Reti.AddReteWifi(source, rete, cb)
 	local xPlayer = ESX.GetPlayerFromId(source)
 
 	MySQL.Async.execute('INSERT INTO home_wifi_nets (steam_id, label, password, x, y, z, due_date) VALUES (@steam_id, @label, @password, @x, @y, @z, @due_date)', {
@@ -61,8 +61,11 @@ function Reti.AddReteWifi(source, rete)
 
 			retiWifi = Reti.loadRetiWifi()
 			Reti.Debug("Wifi modems updated succesfully")
+
+			if cb ~= nil then cb(true) end
 		else
 			xPlayer.showNotification("~r~Impossibile creare la rete. Ne hai già una a tuo nome!")
+			if cb ~= nil then cb(false) end
 		end
 	end)
 end

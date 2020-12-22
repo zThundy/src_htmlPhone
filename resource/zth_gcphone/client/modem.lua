@@ -48,6 +48,10 @@ function OpenModemManagement()
 			if data.current.value == "buy_modem" then
 				TriggerServerEvent("gcphone:modem_compraModem")
 			end
+
+			if data.current.value ~= nil then
+				OpenModemManagement()
+			end
 		end
 
 		onMenuClose = function(data, _)
