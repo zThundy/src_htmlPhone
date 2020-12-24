@@ -39,7 +39,9 @@ ESX.RegisterServerCallback("gcphone:cover_buyCover", function(source, cb, cover)
                 if id == 0 then
                     cb(false)
                 else
-                    exports["vip_points"]:removePoints(source, Config.Covers[cover].price)
+                    if Config.Covers[cover].price ~= 0 then
+                        exports["vip_points"]:removePoints(source, Config.Covers[cover].price)
+                    end
                     cb(true)
                 end
             end)
