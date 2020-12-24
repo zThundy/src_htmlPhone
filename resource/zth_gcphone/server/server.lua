@@ -16,6 +16,7 @@ end)
 MySQL.ready(function()
     MySQL.Async.fetchAll("DELETE FROM phone_messages WHERE (DATEDIFF(CURRENT_DATE, time) > 15)")
     MySQL.Async.fetchAll("DELETE FROM twitter_tweets WHERE (DATEDIFF(CURRENT_DATE, time) > 20)")
+    MySQL.Async.fetchAll("DELETE FROM phone_calls WHERE (DATEDIFF(CURRENT_DATE, time) > 15)")
 
     print("^1[ZTH_Phone] ^0Phone initialized")
 end)

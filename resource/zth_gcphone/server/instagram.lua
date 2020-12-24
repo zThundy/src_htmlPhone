@@ -24,25 +24,25 @@ end
 function InstagramGetPosts(accountId, cb)
 	if accountId == nil then
 		MySQL.Async.fetchAll([===[
-			SELECT instagram_posts.*,
-				instagram_accounts.username as author,
-				instagram_accounts.avatar_url as authorIcon
-			FROM instagram_posts
-			LEFT JOIN instagram_accounts
-				ON instagram_posts.authorId = instagram_accounts.id
+			SELECT phone_instagram_posts.*,
+				phone_instagram_accounts.username as author,
+				phone_instagram_accounts.avatar_url as authorIcon
+			FROM phone_instagram_posts
+			LEFT JOIN phone_instagram_accounts
+				ON phone_instagram_posts.authorId = phone_instagram_accounts.id
 			ORDER BY data DESC LIMIT 130
 		]===], {}, cb)
 	else
 	  	MySQL.Async.fetchAll([===[
-			SELECT instagram_posts.*,
-				instagram_accounts.username as author,
-				instagram_accounts.avatar_url as authorIcon,
-				instagram_likes.id AS isLike
-			FROM instagram_posts
-			LEFT JOIN instagram_accounts
-				ON instagram_posts.authorId = instagram_accounts.id
-			LEFT JOIN instagram_likes 
-				ON instagram_posts.id = instagram_likes.postId AND instagram_likes.authorId = @accountId
+			SELECT phone_instagram_posts.*,
+				phone_instagram_accounts.username as author,
+				phone_instagram_accounts.avatar_url as authorIcon,
+				phone_instagram_likes.id AS isLike
+			FROM phone_instagram_posts
+			LEFT JOIN phone_instagram_accounts
+				ON phone_instagram_posts.authorId = phone_instagram_accounts.id
+			LEFT JOIN phone_instagram_likes 
+				ON phone_instagram_posts.id = phone_instagram_likes.postId AND phone_instagram_likes.authorId = @accountId
 			ORDER BY data DESC LIMIT 130
 	  	]===], {['@accountId'] = accountId}, cb)
 	end
@@ -51,7 +51,7 @@ end
 
 
 function instagramGetPosts(data, cb)
-	MySQL.Async.fetchAll("SELECT * FROM instagram_posts", {}, function(result)
+	MySQL.Async.fetchAll("SELECT * FROM phone_instagram_posts", {}, function(result)
 		cb(result)
 	end)
 end
@@ -59,7 +59,7 @@ end
 
 
 function getInstagramUser(username, password, cb)
-	MySQL.Async.fetchAll("SELECT * FROM instagram_accounts WHERE username = @username AND password = @password", {['@username'] = username, ['@password'] = password}, function(data)
+	MySQL.Async.fetchAll("SELECT * FROM phone_instagram_accounts WHERE username = @username AND password = @password", {['@username'] = username, ['@password'] = password}, function(data)
 		if #data > 0 then
 			cb(data[1])
 		else
@@ -71,7 +71,7 @@ end
 
 
 function createNewInstagramAccount(username, password, avatarUrl, cb)
-	MySQL.Async.insert('INSERT IGNORE INTO instagram_accounts(`username`, `password`) VALUES(@username, @password)', {
+	MySQL.Async.insert('INSERT IGNORE INTO phone_instagram_accounts(`username`, `password`) VALUES(@username, @password)', {
 	  ['@username'] = username,
 	  ['@password'] = password
 	}, cb)
@@ -121,7 +121,7 @@ AddEventHandler("gcPhone:instagram_nuovoPost", function(username, password, data
 					return
 				end
 
-				MySQL.Async.insert("INSERT INTO instagram_posts (`authorId`, `image`, `identifier`, `filter`, `didascalia`) VALUES(@authorId, @message, @identifier, @filter, @didascalia)", {
+				MySQL.Async.insert("INSERT INTO phone_instagram_posts (`authorId`, `image`, `identifier`, `filter`, `didascalia`) VALUES(@authorId, @message, @identifier, @filter, @didascalia)", {
 						['@authorId'] = user.id,
 						['@message'] = data.message,
 						['@identifier'] = identifier,
@@ -129,7 +129,7 @@ AddEventHandler("gcPhone:instagram_nuovoPost", function(username, password, data
 						['@didascalia'] = data.didascalia
 				}, function(id)
 
-					MySQL.Async.fetchAll('SELECT * from instagram_posts WHERE id = @id', {['@id'] = id}, function(posts)
+					MySQL.Async.fetchAll('SELECT * from phone_instagram_posts WHERE id = @id', {['@id'] = id}, function(posts)
 						post = posts[1]
 						post['author'] = user.author
 						post['authorIcon'] = user.authorIcon
@@ -286,7 +286,7 @@ AddEventHandler("gcPhone:instagram_changePassword", function(username, password,
 				if user == nil then
       				InstagramShowError(player, 'Instagram Info', 'APP_INSTAGRAM_NOTIF_LOGIN_ERROR')
     			else
-      				MySQL.Async.execute("UPDATE instagram_accounts SET password = @newpassword WHERE username = @username AND password = @password", {
+      				MySQL.Async.execute("UPDATE phone_instagram_accounts SET password = @newpassword WHERE username = @username AND password = @password", {
 						['@username'] = username,
 						['@password'] = password, 
 						['@newpassword'] = newPassword
@@ -326,26 +326,26 @@ AddEventHandler('gcPhone:instagram_toggleLikePost', function(username, password,
       				return
 				end
 
-    			MySQL.Async.fetchAll('SELECT * FROM instagram_posts WHERE id = @id', {['@id'] = postId}, function(posts)
+    			MySQL.Async.fetchAll('SELECT * FROM phone_instagram_posts WHERE id = @id', {['@id'] = postId}, function(posts)
 					local post = posts[1]
 					if post == nil then
 						InstagramShowError(player, 'Instagram Info', 'APP_INSTAGRAM_NOTIF_POST_NOT_FOUND')
 						return
 					end
 					
-      				MySQL.Async.fetchAll('SELECT * FROM instagram_likes WHERE authorId = @authorId AND postId = @postId', {
+      				MySQL.Async.fetchAll('SELECT * FROM phone_instagram_likes WHERE authorId = @authorId AND postId = @postId', {
         				['@authorId'] = user.id,
         				['@postId'] = postId
 					}, function(row) 
 						
 						if row[1] == nil then
 							
-          					MySQL.Async.insert('INSERT INTO instagram_likes (`authorId`, `postId`) VALUES(@authorId, @postId)', {
+          					MySQL.Async.insert('INSERT INTO phone_instagram_likes (`authorId`, `postId`) VALUES(@authorId, @postId)', {
             					['@authorId'] = user.id,
             					['@postId'] = postId
 							  }, function(newrow)
 								
-            					MySQL.Async.execute('UPDATE `instagram_posts` SET `likes`= likes + 1 WHERE id = @id', {['@id'] = post.id}, function()
+            					MySQL.Async.execute('UPDATE `phone_instagram_posts` SET `likes`= likes + 1 WHERE id = @id', {['@id'] = post.id}, function()
 									
 									-- questo evento aggiorna i like per tutti i giocatori
 									TriggerClientEvent('gcPhone:instagram_updatePostLikes', -1, post.id, post.likes + 1)
@@ -355,9 +355,9 @@ AddEventHandler('gcPhone:instagram_toggleLikePost', function(username, password,
             					end)    
           					end)
 						else
-							MySQL.Async.execute('DELETE FROM instagram_likes WHERE id = @id', {['@id'] = row[1].id}, function()
+							MySQL.Async.execute('DELETE FROM phone_instagram_likes WHERE id = @id', {['@id'] = row[1].id}, function()
 								
-								MySQL.Async.execute('UPDATE `instagram_posts` SET `likes`= likes - 1 WHERE id = @id', {['@id'] = post.id}, function()
+								MySQL.Async.execute('UPDATE `phone_instagram_posts` SET `likes`= likes - 1 WHERE id = @id', {['@id'] = post.id}, function()
 									
 									-- questo evento aggiorna i like per tutti i giocatori
 									TriggerClientEvent('gcPhone:instagram_updatePostLikes', -1, post.id, post.likes - 1)
@@ -389,7 +389,7 @@ AddEventHandler('gcPhone:instagram_setAvatarurl', function(username, password, a
 			
 			getInstagramUser(username, password, function(user)
 
-				MySQL.Async.execute("UPDATE instagram_accounts SET avatar_url = @avatarUrl WHERE username = @username AND password = @password", {
+				MySQL.Async.execute("UPDATE phone_instagram_accounts SET avatar_url = @avatarUrl WHERE username = @username AND password = @password", {
 					['@username'] = username,
 					['@password'] = password,
 					['@avatarUrl'] = avatarUrl

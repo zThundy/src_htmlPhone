@@ -144,7 +144,20 @@ function openOfferteMenu()
 						{label = "Scegli un'offerta premium", value = "scegli_offerta_premium", icon = 22}
 					}
 				else
-					for k, v in pairs(Config.pianiTariffari) do
+					for k, v in pairs(Config.PianiTariffari["standard"]) do
+						if v.label == offerta.piano_tariffario then
+							elementi2 = {
+								{label = "Offerta: "..v.label},
+								{label = "Minuti: "..v.minuti.." m"},
+								{label = "Messaggi: "..v.messaggi.." sms"},
+								{label = "Internet: "..v.dati.." mb"},
+								{label = "Cambia offerta", value = "scegli_offerta", icon = 22},
+								{label = "Rinnova offerta", value = "rinnova_offerta", icon = 22}
+							}
+						end
+					end
+
+					for k, v in pairs(Config.PianiTariffari["premium"]) do
 						if v.label == offerta.piano_tariffario then
 							elementi2 = {
 								{label = "Offerta: "..v.label},
@@ -199,7 +212,7 @@ function openListaOfferte(number)
 	ESX.UI.Menu.CloseAll()
 
 	local elementi = {}
-	for k, v in pairs(Config.pianiTariffari["standard"]) do
+	for k, v in pairs(Config.PianiTariffari["standard"]) do
 		table.insert(elementi, {label = v.label, value = v})
 	end
 	
@@ -247,7 +260,7 @@ function openListaOffertePremium(number)
 	ESX.UI.Menu.CloseAll()
 
 	local elementi = {}
-	for k, v in pairs(Config.pianiTariffari["premium"]) do
+	for k, v in pairs(Config.PianiTariffari["premium"]) do
 		table.insert(elementi, {label = v.label, value = v})
 	end
 

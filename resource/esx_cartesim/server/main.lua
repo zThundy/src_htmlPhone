@@ -33,7 +33,35 @@ AddEventHandler('esx:playerLoaded', function(source, xPlayer)
 			if result[1].phone_number ~= nil then
 				MySQL.Async.fetchAll("SELECT * FROM sim WHERE phone_number = @phone_number", {['@phone_number'] = result[1].phone_number}, function(sim)
 					if #sim > 0 then
-						for _, v in pairs(Config.pianiTariffari) do
+
+						for _, v in pairs(Config.PianiTariffari["standard"]) do
+							if v.label == sim[1].piano_tariffario then
+								local data = {
+									{
+										current = tonumber(math.floor(sim[1].minuti / 60)),
+										max = tonumber(v.minuti),
+										icon = "phone",
+										suffix = "Minuti"
+									},
+									{
+										current = tonumber(sim[1].messaggi),
+										max = tonumber(v.messaggi),
+										icon = "message",
+										suffix = "Messaggi"
+									},
+									{
+										current = tonumber(sim[1].dati),
+										max = tonumber(v.dati),
+										icon = "discovery",
+										suffix = "Gigabyte"
+									}
+								}
+								TriggerClientEvent("gcphone:updateValoriDati", xPlayer.source, data)
+								return
+							end
+						end
+
+						for _, v in pairs(Config.PianiTariffari["premium"]) do
 							if v.label == sim[1].piano_tariffario then
 								local data = {
 									{
@@ -57,9 +85,10 @@ AddEventHandler('esx:playerLoaded', function(source, xPlayer)
 								}
 
 								TriggerClientEvent("gcphone:updateValoriDati", xPlayer.source, data)
-								break
+								return
 							end
 						end
+
 					end
 				end)
 			end
@@ -207,34 +236,58 @@ end)
 ESX.RegisterServerCallback("esx_cartesim:rinnovaOfferta", function(source, cb, label, number)
 	local xPlayer = ESX.GetPlayerFromId(source)
 	local moneys = xPlayer.getAccount("bank").money
+	local points = exports["vip_points"]:getPoints(source)
 
-	for k, v in pairs(Config.pianiTariffari) do
-		if v.label == label then
-			if moneys >= v.price then
-				xPlayer.removeAccountMoney("bank", v.price)
+	for k, v in pairs(Config.PianiTariffari["standard"]) do
+		if v.label == label and moneys >= v.price then
+			xPlayer.removeAccountMoney("bank", v.price)
 
-				MySQL.Async.execute("UPDATE sim SET minuti = @minuti, messaggi = @messaggi, dati = @dati WHERE phone_number = @phone_number", {
-					['@phone_number'] = number,
-					['@minuti'] = v.minuti * 60,
-					['@messaggi'] = v.messaggi,
-					['@dati'] = v.dati
-				})
+			MySQL.Async.execute("UPDATE sim SET minuti = @minuti, messaggi = @messaggi, dati = @dati WHERE phone_number = @phone_number", {
+				['@phone_number'] = number,
+				['@minuti'] = v.minuti * 60,
+				['@messaggi'] = v.messaggi,
+				['@dati'] = v.dati
+			})
 
-				break
-				cb(true)
-			else
-				cb(false)
-			end
+			cb(true)
+			return
+		else
+			cb(false)
+		end
+	end
+
+	for k, v in pairs(Config.PianiTariffari["premium"]) do
+		if v.label == label and points >= v.price then
+			exports["vip_points"]:removePoints(source, v.price)
+
+			MySQL.Async.execute("UPDATE sim SET minuti = @minuti, messaggi = @messaggi, dati = @dati WHERE phone_number = @phone_number", {
+				['@phone_number'] = number,
+				['@minuti'] = v.minuti * 60,
+				['@messaggi'] = v.messaggi,
+				['@dati'] = v.dati
+			})
+
+			cb(true)
+			return
+		else
+			cb(false)
 		end
 	end
 end)
 
 
 ESX.RegisterServerCallback("esx_cartesim:getPianoTariffario", function(source, cb, label)
-	for k, v in pairs(Config.pianiTariffari) do
+	for k, v in pairs(Config.PianiTariffari["standard"]) do
 		if v.label == label then
 			cb(v)
-			break
+			return
+		end
+	end
+
+	for k, v in pairs(Config.PianiTariffari["premium"]) do
+		if v.label == label then
+			cb(v)
+			return
 		end
 	end
 end)
@@ -255,8 +308,8 @@ ESX.RegisterServerCallback("esx_cartesim:acquistaOffertaCheckSoldi", function(so
 			['@dati'] = table.dati
 		})
 
-		break
 		cb(true)
+		return
 	else
 		cb(false)
 	end
@@ -278,8 +331,8 @@ ESX.RegisterServerCallback("esx_cartesim:acquistaOffertaCheckPunti", function(so
 			['@dati'] = table.dati
 		})
 
-		break
 		cb(true)
+		return
 	else
 		cb(false)
 	end
