@@ -16,7 +16,7 @@ Config.TelefoniFissi = {
 Config.ShowNumberNotification = false
 Config.SurePropCleanup = false
 
-Config.CoverShop = vector3(53.04392, -1730.249, 29.30295)
+Config.CoverShop = vector3(45.04, -1768.76, 29.61)
 
 Config.BaseCover = {prop = "prop_amb_phone", label = "Nessuna cover"}
 

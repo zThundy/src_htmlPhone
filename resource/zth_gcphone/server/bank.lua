@@ -15,8 +15,6 @@ AddEventHandler("gcPhone:sendMoneyToUser", function(data)
     local xPlayer = ESX.GetPlayerFromId(player)
 
     getUserFromIban(iban, function(user)
-        print(user)
-        
         if user ~= nil then
             if type(tonumber(data.money)) == "number" then
                 data.money = string.gsub(data.money, "$", "")
@@ -39,7 +37,22 @@ AddEventHandler("gcPhone:sendMoneyToUser", function(data)
                         updateBankMovements(c_xPlayer.source, c_xPlayer.identifier, amount, "positive", xPlayer.iban, c_xPlayer.iban)
                     end
                 else
-                    xPlayer.showNotification("~r~Iban non trovato o non valido")
+                    MySQL.Async.fetchAll("SELECT * FROM user_accounts WHERE identifier = @identifier AND name = @name", {
+                        ['@identifier'] = user.identifier,
+                        ['@name'] = "bank"
+                    }, function(result)
+                        if result ~= nil and result[1] ~= nil then
+                            MySQL.Async.execute("UPDATE user_accounts SET money = @money WHERE identifier = @identifier AND name = @name", {
+                                ['@money'] = amount + result[1].money,
+                                ['@identifier'] = user.identifier,
+                                ['@name'] = "bank"
+                            }, function()
+                                xPlayer.showNotification("~g~Trasferimento completato con successo")
+                            end)
+                        else
+                            xPlayer.showNotification("~r~Iban non trovato o non valido")
+                        end
+                    end) 
                 end
             else
                 xPlayer.showNotification("~r~Il valore inserito non è un numero")
@@ -66,7 +79,8 @@ function updateBankMovements(source, identifier, amount, type, iban, iban_from)
         ['@from'] = iban_from
     }, function(id)
         if id > 0 then
-            MySQL.Async.fetchAll("SELECT * FROM phone_bank_movements WHERE `from` = @from OR `to` = @to ORDER BY id DESC", {
+            -- MySQL.Async.fetchAll("SELECT * FROM phone_bank_movements WHERE `from` = @from OR `to` = @to ORDER BY id DESC", {
+            MySQL.Async.fetchAll("SELECT * FROM phone_bank_movements WHERE `from` = @from ORDER BY id DESC", {
                 ['@from'] = iban,
                 ['@to'] = iban
             }, function(result)
@@ -80,7 +94,8 @@ end
 ESX.RegisterServerCallback("gcphone:bank_getBankInfo", function(source, cb)
     local xPlayer = ESX.GetPlayerFromId(source)
 
-    MySQL.Async.fetchAll("SELECT * FROM phone_bank_movements WHERE `from` = @from OR `to` = @to ORDER BY id DESC", {
+    -- MySQL.Async.fetchAll("SELECT * FROM phone_bank_movements WHERE `from` = @from OR `to` = @to ORDER BY id DESC", {
+    MySQL.Async.fetchAll("SELECT * FROM phone_bank_movements WHERE `from` = @from ORDER BY id DESC", {
         ['@from'] = xPlayer.iban,
         ['@to'] = xPlayer.iban
     }, function(result)

@@ -1,4 +1,5 @@
 myCover = nil
+local isMenuOpened = false
 
 Citizen.CreateThread(function()
     while ESX == nil do Citizen.Wait(100) end
@@ -7,7 +8,7 @@ Citizen.CreateThread(function()
 		name = "negozio_cover",
 		type = 20,
 		coords = Config.CoverShop,
-		colour = { r = 55, b = 55, g = 255 },
+		colour = { r = 55, g = 255, b = 55 },
 		size =  vector3(0.8, 0.8, 0.8),
         action = function()
             ESX.TriggerServerCallback("gcphone:cover_requestCovers", function(covers)
@@ -19,9 +20,15 @@ Citizen.CreateThread(function()
 end)
 
 
-AddEventHandler("gridsystem:hasExitedMarker", function(marker)
+AddEventHandler("tcm_grids:hasExitedMarker", function(marker)
     if marker == nil then return end
-    if marker.name == "negozio_cover" then ESX.UI.Menu.CloseAll() end
+    if marker.name == "negozio_cover" then
+        ESX.UI.Menu.CloseAll()
+        
+        ChangeCover("Nessuna cover", "base")
+
+        SendNUIMessage({ show = false })
+    end
 end)
 
 
@@ -50,56 +57,82 @@ end)
 
 function openShopMenu(myCovers)
     local elements = {}
+    isMenuOpened = true
 
-    -- qui mi preparo la table per controllare quale cover ho già e quali no
-    local tempCovers = {}
-    for name, val in pairs(myCovers) do tempCovers[string.gsub(val.value, ".png", "")] = val end
+    Citizen.CreateThread(function()
+        while isMenuOpened do
+            if GetDistanceBetweenCoords(GetEntityCoords(GetPlayerPed(-1)), Config.CoverShop, true) >= 5.0 then
+                isMenuOpened = false
 
-    for name, info in pairs(Config.Covers) do
-        if tempCovers[name] == nil then
-            table.insert(elements, { label = info.label.." - "..info.price.." punti", value = info, name = name })
-        end
-    end
+                ESX.UI.Menu.CloseAll()
 
-    -- onMenuSelect
-    onMenuSelect = function(data, _)
-        local value = data.current.value
-        local name = data.current.name
+                ChangeCover("Nessuna cover", "base")
 
-        ESX.TriggerServerCallback("gcphone:cover_buyCover", function(ok)
-            if ok then
-                ESX.ShowNotification("~g~Cover comprata con successo")
-                requestCovers()
-            else
-                ESX.ShowNotification("~r~Non hai abbastanza punti per comprare una cover")
+                SendNUIMessage({ show = false })
             end
 
+            Citizen.Wait(1000)
+        end
+    end)
+
+    ESX.TriggerServerCallback("gcphone:cover_getMyPoints", function(points)
+        -- qui mi preparo la table per controllare quale cover ho già e quali no
+        local tempCovers = {}
+        for name, val in pairs(myCovers) do tempCovers[string.gsub(val.value, ".png", "")] = val end
+
+        table.insert(elements, { label = "Code Coins: "..points })
+
+        for name, info in pairs(Config.Covers) do
+            if tempCovers[name] == nil then
+                table.insert(elements, { label = info.label.." - "..info.price.." punti", value = info, name = name })
+            end
+        end
+
+        -- onMenuSelect
+        onMenuSelect = function(data, _)
+            if data.current.value == nil then return end
+            
+            local value = data.current.value
+            local name = data.current.name
+
+            ESX.TriggerServerCallback("gcphone:cover_buyCover", function(ok)
+                if ok then
+                    ESX.ShowNotification("~g~Cover comprata con successo")
+                    requestCovers()
+                else
+                    ESX.ShowNotification("~r~Non hai abbastanza punti per comprare una cover")
+                end
+
+                ESX.UI.Menu.CloseAll()
+                SendNUIMessage({ show = false })
+
+                ChangeCover(value.label, name)
+            end, name)
+        end
+
+        -- onMenuChangeIndex
+        onMenuChangeIndex = function(data, _)
+            ChangeCover(data.current.value.label, data.current.name)
+        end
+
+        -- onMenuClose
+        onMenuClose = function(data, _)
             ESX.UI.Menu.CloseAll()
+
+            ChangeCover("Nessuna cover", "base")
+
             SendNUIMessage({ show = false })
+        end
 
-            ChangeCover(value.label, name)
-        end, name)
-    end
-
-    -- onMenuChangeIndex
-    onMenuChangeIndex = function(data, _)
-        ChangeCover(data.current.value.label, data.current.name)
-    end
-
-    -- onMenuClose
-    onMenuClose = function(data, _)
         ESX.UI.Menu.CloseAll()
-        SendNUIMessage({ show = false })
-    end
 
-    ESX.UI.Menu.CloseAll()
+        SendNUIMessage({ show = true })
 
-    SendNUIMessage({ show = true })
-
-    ESX.UI.Menu.Open('default', GetCurrentResourceName(), 'negozio_cover', {
-        title = "Negozio di cover",
-        elements = elements
-    }, onMenuSelect, onMenuClose, onMenuChangeIndex)
+        ESX.UI.Menu.Open('default', GetCurrentResourceName(), 'negozio_cover', {
+            title = "Negozio di cover",
+            elements = elements
+        }, onMenuSelect, onMenuClose, onMenuChangeIndex)
+    end)
 end
 
 

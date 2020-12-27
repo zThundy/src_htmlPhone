@@ -66,7 +66,7 @@ function OpenModemManagement()
 end
 
 
-AddEventHandler("gridsystem:hasExitedMarker", function(marker)
+AddEventHandler("tcm_grids:hasExitedMarker", function(marker)
     if marker == nil then return end
     if marker.name == "modem_management" then ESX.UI.Menu.CloseAll() end
 end)

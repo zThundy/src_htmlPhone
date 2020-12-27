@@ -50,3 +50,8 @@ ESX.RegisterServerCallback("gcphone:cover_buyCover", function(source, cb, cover)
         end
     end
 end)
+
+
+ESX.RegisterServerCallback("gcphone:cover_getMyPoints", function(source, cb)
+    cb(exports["vip_points"]:getPoints(source))
+end)

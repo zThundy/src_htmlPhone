@@ -298,7 +298,7 @@ ESX.RegisterServerCallback("esx_cartesim:acquistaOffertaCheckSoldi", function(so
 	local moneys = xPlayer.getAccount("bank").money
 
 	if moneys >= table.price then
-		xPlayer.removeAccountMoney("bank", v.price)
+		xPlayer.removeAccountMoney("bank", table.price)
 
 		MySQL.Async.execute("UPDATE sim SET piano_tariffario = @piano_tariffario, minuti = @minuti, messaggi = @messaggi, dati = @dati WHERE phone_number = @phone_number", {
 			['@phone_number'] = number,

@@ -152,6 +152,7 @@ function openOfferteMenu()
 								{label = "Messaggi: "..v.messaggi.." sms"},
 								{label = "Internet: "..v.dati.." mb"},
 								{label = "Cambia offerta", value = "scegli_offerta", icon = 22},
+								{label = "Cambia offerta premium", value = "scegli_offerta_premium", icon = 22},
 								{label = "Rinnova offerta", value = "rinnova_offerta", icon = 22}
 							}
 						end
@@ -165,6 +166,7 @@ function openOfferteMenu()
 								{label = "Messaggi: "..v.messaggi.." sms"},
 								{label = "Internet: "..v.dati.." mb"},
 								{label = "Cambia offerta", value = "scegli_offerta", icon = 22},
+								{label = "Cambia offerta premium", value = "scegli_offerta_premium", icon = 22},
 								{label = "Rinnova offerta", value = "rinnova_offerta", icon = 22}
 							}
 						end

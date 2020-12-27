@@ -107,7 +107,7 @@ ESX.RegisterServerCallback("gcphone:modem_getMenuInfo", function(source, cb)
     MySQL.Async.fetchAll("SELECT * FROM home_wifi_nets WHERE steam_id = @identifier", {
         ['@identifier'] = xPlayer.identifier
     }, function(result)
-        local points = exports["vip_points"]:getPoints(source)
+        local points = exports["vip_points"]:getPoints(source) or 0
 
         if #result > 0 then
             table.insert(elements, { label = "Punti vip: "..points })

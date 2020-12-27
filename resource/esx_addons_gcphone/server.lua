@@ -52,7 +52,7 @@ end
 
 
 RegisterServerEvent('esx_addons_gcphone:startCall')
-AddEventHandler('esx_addons_gcphone:startCall', function(number, message, coords)
+AddEventHandler('esx_addons_gcphone:startCall', function(number, message, coords, hideNumber)
 	local player = source
 	local phone_number = nil
 
@@ -62,7 +62,7 @@ AddEventHandler('esx_addons_gcphone:startCall', function(number, message, coords
 		phone_number = gcPhone.getPhoneNumber(xPlayer.identifier)
 	end
 	
-	if phone_number == nil then phone_number = "Informatore" end
+	if hideNumber ~= nil or phone_number == nil then phone_number = "Informatore" end
 	notifyAlertSMS(number, { message = message, coords = coords, numero = phone_number }, GetPlayersFromJob(number))
 end)
 
