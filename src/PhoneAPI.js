@@ -797,7 +797,7 @@ class PhoneAPI {
   }
 
   onsendDarkwebMessages (data) {
-    store.commit('RECEIVE_MESSAGES', data)
+    store.commit('RECEIVE_DARK_MESSAGES', data)
   }
 }
 

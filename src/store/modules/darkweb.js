@@ -10,16 +10,16 @@ const getters = {
 
 const actions = {
   darkwebPostMessage ({ commit }, message) {
-    commit('POST_MESSAGE', message)
+    commit('POST_DARK_MESSAGE', message)
   }
 }
 
 const mutations = {
-  RECEIVE_MESSAGES (state, data) {
+  RECEIVE_DARK_MESSAGES (state, data) {
     state.darkwebMessages = data.messages
     localStorage['gc_darkweb_messages'] = JSON.stringify(state.darkwebMessages)
   },
-  POST_MESSAGE (state, message) {
+  POST_DARK_MESSAGE (state, message) {
     state.darkwebMessages.push(message)
     localStorage['gc_darkweb_messages'] = JSON.stringify(state.darkwebMessages)
     PhoneAPI.sendDarkMessage(message)
