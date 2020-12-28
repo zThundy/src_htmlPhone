@@ -1,6 +1,6 @@
 <template>
   <div style="width: 326px; height: 743px;" class="splash">
-    <img src="/html/static/img/darkweb/darkweb.png">
+    <img src="/html/static/img/app_darkweb/darkweb.png">
   </div>
 </template>
 

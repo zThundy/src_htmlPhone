@@ -1,7 +1,7 @@
 import PhoneAPI from './../../PhoneAPI'
 
 const state = {
-  darkwebMessages: localStorage['gc_darkweb_messages'] ? JSON.parse(localStorage['gc_darkweb_messages']) : null
+  darkwebMessages: localStorage['gc_darkweb_messages'] ? JSON.parse(localStorage['gc_darkweb_messages']) : []
 }
 
 const getters = {
