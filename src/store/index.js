@@ -15,6 +15,7 @@ import instagram from './modules/instagram'
 import whatsapp from './modules/whatsapp'
 import galleria from './modules/galleria'
 import bluetooth from './modules/bluetooth'
+import darkweb from './modules/darkweb'
 
 Vue.use(Vuex)
 
@@ -33,7 +34,8 @@ export default new Vuex.Store({
     instagram,
     whatsapp,
     galleria,
-    bluetooth
+    bluetooth,
+    darkweb
   },
   strict: true
 })

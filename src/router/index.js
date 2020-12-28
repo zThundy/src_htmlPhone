@@ -46,6 +46,9 @@ import whatsappgroupedit from '@/components/whatsapp/whatsappgroupedit'
 import galleria from '@/components/galleria/galleria'
 import galleriasplash from '@/components/galleria/galleriasplash'
 
+import DarkwebSplash from '@/components/darkweb/DarkwebSplash'
+import DarkwebScreen from '@/components/darkweb/DarkwebScreen'
+
 Vue.use(Router)
 
 export default new Router({
@@ -232,6 +235,17 @@ export default new Router({
       path: '/galleria/splash',
       name: 'galleria.splash',
       component: galleriasplash
+    },
+    {
+      path: '/darkweb/splash',
+      name: 'darkweb.splash',
+      component: DarkwebSplash
+    },
+    {
+      meta: { depth: 2, transitionName: 'slide' },
+      path: '/darkweb/view',
+      name: 'darkweb.screen',
+      component: DarkwebScreen
     },
     {
       path: '*',

@@ -783,6 +783,22 @@ class PhoneAPI {
   onclearGallery () {
     store.dispatch('clearGallery')
   }
+
+  // //////////////// //
+  // DARKWEB FUNZIONI //
+  // //////////////// //
+
+  async fetchDarkmessages () {
+    return this.post('fetchDarkmessages')
+  }
+
+  async sendDarkMessage (message) {
+    return this.post('sendDarkMessage', { message: message })
+  }
+
+  onsendDarkwebMessages (data) {
+    store.commit('RECEIVE_MESSAGES', data)
+  }
 }
 
 function decimalAdjust (type, value, exp) {

@@ -369,6 +369,13 @@
       "enabled": true
     },
     {
+      "name": "Darkweb",
+      "it_IT__name": "Darkweb",
+      "icons": "/html/static/img/icons_app/darkweb.png",
+      "routeName": "darkweb.splash",
+      "enabled": true
+    },
+    {
       "name": "Fotocamera",
       "it_IT__name": "Fotocamera",
       "icons": "/html/static/img/icons_app/photo.png",
@@ -568,6 +575,13 @@
       "APP_GALLERIA_INOLTRA_WHATSAPP": "Inoltra su whatsapp",
       "APP_GALLERIA_ELIMINA_TUTTO": "Pulisci la galleria",
       "APP_GALLERIA_SEND_BLUETOOTH": "Invia con bluetooth",
+      "APP_DARKWEB_TITLE": "Darkweb",
+      "APP_DARKWEB_USER_TITLE": "Anonimo",
+      "APP_DARKWEB_PLACEHOLDER_MESSAGE": "Scrivi un messaggio",
+      "APP_DARKWEB_BUTTON_ACTION_MESSAGE": "Messaggio",
+      "APP_DARKWEB_BUTTON_ACTION_PICTURE": "Immagine",
+      "APP_DARKWEB_POST_MESSAGE": "Invia un messaggio",
+      "APP_DARKWEB_POST_PICTURE": "Invia una fotografia",
 
       "TIMEAGO": [
         "Proprio adesso",

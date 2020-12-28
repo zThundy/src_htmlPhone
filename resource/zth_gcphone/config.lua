@@ -65,6 +65,7 @@ Config.Covers = {
     ["white"] = {price = 101, prop = "prop_white_phone", label = "Bianca"},
     ["yellow"] = {price = 101, prop = "prop_yellow_phone", label = "Gialla"},
     ["yellow_pastel"] = {price = 101, prop = "prop_yellow_pastel_phone", label = "Gialla pastello"},
+    ["luke4316"] = {price = 101, prop = "prop_luke_phone", label = "Luke4316"},
     -- ["test"] = {price = 0, prop = "prop_amb_phone", label = "Test"},
 }
 

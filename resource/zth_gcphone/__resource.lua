@@ -44,7 +44,8 @@ client_script {
 	"client/cover.lua",
 	"client/bluetooth.lua",
 	"client/suoneria.lua",
-	"client/modem.lua"
+	"client/modem.lua",
+	"client/darkweb.lua"
 }
 
 server_script {
@@ -60,7 +61,8 @@ server_script {
 	"server/cover.lua",
 	"server/bluetooth.lua",
 	"server/suoneria.lua",
-	"server/modem.lua"
+	"server/modem.lua",
+	"server/darkweb.lua"
 }
 
 data_file 'DLC_ITYP_REQUEST' 'stream/bk_phone.ytyp'
