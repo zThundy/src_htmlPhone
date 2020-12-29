@@ -7,20 +7,20 @@ AddEventHandler("gcphone:darkweb_fetchDarkmessages", function()
 
     local messages = {}
 
-    MySQL.Async.fetchAll("SELECT * FROM phone_darkweb_messages ORDER BY id ASC LIMIT 130", {}, function(r)
+    MySQL.Async.fetchAll("SELECT * FROM phone_darkweb_messages ORDER BY id DESC LIMIT 130", {}, function(r)
         gcPhone.isAbleToSurfInternet(identifier, 0.01 * #r, function(isAble, mbToRemove)
             if isAble then
                 gcPhone.usaDatiInternet(identifier, mbToRemove)
 
-                for _, v in pairs(r) do
-                    v.id = tonumber(v.id)
+                for i = #r, 1, -1 do
+                    i = tonumber(i)
 
-                    messages[v.id] = v
+                    messages[i] = r[i]
 
-                    if tostring(identifier) == tostring(v.author) then
-                        messages[v.id].mine = 1
+                    if tostring(identifier) == tostring(r[i].author) then
+                        messages[i].mine = 1
                     else
-                        messages[v.id].mine = 0
+                        messages[i].mine = 0
                     end
                 end
 
