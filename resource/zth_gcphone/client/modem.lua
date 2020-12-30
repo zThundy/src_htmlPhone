@@ -46,7 +46,10 @@ function OpenModemManagement()
 			end
 
 			if data.current.value == "buy_modem" then
-				TriggerServerEvent("gcphone:modem_compraModem")
+				-- TriggerServerEvent("gcphone:modem_compraModem")
+				
+				TriggerEvent("nfesx_mall:buyGift", "modem", "Modem Wifi", 'item', Config.BuyModemPoints)
+				TriggerEvent("gcphone:modem_updateMenu")
 			end
 
 			if data.current.value ~= nil then
