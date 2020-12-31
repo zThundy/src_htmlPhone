@@ -1,6 +1,6 @@
 RegisterServerEvent("gcphone:darkweb_fetchDarkmessages")
 AddEventHandler("gcphone:darkweb_fetchDarkmessages", function()
-    print("hieloooo server")
+    -- print("hieloooo server")
     
     local player = source
     local identifier = gcPhone.getPlayerID(player)

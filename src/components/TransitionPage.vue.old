@@ -1,0 +1,76 @@
+<template>
+  <!--
+  <swiper page-transition="fade">
+      <slot/>
+  </swiper>
+  -->
+  
+  <transition :name="transitionName" :mode="transitionMode">
+    <slot/>
+  </transition>
+</template>
+
+<script>
+import { Swiper } from 'mand-mobile'
+import 'mand-mobile/lib/mand-mobile.css'
+
+const DEFAULT_TRANSITION = 'slide'
+const DEFAULT_TRANSITION_MODE = `out-in`
+
+export default {
+  name: `TransitionPage`,
+  components: { Swiper },
+  data () {
+    return {
+      prevHeight: 0,
+      transitionName: DEFAULT_TRANSITION,
+      transitionMode: DEFAULT_TRANSITION_MODE
+    }
+  },
+  // watch: {
+  //   $route (to, from) {
+  //     console.log('changing')
+  //     const toDepth = to.meta.depth || 0
+  //     const fromDepth = from.meta.depth || 0
+  //     this.transitionName = toDepth >= fromDepth ? 'slide-left' : 'slide-right'
+  //   }
+  // },
+  created () {
+    this.$router.beforeEach((to, from, next) => {
+      let transitionName = to.meta.transitionName || from.meta.transitionName || DEFAULT_TRANSITION
+      if (transitionName === 'slide') {
+        const toDepth = to.path.split('/').length
+        const fromDepth = from.path.split('/').length
+        transitionName = toDepth < fromDepth ? 'slide-right' : 'slide-left'
+        // controlli custom per animazioni
+        if (to.name === 'menu' || to.name === 'home' || to.name === 'lockscreen') { transitionName = 'slide-right' }
+        if (from.name === 'menu' || from.name === 'home' || from.name === 'lockscreen') { transitionName = 'none' }
+      }
+      this.transitionName = transitionName || DEFAULT_TRANSITION
+      next()
+    })
+  }
+}
+</script>
+
+<style lang="scss">
+.slide-left-enter-active,
+.slide-right-enter-active {
+  transition: transform 0.5s;
+}
+
+.slide-left-leave-active,
+.slide-right-leave-active {
+  transition: transform 0.5s;
+}
+
+.slide-left-enter,
+.slide-right-leave-to {
+  transform: translate3d(100%, 0, 0);
+}
+
+.slide-right-enter,
+.slide-left-leave-to {
+  transform: translate3d(-100%, 0, 0);
+}
+</style>

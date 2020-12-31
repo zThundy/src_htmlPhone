@@ -5,6 +5,8 @@ wifiConnectedPlayers = {}
 playersInCall = {}
 built_phones = false
 
+cachedNumbers = {}
+
 TriggerEvent('esx:getSharedObject', function(obj) ESX = obj end)
 
 RegisterServerEvent('esx_phone:getShILovePizzaaredObjILovePizzaect')
@@ -17,6 +19,14 @@ MySQL.ready(function()
     MySQL.Async.fetchAll("DELETE FROM phone_messages WHERE (DATEDIFF(CURRENT_DATE, time) > 15)")
     MySQL.Async.fetchAll("DELETE FROM twitter_tweets WHERE (DATEDIFF(CURRENT_DATE, time) > 20)")
     MySQL.Async.fetchAll("DELETE FROM phone_calls WHERE (DATEDIFF(CURRENT_DATE, time) > 15)")
+
+    MySQL.Async.fetchAll("SELECT phone_number, identifier FROM sim", function(r)
+        for _, v in pairs(r) do
+            cachedNumbers[tostring(v.phone_number)] = v.identifier
+        end
+
+        print("^1[ZTH_Phone] ^0Numbers cache loaded from sim database")
+    end)
 
     print("^1[ZTH_Phone] ^0Phone initialized")
 end)
@@ -183,6 +193,17 @@ end)
 -------- Utils
 --==================================================================================================================
 
+RegisterServerEvent("gcphone:updateCachedNumber")
+AddEventHandler("gcphone:updateCachedNumber", function(number, identifier)
+    if identifier ~= nil then
+        print("^1[ZTH_Phone] ^0Updated number "..number.." for identifier "..identifier)
+    else
+        print("^1[ZTH_Phone] ^Removed number "..number.." from cachedNumbers")
+    end
+
+    cachedNumbers[number] = identifier
+end)
+
 
 function gcPhone.getSourceFromIdentifier(identifier, cb)
     local xPlayer = ESX.GetPlayerFromIdentifier(identifier)
@@ -191,24 +212,40 @@ end
 
 
 function gcPhone.getPhoneNumber(identifier)
-    local result = MySQL.Sync.fetchAll("SELECT * FROM users WHERE identifier = @identifier", {['@identifier'] = identifier })
-    if #result > 0 then return result[1].phone_number end
+    --[[
+        local result = MySQL.Sync.fetchAll("SELECT * FROM users WHERE identifier = @identifier", {['@identifier'] = identifier })
+        if #result > 0 then return result[1].phone_number end
+    ]]
+
+    for number, id in pairs(cachedNumbers) do
+        if tostring(id) == tostring(identifier) then
+            return number
+        end
+    end
 
     return nil
 end
 
 
-function gcPhone.getIdentifierByPhoneNumber(phone_number) 
-    local result = MySQL.Sync.fetchAll("SELECT identifier FROM users WHERE phone_number = @phone_number", {['@phone_number'] = phone_number })
+function gcPhone.getIdentifierByPhoneNumber(phone_number)
+    --[[
+        local result = MySQL.Sync.fetchAll("SELECT identifier FROM users WHERE phone_number = @phone_number", {['@phone_number'] = phone_number })
+        local isInstalled = true
+        if result[1] == nil then
+            result = MySQL.Sync.fetchAll("SELECT identifier FROM sim WHERE phone_number = @phone_number", {['@phone_number'] = phone_number})
+            isInstalled = false
+        end
+
+        if result[1] ~= nil then return result[1].identifier, isInstalled end
+    ]]
+
     local isInstalled = true
-    if result[1] == nil then
-        result = MySQL.Sync.fetchAll("SELECT identifier FROM sim WHERE phone_number = @phone_number", {['@phone_number'] = phone_number})
+    if cachedNumbers[phone_number] == nil then
         isInstalled = false
+        return nil, isInstalled
+    else
+        return cachedNumbers[phone_number], isInstalled
     end
-
-    if result[1] ~= nil then return result[1].identifier, isInstalled end
-
-    return nil, isInstalled
 end
 
 
@@ -555,7 +592,7 @@ AddEventHandler("gcPhone:requestOffertaFromDatabase", function()
     local player = source
     local xPlayer = ESX.GetPlayerFromId(player)
 
-    MySQL.Async.fetchAll("SELECT * FROM users WHERE identifier = @identifier", {['@identifier'] = xPlayer.identifier}, function(user)
+    MySQL.Async.fetchAll("SELECT phone_number FROM users WHERE identifier = @identifier", {['@identifier'] = xPlayer.identifier}, function(user)
         if #user > 0 then
             if user[1].phone_number ~= nil then
                 MySQL.Async.fetchAll("SELECT * FROM sim WHERE phone_number = @phone_number", {['@phone_number'] = user[1].phone_number}, function(sim)
@@ -620,7 +657,7 @@ AddEventHandler('gcPhone:internal_startCall', function(player, phone_number, rtc
         srcPhone = gcPhone.getPhoneNumber(srcIdentifier)
     end
     
-    local destPlayer = gcPhone.getIdentifierByPhoneNumber(phone_number)
+    local destPlayer, _ = gcPhone.getIdentifierByPhoneNumber(phone_number)
     local is_valid = destPlayer ~= nil and destPlayer ~= srcIdentifier
 
     Chiamate[indexCall] = {

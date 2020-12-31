@@ -28,7 +28,9 @@ end
 RegisterServerEvent("esx:playerLoaded")
 AddEventHandler('esx:playerLoaded', function(source, xPlayer)
 
-	MySQL.Async.fetchAll("SELECT * FROM users WHERE identifier = @identifier", {['@identifier'] = xPlayer.identifier}, function(result)
+	MySQL.Async.fetchAll("SELECT phone_number FROM users WHERE identifier = @identifier", {['@identifier'] = xPlayer.identifier}, function(result)
+		TriggerEvent("gcphone:updateCachedNumber", result[1].phone_number, xPlayer.identifier)
+
 		if #result > 0 then
 			if result[1].phone_number ~= nil then
 				MySQL.Async.fetchAll("SELECT * FROM sim WHERE phone_number = @phone_number", {['@phone_number'] = result[1].phone_number}, function(sim)
@@ -122,13 +124,14 @@ function NewSim(source)
 			['@messaggi'] = 0,
 			['@dati'] = 0
 		}, function (r)
-			TriggerClientEvent('esx:showNotification', source, "La sim è stata registrata con successo", "success")
+			TriggerClientEvent('esx:showNotification', source, "~g~La sim è stata registrata con successo")
+
+			TriggerEvent("gcphone:updateCachedNumber", phoneNumber, xPlayer.identifier)
 		end)
 	end)
 end
 
 
---donner la carte sim a un autre joueur
 RegisterServerEvent('esx_cartesim:sim_give')
 AddEventHandler('esx_cartesim:sim_give', function(number, c_id)
 	local player = source
@@ -136,8 +139,10 @@ AddEventHandler('esx_cartesim:sim_give', function(number, c_id)
 	local xPlayer2 = ESX.GetPlayerFromId(c_id)
 			
 	if number ~= nil then
-		TriggerClientEvent('esx:showNotification', player, "Hai dato la scheda sim ~o~" .. number)
-		TriggerClientEvent('esx:showNotification', c_id, "Hai ottenuto una sim~o~" .. number)
+		TriggerClientEvent('esx:showNotification', player, "Hai dato la scheda sim " .. number)
+		TriggerClientEvent('esx:showNotification', c_id, "Hai ottenuto una sim " .. number)
+
+		TriggerEvent("gcphone:updateCachedNumber", number, xPlayer2.identifier)
 
 		MySQL.Async.fetchAll("SELECT * FROM users WHERE identifier = @identifier", {['@identifier'] = xPlayer.identifier}, function(result)
 			if result[1].phone_number == number then
@@ -156,7 +161,6 @@ AddEventHandler('esx_cartesim:sim_give', function(number, c_id)
 end)
 
 
---supprimer la carte sim
 RegisterServerEvent('esx_cartesim:sim_delete')
 AddEventHandler('esx_cartesim:sim_delete', function(sim)
 	local player = source
@@ -167,12 +171,13 @@ AddEventHandler('esx_cartesim:sim_delete', function(sim)
 		['@phone_number'] = 0
 	})
 
-	MySQL.Async.fetchAll('SELECT * FROM sim WHERE identifier = @identifier', {['@identifier'] = xPlayer.identifier}, function (result)
+	MySQL.Async.fetchAll('SELECT phone_number FROM sim WHERE identifier = @identifier', {['@identifier'] = xPlayer.identifier}, function (result)
 		for i=1, #result, 1 do
 			local simZ = result[i].phone_number
 
 			if simZ == sim then
-				MySQL.Async.execute('DELETE FROM sim WHERE phone_number = @phone_number', {['@phone_number'] = result[i].phone_number})
+				MySQL.Async.execute('DELETE FROM sim WHERE phone_number = @phone_number', {['@phone_number'] = simZ})
+				TriggerEvent("gcphone:updateCachedNumber", sim, nil)
 				break
 			end
 		end
@@ -180,7 +185,6 @@ AddEventHandler('esx_cartesim:sim_delete', function(sim)
 end)
 
 
---changer de carte sim (need change identifier inside phone_users_contacts)
 RegisterServerEvent('esx_cartesim:sim_use')
 AddEventHandler('esx_cartesim:sim_use', function(sim)
 	local player = source
@@ -209,7 +213,6 @@ AddEventHandler('esx_cartesim:sim_rename', function(number, name)
 end)
 
 
---Recupere les cartes sim
 ESX.RegisterServerCallback('esx_cartesim:GetList', function(source, cb)
 	local player = source
 	local xPlayer = ESX.GetPlayerFromId(player)
