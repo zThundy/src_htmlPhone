@@ -1,7 +1,7 @@
 <template>
   <div style="width: 326px; height: 743px;" class="screen">
 
-    <list style="color: black" :list='messagesData' :disable="disableList" :title="IntlString('APP_MESSAGE_TITLE')" @back="back" @select="onSelect" @option='onOption'></list>
+    <list class="fontList" :list='messagesData' :disable="disableList" :title="IntlString('APP_MESSAGE_TITLE')" @back="back" @select="onSelect" @option='onOption'></list>
   
   </div>
 </template>
@@ -136,5 +136,10 @@ export default {
   top: 0;
   width: 100%;
   height: 100%;
+}
+
+.fontList {
+  color: black;
+  font-weight: bold;
 }
 </style>

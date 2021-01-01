@@ -148,7 +148,7 @@ export default {
 }
 
 .image {
-  max-width: 110%;
+  width: 100%;
 }
 
 .text-container {
@@ -162,6 +162,7 @@ export default {
 }
 
 .image_list {
+  position: relative;
   margin: 0;
   padding: 0;
   display: flex;
@@ -177,6 +178,7 @@ export default {
 }
 
 .filtersdiv {
+  position: relative;
   background-color: rgba(140, 85, 145, 0.397);
 }
 

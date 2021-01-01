@@ -17,13 +17,13 @@
       <div class="sms" v-bind:class="{ select: key === selectMessage}" v-for='(mess, key) in messagesListApp' v-bind:key="mess.id">
         <div class="sms_message_time">
             <h6 v-bind:class="{ sms_me : mess.owner === 1}"  class="name_other_sms_me">{{displayContact}}</h6>
-            <h6 v-bind:class="{ sms_me : mess.owner === 1}"  class="name_other_sms_other"><timeago style="font-weight: 500" class="sms_time" :since='mess.time' :auto-update="20"></timeago></h6>
+            <h6 v-bind:class="{ sms_me : mess.owner === 1}"  class="name_other_sms_other"><timeago class="sms_time" :since='mess.time' :auto-update="20"></timeago></h6>
         </div>
 
         <span class='sms_message sms_me' v-bind:class="{ sms_other : mess.owner === 0}">
           
           <img v-if="isSMSImage(mess.message)" class="sms-img" :src="mess.message">
-          <span v-else>{{mess.message}}</span>
+          <span v-else class="sms_message">{{mess.message}}</span>
             
             <!--<span style="color: white; font-size: 17px; margin: 24px;" @click.stop="onActionMessage(mess)" ><timeago class="sms_time" :since='mess.time' :auto-update="20"></timeago></span>-->
         </span>
@@ -35,7 +35,7 @@
 
       <input type="text" v-model="message" :placeholder="IntlString('APP_MESSAGE_PLACEHOLDER_ENTER_MESSAGE')">
       
-      <div style="font-size: 10px;" class="sms_send">
+      <div class="sms_send">
 
         <svg height="24" viewBox="0 0 24 24" width="24">
           <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/>
@@ -394,7 +394,7 @@ export default {
   margin-bottom: -9px;
   margin-left: 42px;
   font-size: 14px;
-  font-weight: 500;
+  /* font-weight: 500; */
   color: lightgrey;
 }
 
@@ -407,6 +407,7 @@ export default {
 }
 
 .sms {
+  font-weight: lighter;
   overflow: auto;
   zoom: 1;
 }
@@ -452,7 +453,6 @@ export default {
 .sms_other {
   background-color: #0b81ff;
   border-radius: 7px;
-  font-family: -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
   color:white;
   float: left;
   padding: 5px 10px;
@@ -465,6 +465,7 @@ export default {
 .sms_time {
   display: block;
   font-size: 12px;
+  font-weight: lighter;
 }
 
 .sms_me .sms_time {
@@ -498,9 +499,10 @@ export default {
 }
 
 .sms_message {
+  font-weight: lighter;
   word-wrap: break-word;
   max-width: 80%;
-  font-size: 24px;
+  font-size: 21px;
   padding-top: 0.1px;
 }
 
@@ -525,6 +527,7 @@ export default {
 .sms_send {
   float: right;
   margin-right: 10px;
+  font-size: 10px;
 }
 
 .sms_send svg {
@@ -546,6 +549,7 @@ export default {
 }
 
 .groupImage img {
+  object-fit: cover;
   border-radius: 50%;
   border-style: solid;
   border-color: rgb(87, 87, 87);

@@ -28,6 +28,10 @@ class PhoneAPI {
     this.ttsplayers = {}
   }
 
+  onsendParametersValues (data) {
+    store.commit('SEND_INIT_VALUES', data)
+  }
+
   // attenzione: per evitare l'Uncaught (in promise) error sulla console, è
   // necessario inserire il cb("ok") sul lua, visto che si aspetta qualcosa in ritorno
   async post (method, data) {

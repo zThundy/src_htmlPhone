@@ -1,23 +1,40 @@
 <template>
-  <div class="phone_app">
-    <PhoneTitle :title="IntlString('APP_CONFIG_TITLE')" :textColor="'black'" @back="onBackspace"/>
+  <div style="background-color: rgb(240, 240, 240)" class="phone_app">
+    <PhoneTitle :title="IntlString('APP_CONFIG_TITLE')" :backgroundColor="'rgb(255, 255, 255)'" :textColor="'black'" @back="onBackspace"/>
+
+    <div class="infoContainer">
+      <div class="whiteContainer">
+        <img class="immagine" v-if="myImage != null" :src="myImage"/>
+        <img class="immagine" v-else src="/html/static/img/app_settings/userpic.png"/>
+
+        <span class="picText_label">{{ myData.firstname }} {{ myData.lastname }}</span>
+        <span class="picText_value">{{ myData.job }} | {{ myData.job2 }}</span>
+      </div>
+    </div>
 
     <div class='phone_content elements'>
-      <div class='element'
-        v-for='(elem, key) in paramList' 
-        v-bind:class="{ select: key === currentSelect}"
-        v-bind:key="key"
-      >
-
-        <i class="fa" v-bind:class="elem.icons" v-bind:style="{color: elem.color}"></i>
+      <div class='element' v-for='(elem, key) in paramList' v-bind:class="{ select: key === currentSelect }" v-bind:key="key">
+        <i class="fa" v-bind:class="elem.icons" v-bind:style="{ color: elem.color }"></i>
 
         <div class="element-content">
-          <span class="element-title">{{elem.title}}</span>
-          <span v-if="elem.value" class="element-value">{{elem.value}}</span>
-        </div>
-      </div>
+          <span class="element-title">{{ elem.title }}</span>
+          <span v-if="elem.value" class="element-value">{{ elem.value }}</span>
 
+          <div class="switchDiv">
+            <custom-switch :backgroundColor="'#002853'" class="bottone" v-if="elem.bottone != undefined" v-model="bottone[elem.meta]"></custom-switch>
+          </div>
+          <md-icon v-if="elem.bottone == undefined" class="rightArrow md-notice-demo-icon md-notice-demo-icon-left" :size="'1'" :name="'arrow-right'"></md-icon>
+        </div>
+
+      </div>
     </div>
+
+    <!-- 
+    <div class="switch md-example-child md-example-child-switch md-example-child-switch-0">
+      <md-switch v-model="isActive" @change="handler('switch0', isActive, $event)"></md-switch>
+      <md-switch v-model="isActive"></md-switch>
+    </div>
+     -->
     
   </div>
 </template>
@@ -28,14 +45,26 @@ import PhoneTitle from './../PhoneTitle'
 import Modal from '@/components/Modal/index.js'
 import PhoneAPI from './../../PhoneAPI'
 
+import CustomSwitch from '@/components/Switch'
+
+// import { Icon, Switch } from 'mand-mobile'
+import { Icon } from 'mand-mobile'
+import 'mand-mobile/lib/mand-mobile.css'
+
 export default {
-  components: { PhoneTitle },
+  components: {
+    PhoneTitle,
+    [Icon.name]: Icon,
+    CustomSwitch
+    // [Switch.name]: Switch
+  },
   data () {
     return {
       ignoreControls: false,
       currentSelect: 0,
       retiWifiRender: [],
-      closestPlayersRender: []
+      closestPlayersRender: [],
+      bottone: []
     }
   },
   computed: {
@@ -56,7 +85,9 @@ export default {
       'bluetooth',
       'tts',
       'currentCover',
-      'myCovers'
+      'myCovers',
+      'myImage',
+      'myData'
     ]),
     paramList () {
       // stringa di conferma reset
@@ -92,12 +123,15 @@ export default {
         //   value: this.bluetoothString
         // },
         {
+          meta: 'notifications',
           icons: 'fa-bell',
-          onValid: 'toggleNotifications',
+          onValid: 'toggleNotificationsLocally',
           title: this.IntlString('APP_CONFIG_NOTIFICATION'),
-          value: (this.notification) ? 'Attive' : 'Disattive'
+          value: (this.notification) ? 'Attive' : 'Disattive',
+          bottone: true
         },
         {
+          meta: 'background',
           icons: 'fa-picture-o',
           title: this.IntlString('APP_CONFIG_WALLPAPER'),
           value: this.backgroundLabel,
@@ -117,6 +151,7 @@ export default {
           }
         },
         {
+          meta: 'suoneria',
           icons: 'fa-bell-o',
           title: this.IntlString('APP_CONFIG_SOUND'),
           value: this.sonidoLabel,
@@ -186,7 +221,19 @@ export default {
     }
   },
   methods: {
-    ...mapActions(['getIntlString', 'setZoom', 'setBackground', 'setCurrentCover', 'setSonido', 'setVolume', 'setLanguage', 'toggleNotifications', 'updateWifiString', 'updateBluetooth', 'setTTS']),
+    ...mapActions([
+      'getIntlString',
+      'setZoom',
+      'setBackground',
+      'setCurrentCover',
+      'setSonido',
+      'setVolume',
+      'setLanguage',
+      'toggleNotifications',
+      'updateWifiString',
+      'updateBluetooth',
+      'setTTS'
+    ]),
     scrollIntoViewIfNeeded: function () {
       this.$nextTick(() => {
         document.querySelector('.select').scrollIntoViewIfNeeded()
@@ -246,6 +293,14 @@ export default {
       this.actionItem(param)
     },
 
+    onEnter () {
+      if (this.ignoreControls === true) return
+      if (this.paramList[this.currentSelect].meta !== undefined && this.paramList[this.currentSelect].meta === 'wifi') {
+        this.paramList[this.currentSelect].values = this.updateWifiTable()
+      }
+      this.actionItem(this.paramList[this.currentSelect])
+    },
+
     onLeft () {
       if (this.ignoreControls === true) return
       let param = this.paramList[this.currentSelect]
@@ -266,6 +321,12 @@ export default {
               } else {
                 return {title: key, value: param.values[key].value, picto: param.values[key].value, icons: 'fa-mobile', color: param.values[key].color}
               }
+            }
+            if (param.meta === 'background') {
+              return {title: key, value: param.values[key], picto: param.values[key], icons: 'fa-picture-o'}
+            }
+            if (param.meta === 'suoneria') {
+              return {title: key, value: param.values[key], picto: param.values[key], icons: 'fa-bell'}
             }
           }
           if (param.values[key].value !== undefined) {
@@ -289,18 +350,6 @@ export default {
       if (param.values === undefined && param.onValid !== undefined && param.onValid !== null) {
         this[param.onValid]()
       }
-    },
-
-    onPressItem (index) {
-      this.actionItem(this.paramList[index])
-    },
-
-    onEnter () {
-      if (this.ignoreControls === true) return
-      if (this.paramList[this.currentSelect].meta !== undefined && this.paramList[this.currentSelect].meta === 'wifi') {
-        this.paramList[this.currentSelect].values = this.updateWifiTable()
-      }
-      this.actionItem(this.paramList[this.currentSelect])
     },
 
     async onChangeBackground (param, data) {
@@ -403,6 +452,11 @@ export default {
       this.setTTS(!this.tts)
     },
 
+    toggleNotificationsLocally () {
+      this.toggleNotifications()
+      this.bottone['notifications'] = this.notification
+    },
+
     resetPhone: function (param, data) {
       if (data.value !== 'cancel') {
         this.ignoreControls = true
@@ -427,6 +481,10 @@ export default {
   },
 
   created () {
+    // qui mi controllo i valori dei bottoni presi dai getters
+    // in phone.js
+    this.bottone['notifications'] = this.notification
+    // qui richiedo le mie cover da phoneapi
     this.$phoneAPI.requestMyCovers()
     // console.log(JSON.stringify(this.myCovers))
     this.$bus.$on('keyUpArrowRight', this.onRight)
@@ -436,6 +494,7 @@ export default {
     this.$bus.$on('keyUpEnter', this.onEnter)
     this.$bus.$on('keyUpBackspace', this.onBackspace)
   },
+  mounted () { },
   beforeDestroy () {
     this.$bus.$off('keyUpArrowRight', this.onRight)
     this.$bus.$off('keyUpArrowLeft', this.onLeft)
@@ -448,15 +507,17 @@ export default {
 </script>
 
 <style scoped>
-.element{
-  height: 50px;
+.element {
+  background-color: white;
+  border-bottom: 1px solid rgb(223, 223, 223);
+  height: 46px;
   line-height: 58px;
   display: flex;
   align-items: center;
   position: relative;
 }
 
-.element .fa{
+.element .fa {
   color: #002853;
   margin-left: 6px;
   height: 52px;
@@ -465,7 +526,7 @@ export default {
   line-height: 52px;
 }
 
-.element-content{
+.element-content {
   display: block;
   height: 58px;
   width: 100%;
@@ -476,26 +537,81 @@ export default {
   justify-content: center;
 }
 
-.element-title{
+.element-title {
   display: block;
-  margin-top: 4px;
+  margin-top: 6px;
   height: 22px;
   line-height: 22px;
   font-size: 15px;
-  font-weight: 300;
-  font-family: -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  font-weight: bolder;
 }
 
-.element-value{
+.element-value {
   display: block;
-  line-height: 16px;
+  line-height: 13px;
   height: 8px;
-  font-size: 13px;
-  font-weight: 100;
+  padding-left: 5px;
+  font-size: 12px;
+  font-weight: 300;
   color: #808080;
 }
 
 .element.select {
-  background-color: #DDD;
+  background-color: rgb(235, 235, 235);
 }
+
+.infoContainer {
+  width: 100%;
+  height: 180px;
+}
+
+.whiteContainer {
+  position: relative;
+  top: 20px;
+  width: 100%;
+  height: 90px;
+  background-color: white;
+}
+
+.immagine {
+  border-radius: 50%;
+  position: relative;
+  object-fit: cover;
+  width: 20%;
+  height: 73%;
+  left: 20px;
+  top: 12px;
+}
+
+.picText_label {
+  position: relative;
+  bottom: 26px;
+  left: 24px;
+  font-weight: bolder;
+  color: rgb(0, 0, 0);
+}
+
+.picText_value {
+  position: absolute;
+  bottom: 23px;
+  left: 102px;
+  font-size: 15px;
+  color: rgb(80, 80, 80);
+}
+
+.rightArrow {
+  color: black;
+  justify-content: right;
+  position: absolute;
+  right: 35px;
+  top: 15px;
+}
+
+.switchDiv {
+  position: absolute;
+  left: 77%;
+  bottom: 18%;
+  overflow-y: hidden;
+}
+
 </style>

@@ -3,9 +3,10 @@
 
     <div class="phone_app">
       <PhoneTitle :title="channelName" backgroundColor="#090f20" :textColor="'white'" @back="onQuit"/>
+      
       <div style="padding-top: 30px;" class="slice"></div>
       
-      <div class="phone_content">
+      <div style="background-color: #090f20;" class="phone_content">
         <div style="padding-top: 50px;" class="elementi" ref="elementsDiv">
 
           <div class="sms" v-bind:class="{ select: key === currentSelect}" v-for='(mess, key) in tchatMessages' v-bind:key="key">
@@ -18,7 +19,7 @@
 
         </div>
 
-        <div style="width: 306px; bottom: 0px;" id='sms_write'>
+        <div style="width: 306px; bottom: 5px;" id='sms_write'>
           <input type="text" :placeholder="IntlString('APP_DARKTCHAT_PLACEHOLDER_ENTER_MESSAGE')">
           
           <div style="font-size: 10px;" class="sms_send">
@@ -141,12 +142,6 @@ export default {
 </script>
 
 <style scoped>
-.phone_app {
-  background-color: rgb(26, 26, 26);
-  width: 324px;
-  height: 670px;
-}
-
 .elementi {
   height: 100%;
   color: white;
@@ -162,14 +157,14 @@ export default {
   display: flex;
 }
 
-.time{
+.time {
   padding-right: 10px;
   font-size: 10px;
   margin-left: 15px;
 
 }
 
-.message{
+.message {
   width: 100%;
   color: black;
   padding-left: 5px;

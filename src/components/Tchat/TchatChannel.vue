@@ -1,5 +1,5 @@
 <template>
-  <div class="phone_app">
+  <div style="width: 100%;" class="phone_app">
     <PhoneTitle :title="IntlString('APP_DARKTCHAT_TITLE')" backgroundColor="#090f20" :textColor="'white'" @back="onBack" />
     
     <div style="padding-top: 30px;" class="slice"></div>

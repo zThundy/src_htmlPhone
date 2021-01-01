@@ -28,9 +28,8 @@ import { mapGetters } from 'vuex'
 // import Vue from 'vue'
 
 export default {
-  components: {
-    PhoneTitle
-  },
+  name: 'twitter-screen',
+  components: { PhoneTitle },
   data () {
     return {
       currentScreenIndex: 0
@@ -72,17 +71,31 @@ export default {
     onLeft () {
       this.currentScreenIndex = Math.max(0, this.currentScreenIndex - 1)
       // Vue.notify({
-      //   message: 'messaggio',
-      //   title: 'autore' + ' :',
+      //   message: 'messaggio messaggio messaggio messaggio messaggio messaggio messaggio messaggio messaggio messaggio messaggio messaggio ',
+      //   title: 'autore' + ' : SONO FIKO',
       //   icon: 'twitter',
       //   sound: 'Twitter_Sound_Effect.ogg'
+      // })
+      // Vue.notify({
+      //   title: 'autore' + ' : SONO FIKO',
+      //   message: 'messaggio messaggio messaggio messaggio messaggio messaggio messaggio messaggio messaggio messaggio messaggio messaggio ',
+      //   icon: 'instagram',
+      //   backgroundColor: '#66000080',
+      //   sound: 'Instagram_Error.ogg'
+      // })
+      // Vue.notify({
+      //   title: 'autore' + ' : SONO FIKO',
+      //   message: 'messaggio messaggio messaggio messaggio messaggio messaggio messaggio messaggio messaggio messaggio messaggio messaggio ',
+      //   icon: 'instagram',
+      //   backgroundColor: '#FF66FF80',
+      //   sound: 'Instagram_Notification.ogg'
       // })
     },
     onRight () {
       this.currentScreenIndex = Math.min(this.screen.length - 1, this.currentScreenIndex + 1)
       // Vue.notify({
-      //   message: 'messaggio',
-      //   title: 'autore' + ' :',
+      //   message: 'messaggio messaggio messaggio messaggio messaggio messaggio messaggio messaggio messaggio messaggio messaggio messaggio ',
+      //   title: 'autore' + ' : SONO FIKO',
       //   icon: 'twitter',
       //   sound: 'Twitter_Sound_Effect.ogg'
       // })

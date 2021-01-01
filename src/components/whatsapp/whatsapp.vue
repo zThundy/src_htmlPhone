@@ -169,6 +169,7 @@ export default {
 }
 
 .immagineGruppo {
+  object-fit: cover;
   width: 60px;
   height: 60px;
   border-radius: 80px;

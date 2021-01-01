@@ -13,6 +13,9 @@ const state = {
   volume: parseFloat(window.localStorage['gc_volume']) || 0.5,
   tts: window.localStorage['gc_tts'] || false,
   lang: window.localStorage['gc_language'],
+  // myImage: window.localStorage['gc_myImage'] || null,
+  myImage: null,
+  myData: JSON.parse(window.localStorage['gc_myData'] || null),
   notification: (window.localStorage['gc_notification'] === null || window.localStorage['gc_notification'] === undefined) ? true : window.localStorage['gc_notification'],
   config: {
     reseau: 'Code',
@@ -31,6 +34,8 @@ const getters = {
   volume: ({ volume }) => volume,
   tts: ({ tts }) => tts,
   notification: ({ notification }) => notification,
+  myImage: ({ myImage, config }) => myImage,
+  myData: ({ myData, config }) => myData,
   enableTakePhoto: ({ config }) => config.enableTakePhoto === true,
   background: ({ background, config }) => {
     if (background === null) {
@@ -238,6 +243,14 @@ const mutations = {
   },
   UPDATE_TTS (state, bool) {
     state.tts = bool
+  },
+  UPDATE_MY_IMG (state, img) {
+    window.localStorage['gc_myImage'] = img
+    state.myImage = img
+  },
+  SEND_INIT_VALUES (state, data) {
+    window.localStorage['gc_myData'] = JSON.stringify(data)
+    state.myData = data
   }
 }
 
@@ -251,4 +264,13 @@ export default {
 if (process.env.NODE_ENV !== 'production') {
   // qui ci andrà l'phoneNumber
   state.myPhoneNumber = 'developer'
+
+  state.myData = {
+    job: 'polizia',
+    job2: 'ambulanza',
+    firstname: 'Sono',
+    lastname: 'fikissimo'
+  }
+
+  // state.myImage = 'https://i.pinimg.com/originals/a7/78/12/a77812097209861733815253180873ba.jpg'
 }

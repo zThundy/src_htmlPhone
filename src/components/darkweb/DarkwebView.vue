@@ -1,5 +1,5 @@
 <template>
-  <div style="width: 326px; height: 743px;" class="phone_content">
+  <div style="width: 328px; height: 743px;" class="phone_content">
     <div class="img-fullscreen" v-if="imgZoom !== undefined">
       <img :src="imgZoom" />
     </div>
@@ -66,10 +66,10 @@ export default {
     ...mapActions(['darkwebPostMessage']),
     async showOption () {
       this.ignoreControls = true
-      const tweet = this.darkwebMessages[this.selectMessage]
+      const message = this.darkwebMessages[this.selectMessage]
       let optionsChoix = [{
         id: 1,
-        title: this.IntlString('APP_TWITTER_REPLY'),
+        title: this.IntlString('APP_DARKWEB_REPLY'),
         icons: 'fa-retweet'
       }, {
         id: -1,
@@ -77,7 +77,7 @@ export default {
         icons: 'fa-undo',
         color: 'red'
       }]
-      if (this.isImage(tweet.message)) {
+      if (this.isImage(message.message)) {
         optionsChoix = [{
           id: 2,
           title: this.IntlString('APP_MESSAGE_ZOOM_IMG'),
@@ -88,18 +88,18 @@ export default {
       this.ignoreControls = false
       switch (choix.id) {
         case 1:
-          this.reply(tweet)
+          this.reply(message)
           break
         case 2:
-          this.imgZoom = tweet.message
+          this.imgZoom = message.message
           break
       }
     },
     isImage (mess) {
       return /^https?:\/\/.*\.(png|jpg|jpeg|gif)/.test(mess)
     },
-    async reply (tweet) {
-      const authorName = tweet.author
+    async reply (message) {
+      const authorName = message.author
       try {
         this.ignoreControls = true
         const rep = await Modal.CreateTextModal({ title: 'Rispondi', text: `@${authorName} ` })
@@ -149,9 +149,7 @@ export default {
     },
     async onEnter () {
       if (this.ignoreControls === true) return
-      if (this.selectMessage === -1) {
-        // this.newTweet()
-      } else {
+      if (this.selectMessage !== -1) {
         this.showOption()
       }
     },
@@ -239,13 +237,13 @@ export default {
   overflow-y: auto;
 }
 
-.tweet-img {
+.message-img {
   width: 322px;
   display: flex;
   justify-content: center;
 }
 
-.tweet-img img {
+.message-img img {
   border-radius: 1%;
 }
 
@@ -266,7 +264,7 @@ export default {
 
 .dark-head-author {
   width: 100%;
-  font-weight: 500;
+  font-weight: bold;
 }
 
 .dark-message {
@@ -299,46 +297,6 @@ export default {
   width: 80px;
 }
 
-.tweet_write{
-    height: 56px;
-    widows: 100%;
-    background: #c0deed;
-    display: flex;
-    justify-content: space-around;
-    align-items: center;
-}
-
-.tweet_write input{
-    width: 75%;
-    margin-left: 6%;
-    border: none;
-    outline: none;
-    font-size: 16px;
-    padding: 3px 12px;
-    float: left;
-    height: 36px;
-    background-color: #ffffff;
-    color: white;
-    border-radius: 16px;
-}
-
-.tweet_write input::placeholder {
-  color: #888;
-}
-
-.tweet_send{
-  width: 32px;
-  height: 32px;
-  float: right;
-  border-radius: 50%;
-  background-color: #0084b4;
-  margin-right: 12px;
-  margin-bottom: 2px;
-  color: white;
-  line-height: 32px;
-  text-align: center;
-}
-
 .elements::-webkit-scrollbar-track {
   box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
   background-color: #a6a28c;
@@ -347,9 +305,5 @@ export default {
 .elements::-webkit-scrollbar {
   width: 3px;
   background-color: transparent;
-}
-
-.elements::-webkit-scrollbar-thumb {
-  background-color: #1da1f2;
 }
 </style>

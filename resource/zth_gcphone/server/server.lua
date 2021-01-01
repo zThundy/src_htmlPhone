@@ -16,12 +16,13 @@ end)
 
 
 MySQL.ready(function()
-    MySQL.Async.fetchAll("DELETE FROM phone_messages WHERE (DATEDIFF(CURRENT_DATE, time) > 15)")
-    MySQL.Async.fetchAll("DELETE FROM twitter_tweets WHERE (DATEDIFF(CURRENT_DATE, time) > 20)")
-    MySQL.Async.fetchAll("DELETE FROM phone_calls WHERE (DATEDIFF(CURRENT_DATE, time) > 15)")
+    MySQL.Async.execute("DELETE FROM phone_messages WHERE (DATEDIFF(CURRENT_DATE, time) > 15)", {})
+    MySQL.Async.execute("DELETE FROM twitter_tweets WHERE (DATEDIFF(CURRENT_DATE, time) > 20)", {})
+    MySQL.Async.execute("DELETE FROM phone_calls WHERE (DATEDIFF(CURRENT_DATE, time) > 15)", {})
 
-    MySQL.Async.fetchAll("SELECT phone_number, identifier FROM sim", function(r)
+    MySQL.Async.fetchAll("SELECT phone_number, identifier FROM sim", {}, function(r)
         for _, v in pairs(r) do
+            print(v.phone_number, v.identifier)
             cachedNumbers[tostring(v.phone_number)] = v.identifier
         end
 
@@ -871,6 +872,7 @@ function buildPhones()
 end
 
 
+RegisterServerEvent("esx:playerLoaded")
 AddEventHandler('esx:playerLoaded', function(source, xPlayer)
     local player = tonumber(source)
 
@@ -1063,3 +1065,14 @@ function onRejectFixePhone(source, infoCall, rtcAnswer)
 
     Chiamate[id] = nil 
 end
+
+
+Citizen.CreateThread(function()
+    while ESX == nil do Citizen.Wait(100) end
+    
+    while true do
+        Citizen.Wait(5000)
+
+        print(ESX.DumpTable(cachedNumbers))
+    end
+end)

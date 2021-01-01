@@ -54,9 +54,11 @@ export default {
 </script>
 <style scoped>
 .title {
+  font-family: SanFrancisco;
+  font-weight: 500;
+
   padding-top: 7px;
   padding-right: 10px;
-  font-family: Helvetica;
   text-align: center;
   position: relative;
 }

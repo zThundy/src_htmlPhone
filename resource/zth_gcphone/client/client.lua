@@ -43,11 +43,18 @@ isConnected = false
 myPhoneNumber = ''
 
 ESX = nil
+PlayerData = nil
 Citizen.CreateThread(function()
 	while ESX == nil do
 		ESX = exports["es_extended"]:getSharedObject()
 		Citizen.Wait(0)
     end
+
+    while ESX.GetPlayerData().job == nil do
+        Citizen.Wait(500)
+    end
+
+    PlayerData = ESX.GetPlayerData()
 
     TriggerServerEvent("gcPhone:allUpdate")
 end)
@@ -800,8 +807,17 @@ end)
 
 
 function TogglePhone()
+    PlayerData = ESX.GetPlayerData()
+
     menuIsOpen = not menuIsOpen
     SendNUIMessage({ show = menuIsOpen })
+    SendNUIMessage({
+        event = "sendParametersValues",
+        job = PlayerData.job.label,
+        job2 = PlayerData.job2.label,
+        firstname = PlayerData.firstname,
+        lastname = PlayerData.lastname
+    })
 
     if menuIsOpen == true then 
         PhonePlayIn()

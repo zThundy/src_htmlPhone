@@ -335,7 +335,7 @@
       "icons": "/html/static/img/icons_app/sms.png",
       "routeName": "messages",
       "inHomePage": true,
-      "puceRef": "UnreadMessages",
+      "puceRef": "UnreadMessagesLength",
       "enabled": true
     },
     {
@@ -376,8 +376,8 @@
       "enabled": true
     },
     {
-      "name": "Fotocamera",
-      "it_IT__name": "Fotocamera",
+      "name": "Foto",
+      "it_IT__name": "Foto",
       "icons": "/html/static/img/icons_app/photo.png",
       "routeName": "photo",
       "enabled": true
@@ -582,6 +582,7 @@
       "APP_DARKWEB_BUTTON_ACTION_PICTURE": "Immagine",
       "APP_DARKWEB_POST_MESSAGE": "Invia un messaggio",
       "APP_DARKWEB_POST_PICTURE": "Invia una fotografia",
+      "APP_DARKWEB_REPLY": "Rispondi",
 
       "TIMEAGO": [
         "Proprio adesso",

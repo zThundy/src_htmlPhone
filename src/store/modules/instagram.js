@@ -24,8 +24,8 @@ const getters = {
 
 const actions = {
   // salvataggio immagine temporanea per post twitter
-  instagramSaveTempPost ({ state }, url) {
-    state.tempImage = url
+  instagramSaveTempPost ({ commit }, url) {
+    commit('SAVE_TEMP_POST_PIC', url)
   },
   // selezione del filtro e della didascalia da mandare al client
   // del gcphone
@@ -129,6 +129,9 @@ const mutations = {
     if (instagramIndex !== -1) {
       Vue.set(state.instaPosts[instagramIndex], 'isLike', isLike)
     }
+  },
+  SAVE_TEMP_POST_PIC (state, url) {
+    state.tempImage = url
   }
 }
 

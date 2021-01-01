@@ -1,5 +1,5 @@
 <template>
-  <div style="width: 326px; height: 743px;" class="home" v-bind:style="{background: 'url(' + backgroundURL +')'}">
+  <div class="home" v-bind:style="{ background: 'url(' + backgroundURL +')' }">
     <InfoBare />
 
     <span class="warningMess" v-if="messages.length >= warningMessageCount && warningMessageCount !== -1">
@@ -15,7 +15,7 @@
     
     <div class='home_buttons'>
       
-      <button style=" top: 73px; font-family:initial; margin-left: 10px; margin-right: 10px;"
+      <button style=" top: 73px; margin-left: 10px; margin-right: 10px;"
         v-for="(but, key) of AppsHome" 
         v-bind:key="but.name" 
         v-bind:class="{select: key === currentSelect}"
@@ -26,10 +26,10 @@
       </button>
         
       <div class="btn_menu_ctn">
-        <button 
+        <button
           class="btn_menu" 
-          :class="{ select: AppsHome.length === currentSelect}" 
-          v-bind:style="{backgroundImage: 'url(' + '/html/static/img/icons_app/menu.png' +')'}"
+          :class="{ select: AppsHome.length === currentSelect }" 
+          v-bind:style="{ backgroundImage: 'url(' + '/html/static/img/icons_app/menu.png' +')' }"
         >
 
         </button>
@@ -52,7 +52,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['IntlString', 'UnreadMessages', 'backgroundURL', 'messages', 'AppsHome', 'warningMessageCount'])
+    ...mapGetters(['IntlString', 'backgroundURL', 'messages', 'AppsHome', 'warningMessageCount'])
   },
   methods: {
     ...mapActions(['closePhone', 'setMessages']),
@@ -201,12 +201,10 @@ button .puce {
   height: 26px;
   top: -5px;
   left: 51px;
-  font-family: none;
   line-height: 28px;
   text-align: center;
   border-radius: 50%;
   font-weight: 400;
-  font-family: -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
   bottom: 32px;
   right: 12px;
   

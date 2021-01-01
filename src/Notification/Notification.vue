@@ -71,8 +71,8 @@ export default {
 <style scoped>
 .notifications {
   position: absolute;
-  margin-left: 55%; 
-  margin-top: 12%;
+  margin-left: 48%; 
+  margin-top: 3%;
 }
 
 .notification {

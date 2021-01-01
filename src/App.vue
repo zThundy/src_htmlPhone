@@ -1,9 +1,9 @@
 <template>
   <div style="height: 100vh; width: 100vw;" @contextmenu="closePhone">
     <notification />
-    <div v-if="show === true && tempoHide === false" :style="{zoom: zoom}" @contextmenu.stop>
+    <div v-if="show === true && tempoHide === false" :style="{ zoom: zoom }" @contextmenu.stop>
       <div class="phone_wrapper">
-        <div v-if="currentCover" class="phone_coque" :style="{backgroundImage: 'url(/html/static/img/cover/' + currentCover.value + ')'}"></div>
+        <div v-if="currentCover" class="phone_coque" :style="{ backgroundImage: 'url(/html/static/img/cover/' + currentCover.value + ')' }"></div>
         
           <div id="app" class="phone_screen noselect">
             <transition-page>

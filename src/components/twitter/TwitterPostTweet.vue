@@ -42,11 +42,36 @@ export default {
         this.postTextTweet()
         this.modalopened = false
       } else if (resp.id === 2) {
+        // const newAvatar = await PhoneAPI.takePhoto()
+        // if (newAvatar.url !== undefined || newAvatar.url !== null) {
+        //   this.modalopened = false
+        //   this.twitterPostTweet({ message: newAvatar.url })
+        // }
+        this.choosePicType()
+      }
+    },
+    async choosePicType () {
+      this.modalopened = true
+      let choix = [
+        {id: 1, title: this.IntlString('APP_CONFIG_LINK_PICTURE'), icons: 'fa-link'},
+        {id: 2, title: this.IntlString('APP_CONFIG_TAKE_PICTURE'), icons: 'fa-camera'}
+      ]
+      const resp = await Modal.CreateModal({ choix: choix })
+      if (resp.id === 1) {
+        Modal.CreateTextModal({ text: 'https://i.imgur.com/' }).then(valueText => {
+          if (valueText.text !== '' && valueText.text !== undefined && valueText.text !== null && valueText.text !== 'https://i.imgur.com/') {
+            this.twitterPostTweet({ message: valueText.text })
+            this.modalopened = false
+          }
+        })
+      } else if (resp.id === 2) {
         const newAvatar = await PhoneAPI.takePhoto()
-        if (newAvatar.url !== undefined || newAvatar.url !== null) {
-          this.modalopened = false
+        if (newAvatar.url !== null) {
           this.twitterPostTweet({ message: newAvatar.url })
+          this.modalopened = false
         }
+      } else {
+        this.modalopened = false
       }
     },
     onBack () {
@@ -130,11 +155,6 @@ export default {
   font-size: 16px;
 }
 
-.tweet_send:hover {
-  cursor: pointer;
-  background-color: #0084b4;
-}
-
 .tweet_send_left{
   align-self: flex-start;
   position: absolute;
@@ -151,10 +171,5 @@ export default {
   text-align: center;
   margin: 26px 20px;
   font-size: 16px;
-}
-
-.tweet_send_left:hover {
-  cursor: pointer;
-  background-color: #0084b4;
 }
 </style>

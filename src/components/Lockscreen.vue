@@ -13,13 +13,14 @@
           <div class="separatore"></div>
 
           <span v-if="key < 4" class="messlist">
-            <div class="warningMess_icon"><i class="fa fa-envelope"></i></div>
+            <div class="warningMess_icon">
+              <i class="fa fa-envelope"></i>
+            </div>
+
             <span class="warningMess_content">
-              
               <div class="transmitter">{{elem.transmitter}}</div>
               <div v-if="!isSMSImage(elem.message)" class="messaggio">{{elem.message}}</div>
               <div v-else class="messaggio">Immagine</div>
-
             </span>
 
           </span>
@@ -56,7 +57,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['IntlString', 'UnreadMessages', 'backgroundURL', 'messages', 'unreadMessages'])
+    ...mapGetters(['IntlString', 'UnreadMessagesLength', 'backgroundURL', 'messages', 'unreadMessages'])
   },
   methods: {
     ...mapActions(['closePhone', 'setupUnreadMessages', 'resetUnreadMessages', 'sendStartupValues']),
@@ -97,7 +98,7 @@ export default {
       }
     }
     */
-    if (this.UnreadMessages > 0) { this.hasUnredMessages = true }
+    if (this.UnreadMessagesLength > 0) { this.hasUnredMessages = true }
     this.$bus.$on('keyUpEnter', this.onEnter)
     this.$bus.$on('keyUpBackspace', this.onBack)
   },
@@ -116,7 +117,7 @@ export default {
 /* ####################### */
 
 
-.immagine{
+.immagine {
   width: 210px;
   height: 100px;
   top: 50px;
@@ -130,7 +131,7 @@ export default {
 /* ####################### */
 
 
-.messlist{
+.messlist {
   background-color: rgb(224, 224, 224);
   position: relative;
   left: 12px;
@@ -144,7 +145,6 @@ export default {
   box-shadow: 0 2px 2px 0 rgba(0,0,0,.14), 0 3px 1px -2px rgba(0,0,0,.2), 0 1px 5px 0 rgba(0,0,0,.12);
 }
 
-
 .messlist .warningMess_icon{
   display: flex;
   align-items: center;
@@ -155,27 +155,29 @@ export default {
   border-radius: 50%;
 }
 
-
 .messlist .warningMess_icon .fa {
   text-align: center;
   color: #007506d2;
 }
 
 .messlist .warningMess_content{
+  line-height: 20px;
   padding-left: 10px;
   background-color: rgb(224, 224, 224);
 }
 
 .transmitter {
-  padding-top: 0px;
+  padding-top: 4px;
   font-size: 15px;
-  color: rgba(0, 0, 0, 0.555);
-  font-weight: bold;
+  color: rgb(0, 0, 0);
+  font-weight: bolder;
 }
 
 .messaggio {
-  padding-top: 1px;
+  padding-top: 0px;
+  padding-left: 4px;
   font-weight: bold;
+  font-size: 15px;
   color: rgba(34, 34, 34, 0.555);
 }
 
@@ -197,7 +199,7 @@ export default {
 /* ##################### */
 
 
-.lockscreen{
+.lockscreen {
   background-size: cover !important;
   background-position: center !important;
   
@@ -211,8 +213,8 @@ export default {
   justify-content: center;
 }
 
-.lockscreen-brightness{
-  background-color: rgba(0, 0, 0, 0.493);
+.lockscreen-brightness {
+  background-color: rgba(0, 0, 0, 0.7);
 }
 
 .bottom-zone{
@@ -245,7 +247,7 @@ export default {
   }
 }
 
-.rectangle{
+.rectangle {
   width: 280px;
   height: 50px;
   background: rgba(201, 201, 201, 0.384);
@@ -253,7 +255,7 @@ export default {
   border-radius: 15px;
 }
 
-.rectangle-inside{
+.rectangle-inside {
   width: 80px;
   height: 41px;
   background: rgba(223, 223, 223, 0.856);

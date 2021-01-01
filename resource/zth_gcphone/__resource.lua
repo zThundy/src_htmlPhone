@@ -10,25 +10,26 @@ files {
 
 	'html/static/config/config.json',
 	
-	'html/static/img/app_bank/*.png',
-	'html/static/img/app_darkweb/*.png',
-	'html/static/img/app_dati/*.png',
-	'html/static/img/app_favourites/*.png',
-	'html/static/img/app_galleria/*.png',
-	'html/static/img/app_instagram/*.png',
-	'html/static/img/app_tchat/*.png',
-	'html/static/img/app_whatsapp/*.png',
-	'html/static/img/app_wifi/*.png',
-	'html/static/img/background/*.png',
-	'html/static/img/cover/*.png',
-	'html/static/img/dati/*.png',
-	'html/static/img/icons_app/*.png',
-	'html/static/img/twitter/*.png',
+	'html/static/img/app_bank/*',
+	'html/static/img/app_darkweb/*',
+	'html/static/img/app_dati/*',
+	'html/static/img/app_favourites/*',
+	'html/static/img/app_galleria/*',
+	'html/static/img/app_instagram/*',
+	'html/static/img/app_settings/*',
+	'html/static/img/app_tchat/*',
+	'html/static/img/app_whatsapp/*',
+	'html/static/img/app_wifi/*',
+	'html/static/img/background/*',
+	'html/static/img/cover/*',
+	'html/static/img/dati/*',
+	'html/static/img/icons_app/*',
+	'html/static/img/twitter/*',
 
 	'html/static/img/*.png',
-	'html/static/fonts/fontawesome-webfont.ttf',
+	'html/static/fonts/*',
 
-	'html/static/sound/*.ogg',
+	'html/static/sound/*',
 }
 
 client_script {

@@ -148,7 +148,6 @@ export default {
 }
 
 .moneyTitle {
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
   font-weight: 200;
   color: white;
   font-size: 16px;
@@ -159,7 +158,6 @@ export default {
 }
 
 .ibanTitle {
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
   font-weight: 200;
   color: white;
   font-size: 16px;
@@ -227,7 +225,6 @@ export default {
   height: calc(1.5em + .75rem + 2px);
   padding: .375rem .75rem;
   font-size: 1rem;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
   font-weight: 300;
   line-height: 1.5;
   color: #495057;

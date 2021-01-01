@@ -25,7 +25,7 @@ import InfoBare from './InfoBare'
 import { mapGetters } from 'vuex'
 
 export default {
-  name: 'hello',
+  name: 'List',
   components: { PhoneTitle, InfoBare },
   data: function () {
     return {
@@ -150,10 +150,9 @@ export default {
 </script>
 
 <style scoped>
-.list{
+.list {
   height: 100%;
 }
-
 
 .elements {
   overflow-y: auto;
@@ -170,10 +169,10 @@ export default {
 }
 
 .element.select {
-   background-color: #DDD;
+  background-color: #DDD;
 }
 
-.elem-pic{
+.elem-pic {
   margin-left: 12px;
   height: 48px;
   width: 48px;
@@ -185,7 +184,7 @@ export default {
 .elem-puce{
   background-color: #EE3838;
   top: 0px;
-  color:white;
+  color: white;
   height: 18px;
   width: 18px;
   line-height: 18px;
@@ -199,30 +198,32 @@ export default {
   z-index: 6;
 }
 
-.elem-title{
+.elem-title {
   margin-left: 12px;
   font-size: 20px;
-    font-weight: 400;
+  /* font-weight: 200; */
 }
 
 .elem-title-has-desc {
-  margin-top:-15px;
+  margin-top: -15px;
   margin-left: 12px;
+  /* font-weight: 200; */
 }
 
-.elem-description{
-  text-align:left;
-  color:grey;
-  position:absolute;
-  display:block;
-  width:75%;
-  left:73px;
-  top:12px;
-  font-weight: 100px;
-  font-size:13.5px;
-  font-style:italic;
-  overflow:hidden;
-  text-overflow:ellipsis;
+.elem-description {
+  text-align: left;
+  color: grey;
+  position: absolute;
+  display: block;
+  width: 75%;
+  left: 75px;
+  top: 12px;
+  overflow: hidden;
+  text-overflow: ellipsis;
   white-space: nowrap;
+
+  font-size: 12.5px;
+  font-style: italic;
+  /* font-weight: 800; */
 }
 </style>

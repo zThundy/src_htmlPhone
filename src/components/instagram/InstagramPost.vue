@@ -11,7 +11,8 @@
 
 <script>
 import { mapActions, mapGetters } from 'vuex'
-import PhoneAPI from './../../PhoneAPI'
+// import PhoneAPI from './../../PhoneAPI'
+import Modal from '@/components/Modal/index.js'
 
 export default {
   components: {},
@@ -32,11 +33,38 @@ export default {
       if (this.ignoreControls) return
       this.ignoreControls = true
       // this.$bus.$emit('instagramScegliFiltri')
-      const post = await PhoneAPI.takePhoto()
-      if (post.url !== null) {
-        this.instagramSaveTempPost(post.url)
+      // const post = await PhoneAPI.takePhoto()
+      // if (post.url !== null) {
+      //   this.instagramSaveTempPost(post.url)
+      //   this.ignoreControls = false
+      //   this.$bus.$emit('instagramScegliFiltri')
+      // }
+      this.choosePicType()
+    },
+    async choosePicType () {
+      this.ignoreControls = true
+      let choix = [
+        {id: 1, title: this.IntlString('APP_CONFIG_LINK_PICTURE'), icons: 'fa-link'},
+        {id: 2, title: this.IntlString('APP_CONFIG_TAKE_PICTURE'), icons: 'fa-camera'}
+      ]
+      const resp = await Modal.CreateModal({ choix: choix })
+      if (resp.id === 1) {
+        Modal.CreateTextModal({ text: 'https://i.imgur.com/' }).then(valueText => {
+          if (valueText.text !== '' && valueText.text !== undefined && valueText.text !== null && valueText.text !== 'https://i.imgur.com/') {
+            this.instagramSaveTempPost(valueText.text)
+            this.$bus.$emit('instagramScegliFiltri')
+            this.ignoreControls = false
+          }
+        })
+      } else if (resp.id === 2) {
+        const newAvatar = await this.$phoneAPI.takePhoto()
+        if (newAvatar.url !== null) {
+          this.instagramSaveTempPost(newAvatar.url)
+          this.$bus.$emit('instagramScegliFiltri')
+          this.ignoreControls = false
+        }
+      } else {
         this.ignoreControls = false
-        this.$bus.$emit('instagramScegliFiltri')
       }
     },
     onBack () {

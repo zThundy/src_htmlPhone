@@ -8,7 +8,7 @@
 
 
             <div class="elem-content">
-              <div style="font-size: 20px; font-weight: 400; margin-top: 20px;" class="elem-content-p">{{histo.display}}</div>
+              <div class="elem-content-p">{{histo.display}}</div>
 
               <div class="elem-content-s">
                 <div class="elem-histo-pico" :class="{'reject': hc.accept === false}" v-for="(hc, i) in histo.lastCall" :key="i">
@@ -246,6 +246,8 @@ export default {
 
 .elem-content-p {
   font-size: 20px;
+  margin-top: 15px;
+  font-weight: bolder;
   line-height: 20px;
   width: 153px;
 }

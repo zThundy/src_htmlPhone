@@ -1,6 +1,6 @@
 <template>
-  <div style="width: 326px; height: 743px;" class="phone_app">
-    <div style="width: 342px; height: 756px;" class="backblur" v-bind:style="{background: 'url(' + backgroundURL +')'}"></div>
+  <div class="phone_app">
+    <div class="backblur" v-bind:style="{ background: 'url(' + backgroundURL +')' }"></div>
     <InfoBare class="infobare"/>
 
     <div class="menu">
@@ -35,7 +35,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['UnreadMessages', 'backgroundURL', 'Apps'])
+    ...mapGetters(['UnreadMessagesLength', 'backgroundURL', 'Apps'])
   },
   methods: {
     ...mapGetters(['closePhone', 'hasWifi']),
@@ -119,7 +119,20 @@ export default {
   position: absolute;
   background-size: cover !important;
   background-position: center !important;
-  filter: blur(8px);
+  /* filter: blur(8px); */
+
+  animation-name: blackBG;
+  animation-duration: 0.8s;
+  animation-fill-mode: forwards;
+}
+
+@keyframes blackBG {
+  from {
+    filter: blur(0px);
+  }
+  to {
+    filter: blur(6px);
+  }
 }
 
 .menu_content {
@@ -185,13 +198,12 @@ button .puce{
   width: 26px;
   height: 26px;
   top: -5px;
-    left: 51px;
-  font-family: none;
+  left: 51px;
+
   line-height: 28px;
   text-align: center;
   border-radius: 50%;
   font-weight: 400;
-  font-family: -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
   bottom: 32px;
   right: 12px;
   
@@ -204,8 +216,7 @@ button.select {
   border-radius: 12px;
 }
 
-.letra{
-  font-family: -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica;
+.letra {
   font-weight: 400;
 }
 
