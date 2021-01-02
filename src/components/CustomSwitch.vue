@@ -1,15 +1,15 @@
 <template>
   <div
-  class="custom-switch"
-  :style="{ backgroundColor: backgroundColor }"
-  :class="[ value ? 'active' : '' ]"
-  @click="$_onChange($event)"
+    class="custom-switch"
+    :style="{ backgroundColor: backgroundColor }"
+    :class="[ value ? 'active' : '' ]"
+    @click="$_onChange($event)"
   ></div>
 </template>
 
 <script>
 export default {
-  name: 'switch',
+  name: 'custom-switch',
   props: {
     value: {
       type: Boolean,
@@ -71,6 +71,7 @@ export default {
 
 .custom-switch.active {
   /* background-color: green; */
+  color: rgba(0,0,0,0);
 }
 
 .custom-switch.active::before {

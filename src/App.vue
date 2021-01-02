@@ -1,7 +1,7 @@
 <template>
-  <div style="height: 100vh; width: 100vw;" @contextmenu="closePhone">
+  <div style="height: 100vh; width: 100vw;">
     <notification />
-    <div v-if="show === true && tempoHide === false" :style="{ zoom: zoom }" @contextmenu.stop>
+    <div v-if="show === true && tempoHide === false" :style="{ zoom: zoom }">
       <div class="phone_wrapper">
         <div v-if="currentCover" class="phone_coque" :style="{ backgroundImage: 'url(/html/static/img/cover/' + currentCover.value + ')' }"></div>
         
@@ -20,7 +20,10 @@
 <script>
 
 import './PhoneBaseStyle.scss'
+
 import './assets/css/font-awesome.min.css'
+// import './assets/css/fontawesome.min.css'
+
 import { mapGetters, mapActions } from 'vuex'
 import { Howl } from 'howler'
 import TransitionPage from './components/TransitionPage'

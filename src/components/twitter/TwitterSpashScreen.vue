@@ -1,6 +1,6 @@
 <template>
   <div style="width: 326px; height: 743px;" class="splash">
-    <img src="/html/static/img/twitter/bird.png">
+    <img src="/html/static/img/app_twitter/bird.png">
   </div>
 </template>
 

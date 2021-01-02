@@ -13,10 +13,12 @@ const state = {
   volume: parseFloat(window.localStorage['gc_volume']) || 0.5,
   tts: window.localStorage['gc_tts'] || false,
   lang: window.localStorage['gc_language'],
+  brightness: parseInt(window.localStorage['gc_brightness'] || 100),
   // myImage: window.localStorage['gc_myImage'] || null,
   myImage: null,
   myData: JSON.parse(window.localStorage['gc_myData'] || null),
   notification: (window.localStorage['gc_notification'] === null || window.localStorage['gc_notification'] === undefined) ? true : window.localStorage['gc_notification'],
+  airplane: (window.localStorage['gc_airplane'] === null || window.localStorage['gc_airplane'] === undefined) ? false : window.localStorage['gc_airplane'],
   config: {
     reseau: 'Code',
     useFormatNumberFrance: false,
@@ -34,6 +36,8 @@ const getters = {
   volume: ({ volume }) => volume,
   tts: ({ tts }) => tts,
   notification: ({ notification }) => notification,
+  airplane: ({ airplane }) => airplane,
+  brightness: ({ brightness }) => brightness,
   myImage: ({ myImage, config }) => myImage,
   myData: ({ myData, config }) => myData,
   enableTakePhoto: ({ config }) => config.enableTakePhoto === true,
@@ -164,6 +168,11 @@ const actions = {
     PhoneAPI.updateNotifications(state.notification)
     window.localStorage['gc_notification'] = state.notification
   },
+  toggleAirplane ({ commit, state }) {
+    commit('TOGGLE_AIRPLANE')
+    PhoneAPI.updateAirplane(state.airplane)
+    window.localStorage['gc_airplane'] = state.airplane
+  },
   setVolume ({ commit }, volume) {
     window.localStorage['gc_volume'] = volume
     commit('SET_VOLUME', volume)
@@ -193,6 +202,9 @@ const actions = {
     commit('UPDATE_TTS', bool)
     window.localStorage['gc_tts'] = bool
     if (bool) { PhoneAPI.speakTTS('Lettura chiamate, attiva', state.volume) }
+  },
+  changeBrightness ({ commit }, value) {
+    commit('CHANGE_BRIGHTNESS', value)
   }
 }
 
@@ -241,6 +253,9 @@ const mutations = {
   TOGGLE_NOTIFICATIONS (state) {
     state.notification = !state.notification
   },
+  TOGGLE_AIRPLANE (state) {
+    state.airplane = !state.airplane
+  },
   UPDATE_TTS (state, bool) {
     state.tts = bool
   },
@@ -251,6 +266,10 @@ const mutations = {
   SEND_INIT_VALUES (state, data) {
     window.localStorage['gc_myData'] = JSON.stringify(data)
     state.myData = data
+  },
+  CHANGE_BRIGHTNESS (state, value) {
+    window.localStorage['gc_brightness'] = parseInt(value)
+    state.brightness = parseInt(value)
   }
 }
 

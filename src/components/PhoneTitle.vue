@@ -1,9 +1,9 @@
 <template>
-  <div class="phone_title_content" :style="style" :class="{'showSegnaleSection': showSegnaleSection}" >
+  <div class="phone_title_content" :style="style" :class="{ 'showSegnaleSection': showSegnaleSection }" >
     <InfoBare v-if="showSegnaleSection" />
     
-    <div class="phone_title" :style="{backgroundColor: backgroundColor}">
-      <div :style="{color: textColor}" class="title">{{title}}</div>
+    <div class="phone_title" :style="{ backgroundColor: backgroundColor }">
+      <div :style="{ color: textColor }" class="title">{{ title }}</div>
       
       <i class="backIcon fas fa-angle-left"/>
     </div>
@@ -57,7 +57,7 @@ export default {
   font-family: SanFrancisco;
   font-weight: 500;
 
-  padding-top: 7px;
+  padding-top: 20px;
   padding-right: 10px;
   text-align: center;
   position: relative;

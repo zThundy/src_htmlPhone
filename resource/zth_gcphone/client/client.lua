@@ -25,6 +25,7 @@ inCall = false
 local stoppedPlayingUnreachable = false
 secondiRimanenti = 0
 enableGlobalNotification = true
+enableGlobalAirplane = false
 
 playerCoords = nil
 distance = nil
@@ -123,6 +124,12 @@ end)
 
 RegisterNUICallback("updateNotifications", function(data, cb)
     enableGlobalNotification = data
+    cb("ok")
+end)
+
+
+RegisterNUICallback("updateAirplane", function(data, cb)
+    enableGlobalAirplane = data
     cb("ok")
 end)
 

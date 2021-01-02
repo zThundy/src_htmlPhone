@@ -4,6 +4,7 @@ segnaliTelefoniPlayers = {}
 wifiConnectedPlayers = {}
 playersInCall = {}
 built_phones = false
+phone_loaded = false
 
 cachedNumbers = {}
 
@@ -20,16 +21,48 @@ MySQL.ready(function()
     MySQL.Async.execute("DELETE FROM twitter_tweets WHERE (DATEDIFF(CURRENT_DATE, time) > 20)", {})
     MySQL.Async.execute("DELETE FROM phone_calls WHERE (DATEDIFF(CURRENT_DATE, time) > 15)", {})
 
+    print("^1[ZTH_Phone] ^0Caching members. Lag expected")
+
     MySQL.Async.fetchAll("SELECT phone_number, identifier FROM sim", {}, function(r)
         for _, v in pairs(r) do
-            print(v.phone_number, v.identifier)
-            cachedNumbers[tostring(v.phone_number)] = v.identifier
+            cachedNumbers[tostring(v.phone_number)] = {identifier = v.identifier, inUse = false}
+
+            MySQL.Async.fetchAll("SELECT phone_number FROM users WHERE identifier = @identifier", {['@identifier'] = v.identifier}, function(user)
+                if user[1].phone_number == v.phone_number then
+                    cachedNumbers[tostring(v.phone_number)].inUse = true
+                end
+            end)
         end
 
+        phone_loaded = true
         print("^1[ZTH_Phone] ^0Numbers cache loaded from sim database")
     end)
 
     print("^1[ZTH_Phone] ^0Phone initialized")
+end)
+
+
+RegisterServerEvent('gcPhone:allUpdate')
+AddEventHandler('gcPhone:allUpdate', function()
+    -- creo il thread per evitare di fare il wait sul main
+    -- thread
+    Citizen.CreateThreadNow(function()
+        local player = source
+        local identifier = gcPhone.getPlayerID(player)
+        local num = gcPhone.getPhoneNumber(identifier)
+
+        while not phone_loaded do Citizen.Wait(100) end
+
+        TriggerClientEvent("gcPhone:updatePhoneNumber", player, num)
+        TriggerClientEvent("gcPhone:contactList", player, getContacts(identifier))
+
+        local notReceivedMessages = getUnreceivedMessages(identifier)
+        -- if notReceivedMessages > 0 then setMessagesReceived(num) end
+
+        TriggerClientEvent("gcPhone:allMessage", player, getMessages(identifier), notReceivedMessages)
+
+        sendHistoriqueCall(player, num)
+    end)
 end)
 
 
@@ -70,8 +103,9 @@ end)
 function gcPhone.getPlayerSegnaleIndex(tabella, identifier)
 	index = nil
 	
-	for i=1, #tabella do
-		if tabella[i].identifier == identifier then
+    for i=1, #tabella do
+        if tostring(tabella[i].identifier) == tostring(identifier) then
+            -- print("index is", i, "for id", identifier)
 			index = i
 		end
 	end
@@ -195,18 +229,58 @@ end)
 --==================================================================================================================
 
 RegisterServerEvent("gcphone:updateCachedNumber")
-AddEventHandler("gcphone:updateCachedNumber", function(number, identifier)
-    if identifier ~= nil then
+AddEventHandler("gcphone:updateCachedNumber", function(number, identifier, isChanging)
+    -- print(number, identifier, isChanging)
+    number = tostring(number)
+    identifier = tonumber(identifier)
+
+    if identifier then
         print("^1[ZTH_Phone] ^0Updated number "..number.." for identifier "..identifier)
     else
-        print("^1[ZTH_Phone] ^Removed number "..number.." from cachedNumbers")
+        print("^1[ZTH_Phone] ^0Removed number "..number.." from cachedNumbers")
     end
 
-    cachedNumbers[number] = identifier
+    local oldNumber = gcPhone.getPhoneNumber(identifier)
+    -- print(ESX.DumpTable(cachedNumbers[number]), ESX.DumpTable(cachedNumbers[oldNumber]), oldNumber)
+
+    -- qui controllo se la il numero sta venendo cambiato
+    -- con un altra sim
+    if cachedNumbers[oldNumber] ~= nil then
+        if isChanging then
+            cachedNumbers[oldNumber].inUse = false
+            cachedNumbers[number].inUse = true
+        else
+            print("IDK ", number, identifier)
+        end
+    elseif cachedNumbers[number] ~= nil then
+        cachedNumbers[number].inUse = true
+    end
+
+    -- qui modifico solo l'indentifier, quindi nel caso io
+    -- la stia passando a qualcuno, oppure nel caso in cui
+    -- la stia eliminando
+    if identifier then
+        -- nel caso in cui la stia passando a qualcuno, resetto lo
+        -- stato inUse della sim
+        if cachedNumbers[number] ~= nil then
+            if tostring(cachedNumbers[number].identifier) ~= tostring(identifier) then
+                cachedNumbers[number].inUse = false
+            end
+
+            cachedNumbers[number].identifier = identifier
+        else
+            -- nel caso in cui la sim non esiste nella cache, la aggiungo
+            cachedNumbers[number] = {identifier = identifier, inUse = false}
+        end
+    else
+        cachedNumbers[number] = nil
+    end
 end)
 
 
 function gcPhone.getSourceFromIdentifier(identifier, cb)
+    identifier = tonumber(identifier)
+
     local xPlayer = ESX.GetPlayerFromIdentifier(identifier)
     if xPlayer ~= nil then cb(xPlayer.source) else cb(nil) end
 end
@@ -218,8 +292,8 @@ function gcPhone.getPhoneNumber(identifier)
         if #result > 0 then return result[1].phone_number end
     ]]
 
-    for number, id in pairs(cachedNumbers) do
-        if tostring(id) == tostring(identifier) then
+    for number, v in pairs(cachedNumbers) do
+        if tostring(v.identifier) == tostring(identifier) and v.inUse then
             return number
         end
     end
@@ -240,13 +314,10 @@ function gcPhone.getIdentifierByPhoneNumber(phone_number)
         if result[1] ~= nil then return result[1].identifier, isInstalled end
     ]]
 
-    local isInstalled = true
-    if cachedNumbers[phone_number] == nil then
-        isInstalled = false
-        return nil, isInstalled
-    else
-        return cachedNumbers[phone_number], isInstalled
-    end
+    phone_number = tostring(phone_number)
+    if cachedNumbers[phone_number] == nil then return nil, false end
+
+    return cachedNumbers[phone_number].identifier, cachedNumbers[phone_number].inUse
 end
 
 
@@ -364,11 +435,15 @@ end
 
 
 function addMessage(source, identifier, phone_number, message)
+    print(source, identifier, phone_number, message)
+
     local player = tonumber(source)
     local xPlayer = ESX.GetPlayerFromId(player)
 
     local otherIdentifier, isInstalled = gcPhone.getIdentifierByPhoneNumber(phone_number)
     local myPhone = gcPhone.getPhoneNumber(identifier)
+
+    print(otherIdentifier, isInstalled)
     
     if otherIdentifier ~= nil then
         segnaleTransmitter = segnaliTelefoniPlayers[gcPhone.getPlayerSegnaleIndex(segnaliTelefoniPlayers, identifier)]
@@ -381,19 +456,27 @@ function addMessage(source, identifier, phone_number, message)
 
                     local memess = _internalAddMessage(phone_number, myPhone, message, 1)
                     TriggerClientEvent("gcPhone:receiveMessage", player, memess)
+                    -- print(ESX.DumpTable(memess))
                     
                     local tomess = _internalAddMessage(myPhone, phone_number, message, 0)
+                    -- print(ESX.DumpTable(tomess))
 
                     gcPhone.getSourceFromIdentifier(otherIdentifier, function(target_source)
-                        if tonumber(target_source) ~= nil then
+                        target_source = tonumber(target_source)
+
+                        if target_source ~= nil then
                             
                             -- qui controllo se la sim a cui stai mandando il
                             -- messaggio è installata o no
                             if isInstalled then
+                                -- print("sim installata")
                                 -- se la sim è installata allora mando il telefono e gli mando la notifica
+                                -- local retIndex = gcPhone.getPlayerSegnaleIndex(segnaliTelefoniPlayers, otherIdentifier)
+                                -- print(retIndex)
                                 segnaleReceiver = segnaliTelefoniPlayers[gcPhone.getPlayerSegnaleIndex(segnaliTelefoniPlayers, otherIdentifier)]
+                                -- print(ESX.DumpTable(segnaleReceiver), ESX.DumpTable(segnaliTelefoniPlayers))
                                 if segnaleReceiver ~= nil and segnaleReceiver.potenzaSegnale > 0 then
-                                    TriggerClientEvent("gcPhone:receiveMessage", tonumber(target_source), tomess)
+                                    TriggerClientEvent("gcPhone:receiveMessage", target_source, tomess)
                                     setMessageReceived(phone_number, myPhone)
                                 end
                             else
@@ -903,24 +986,6 @@ AddEventHandler("gcPhone:updateAvatarContatto", function(data)
 end)
 
 
-RegisterServerEvent('gcPhone:allUpdate')
-AddEventHandler('gcPhone:allUpdate', function()
-    local player = source
-    local identifier = gcPhone.getPlayerID(player)
-    local num = gcPhone.getPhoneNumber(identifier)
-
-    TriggerClientEvent("gcPhone:updatePhoneNumber", player, num)
-    TriggerClientEvent("gcPhone:contactList", player, getContacts(identifier))
-
-    local notReceivedMessages = getUnreceivedMessages(identifier)
-    -- if notReceivedMessages > 0 then setMessagesReceived(num) end
-
-    TriggerClientEvent("gcPhone:allMessage", player, getMessages(identifier), notReceivedMessages)
-
-    sendHistoriqueCall(player, num)
-end)
-
-
 function getUnreceivedMessages(identifier)
     local messages = getMessages(identifier)
     local notReceivedMessages = 0
@@ -1067,12 +1132,14 @@ function onRejectFixePhone(source, infoCall, rtcAnswer)
 end
 
 
-Citizen.CreateThread(function()
-    while ESX == nil do Citizen.Wait(100) end
-    
-    while true do
-        Citizen.Wait(5000)
+--[[
+    Citizen.CreateThread(function()
+        while ESX == nil do Citizen.Wait(100) end
+        
+        while true do
+            Citizen.Wait(5000)
 
-        print(ESX.DumpTable(cachedNumbers))
-    end
-end)
+            print(ESX.DumpTable(cachedNumbers))
+        end
+    end)
+]]

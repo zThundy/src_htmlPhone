@@ -168,7 +168,7 @@ export default {
         username: '',
         password: '',
         passwordConfirm: '',
-        avatarUrl: '/html/static/img/twitter/default_profile.png'
+        avatarUrl: '/html/static/img/app_twitter/default_profile.png'
       },
       notification: 0,
       notificationSound: false,

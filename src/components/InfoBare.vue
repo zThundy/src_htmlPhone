@@ -33,7 +33,7 @@ export default {
       barra1: {
         height: '12px',
         width: '3px',
-        right: '60px',
+        right: '55px',
         'background-color': 'rgba(128, 128, 128, 150)',
         border: 'none',
         bottom: '-3px'
@@ -41,7 +41,7 @@ export default {
       barra2: {
         height: '10px',
         width: '3px',
-        right: '65px',
+        right: '60px',
         'background-color': 'rgba(128, 128, 128, 150)',
         border: 'none',
         bottom: '-3px'
@@ -49,7 +49,7 @@ export default {
       barra3: {
         height: '8px',
         width: '3px',
-        right: '70px',
+        right: '65px',
         'background-color': 'rgba(128, 128, 128, 150)',
         border: 'none',
         bottom: '-3px'
@@ -57,7 +57,7 @@ export default {
       barra4: {
         height: '6px',
         width: '3px',
-        right: '75px',
+        right: '70px',
         'background-color': 'rgba(128, 128, 128, 150)',
         border: 'none',
         bottom: '-3px'

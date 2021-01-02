@@ -1,16 +1,19 @@
 <template>
   <div class="phone_app">
-    <div class="backblur" v-bind:style="{ background: 'url(' + backgroundURL +')' }"></div>
+    <div :class="{ 'backblur': !isBackspace }" class="background" v-bind:style="{ background: 'url(' + backgroundURL +')' }"></div>
     <InfoBare class="infobare"/>
 
     <div class="menu">
       
       <div class="menu_content">
       
-        <div class='menu_buttons'>
-          <button class="letra" v-for="(but, key) of Apps" v-bind:key="but.name" 
-            v-bind:class="{select: key === currentSelect}"
-            v-bind:style="{backgroundImage: 'url(' + but.icons +')'}"
+        <div class='menu_buttons' :class="{ 'down': isBackspace }">
+          <button
+            class="letra"
+            v-for="(but, key) of Apps"
+            v-bind:key="but.name"
+            v-bind:class="{ select: key === currentSelect }"
+            v-bind:style="{ backgroundImage: 'url(' + but.icons +')' }"
           >{{but.intlName}}
             <span class="puce" v-if="but.puce !== undefined && but.puce !== 0">{{but.puce}}</span>
           </button>
@@ -31,7 +34,8 @@ export default {
   data: function () {
     return {
       currentSelect: 0,
-      nBotonesMenu: 3
+      nBotonesMenu: 4,
+      isBackspace: false
     }
   },
   computed: {
@@ -77,7 +81,10 @@ export default {
       this.openApp(this.Apps[this.currentSelect])
     },
     onBack () {
-      this.$router.push({ name: 'home' })
+      this.isBackspace = true
+      setTimeout(() => {
+        this.$router.push({ name: 'home' })
+      }, 350)
     }
   },
   mounted () {
@@ -111,7 +118,7 @@ export default {
   padding: 6px 8px;
 }
 
-.backblur {
+.background {
   top: -6px;
   left: -6px;
   right:-6px;
@@ -119,20 +126,17 @@ export default {
   position: absolute;
   background-size: cover !important;
   background-position: center !important;
-  /* filter: blur(8px); */
+}
 
+.backblur {
   animation-name: blackBG;
-  animation-duration: 0.8s;
+  animation-duration: 0.4s;
   animation-fill-mode: forwards;
 }
 
 @keyframes blackBG {
-  from {
-    filter: blur(0px);
-  }
-  to {
-    filter: blur(6px);
-  }
+  from { filter: blur(0px); }
+  to { filter: blur(6px); }
 }
 
 .menu_content {
@@ -141,23 +145,25 @@ export default {
 }
 
 .menu_buttons {
-  margin-top: 24px;
+  margin-top: 20px;
   display: flex;
   width: 100%;
-  margin-left: 10px;
   align-items: flex-start;
   align-content: flex-start;
   /* justify-content: space-around; */
+
+  margin-left: auto;
+  margin-right: auto;
+
   flex-flow: row;
   flex-wrap: wrap;
-  margin-bottom: 0px;
 
-  transition: all 0.5s ease-in-out;
+  transition: all 0.4s ease-in-out;
 }
 
 .menu_buttons {
   animation-name: up;
-  animation-duration: 0.6s;
+  animation-duration: 0.4s;
   animation-fill-mode: forwards;
   /* transition: all 0.5s ease-in-out; */
 }
@@ -167,53 +173,72 @@ export default {
   to {transform: translateY(0);}
 }
 
+.down {
+  animation-name: down;
+  animation-duration: 0.4s;
+  animation-fill-mode: forwards;
+  /* transition: all 0.5s ease-in-out; */
+}
+
+@keyframes down {
+  from {transform: translateY(0);}
+  to {transform: translateY(100vh);}
+}
+
 
 button {
   position: relative;
-  margin: 0px;
   border: none;
-  width: 80px;
-  height: 110px;
+  width: 62px;
+  height: 90px;
   margin: 8px;
+
   color: white;
-  background-size: 64px 64px;
-  background-position: center 6px;
+  background-size: 52px 52px;
+  background-position: center 5px;
   background-repeat: no-repeat;
   background-color: transparent;
-  font-size: 14px;
-  padding-top: 72px;
+
+  font-size: 10px;
+  padding-top: 62px;
   font-weight: 700;
   text-shadow: -1px 0 0 rgba(0,0,0, 0.8), 
              1px 0 0 rgba(0,0,0, 0.8),
              0 -1px 0 rgba(0,0,0, 0.8),
              0 1px 0 rgba(0,0,0, 0.8);
+
   text-align: center;
 }
 
-button .puce{
+button .puce {
   position: absolute;
   display: block;
   background-color: #ff3939;
-  font-size: 14px;
-  width: 26px;
-  height: 26px;
-  top: -5px;
-  left: 51px;
+  font-size: 12px;
+  width: 16px;
+  height: 16px;
+  top: 0;
+  left: 42px;
 
-  line-height: 28px;
+  line-height: 19px;
   text-align: center;
   border-radius: 50%;
-  font-weight: 400;
-  bottom: 32px;
-  right: 12px;
   
   bottom: 32px;
-  right: 12px;
+  right: 10px;
 }
 
 button.select {
-  background-color: rgba(190, 190, 190, 0.37);
-  border-radius: 12px;
+  border-radius: 10px;
+
+  animation-name: changeActiveState;
+  animation-duration: 0.5s;
+  animation-fill-mode: both;
+}
+
+@keyframes changeActiveState {
+  from { background-color: rgba(190, 190, 190, 0); }
+  to { background-color: rgba(190, 190, 190, 0.466); }
 }
 
 .letra {

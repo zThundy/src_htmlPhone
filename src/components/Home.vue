@@ -2,6 +2,8 @@
   <div class="home" v-bind:style="{ background: 'url(' + backgroundURL +')' }">
     <InfoBare />
 
+    <DropdownNotifications :show="showDropdown"/>
+
     <span class="warningMess" v-if="messages.length >= warningMessageCount && warningMessageCount !== -1">
       <div class="warningMess_icon"><i class="fa fa-warning"></i></div>
       <span class="warningMess_content">
@@ -43,12 +45,18 @@
 import { mapGetters, mapActions } from 'vuex'
 import InfoBare from './InfoBare'
 import TransitionPage from '@/components/TransitionPage'
+import DropdownNotifications from '@/components/DropdownNotifications'
 
 export default {
-  components: { InfoBare, TransitionPage },
+  components: {
+    InfoBare,
+    TransitionPage,
+    DropdownNotifications
+  },
   data () {
     return {
-      currentSelect: 0
+      currentSelect: 0,
+      showDropdown: false
     }
   },
   computed: {
@@ -57,25 +65,35 @@ export default {
   methods: {
     ...mapActions(['closePhone', 'setMessages']),
     onLeft () {
+      if (this.showDropdown) return
       this.currentSelect = (this.currentSelect + 1) % (this.AppsHome.length + 1)
     },
     onRight () {
+      if (this.showDropdown) return
       this.currentSelect = (this.currentSelect + this.AppsHome.length) % (this.AppsHome.length + 1)
     },
     onUp () {
+      if (this.showDropdown) return
       this.$router.push({ name: 'menu' })
     },
     onDown () {
-      this.currentSelect = Math.min(this.currentSelect + 4, this.AppsHome.length)
+      // this.currentSelect = Math.min(this.currentSelect + 4, this.AppsHome.length)
+      // console.log('notifiche')
+      this.showDropdown = !this.showDropdown
     },
     openApp (app) {
       // this.$router.push({ name: app.routeName })
       this.$router.replace({ name: app.routeName })
     },
     onEnter () {
+      if (this.showDropdown) return
       this.openApp(this.AppsHome[this.currentSelect] || {routeName: 'menu'})
     },
     onBack () {
+      if (this.showDropdown) {
+        this.showDropdown = false
+        return
+      }
       this.closePhone()
     }
   },

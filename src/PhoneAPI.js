@@ -482,7 +482,7 @@ class PhoneAPI {
 
   ontwitter_showError (data) {
     Vue.notify({
-      title: store.getters.IntlString(data.title, ''),
+      title: store.getters.IntlString(data.title),
       message: store.getters.IntlString(data.message),
       icon: 'twitter',
       backgroundColor: '#e0245e80'
@@ -491,7 +491,7 @@ class PhoneAPI {
 
   ontwitter_showSuccess (data) {
     Vue.notify({
-      title: store.getters.IntlString(data.title, ''),
+      title: store.getters.IntlString(data.title),
       message: store.getters.IntlString(data.message),
       icon: 'twitter'
     })
@@ -642,7 +642,7 @@ class PhoneAPI {
   // notifica di errore
   oninstagram_showError (data) {
     Vue.notify({
-      title: store.getters.IntlString(data.title, ''),
+      title: store.getters.IntlString(data.title),
       message: store.getters.IntlString(data.message),
       icon: 'instagram',
       backgroundColor: '#66000080',
@@ -653,7 +653,7 @@ class PhoneAPI {
   // notifica di successo
   oninstagram_showSuccess (data) {
     Vue.notify({
-      title: store.getters.IntlString(data.title, ''),
+      title: store.getters.IntlString(data.title),
       message: store.getters.IntlString(data.message),
       icon: 'instagram',
       backgroundColor: '#FF66FF80',
@@ -668,7 +668,7 @@ class PhoneAPI {
   // notifica di errore
   onwhatsapp_showError (data) {
     Vue.notify({
-      title: store.getters.IntlString(data.title, ''),
+      title: store.getters.IntlString(data.title),
       message: store.getters.IntlString(data.message),
       icon: 'whatsapp',
       backgroundColor: '#00996680',
@@ -679,7 +679,7 @@ class PhoneAPI {
   // notifica di successo
   onwhatsapp_showSuccess (data) {
     Vue.notify({
-      title: store.getters.IntlString(data.title, ''),
+      title: store.getters.IntlString(data.title),
       message: store.getters.IntlString(data.message),
       icon: 'whatsapp',
       backgroundColor: '#33CC6680',
@@ -733,6 +733,10 @@ class PhoneAPI {
 
   async updateNotifications (data) {
     return this.post('updateNotifications', data)
+  }
+
+  async updateAirplane (data) {
+    return this.post('updateAirplane', data)
   }
 
   async updateGroupInfo (data) {

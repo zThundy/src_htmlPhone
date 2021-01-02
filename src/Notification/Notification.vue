@@ -5,11 +5,11 @@
 
       <div class="title">
 
-        <i v-if="notif.icon" class="fa" :class="'fa-' + notif.icon"/> {{notif.title}}
+        <i v-if="notif.icon" class="fa" :class="'fa-' + notif.icon"/> {{ notif.title }}
         
       </div>
 
-      <div class="message">{{notif.message}}</div>
+      <div class="message">{{ notif.message }}</div>
 
     </div>
 
@@ -34,7 +34,7 @@ export default {
     async addItem (event = {}) {
       const dataNotif = {
         ...event,
-        id: this.currentId ++,
+        id: this.currentId++,
         duration: parseInt(event.duration) || 3000
       }
       this.list.push(dataNotif)

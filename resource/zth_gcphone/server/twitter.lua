@@ -1,3 +1,13 @@
+function TwitterShowError(player, title, message)
+	TriggerClientEvent('gcPhone:twitter_showError', player, title, message)
+end
+
+
+function TwitterShowSuccess(player, title, message)
+	TriggerClientEvent('gcPhone:twitter_showSuccess', player, title, message)
+end
+
+
 function TwitterGetTweets (accountId, cb)
 	if accountId == nil then
 		MySQL.Async.fetchAll([===[
@@ -80,13 +90,13 @@ function TwitterPostTweet(username, password, message, player, realUser)
 			getTwiterUserAccount(username, password, function(user)
     			if user == nil then
       				if player ~= nil then
-        				TwitterShowError(player, 'Twitter Info', 'APP_TWITTER_NOTIF_LOGIN_ERROR')
+        				TwitterShowError(player, 'TWITTER_INFO_TITLE', 'APP_TWITTER_NOTIF_LOGIN_ERROR')
       				end
       				return
 				end
 				
 				if user == false then
-					TwitterShowError(player, 'Twitter Info', 'APP_TWITTER_NO_ACCOUNT')
+					TwitterShowError(player, 'TWITTER_INFO_TITLE', 'APP_TWITTER_NO_ACCOUNT')
       				return
 				end
 
@@ -106,7 +116,7 @@ function TwitterPostTweet(username, password, message, player, realUser)
     			end)
   			end)
 		else
-  			TwitterShowError(player, 'Twitter Info', 'APP_TWITTER_NOTIF_NO_CONNECTION')
+  			TwitterShowError(player, 'TWITTER_INFO_TITLE', 'APP_TWITTER_NOTIF_NO_CONNECTION')
 		end
 	end)
 end
@@ -122,13 +132,13 @@ function TwitterToogleLike(username, password, tweetId, player)
   			getTwiterUserAccount(username, password, function (user)
     			if user == nil then
       				if player ~= nil then
-        				TwitterShowError(player, 'Twitter Info', 'APP_TWITTER_NOTIF_LOGIN_ERROR')
+        				TwitterShowError(player, 'TWITTER_INFO_TITLE', 'APP_TWITTER_NOTIF_LOGIN_ERROR')
       				end
       				return
 				end
 				
 				if user == false then
-					TwitterShowError(player, 'Twitter Info', 'APP_TWITTER_NO_ACCOUNT')
+					TwitterShowError(player, 'TWITTER_INFO_TITLE', 'APP_TWITTER_NO_ACCOUNT')
       				return
 				end
 
@@ -171,7 +181,7 @@ function TwitterToogleLike(username, password, tweetId, player)
     			end)
 			end)
 		else
-  			TwitterShowError(player, 'Twitter Info', 'APP_TWITTER_NOTIF_NO_CONNECTION')
+  			TwitterShowError(player, 'TWITTER_INFO_TITLE', 'APP_TWITTER_NOTIF_NO_CONNECTION')
   		end
   	end)
 end
@@ -187,16 +197,6 @@ end
 -- ALTER TABLE `twitter_accounts`	CHANGE COLUMN `username` `username` VARCHAR(50) NOT NULL DEFAULT '0' COLLATE 'utf8_general_ci';
 
 
-function TwitterShowError(player, title, message)
-  	TriggerClientEvent('gcPhone:twitter_showError', player, message)
-end
-
-
-function TwitterShowSuccess(player, title, message)
-  	TriggerClientEvent('gcPhone:twitter_showSuccess', player, title, message)
-end
-
-
 RegisterServerEvent('gcPhone:twitter_login')
 AddEventHandler('gcPhone:twitter_login', function(username, password)
 	local player = source
@@ -208,19 +208,19 @@ AddEventHandler('gcPhone:twitter_login', function(username, password)
 
   			getTwiterUserAccount(username, password, function (user)
 				if user == false then
-					TwitterShowError(player, 'Twitter Info', 'APP_TWITTER_NO_ACCOUNT')
+					TwitterShowError(player, 'TWITTER_INFO_TITLE', 'APP_TWITTER_NO_ACCOUNT')
       				return
 				end
 				
 				if user == nil then
-      				TwitterShowError(player, 'Twitter Info', 'APP_TWITTER_NOTIF_LOGIN_ERROR')
+      				TwitterShowError(player, 'TWITTER_INFO_TITLE', 'APP_TWITTER_NOTIF_LOGIN_ERROR')
     			else
-      				TwitterShowSuccess(player, 'Twitter Info', 'APP_TWITTER_NOTIF_LOGIN_SUCCESS')
+      				TwitterShowSuccess(player, 'TWITTER_INFO_TITLE', 'APP_TWITTER_NOTIF_LOGIN_SUCCESS')
       				TriggerClientEvent('gcPhone:twitter_setAccount', player, username, password, user.authorIcon)
     			end
   			end)
   		else
-  			TwitterShowError(player, 'Twitter Info', 'APP_TWITTER_NOTIF_NO_CONNECTION')
+  			TwitterShowError(player, 'TWITTER_INFO_TITLE', 'APP_TWITTER_NOTIF_NO_CONNECTION')
   		end
   	end)
 end)
@@ -237,12 +237,12 @@ AddEventHandler('gcPhone:twitter_changePassword', function(username, password, n
 			  
 			getTwiterUserAccount(username, password, function (user)
 				if user == false then
-					TwitterShowError(player, 'Twitter Info', 'APP_TWITTER_NO_ACCOUNT')
+					TwitterShowError(player, 'TWITTER_INFO_TITLE', 'APP_TWITTER_NO_ACCOUNT')
       				return
 				end
 
     			if user == nil then
-      				TwitterShowError(player, 'Twitter Info', 'APP_TWITTER_NOTIF_NEW_PASSWORD_ERROR')
+      				TwitterShowError(player, 'TWITTER_INFO_TITLE', 'APP_TWITTER_NOTIF_NEW_PASSWORD_ERROR')
     			else
       				MySQL.Async.execute("UPDATE `twitter_accounts` SET `password`= @newPassword WHERE twitter_accounts.username = @username AND twitter_accounts.password = @password", {
         				['@username'] = username,
@@ -251,15 +251,15 @@ AddEventHandler('gcPhone:twitter_changePassword', function(username, password, n
       				}, function (result)
         				if (result == 1) then
           					TriggerClientEvent('gcPhone:twitter_setAccount', player, username, newPassword, user.authorIcon)
-          					TwitterShowSuccess(player, 'Twitter Info', 'APP_TWITTER_NOTIF_NEW_PASSWORD_SUCCESS')
+          					TwitterShowSuccess(player, 'TWITTER_INFO_TITLE', 'APP_TWITTER_NOTIF_NEW_PASSWORD_SUCCESS')
         				else
-          					TwitterShowError(player, 'Twitter Info', 'APP_TWITTER_NOTIF_NEW_PASSWORD_ERROR')
+          					TwitterShowError(player, 'TWITTER_INFO_TITLE', 'APP_TWITTER_NOTIF_NEW_PASSWORD_ERROR')
         				end
       				end)
     			end
   			end)
   		else
-  			TwitterShowError(player, 'Twitter Info', 'APP_TWITTER_NOTIF_NO_CONNECTION')
+  			TwitterShowError(player, 'TWITTER_INFO_TITLE', 'APP_TWITTER_NOTIF_NO_CONNECTION')
   		end
   	end)
 end)
@@ -276,13 +276,13 @@ AddEventHandler('gcPhone:twitter_createAccount', function(username, password, av
 			TwitterCreateAccount(username, password, avatarUrl, function (id)
     			if (id ~= 0) then
       				TriggerClientEvent('gcPhone:twitter_setAccount', player, username, password, avatarUrl)
-      				TwitterShowSuccess(player, 'Twitter Info', 'APP_TWITTER_NOTIF_ACCOUNT_CREATE_SUCCESS')
+      				TwitterShowSuccess(player, 'TWITTER_INFO_TITLE', 'APP_TWITTER_NOTIF_ACCOUNT_CREATE_SUCCESS')
     			else
-      				TwitterShowError(player, 'Twitter Info', 'APP_TWITTER_NOTIF_ACCOUNT_CREATE_ERROR')
+      				TwitterShowError(player, 'TWITTER_INFO_TITLE', 'APP_TWITTER_NOTIF_ACCOUNT_CREATE_ERROR')
     			end
   			end)
   		else
-  			TwitterShowError(player, 'Twitter Info', 'APP_TWITTER_NOTIF_NO_CONNECTION')
+  			TwitterShowError(player, 'TWITTER_INFO_TITLE', 'APP_TWITTER_NOTIF_NO_CONNECTION')
   		end
   	end)
 end)
@@ -300,7 +300,7 @@ AddEventHandler('gcPhone:twitter_getTweets', function(username, password)
 				  
 				getTwiterUserAccount(username, password, function (user)
 					if user == false then
-						TwitterShowError(player, 'Twitter Info', 'APP_TWITTER_NO_ACCOUNT')
+						TwitterShowError(player, 'TWITTER_INFO_TITLE', 'APP_TWITTER_NO_ACCOUNT')
 						return
 					end
 
@@ -311,13 +311,13 @@ AddEventHandler('gcPhone:twitter_getTweets', function(username, password)
   								gcPhone.usaDatiInternet(identifier, mbToRemove)
         						TriggerClientEvent('gcPhone:twitter_getTweets', player, tweets)
         					else
-  								TwitterShowError(player, 'Twitter Info', 'APP_TWITTER_NOTIF_NO_CONNECTION')
+  								TwitterShowError(player, 'TWITTER_INFO_TITLE', 'APP_TWITTER_NOTIF_NO_CONNECTION')
   							end
   						end)
       				end)
     			end)
   			else
-  				TwitterShowError(player, 'Twitter Info', 'APP_TWITTER_NOTIF_NO_CONNECTION')
+  				TwitterShowError(player, 'TWITTER_INFO_TITLE', 'APP_TWITTER_NOTIF_NO_CONNECTION')
   			end
   		end)
   	else
@@ -330,12 +330,12 @@ AddEventHandler('gcPhone:twitter_getTweets', function(username, password)
   							gcPhone.usaDatiInternet(identifier, mbToRemove)
       						TriggerClientEvent('gcPhone:twitter_getTweets', player, tweets)
       					else
-  							TwitterShowError(player, 'Twitter Info', 'APP_TWITTER_NOTIF_NO_CONNECTION')
+  							TwitterShowError(player, 'TWITTER_INFO_TITLE', 'APP_TWITTER_NOTIF_NO_CONNECTION')
   						end
   					end)
     			end)
   			else
-  				TwitterShowError(player, 'Twitter Info', 'APP_TWITTER_NOTIF_NO_CONNECTION')
+  				TwitterShowError(player, 'TWITTER_INFO_TITLE', 'APP_TWITTER_NOTIF_NO_CONNECTION')
   			end
   		end)
   	end
@@ -354,7 +354,7 @@ AddEventHandler('gcPhone:twitter_getFavoriteTweets', function(username, password
 				
 				getTwiterUserAccount(username, password, function(user)
 					if user == false then
-						TwitterShowError(player, 'Twitter Info', 'APP_TWITTER_NO_ACCOUNT')
+						TwitterShowError(player, 'TWITTER_INFO_TITLE', 'APP_TWITTER_NO_ACCOUNT')
 						return
 					end
 
@@ -365,13 +365,13 @@ AddEventHandler('gcPhone:twitter_getFavoriteTweets', function(username, password
   								gcPhone.usaDatiInternet(identifier, mbToRemove)
         						TriggerClientEvent('gcPhone:twitter_getFavoriteTweets', player, tweets)
         					else
-  								TwitterShowError(player, 'Twitter Info', 'APP_TWITTER_NOTIF_NO_CONNECTION')
+  								TwitterShowError(player, 'TWITTER_INFO_TITLE', 'APP_TWITTER_NOTIF_NO_CONNECTION')
   							end
   						end)
       				end)
     			end)
     		else
-  				TwitterShowError(player, 'Twitter Info', 'APP_TWITTER_NOTIF_NO_CONNECTION')
+  				TwitterShowError(player, 'TWITTER_INFO_TITLE', 'APP_TWITTER_NOTIF_NO_CONNECTION')
   			end
   		end)
   	else
@@ -381,7 +381,7 @@ AddEventHandler('gcPhone:twitter_getFavoriteTweets', function(username, password
   					gcPhone.usaDatiInternet(identifier, mbToRemove)
         			TriggerClientEvent('gcPhone:twitter_getFavoriteTweets', player, tweets)
         		else
-  					TwitterShowError(player, 'Twitter Info', 'APP_TWITTER_NOTIF_NO_CONNECTION')
+  					TwitterShowError(player, 'TWITTER_INFO_TITLE', 'APP_TWITTER_NOTIF_NO_CONNECTION')
   				end
     		end)
     	end)
@@ -426,9 +426,9 @@ AddEventHandler('gcPhone:twitter_setAvatarUrl', function(username, password, ava
 	}, function (result)
 		if (result == 1) then
 			TriggerClientEvent('gcPhone:twitter_setAccount', player, username, password, avatarUrl)
-			TwitterShowSuccess(player, 'Twitter Info', 'APP_TWITTER_NOTIF_AVATAR_SUCCESS')
+			TwitterShowSuccess(player, 'TWITTER_INFO_TITLE', 'APP_TWITTER_NOTIF_AVATAR_SUCCESS')
 		else
-			TwitterShowError(player, 'Twitter Info', 'APP_TWITTER_NOTIF_LOGIN_ERROR')
+			TwitterShowError(player, 'TWITTER_INFO_TITLE', 'APP_TWITTER_NOTIF_LOGIN_ERROR')
 		end
 	end)
 end)

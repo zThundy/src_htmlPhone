@@ -21,7 +21,7 @@
           <span v-if="elem.value" class="element-value">{{ elem.value }}</span>
 
           <div class="switchDiv">
-            <custom-switch :backgroundColor="'#002853'" class="bottone" v-if="elem.bottone != undefined" v-model="bottone[elem.meta]"></custom-switch>
+            <CustomSwitch v-if="elem.bottone != undefined" class="bottone" :backgroundColor="'#002853'" v-model="bottone[elem.meta]"/>
           </div>
           <md-icon v-if="elem.bottone == undefined" class="rightArrow md-notice-demo-icon md-notice-demo-icon-left" :size="'1'" :name="'arrow-right'"></md-icon>
         </div>
@@ -45,7 +45,7 @@ import PhoneTitle from './../PhoneTitle'
 import Modal from '@/components/Modal/index.js'
 import PhoneAPI from './../../PhoneAPI'
 
-import CustomSwitch from '@/components/Switch'
+import CustomSwitch from '@/components/CustomSwitch'
 
 // import { Icon, Switch } from 'mand-mobile'
 import { Icon } from 'mand-mobile'
@@ -54,8 +54,8 @@ import 'mand-mobile/lib/mand-mobile.css'
 export default {
   components: {
     PhoneTitle,
-    [Icon.name]: Icon,
-    CustomSwitch
+    CustomSwitch,
+    [Icon.name]: Icon
     // [Switch.name]: Switch
   },
   data () {
@@ -80,6 +80,7 @@ export default {
       'wifiString',
       'retiWifi',
       'notification',
+      'airplane',
       'bluetoothString',
       'closestPlayers',
       'bluetooth',
@@ -128,6 +129,14 @@ export default {
           onValid: 'toggleNotificationsLocally',
           title: this.IntlString('APP_CONFIG_NOTIFICATION'),
           value: (this.notification) ? 'Attive' : 'Disattive',
+          bottone: true
+        },
+        {
+          meta: 'airplane',
+          icons: 'fa-plane',
+          onValid: 'toggleAirplaneModeLocally',
+          title: this.IntlString('APP_CONFIG_AIRPLANE_MODE'),
+          value: (this.airplane) ? 'Attiva' : 'Disattiva',
           bottone: true
         },
         {
@@ -230,6 +239,7 @@ export default {
       'setVolume',
       'setLanguage',
       'toggleNotifications',
+      'toggleAirplane',
       'updateWifiString',
       'updateBluetooth',
       'setTTS'
@@ -454,7 +464,12 @@ export default {
 
     toggleNotificationsLocally () {
       this.toggleNotifications()
-      this.bottone['notifications'] = this.notification
+      this.bottone['notifications'] = Boolean(this.notification)
+    },
+
+    toggleAirplaneModeLocally () {
+      this.toggleAirplane()
+      this.bottone['airplane'] = Boolean(this.airplane)
     },
 
     resetPhone: function (param, data) {
@@ -483,7 +498,8 @@ export default {
   created () {
     // qui mi controllo i valori dei bottoni presi dai getters
     // in phone.js
-    this.bottone['notifications'] = this.notification
+    this.bottone['notifications'] = Boolean(this.notification)
+    this.bottone['airplane'] = Boolean(this.airplane)
     // qui richiedo le mie cover da phoneapi
     this.$phoneAPI.requestMyCovers()
     // console.log(JSON.stringify(this.myCovers))

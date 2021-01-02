@@ -56,7 +56,7 @@ ESX.RegisterServerCallback("gcPhone:getMessaggiFromGroupId", function(source, cb
 				gcPhone.usaDatiInternet(xPlayer.identifier, mbToRemove)
                 cb(messages)
             else
-                TriggerClientEvent("gcphone:whatsapp_showError", "Errore", "Non hai abbastanza giga per farlo!")
+                TriggerClientEvent("gcphone:whatsapp_showError", "WHATSAPP_INFO_TITLE", "WHATSAPP_NOT_ENOUGH_GIGA")
                 cb(false)
             end
         end)
@@ -108,7 +108,7 @@ AddEventHandler("gcphone:whatsapp_sendMessage", function(data)
                 end
             end)
         else
-            TriggerClientEvent("gcphone:whatsapp_showError", "Errore", "Non hai abbastanza giga per farlo!")
+            TriggerClientEvent("gcphone:whatsapp_showError", "WHATSAPP_INFO_TITLE", "WHATSAPP_NOT_ENOUGH_GIGA")
         end
     end)
 end)
@@ -185,11 +185,11 @@ AddEventHandler("gcphone:whatsapp_addGroupMembers", function(data)
                         if rowsChanged > 0 then TriggerClientEvent("gcphone:whatsapp_updateGruppi", player, updateCachedGroups()) end
                     end)
                 else
-                    TriggerClientEvent("gcphone:whatsapp_showError", "Errore", "Non hai abbastanza giga per farlo!")
+                    TriggerClientEvent("gcphone:whatsapp_showError", "WHATSAPP_INFO_TITLE", "WHATSAPP_NOT_ENOUGH_GIGA")
                 end
             end)
         else
-            TriggerClientEvent("gcphone:whatsapp_showError", "Errore", "Non hai abbastanza giga per farlo!")
+            TriggerClientEvent("gcphone:whatsapp_showError", "WHATSAPP_INFO_TITLE", "WHATSAPP_NOT_ENOUGH_GIGA")
         end
     end)
 end)
@@ -235,7 +235,7 @@ AddEventHandler("gcphone:whatsapp_leaveGroup", function(group)
                 }, function() updateCachedGroups() end)
             end)
         else
-            TriggerClientEvent("gcphone:whatsapp_showError", "Errore", "Non hai abbastanza giga per farlo!")
+            TriggerClientEvent("gcphone:whatsapp_showError", "WHATSAPP_INFO_TITLE", "WHATSAPP_NOT_ENOUGH_GIGA")
         end
     end)
 end)
@@ -305,7 +305,7 @@ AddEventHandler("gcphone:whatsapp_creaNuovoGruppo", function(data)
                 TriggerClientEvent("gcphone:whatsapp_updateGruppi", player, updateCachedGroups())
             end)
         else
-            TriggerClientEvent("gcphone:whatsapp_showError", "Errore", "Non hai abbastanza giga per farlo!")
+            TriggerClientEvent("gcphone:whatsapp_showError", "WHATSAPP_INFO_TITLE", "WHATSAPP_NOT_ENOUGH_GIGA")
         end
     end)
 end)
@@ -325,7 +325,7 @@ ESX.RegisterServerCallback("gcphone:whatsapp_editGroup", function(source, cb, gr
                 if rowsChanged > 0 then cb(true) else cb(false) end
             end)
         else
-            TriggerClientEvent("gcphone:whatsapp_showError", "Errore", "Non hai abbastanza giga per farlo!")
+            TriggerClientEvent("gcphone:whatsapp_showError", "WHATSAPP_INFO_TITLE", "WHATSAPP_NOT_ENOUGH_GIGA")
             cb(false)
         end
     end)

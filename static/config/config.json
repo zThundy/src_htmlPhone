@@ -52,6 +52,11 @@
 
   "background": {
     "Explicit Code": "code.png",
+    "EC Azzurro": "azzurro.png",
+    "EC Bianco": "bianco.png",
+    "EC Blu": "blu.png",
+    "EC Giallo": "giallo.png",
+    "EC Nero": "nero.png",
     "Personalizzato": "Link"
   },
 
@@ -284,7 +289,7 @@
     {
       "name": "Instagram",
       "it_IT__name": "Instagram",
-      "icons": "/html/static/img/icons_app/insta.png",
+      "icons": "/html/static/img/icons_app/instagram.png",
       "routeName": "instagram.splash",
       "inHomePage": false,
       "enabled": true
@@ -300,7 +305,7 @@
     {
       "name": "Whatsapp",
       "it_IT__name": "Whatsapp",
-      "icons": "/html/static/img/icons_app/whatsappIcon.png",
+      "icons": "/html/static/img/icons_app/whatsapp.png",
       "routeName": "whatsapp.splash",
       "inHomePage": false,
       "enabled": true
@@ -349,7 +354,7 @@
     {
       "name": "Banca",
       "it_IT__name": "Banca",
-      "icons": "/html/static/img/icons_app/banco.png",
+      "icons": "/html/static/img/icons_app/banca.png",
       "routeName": "bank.splash",
       "inHomePage": false,
       "enabled": true
@@ -357,14 +362,14 @@
     {
       "name": "Borsa",
       "it_IT__name": "Borsa",
-      "icons": "/html/static/img/icons_app/bourse1.png",
+      "icons": "/html/static/img/icons_app/borsa.png",
       "routeName": "bourse",
       "enabled": true
     },
     {
       "name": "DarkNet",
       "it_IT__name": "DarkNet",
-      "icons": "/html/static/img/icons_app/tor.png",
+      "icons": "/html/static/img/icons_app/darknet.png",
       "routeName": "tchat",
       "enabled": true
     },
@@ -403,6 +408,7 @@
       "APP_CONFIG_SOUND": "Telefono",
       "APP_CONFIG_ZOOM": "Zoom",
       "APP_CONFIG_NOTIFICATION": "Notifiche",
+      "APP_CONFIG_AIRPLANE_MODE": "Modalità aereo",
       "APP_CONFIG_TAKE_PICTURE": "Scatta fotografia",
       "APP_CONFIG_LINK_PICTURE": "Link immagine",
       "APP_CONFIG_VOLUME": "Volume",
@@ -461,6 +467,7 @@
       "APP_DARKTCHAT_CANCEL": "Cancella",
       "APP_DARKTCHAT_PLACEHOLDER_ENTER_MESSAGE": "Invia un messaggio",
       "APP_DARKCHAT_ERROR_NOTIFICATION": "Esiste già un canale con quel nome",
+      "TWITTER_INFO_TITLE": "Twitter info",
       "APP_TWITTER_NAME": "Twitter",
       "APP_TWITTER_POST_TWEET": "Posta un tweet",
       "APP_TWITTER_POST_PICTURE": "Posta un'immagine",
@@ -540,6 +547,7 @@
       "APP_INSTAGRAM_NOTIFICATION": "Notifiche",
       "APP_INSTAGRAM_ACCOUNT_PARAM": "Account",
       "APP_INSTAGRAM_ACCOUNT_NEW": "Nuovo account",
+      "INSTAGRAM_INFO_TITLE": "Instagram info",
       "APP_BANK_TITLE": "Banca",
       "APP_BANK_TITLE_BALANCE": "Saldo del conto",
       "APP_BANK_TITLE_IBAN": "Iban del conto",
@@ -569,6 +577,8 @@
       "APP_WHATSAPP_ADD_MEMBERS": "Aggiungi membri",
       "APP_WHATSAPP_GROUP_NAME": "Nome del gruppo",
       "APP_WHATSAPP_GROUP_AVATAR": "Immagine del gruppo",
+      "WHATSAPP_INFO_TITLE": "Whatsapp info",
+      "WHATSAPP_NOT_ENOUGH_GIGA": "Non hai abbastanza giga per farlo!",
       "APP_GALLERIA_TITLE": "Galleria",
       "APP_GALLERIA_SET_WALLPAPER": "Imposta come sfondo",
       "APP_GALLERIA_INOLTRA": "Inoltra",
