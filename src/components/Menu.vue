@@ -9,13 +9,15 @@
       
         <div class='menu_buttons' :class="{ 'down': isBackspace }">
           <button
-            class="letra"
+            style="font-weight: 400;"
             v-for="(but, key) of Apps"
-            v-bind:key="but.name"
-            v-bind:class="{ select: key === currentSelect }"
-            v-bind:style="{ backgroundImage: 'url(' + but.icons +')' }"
-          >{{but.intlName}}
-            <span class="puce" v-if="but.puce !== undefined && but.puce !== 0">{{but.puce}}</span>
+            :key="but.name"
+            :class="{ select: key === currentSelect }"
+            :style="{ backgroundImage: 'url(' + but.icons + ')' }"
+          >
+            {{but.intlName}}
+            <div class="white_rectangle" :class="{ 'app_open': (openingApp) && (key === currentSelect) }"></div>
+            <span class="puce" v-if="but.puce !== undefined && but.puce !== 0">{{ but.puce }}</span>
           </button>
         </div>
 
@@ -35,7 +37,8 @@ export default {
     return {
       currentSelect: 0,
       nBotonesMenu: 4,
-      isBackspace: false
+      isBackspace: false,
+      openingApp: false
     }
   },
   computed: {
@@ -78,7 +81,10 @@ export default {
       this.$router.push({ name: app.routeName })
     },
     onEnter () {
-      this.openApp(this.Apps[this.currentSelect])
+      this.openingApp = true
+      setTimeout(() => {
+        this.openApp(this.Apps[this.currentSelect])
+      }, 500)
     },
     onBack () {
       this.isBackspace = true
@@ -123,6 +129,7 @@ export default {
   left: -6px;
   right:-6px;
   bottom: -6px;
+
   position: absolute;
   background-size: cover !important;
   background-position: center !important;
@@ -241,8 +248,33 @@ button.select {
   to { background-color: rgba(190, 190, 190, 0.466); }
 }
 
-.letra {
-  font-weight: 400;
+/* ///////////// */
+/* APP ANIMATION */
+/* ///////////// */
+
+.white_rectangle {
+  position: absolute;
+
+  width: 0%;
+  height: 0%;
+  background-color: white;
+}
+
+.app_open {
+  animation-name: openApp;
+  animation-duration: 0.5s;
+  animation-fill-mode: forwards;
+}
+
+@keyframes openApp {
+  from {
+    height: 0%;
+    width: 0%;
+  }
+  to {
+    height: 87vh;
+    width: 40vh;
+  }
 }
 
 </style>

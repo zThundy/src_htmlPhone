@@ -1,6 +1,6 @@
 <template>
   <div class="phone_app">
-    <PhoneTitle :title="IntlString('APP_DATI_TITLE')" @back="onBackspace" :backgroundColor="'#fc915322'" />
+    <PhoneTitle :title="IntlString('APP_DATI_TITLE')" @back="onBackspace" :backgroundColor="'rgba(100, 185, 255, 0.4)'" />
 
     <div class='elements'>
 
@@ -28,9 +28,9 @@
           :linecap="'round'"
           :transition="true"
           :rotate="90"
-          :color="'#fc9153'"
+          :color="'rgb(100, 185, 255)'"
         >
-          <md-icon style="color: #fc9153;" class="md-notice-demo-icon md-notice-demo-icon-left" :name="elem.icon"></md-icon>
+          <md-icon style="color: rgb(100, 185, 255);" class="md-notice-demo-icon md-notice-demo-icon-left" :name="elem.icon"></md-icon>
         </md-progress>
 
       </div>
@@ -40,7 +40,7 @@
 
           <div class="md-example-child md-example-child-notice-bar md-example-child-notice-bar-7">
             <md-notice-bar
-              style="color: #fc9153; background-color: #fc915320;"
+              style="color: rgb(100, 175, 255); background-color: rgba(100, 185, 255, 0.4);"
               scrollable
             >
               <md-icon slot="left" class="md-notice-demo-icon md-notice-demo-icon-left" :name="elem.icon"></md-icon>

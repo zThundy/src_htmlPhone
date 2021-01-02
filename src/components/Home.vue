@@ -185,6 +185,7 @@ export default {
   flex-wrap: wrap;
   margin-bottom: 3px;
   justify-content: space-between;
+  
   transition: all 0.5s ease-in-out;
 }
 
