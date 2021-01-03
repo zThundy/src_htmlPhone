@@ -2,13 +2,12 @@
   <div style="height: 100vh; width: 100vw;">
     <notification />
     <div v-if="show === true && tempoHide === false" :style="{ zoom: zoom }">
-      <div class="phone_wrapper">
+      <div :style="getStyle(brightness)" class="phone_wrapper">
         <div v-if="currentCover" class="phone_coque" :style="{ backgroundImage: 'url(/html/static/img/cover/' + currentCover.value + ')' }"></div>
         
           <div id="app" class="phone_screen noselect">
-            <transition-page>
-              <router-view/>
-            </transition-page>
+            <!-- <transition-page :isChanging="isChanging"/> :class="{ 'transition': isChanging }" -->
+            <router-view />
           </div>
 
       </div>
@@ -34,17 +33,24 @@ export default {
   components: { TransitionPage },
   data () {
     return {
-      soundCall: null
+      soundCall: null,
+      isChanging: false,
+      currentRoute: window.location.pathname
     }
   },
   methods: {
     ...mapActions(['loadConfig', 'rejectCall']),
     closePhone () {
       this.$phoneAPI.closePhone()
+    },
+    getStyle (val) {
+      return {
+        'filter': 'brightness(' + ((val / 100) + 0.10) + ')'
+      }
     }
   },
   computed: {
-    ...mapGetters(['show', 'zoom', 'currentCover', 'sonido', 'appelsInfo', 'myPhoneNumber', 'volume', 'tempoHide'])
+    ...mapGetters(['show', 'zoom', 'currentCover', 'sonido', 'appelsInfo', 'myPhoneNumber', 'volume', 'tempoHide', 'brightness'])
   },
   watch: {
     appelsInfo (newValue, oldValue) {
@@ -114,12 +120,46 @@ export default {
   },
   created () {
     this.$router.push({ name: 'lockscreen' })
+
+    this.$router.beforeEach((to, from, next) => {
+      if ((to.meta !== undefined && to.meta !== null) && (from.meta !== undefined && from.meta !== null)) {
+        // se stai arrivando da un router che si trova più in alto
+        // (indice maggiore) di quello a cui stai andando, fai l'animazione
+        if (to.meta.depth > from.meta.depth) {
+          this.isChanging = true
+        }
+        // if (from.meta.depth > to.meta.depth) {
+        //   this.index = from.meta.depth
+        // }
+      }
+      setTimeout(() => {
+        this.isChanging = false
+      }, 500)
+      next()
+    })
   }
 }
 </script>
 
-<style lang="scss">
+<style lang="css">
 .noselect {
   user-select: none;
+}
+
+.transition {
+  height: 100%;
+
+  animation-name: transitionApp;
+  animation-duration: 0.5s;
+  animation-fill-mode: forwards;
+}
+
+@keyframes transitionApp {
+  from {
+    left: 0%;
+  }
+  to {
+    left: -100%;
+  }
 }
 </style>

@@ -1,5 +1,8 @@
 <template>
   <div class="phone_app">
+    
+    <!-- <div class="white_rectangle" :class="{ 'app_open': openingApp }"></div> -->
+
     <div :class="{ 'backblur': !isBackspace }" class="background" v-bind:style="{ background: 'url(' + backgroundURL +')' }"></div>
     <InfoBare class="infobare"/>
 
@@ -16,7 +19,6 @@
             :style="{ backgroundImage: 'url(' + but.icons + ')' }"
           >
             {{but.intlName}}
-            <div class="white_rectangle" :class="{ 'app_open': (openingApp) && (key === currentSelect) }"></div>
             <span class="puce" v-if="but.puce !== undefined && but.puce !== 0">{{ but.puce }}</span>
           </button>
         </div>
@@ -37,8 +39,8 @@ export default {
     return {
       currentSelect: 0,
       nBotonesMenu: 4,
-      isBackspace: false,
-      openingApp: false
+      isBackspace: false
+      // openingApp: false
     }
   },
   computed: {
@@ -81,10 +83,11 @@ export default {
       this.$router.push({ name: app.routeName })
     },
     onEnter () {
-      this.openingApp = true
-      setTimeout(() => {
-        this.openApp(this.Apps[this.currentSelect])
-      }, 500)
+      // this.openingApp = true
+      // setTimeout(() => {
+      //   this.openingApp = false
+      // }, 500)
+      this.openApp(this.Apps[this.currentSelect])
     },
     onBack () {
       this.isBackspace = true
@@ -252,15 +255,21 @@ button.select {
 /* APP ANIMATION */
 /* ///////////// */
 
+/*
 .white_rectangle {
+  z-index: 999;
   position: absolute;
 
   width: 0%;
-  height: 0%;
-  background-color: white;
+  height: 100%;
+  background-color: rgb(255, 255, 255);
 }
 
 .app_open {
+  position: absolute;
+  top: 0;
+  right: 0;
+
   animation-name: openApp;
   animation-duration: 0.5s;
   animation-fill-mode: forwards;
@@ -268,13 +277,12 @@ button.select {
 
 @keyframes openApp {
   from {
-    height: 0%;
     width: 0%;
   }
   to {
-    height: 87vh;
-    width: 40vh;
+    width: 100%;
   }
 }
+*/
 
 </style>

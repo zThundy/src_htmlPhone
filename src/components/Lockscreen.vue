@@ -63,12 +63,10 @@ export default {
     ...mapActions(['closePhone', 'setupUnreadMessages', 'resetUnreadMessages', 'sendStartupValues']),
     onEnter () {
       this.hasPressed = true
+      PhoneAPI.postPlayUnlockSound()
       setTimeout(() => {
         this.$router.push({ name: 'home' })
-      }, 1000)
-      setTimeout(() => {
-        PhoneAPI.postPlayUnlockSound()
-      }, 500)
+      }, 450)
     },
     onBack () {
       this.closePhone()
@@ -134,8 +132,13 @@ export default {
 .messlist {
   background-color: rgb(224, 224, 224);
   position: relative;
-  left: 12px;
-  right: 12px;
+
+  margin-left: auto;
+  margin-right: auto;
+
+  /* left: 15px; */
+  /* right: 12px; */
+
   width: 300px;
   top: 150px;
   min-height: 64px;
@@ -157,7 +160,7 @@ export default {
 
 .messlist .warningMess_icon .fa {
   text-align: center;
-  color: #007506d2;
+  color: #019208d2;
 }
 
 .messlist .warningMess_content{
@@ -234,16 +237,18 @@ export default {
 
 .slide {
   animation-name: slide;
-  animation-duration: 1s;
-  animation-fill-mode: forwards;
+  animation-duration: 0.5s;
+  animation-fill-mode: unset;
 }
 
 @keyframes slide {
   from {
-    padding-left: 0px;
+    /* padding-left: 0px; */
+    transform: translateX(0);
   }
   to {
-    padding-left: 270px;
+    /* padding-left: 270px; */
+    transform: translateX(191px);
   }
 }
 
@@ -257,7 +262,7 @@ export default {
 
 .rectangle-inside {
   width: 80px;
-  height: 41px;
+  height: 97%;
   background: rgba(223, 223, 223, 0.856);
   border-radius: 10px;
 }

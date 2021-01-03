@@ -10,20 +10,45 @@
 
     <div class="line"></div>
 
-    <div class="quickOptions">
-      <i class="immagine" v-for="(elem, key) in quickPics" v-bind:key="key" :class="[ 'fa ' + elem.img, Boolean(elem.state) ? 'active' : 'notActive', key == currentSelect ? 'selected' : '' ]" />
+    <div :class="[ 0 == currentSelectY ? 'select' : '' ]" class="quickOptions">
+      <i class="immagine" v-for="(elem, key) in quickPics" v-bind:key="key" :class="[ 'fa ' + elem.img, Boolean(elem.state) ? 'active' : 'notActive', (key == currentSelectX) && (currentSelectY == 0) ? 'selected' : '' ]" />
+    </div>
+
+    <div :class="[ 1 == currentSelectY ? 'select' : '' ]">
+      <custom-slider :value="brightness"></custom-slider>
+    </div>
+
+    <div v-if="hasUnredMessages">
+      <div v-for="(elem, key) in unreadMessages" :key="key">
+        <div v-if="key < 5" class="separatore"></div>
+
+        <span v-if="key < 4" class="messlist">
+
+          <span class="warningMess_content">
+            <div class="transmitter">{{elem.transmitter}}</div>
+            <div v-if="!isSMSImage(elem.message)" class="messaggio">{{elem.message}}</div>
+            <div v-else class="messaggio">Immagine</div>
+          </span>
+
+        </span>
+
+      </div>
     </div>
 
   </div>
 </template>
 
 <script>
+import CustomSlider from '@/components/CustomSlider'
 import CurrentTime from './CurrentTime'
 import { mapGetters, mapActions } from 'vuex'
 
 export default {
   name: 'dropdown-notifications',
-  components: { CurrentTime },
+  components: {
+    CurrentTime,
+    CustomSlider
+  },
   props: {
     show: {
       type: Boolean,
@@ -33,7 +58,10 @@ export default {
   data () {
     return {
       changingRouter: false,
-      currentSelect: -1,
+      currentSelectX: 0,
+      currentSelectY: 0,
+      hasUnredMessages: false,
+      maxY: 1,
       quickPics: []
     }
   },
@@ -41,8 +69,11 @@ export default {
     ...mapGetters([
       'notification',
       'airplane',
-      'hasWifi',
-      'bluetooth'
+      'isWifiOn',
+      'bluetooth',
+      'brightness',
+      'unreadMessages',
+      'UnreadMessagesLength'
     ]),
     checkState () {
       if (this.show) {
@@ -56,42 +87,85 @@ export default {
     ...mapActions([
       'toggleNotifications',
       'toggleAirplane',
-      'updateWifiString',
-      'updateBluetooth'
+      'toggleWifi',
+      'updateBluetooth',
+      'changeBrightness',
+      'setupUnreadMessages',
+      'resetUnreadMessages'
     ]),
     onLeftNotif () {
-      if (this.currentSelect === -1) return
-      this.currentSelect = this.currentSelect - 1
+      if (this.show) {
+        if (this.currentSelectY === 0) {
+          if (this.currentSelectX === 0) return
+          this.currentSelectX = this.currentSelectX - 1
+        } else {
+          if (this.brightness === 0) return
+          this.changeBrightness(this.brightness - 5)
+        }
+      }
     },
     onRightNotif () {
-      if (this.currentSelect === this.quickPics.length - 1) return
-      this.currentSelect = this.currentSelect + 1
+      if (this.show) {
+        if (this.currentSelectY === 0) {
+          if (this.currentSelectX === this.quickPics.length - 1) return
+          this.currentSelectX = this.currentSelectX + 1
+        } else {
+          if (this.brightness === 100) return
+          this.changeBrightness(this.brightness + 5)
+        }
+      }
+    },
+    onDownNotify () {
+      if (this.show) {
+        if (this.currentSelectY === this.maxY) return
+        this.currentSelectY = this.currentSelectY + 1
+      }
+    },
+    onUpNotify () {
+      if (this.show) {
+        if (this.currentSelectY === 0) return
+        this.currentSelectY = this.currentSelectY - 1
+      }
     },
     onEnterNotify () {
-      if (this.currentSelect === -1) return
-      var pick = this.quickPics[this.currentSelect]
-      if (pick.meta === 'wifi') {
-        this.updateWifiString(!this.hasWifi)
-        pick.state = this.hasWifi
-      } else if (pick.meta === 'notifications') {
-        this.toggleNotifications()
-        pick.state = this.notification
-      } else if (pick.meta === 'airplane') {
-        this.toggleAirplane()
-        pick.state = this.airplane
-      } else if (pick.meta === 'bluetooth') {
-        this.updateBluetooth(!this.bluetooth)
-        pick.state = this.bluetooth
-      } else if (pick.meta === 'refresh') {
-        pick.state = !pick.state
+      if (this.show) {
+        if (this.currentSelectX === -1) return
+        var pick = this.quickPics[this.currentSelectX]
+        if (pick.meta === 'wifi') {
+          this.toggleWifi(!this.isWifiOn)
+          pick.state = this.isWifiOn
+        } else if (pick.meta === 'notifications') {
+          this.toggleNotifications()
+          pick.state = this.notification
+        } else if (pick.meta === 'airplane') {
+          this.toggleAirplane()
+          pick.state = this.airplane
+        } else if (pick.meta === 'bluetooth') {
+          this.updateBluetooth(!this.bluetooth)
+          pick.state = this.bluetooth
+        } else if (pick.meta === 'refresh') {
+          pick.state = !pick.state
+        }
       }
+    },
+    onBackNotify () {
+      this.currentSelectX = 0
+      this.currentSelectY = 0
+    },
+    isSMSImage (mess) {
+      var pattern = new RegExp('^(https?:\\/\\/)?' + '((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|' + '((\\d{1,3}\\.){3}\\d{1,3}))' + '(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*' + '(\\?[;&a-z\\d%_.~+=-]*)?' + '(\\#[-a-z\\d_]*)?$', 'i')
+      return !!pattern.test(mess)
     }
   },
   created () {
+    this.resetUnreadMessages()
+    this.setupUnreadMessages()
+
+    if (this.UnreadMessagesLength > 0) { this.hasUnredMessages = true }
     this.changingRouter = true
 
     this.quickPics = [
-      {meta: 'wifi', img: 'fa-wifi', state: this.hasWifi},
+      {meta: 'wifi', img: 'fa-wifi', state: this.isWifiOn},
       {meta: 'bluetooth', img: 'fa-bluetooth-b', state: false},
       {meta: 'notifications', img: 'fa-bell', state: this.notification},
       {meta: 'airplane', img: 'fa-plane', state: this.airplane},
@@ -100,18 +174,18 @@ export default {
 
     this.$bus.$on('keyUpArrowLeft', this.onLeftNotif)
     this.$bus.$on('keyUpArrowRight', this.onRightNotif)
-    // this.$bus.$on('keyUpArrowDown', this.onDown)
-    // this.$bus.$on('keyUpArrowUp', this.onUp)
+    this.$bus.$on('keyUpArrowDown', this.onDownNotify)
+    this.$bus.$on('keyUpArrowUp', this.onUpNotify)
     this.$bus.$on('keyUpEnter', this.onEnterNotify)
-    // this.$bus.$on('keyUpBackspace', this.onBack)
+    this.$bus.$on('keyUpBackspace', this.onBackNotify)
   },
   beforeDestroy () {
     this.$bus.$off('keyUpArrowLeft', this.onLeftNotif)
     this.$bus.$off('keyUpArrowRight', this.onRightNotif)
-    // this.$bus.$off('keyUpArrowDown', this.onDown)
-    // this.$bus.$off('keyUpArrowUp', this.onUp)
+    this.$bus.$off('keyUpArrowDown', this.onDownNotify)
+    this.$bus.$off('keyUpArrowUp', this.onUpNotify)
     this.$bus.$off('keyUpEnter', this.onEnterNotify)
-    // this.$bus.$off('keyUpBackspace', this.onBack)
+    this.$bus.$off('keyUpBackspace', this.onBackNotify)
   },
   beforeCreate () { }
 }
@@ -236,5 +310,66 @@ export default {
 @keyframes up {
   from { top: 0%; }
   to { top: -50%; }
+}
+
+/* ////////////////// */
+/* MESSAGGI NON LETTI */
+/* ////////////////// */
+
+.messlist {
+  position: relative;
+
+  margin-left: auto;
+  margin-right: auto;
+
+  width: 300px;
+  display: flex;
+}
+
+.messlist .warningMess_icon{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 28px;
+  height: 42px;
+  width: 40px;
+  border-radius: 50%;
+}
+
+.messlist .warningMess_content{
+  line-height: 20px;
+  padding-left: 10px;
+}
+
+.transmitter {
+  padding-top: 4px;
+  font-size: 15px;
+  color: rgb(0, 0, 0);
+  font-weight: bolder;
+}
+
+.messaggio {
+  padding-top: 0px;
+  padding-left: 4px;
+  font-weight: bold;
+  font-size: 15px;
+  color: rgba(34, 34, 34, 0.555);
+}
+
+.separatore {
+  position: relative;
+  width: 88%;
+  margin-top: 2%;
+  margin-right: auto;
+  margin-left: auto;
+  border-bottom: 1px solid rgba(128, 128, 128, 0.425);
+}
+
+.warningMess_title {
+  font-size: 20px;
+}
+
+.warningMess_mess {
+  font-size: 16px;
 }
 </style>

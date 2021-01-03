@@ -77,6 +77,7 @@ export default {
       this.$router.push({ name: 'menu' })
     },
     onDown () {
+      if (this.showDropdown) return
       // this.currentSelect = Math.min(this.currentSelect + 4, this.AppsHome.length)
       // console.log('notifiche')
       this.showDropdown = !this.showDropdown

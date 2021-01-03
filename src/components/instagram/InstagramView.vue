@@ -2,7 +2,7 @@
   <div style="width: 326px; height: 743px;" class="phone_content">
     <link rel="stylesheet" href="https://cssgram-cssgram.netdna-ssl.com/cssgram.min.css">
 
-    <div class="img-fullscreen" v-if="imgZoom !== undefined" @click.stop="imgZoom = undefined">
+    <div class="phone_fullscreen_img" v-if="imgZoom !== undefined" @click.stop="imgZoom = undefined">
       <img :src="imgZoom" />
     </div>
 
@@ -187,29 +187,6 @@ export default {
   cursor: pointer;
   fill: #6b0000;
   color: #6b0000;
-}
-
-.img-fullscreen {
-  position: fixed;
-  z-index: 999999;
-  background-color: rgba(20, 20, 20, 0.8);
-  left: 0;
-  top: 0;
-  right: 0;
-  bottom: 0;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-.img-fullscreen img {
-  display: flex;
-  border-radius: 20px;
-  border-style: solid;
-  border-width: 4px;
-  border-color: rgb(151, 151, 151);
-  max-width: 90vw;
-  max-height: 95vh;
 }
 
 /* ########################## */

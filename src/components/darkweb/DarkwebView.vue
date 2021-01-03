@@ -1,6 +1,7 @@
 <template>
   <div style="width: 328px; height: 743px;" class="phone_content">
-    <div class="img-fullscreen" v-if="imgZoom !== undefined">
+    
+    <div class="phone_fullscreen_img" v-if="imgZoom !== undefined">
       <img :src="imgZoom" />
     </div>
 
@@ -207,25 +208,6 @@ export default {
   position: absolute;
   left: 12px;
   top: 5px;
-}
-
-.img-fullscreen {
-  position: fixed;
-  z-index: 999999;
-  background-color: rgba(20, 20, 20, 0.8);
-  left: 0;
-  top: 0;
-  right: 0;
-  bottom: 0;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-.img-fullscreen img {
-  display: flex;
-  max-width: 90vw;
-  max-height: 95vh;
 }
 
 .dark-wrapper {

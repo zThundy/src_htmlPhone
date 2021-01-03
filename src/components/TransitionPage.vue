@@ -7,6 +7,10 @@
   <transition :name="transitionName" :mode="transitionMode">
     <slot/>
   </transition>
+
+  <div v-if="isChanging">
+    <router-view class="transition"/>
+  </div>
   -->
 
   <swiper
@@ -32,44 +36,49 @@ export default {
       index: -1
     }
   },
-
-  methods: {
-    beforeChange (activeIndex, oldIndex) {
-      console.log(`before-change: ${activeIndex}, ${oldIndex}`)
-    },
-
-    afterChange (activeIndex, oldIndex) {
-      console.log(`after-change: ${activeIndex}, ${oldIndex}`)
+  props: {
+    isChanging: {
+      type: Boolean,
+      default: false
     }
   },
 
+  methods: {
+    // beforeChange (activeIndex, oldIndex) {
+    //   console.log(`before-change: ${activeIndex}, ${oldIndex}`)
+    // },
+    // afterChange (activeIndex, oldIndex) {
+    //   console.log(`after-change: ${activeIndex}, ${oldIndex}`)
+    // }
+  },
+
   created () {
-    this.$router.beforeEach((to, from, next) => {
-      if ((to.meta !== undefined && to.meta !== null) && (from.meta !== undefined && from.meta !== null)) {
-        if (to.meta.depth > from.meta.depth) {
-          this.index = to.meta.depth
-        }
-        if (from.meta.depth > to.meta.depth) {
-          this.index = from.meta.depth
-        }
-      }
-      next()
-    })
+    // this.$router.beforeEach((to, from, next) => {
+    //   if (this.isChanging) {
+    //     next()
+    //   }
+    // })
   }
 }
 </script>
 
-<style lang="scss">
-body {
-  margin: 0;
+<style lang="css">
+.transition {
+  position: absolute;
+
+  height: 100%;
+
+  animation-name: transitionApp;
+  animation-duration: 0.5s;
+  animation-fill-mode: forwards;
 }
 
-.app {
-  position: relative;
-  .operation {
-    position: absolute;
-    top: 16px;
-    left: 400px;
+@keyframes transitionApp {
+  from {
+    left: 100%;
+  }
+  to {
+    left: 0%;
   }
 }
 </style>

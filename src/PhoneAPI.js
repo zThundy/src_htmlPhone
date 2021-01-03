@@ -560,7 +560,9 @@ class PhoneAPI {
 
   // == Schermata di sblocco
   async postPlayUnlockSound () {
-    return this.post('soundLockscreen')
+    Vue.notify({ sound: 'phoneUnlock.ogg', hidden: true })
+    // return è deprecato e inutile
+    // return this.post('soundLockscreen')
   }
 
   // ==========================================================================
@@ -599,10 +601,7 @@ class PhoneAPI {
   }
 
   async instagram_toggleLikePost (username, password, postId) {
-    Vue.notify({
-      sound: 'Instagram_Like_Sound.ogg',
-      backgroundColor: 'rgba(0, 0, 0, 0)'
-    })
+    Vue.notify({ sound: 'Instagram_Like_Sound.ogg', hidden: true })
     return this.post('togglePostLike', { username, password, postId })
   }
 

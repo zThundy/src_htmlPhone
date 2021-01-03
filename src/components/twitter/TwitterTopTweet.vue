@@ -1,6 +1,6 @@
 <template>
   <div style="width: 326px; height: 743px;" class="phone_content">
-    <div class="img-fullscreen" v-if="imgZoom !== undefined" @click.stop="imgZoom = undefined">
+    <div class="phone_fullscreen_img" v-if="imgZoom !== undefined" @click.stop="imgZoom = undefined">
       <img :src="imgZoom" />
     </div>
     <div class="tweets-wrapper" ref="elementsDiv">
@@ -19,7 +19,7 @@
             </div>
 
             <div class="tweet-message">
-              <template v-if="!isImage(tweet.message)">{{ tweet.message }}</template>
+              <template v-if="!isImage(tweet.message)">{{ checkMessage(tweet.message) }}</template>
               <img v-else :src="tweet.message" class="tweet-attachement-img" @click.stop="imgZoom = tweet.message">
             </div>
 
@@ -56,6 +56,7 @@
 <script>
 import { mapGetters, mapActions } from 'vuex'
 import Modal from '@/components/Modal/index.js'
+import { replaceEmoji } from './../../Utils'
 
 export default {
   components: {},
@@ -189,6 +190,9 @@ export default {
     formatTime (time) {
       const d = new Date(time)
       return d.toLocaleTimeString()
+    },
+    checkMessage (message) {
+      return replaceEmoji(message)
     }
   },
   created () {
@@ -215,38 +219,24 @@ export default {
   fill: #1da1f2;
   color: #1da1f2;
 }
+
 .svglike:hover {
   cursor: pointer;
   fill: red;
   color: red;
 }
+
 .svgdislike {
   fill: red;
   color: red;
 }
+
 .svgdislike:hover {
   cursor: pointer;
   fill: #C0C0C0;
   color: #C0C0C0;
 }
 
-.img-fullscreen {
-  position: fixed;
-  z-index: 999999;
-  background-color: rgba(20, 20, 20, 0.8);
-  left: 0;
-  top: 0;
-  right: 0;
-  bottom: 0;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-.img-fullscreen img {
-  display: flex;
-  max-width: 90vw;
-  max-height: 95vh;
-}
 .tweets-wrapper{
   height: 100%;
   background-color: #DBF0F4;

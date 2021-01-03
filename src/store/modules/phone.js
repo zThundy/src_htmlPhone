@@ -13,7 +13,7 @@ const state = {
   volume: parseFloat(window.localStorage['gc_volume']) || 0.5,
   tts: window.localStorage['gc_tts'] || false,
   lang: window.localStorage['gc_language'],
-  brightness: parseInt(window.localStorage['gc_brightness'] || 100),
+  brightness: parseInt(window.localStorage['gc_brightness'] || 75),
   // myImage: window.localStorage['gc_myImage'] || null,
   myImage: null,
   myData: JSON.parse(window.localStorage['gc_myData'] || null),

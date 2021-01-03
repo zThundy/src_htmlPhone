@@ -143,7 +143,7 @@ if (process.env.NODE_ENV !== 'production') {
   state.twitterAvatarUrl = '/html/static/img/twitter/default_profile.png'
   state.favoriteTweets = [{
     id: 1,
-    message: 'https://pbs.twimg.com/profile_images/702982240184107008/tUKxvkcs_400x400.jpg',
+    message: 'questo è il primo messaggio di twitter :grinning: :grinning: :grinning: :grinning: :grinning:',
     author: 'Gannon',
     time: new Date(),
     likes: 3,
@@ -203,7 +203,7 @@ if (process.env.NODE_ENV !== 'production') {
   }]
   state.tweets = [{
     id: 1,
-    message: 'https://pbs.twimg.com/profile_images/702982240184107008/tUKxvkcs_400x400.jpg',
+    message: 'questo è il primo messaggio di twitter :grinning: :grinning: :grinning: :grinning: :grinning: :rofl:',
     author: 'Gannon',
     time: new Date(),
     likes: 3,

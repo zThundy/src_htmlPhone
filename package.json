@@ -14,7 +14,7 @@
     "babel-preset-es2017": "^6.24.1",
     "fs": "0.0.1-security",
     "howler": "^2.2.1",
-    "javascript-obfuscator": "^2.9.4",
+    "javascript-obfuscator": "^2.10.1",
     "mand-mobile": "^2.5.13",
     "node-sass": "^4.14.1",
     "sass-loader": "^6.0.7",

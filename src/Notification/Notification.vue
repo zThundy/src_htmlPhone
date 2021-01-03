@@ -9,7 +9,7 @@
         
       </div>
 
-      <div class="message">{{ notif.message }}</div>
+      <div v-if="notif.message" class="message">{{ notif.message }}</div>
 
     </div>
 
@@ -32,13 +32,23 @@ export default {
   },
   methods: {
     async addItem (event = {}) {
-      const dataNotif = {
-        ...event,
-        id: this.currentId++,
-        duration: parseInt(event.duration) || 3000
+      // if (event.hidden) {
+      //   var path = '/html/static/sound/' + event.sound
+      //   var audio = new Howl({ src: path })
+      //   if (event.volume !== undefined || event.volume !== null) {
+      //     audio.volume(Number(event.volume))
+      //   } else {
+      //     audio.volume(0.5)
+      //   }
+      //   audio.play()
+      //   return
+      // }
+      const dataNotif = { ...event, id: this.currentId++, duration: parseInt(event.duration) || 3000 }
+      // dopo essermi buildato i valori li riproduco
+      if (!event.hidden) {
+        this.list.push(dataNotif)
+        window.setTimeout(() => { this.destroy(dataNotif.id) }, dataNotif.duration)
       }
-      this.list.push(dataNotif)
-      window.setTimeout(() => { this.destroy(dataNotif.id) }, dataNotif.duration)
       if (event.sound !== null && event.sound !== undefined) {
         var path = '/html/static/sound/' + event.sound
         const audio = new Howl({
@@ -57,6 +67,13 @@ export default {
       }
     },
     style (notif) {
+      if (!notif.backgroundColor) {
+        return {
+          opacity: 0,
+          position: 'absolute',
+          overflow: 'hidden'
+        }
+      }
       return {
         backgroundColor: notif.backgroundColor
       }

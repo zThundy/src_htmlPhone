@@ -74,6 +74,27 @@ body {
   border-radius: 6px;
 }
 
+.phone_fullscreen_img {
+  position: fixed;
+  z-index: 9999;
+  background-color: rgba(20, 20, 20, 0.8);
+  left: 0;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.phone_fullscreen_img img {
+  display: flex;
+  max-width: 90vw;
+  max-height: 95vh;
+  border-radius: 50px;
+  border-style: solid;
+}
+
 * {
   font-family: SanFrancisco;
   letter-spacing: 0.2pt;

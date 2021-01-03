@@ -386,6 +386,13 @@
       "icons": "/html/static/img/icons_app/photo.png",
       "routeName": "photo",
       "enabled": true
+    },
+    {
+      "name": "App Store",
+      "it_IT__name": "App Store",
+      "icons": "/html/static/img/icons_app/appstore.png",
+      "routeName": "appstore",
+      "enabled": true
     }
   ],
   "defaultLanguage": "it_IT",

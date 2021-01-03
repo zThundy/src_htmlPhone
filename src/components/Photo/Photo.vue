@@ -9,7 +9,9 @@ export default {
   async created () {
     const resp = await this.$phoneAPI.takePhoto()
     // this.addPhoto({ link: resp.url })
-    this.$router.push({ name: 'galleria.splash', params: resp })
+    if (resp) {
+      this.$router.push({ name: 'galleria.splash', params: resp })
+    }
   }
 }
 </script>

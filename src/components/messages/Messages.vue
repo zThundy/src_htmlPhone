@@ -3,7 +3,7 @@
   <div style="width: 330px; height: 743px; backgroundColor: white"  class="phone_app messages">
     <PhoneTitle :title="displayContact" style="backgroundColor: #F1F1F1; color: black" @back="quit"/> <!--:title="displayContact" :backgroundColor="color" -->
     
-    <div class="img-fullscreen" v-if="imgZoom !== undefined">
+    <div class="phone_fullscreen_img" v-if="imgZoom !== undefined">
       <img :src="imgZoom" />
     </div>
 
@@ -417,27 +417,6 @@ export default {
   height: auto;
   padding-top: 12px;
   border-radius: 19px;
-}
-
-.img-fullscreen {
-  position: fixed;
-  z-index: 999999;
-  background-color: rgba(20, 20, 20, 0.8);
-  left: 0;
-  top: 0;
-  right: 0;
-  bottom: 0;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-.img-fullscreen img {
-  display: flex;
-  max-width: 90vw;
-  max-height: 95vh;
-  border-radius: 50px;
-  border-style: solid;
 }
 
 .sms_me {

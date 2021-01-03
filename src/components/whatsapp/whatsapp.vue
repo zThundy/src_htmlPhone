@@ -169,22 +169,24 @@ export default {
 }
 
 .immagineGruppo {
+  position: relative;
   object-fit: cover;
-  width: 60px;
-  height: 60px;
+  width: 55px;
+  height: 55px;
   border-radius: 80px;
+  left: 2px;
 }
 
 .titoloGruppo {
   color: black;
-  padding-left: 5px;
+  padding-left: 9px;
   font-weight: bold;
 }
 
 .sottotitoloGruppo {
   color: gray;
-  padding-left: 10px;
-  font-size: 15px;
+  padding-left: 6px;
+  font-size: 12px;
 }
 
 </style>

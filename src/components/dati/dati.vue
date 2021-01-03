@@ -4,19 +4,22 @@
 
     <div class='elements'>
 
-      <md-toast ref="updating">
-        <md-activity-indicator
-          :size="20"
-          :text-size="16"
-          color="white"
-          text-color="white"
-        >Aggiornamento...</md-activity-indicator>
-      </md-toast>
+      <div class="toast">
+        <custom-toast @hide="toastHide" :duration="4000" ref="updating">
+          <md-activity-indicator
+            :size="20"
+            :text-size="16"
+            color="white"
+            text-color="white"
+          >Aggiornamento...
+          </md-activity-indicator>
+        </custom-toast>
 
-      <md-toast ref="success" :content="'Riuscito'" :hasMask="false">
-        <md-icon name="right" size="sm" color="lime"></md-icon>
-        <div style="font-size: 17px; padding-left: 2px;">Riuscito</div>
-      </md-toast>
+        <custom-toast ref="success" :content="'Riuscito'">
+          <md-icon name="right" size="20px" color="lime"></md-icon>
+          <div style="font-size: 17px; padding-left: 2px;">Riuscito</div>
+        </custom-toast>
+      </div>
 
       <div class='element' v-for='(elem, key) in datiInfo' :key="key">
 
@@ -35,15 +38,15 @@
 
       </div>
 
-      <div style="padding-top:455px;">
+      <div style="z-index: -1; padding-top:455px;">
         <div class='element' v-for='(elem, key) in datiInfo' :key="key + 'secondo'">
 
           <div class="md-example-child md-example-child-notice-bar md-example-child-notice-bar-7">
             <md-notice-bar
-              style="color: rgb(100, 175, 255); background-color: rgba(100, 185, 255, 0.4);"
+              class="noticeBars"
               scrollable
             >
-              <md-icon slot="left" class="md-notice-demo-icon md-notice-demo-icon-left" :name="elem.icon"></md-icon>
+              <md-icon style="color: rgb(100, 185, 255);" slot="left" class="md-notice-demo-icon md-notice-demo-icon-left" :name="elem.icon"></md-icon>
               {{elem.current}}/{{elem.max}} {{elem.suffix}}
             </md-notice-bar>
           </div>
@@ -58,7 +61,8 @@
 <script>
 import { mapGetters, mapMutations } from 'vuex'
 import PhoneTitle from './../PhoneTitle'
-import { NoticeBar, Progress, Icon, Toast, ActivityIndicator } from 'mand-mobile'
+import { NoticeBar, Progress, Icon, ActivityIndicator } from 'mand-mobile'
+import CustomToast from '@/components/CustomToast'
 import 'mand-mobile/lib/mand-mobile.css'
 import Modal from '@/components/Modal/index.js'
 
@@ -69,7 +73,8 @@ export default {
     [Progress.name]: Progress,
     [NoticeBar.name]: NoticeBar,
     [Icon.name]: Icon,
-    [Toast.component.name]: Toast.component,
+    CustomToast,
+    // [Toast.component.name]: Toast.component,
     [ActivityIndicator.name]: ActivityIndicator
   },
   data () {
@@ -111,16 +116,6 @@ export default {
       switch (resp.id) {
         case 1:
           this.$refs.updating.show()
-          setTimeout(() => {
-            this.disableBackspace = false
-            this.$refs.updating.hide()
-            this.$refs.success.show()
-            // questo è il timeout che nasconde
-            // il toast "successo"
-            setTimeout(() => {
-              this.$refs.success.hide()
-            }, 2000)
-          }, 3000)
           break
         case 2:
           this.disableBackspace = false
@@ -131,6 +126,15 @@ export default {
       if (resp.title === 'cancel') {
         this.disableBackspace = false
       }
+    },
+    toastHide () {
+      this.$refs.success.show()
+      // questo è il timeout che nasconde
+      // il toast "successo"
+      setTimeout(() => {
+        this.disableBackspace = false
+        this.$refs.success.hide()
+      }, 2000)
     }
   },
   created () {
@@ -145,11 +149,22 @@ export default {
 </script>
 
 <style scoped>
-.elements{
+.elements {
   height: calc(200% - 34px);
   overflow-y: auto;
 }
 
+.toast {
+  position: absolute;
+  width: 100%;
+  height: 62%;
+}
+
+.noticeBars {
+  z-index: 0;
+  color: rgb(100, 175, 255);
+  background-color: rgba(100, 185, 255, 0.4);
+}
 
 
 
