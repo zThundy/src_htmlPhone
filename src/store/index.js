@@ -16,6 +16,7 @@ import whatsapp from './modules/whatsapp'
 import galleria from './modules/galleria'
 import bluetooth from './modules/bluetooth'
 import darkweb from './modules/darkweb'
+import appstore from './modules/appstore'
 
 Vue.use(Vuex)
 
@@ -35,7 +36,8 @@ export default new Vuex.Store({
     whatsapp,
     galleria,
     bluetooth,
-    darkweb
+    darkweb,
+    appstore
   },
   strict: true
 })

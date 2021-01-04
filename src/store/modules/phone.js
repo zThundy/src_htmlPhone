@@ -48,7 +48,7 @@ const getters = {
       }
       return {
         label: 'Default',
-        value: 'default.jpg'
+        value: 'code.png'
       }
     }
     return background
@@ -89,11 +89,12 @@ const getters = {
   myCovers: ({ myCovers }) => myCovers,
   sonidoLabel: (state, getters) => getters.sonido.label,
   zoom: ({ zoom }) => zoom,
-  config: ({ config }) => config,
   warningMessageCount: ({ config }) => config.warningMessageCount || 250,
   useFormatNumberFrance: ({ config }) => config.useFormatNumberFrance,
   themeColor: ({ config }) => config.themeColor,
   colors: ({ config }) => config.colors,
+  AppsHome: (state, getters) => getters.Apps.filter(app => app.inHomePage === true),
+  config: ({ config }) => config,
   Apps: ({ config, lang }, getters) => config.apps
     .filter(app => app.enabled !== false)
     .map(app => {
@@ -105,7 +106,6 @@ const getters = {
       return app
     }
   ),
-  AppsHome: (state, getters) => getters.Apps.filter(app => app.inHomePage === true),
   availableLanguages ({ config }) {
     const langKey = Object.keys(config.language)
     const AvailableLanguage = {}

@@ -283,7 +283,6 @@
       "it_IT__name": "Twitter",
       "icons": "/html/static/img/icons_app/twitter.png",
       "routeName": "twitter.splash",
-      "inHomePage": false,
       "enabled": true
     },
     {
@@ -291,7 +290,6 @@
       "it_IT__name": "Instagram",
       "icons": "/html/static/img/icons_app/instagram.png",
       "routeName": "instagram.splash",
-      "inHomePage": false,
       "enabled": true
     },
     {
@@ -299,7 +297,6 @@
       "it_IT__name": "Galleria",
       "icons": "/html/static/img/icons_app/galleria.png",
       "routeName": "galleria.splash",
-      "inHomePage": false,
       "enabled": true
     },
     {
@@ -307,7 +304,6 @@
       "it_IT__name": "Whatsapp",
       "icons": "/html/static/img/icons_app/whatsapp.png",
       "routeName": "whatsapp.splash",
-      "inHomePage": false,
       "enabled": true
     },
     {
@@ -315,7 +311,6 @@
       "it_IT__name": "Piano tariffario",
       "icons": "/html/static/img/icons_app/dati.png",
       "routeName": "dati.splash",
-      "inHomePage": false,
       "enabled": true
     },
     {
@@ -331,7 +326,6 @@
       "it_IT__name": "Contatti",
       "icons": "/html/static/img/icons_app/contacts.png",
       "routeName": "contacts",
-      "inHomePage": false,
       "enabled": true
     },
     {
@@ -348,7 +342,6 @@
       "it_IT__name": "Settings",
       "icons": "/html/static/img/icons_app/settings.png",
       "routeName": "parametre",
-      "inHomePage": false,
       "enabled": true
     },
     {
@@ -356,7 +349,6 @@
       "it_IT__name": "Banca",
       "icons": "/html/static/img/icons_app/banca.png",
       "routeName": "bank.splash",
-      "inHomePage": false,
       "enabled": true
     },
     {
@@ -392,7 +384,7 @@
       "it_IT__name": "App Store",
       "icons": "/html/static/img/icons_app/appstore.png",
       "routeName": "appstore",
-      "enabled": true
+      "enabled": false
     }
   ],
   "defaultLanguage": "it_IT",
@@ -600,6 +592,8 @@
       "APP_DARKWEB_POST_MESSAGE": "Invia un messaggio",
       "APP_DARKWEB_POST_PICTURE": "Invia una fotografia",
       "APP_DARKWEB_REPLY": "Rispondi",
+      "APP_APPSTORE_TITLE": "App store",
+      "APP_APPSTORE_DOWNLOAD": "Scarica",
 
       "TIMEAGO": [
         "Proprio adesso",

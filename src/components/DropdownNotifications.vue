@@ -159,11 +159,12 @@ export default {
   },
   created () {
     this.resetUnreadMessages()
-    this.setupUnreadMessages()
+    setTimeout(() => {
+      this.setupUnreadMessages()
+      if (this.UnreadMessagesLength > 0) { this.hasUnredMessages = true }
+    }, 100)
 
-    if (this.UnreadMessagesLength > 0) { this.hasUnredMessages = true }
     this.changingRouter = true
-
     this.quickPics = [
       {meta: 'wifi', img: 'fa-wifi', state: this.isWifiOn},
       {meta: 'bluetooth', img: 'fa-bluetooth-b', state: false},

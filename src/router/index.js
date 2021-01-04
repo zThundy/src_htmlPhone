@@ -49,6 +49,9 @@ import galleriasplash from '@/components/galleria/galleriasplash'
 import DarkwebSplash from '@/components/darkweb/DarkwebSplash'
 import DarkwebScreen from '@/components/darkweb/DarkwebScreen'
 
+import AppStore from '@/components/appstore/appstore'
+import AppStoreSplash from '@/components/appstore/appstoresplash'
+
 Vue.use(Router)
 
 export default new Router({
@@ -246,6 +249,18 @@ export default new Router({
       path: '/darkweb/view',
       name: 'darkweb.screen',
       component: DarkwebScreen
+    },
+    {
+      meta: { depth: 1, transitionName: 'slide' },
+      path: '/appstore/splash',
+      name: 'appstore.splash',
+      component: AppStoreSplash
+    },
+    {
+      meta: { depth: 2, transitionName: 'slide' },
+      path: '/appstore',
+      name: 'appstore',
+      component: AppStore
     },
     {
       path: '*',
