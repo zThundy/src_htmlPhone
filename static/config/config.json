@@ -359,8 +359,8 @@
       "enabled": true
     },
     {
-      "name": "DarkNet",
-      "it_IT__name": "DarkNet",
+      "name": "Dark Chat",
+      "it_IT__name": "Dark Chat",
       "icons": "/html/static/img/icons_app/darknet.png",
       "routeName": "tchat",
       "enabled": true
@@ -385,6 +385,13 @@
       "icons": "/html/static/img/icons_app/appstore.png",
       "routeName": "appstore",
       "enabled": false
+    },
+    {
+      "name": "Email",
+      "it_IT__name": "Email",
+      "icons": "/html/static/img/icons_app/email.png",
+      "routeName": "email.splash",
+      "enabled": true
     }
   ],
   "defaultLanguage": "it_IT",
@@ -594,6 +601,10 @@
       "APP_DARKWEB_REPLY": "Rispondi",
       "APP_APPSTORE_TITLE": "App store",
       "APP_APPSTORE_DOWNLOAD": "Scarica",
+      "APP_EMAIL_TITLE": "Email",
+      "APP_EMAIL_SENDER_LABEL": "Da",
+      "APP_EMAIL_RECEIVER_LABEL": "Per",
+      "APP_EMAIL_MESSAGE_LABEL": "Messaggio",
 
       "TIMEAGO": [
         "Proprio adesso",

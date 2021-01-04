@@ -7,7 +7,12 @@
         
           <div id="app" class="phone_screen noselect">
             <!-- <transition-page :isChanging="isChanging"/> :class="{ 'transition': isChanging }" -->
-            <router-view />
+            <router-view/>
+            <!--
+              assegnando i componenti inferiori a vari path posso mostrare più
+              router assieme e farci l'animazione
+              <router-view style="position: absolute;" name="default"/>
+            -->
           </div>
 
       </div>

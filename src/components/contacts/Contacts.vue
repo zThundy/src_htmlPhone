@@ -15,6 +15,7 @@ import PhoneAPI from './../../PhoneAPI'
 import Modal from '@/components/Modal/index.js'
 
 export default {
+  name: 'contacts',
   components: { List },
   data () {
     return {
@@ -37,7 +38,8 @@ export default {
     ...mapActions(['updateContactPicture', 'startCall']),
     onSelect (contact) {
       if (contact.id === -1) {
-        this.$router.push({ name: 'contacts.view', params: { id: contact.id } })
+        this.$router.push({ name: 'contacts.view', params: { id: contact.id, number: 33333 } })
+        // this.$router.push({ name: 'contacts.view', params: { id: contact.id } })
       } else {
         this.$router.push({ name: 'messages.view', params: { number: contact.number, display: contact.display } })
       }
@@ -56,7 +58,7 @@ export default {
       // lista delle scelte
       switch (resp.id) {
         case 1:
-          this.$router.push({path: 'contact/' + contact.id})
+          this.$router.push({ path: 'contact/' + contact.id })
           this.disableList = false
           break
         case 2:

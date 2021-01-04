@@ -49,8 +49,12 @@ import galleriasplash from '@/components/galleria/galleriasplash'
 import DarkwebSplash from '@/components/darkweb/DarkwebSplash'
 import DarkwebScreen from '@/components/darkweb/DarkwebScreen'
 
-import AppStore from '@/components/appstore/appstore'
-import AppStoreSplash from '@/components/appstore/appstoresplash'
+import Email from '@/components/email/email'
+import EmailSplash from '@/components/email/emailsplash'
+import EmailLeftbar from '@/components/email/emailleftbar'
+
+// import AppStore from '@/components/appstore/appstore'
+// import AppStoreSplash from '@/components/appstore/appstoresplash'
 
 Vue.use(Router)
 
@@ -60,22 +64,26 @@ export default new Router({
       // meta: { depth: 0, transitionName: 'slide' },
       path: '/',
       name: 'lockscreen',
-      component: Lockscreen
+      components: {
+        default: Lockscreen
+      }
     },
     {
       // meta: { depth: 0, transitionName: 'slide' },
       path: '/home',
       name: 'home',
-      component: Home
+      components: {
+        default: Home
+      }
     },
     {
-      meta: { depth: 1, transitionName: 'slide' },
       path: '/menu',
       name: 'menu',
-      component: Menu
+      components: {
+        default: Menu
+      }
     },
     {
-      meta: { depth: 2, transitionName: 'slide' },
       path: '/contacts',
       name: 'contacts',
       component: Contacts
@@ -86,7 +94,6 @@ export default new Router({
       component: Contact
     },
     {
-      meta: { depth: 2, transitionName: 'slide' },
       path: '/messages',
       name: 'messages',
       component: MessagesList
@@ -107,13 +114,11 @@ export default new Router({
       component: Messages
     },
     {
-      meta: { depth: 2, transitionName: 'slide' },
       path: '/bourse',
       name: 'bourse',
       component: Bourse
     },
     {
-      meta: { depth: 2, transitionName: 'slide' },
       path: '/dati',
       name: 'dati',
       component: dati
@@ -124,31 +129,26 @@ export default new Router({
       component: datisplash
     },
     {
-      meta: { depth: 2, transitionName: 'slide' },
       path: '/bank',
       name: 'bank',
       component: Bank
     },
     {
-      meta: { depth: 2, transitionName: 'slide' },
       path: '/banksplash',
       name: 'bank.splash',
       component: BankSplash
     },
     {
-      meta: { depth: 2, transitionName: 'slide' },
       path: '/photo',
       name: 'photo',
       component: Photo
     },
     {
-      meta: { depth: 2, transitionName: 'slide' },
       path: '/paramtre',
       name: 'parametre',
       component: Parametre
     },
     {
-      meta: { depth: 2, transitionName: 'slide' },
       path: '/appels',
       name: 'appels',
       component: Appels
@@ -185,7 +185,6 @@ export default new Router({
       component: TwitterSpashScreen
     },
     {
-      meta: { depth: 2, transitionName: 'slide' },
       path: '/twitter/view',
       name: 'twitter.screen',
       component: TwitterScreen
@@ -196,7 +195,6 @@ export default new Router({
       component: InstaSpashScreen
     },
     {
-      meta: { depth: 2, transitionName: 'slide' },
       path: '/instagram/view',
       name: 'instagram.screen',
       component: InstaScreen
@@ -222,19 +220,16 @@ export default new Router({
       component: whatsappgroupedit
     },
     {
-      meta: { depth: 2, transitionName: 'slide' },
       path: '/whatsapp',
       name: 'whatsapp',
       component: whatsapp
     },
     {
-      meta: { depth: 2, transitionName: 'slide' },
       path: '/galleria',
       name: 'galleria',
       component: galleria
     },
     {
-      meta: { depth: 1, transitionName: 'slide' },
       path: '/galleria/splash',
       name: 'galleria.splash',
       component: galleriasplash
@@ -245,22 +240,38 @@ export default new Router({
       component: DarkwebSplash
     },
     {
-      meta: { depth: 2, transitionName: 'slide' },
       path: '/darkweb/view',
       name: 'darkweb.screen',
       component: DarkwebScreen
     },
+    // {
+    //   meta: { depth: 1, transitionName: 'slide' },
+    //   path: '/appstore/splash',
+    //   name: 'appstore.splash',
+    //   component: AppStoreSplash
+    // },
+    // {
+    //   meta: { depth: 2, transitionName: 'slide' },
+    //   path: '/appstore',
+    //   name: 'appstore',
+    //   component: AppStore
+    // },
     {
-      meta: { depth: 1, transitionName: 'slide' },
-      path: '/appstore/splash',
-      name: 'appstore.splash',
-      component: AppStoreSplash
+      path: '/email/splash',
+      name: 'email.splash',
+      component: EmailSplash
     },
     {
-      meta: { depth: 2, transitionName: 'slide' },
-      path: '/appstore',
-      name: 'appstore',
-      component: AppStore
+      path: '/email',
+      name: 'email',
+      component: Email,
+      children: [
+        {
+          path: ':email',
+          name: 'email.leftbar',
+          component: EmailLeftbar
+        }
+      ]
     },
     {
       path: '*',

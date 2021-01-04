@@ -1,6 +1,6 @@
 <template>
   <div class="phone_app">
-    <PhoneTitle :title="IntlString('APP_GALLERIA_TITLE')" backgroundColor="rgb(200, 200, 200)" :titleColor="'black'" />
+    <PhoneTitle :title="IntlString('APP_GALLERIA_TITLE')" backgroundColor="rgb(217, 122, 81)" :titleColor="'black'" />
 
     <div class="div_immagini">
       
@@ -153,6 +153,8 @@ export default {
   flex-wrap: wrap;
   align-content: flex-start;
   overflow-y: scroll;
+
+  background-color: white;
 }
 
 .immagini {
@@ -168,7 +170,7 @@ export default {
 }
 
 .immagine.select {
-  border: 6px solid rgb(129, 129, 129);
+  border: 6px solid rgb(228, 228, 228);
   filter: brightness(70%)
 }
 </style>

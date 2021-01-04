@@ -1,6 +1,6 @@
 <template>
-  <div style="width: 324px; height: 595px;" class="background_color">
-    <div style="width: 314px; height: 577px;" class='phone_content content inputText'>
+  <div style="width: 100%; height: 100%;" class="background_color">
+    <div style="width: 314px; height: 579px;" class='phone_content content inputText'>
 
       <template v-if="state === STATI.MENU">
 
@@ -412,8 +412,12 @@ export default {
 
 <style scoped>
 .background_color {
-  background: rgb(218,153,0);
-  background: linear-gradient(13deg, rgba(218,153,0,1) 0%, rgba(177,56,0,1) 32%, rgba(189,0,150,1) 78%, rgba(149,0,198,1) 100%);
+  position: relative;
+  top: 0;
+  background: -moz-linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%); 
+  background: -webkit-linear-gradient(45deg, #f09433 0%,#e6683c 25%,#dc2743 50%,#cc2366 75%,#bc1888 100%); 
+  background: linear-gradient(45deg, #f09433 0%,#e6683c 25%,#dc2743 50%,#cc2366 75%,#bc1888 100%); 
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#f09433', endColorstr='#bc1888',GradientType=1 );
 }
 
 .content {

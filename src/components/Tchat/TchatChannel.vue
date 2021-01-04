@@ -1,6 +1,6 @@
 <template>
-  <div style="width: 100%;" class="phone_app">
-    <PhoneTitle :title="IntlString('APP_DARKTCHAT_TITLE')" backgroundColor="#090f20" :textColor="'white'" @back="onBack" />
+  <div class="phone_app">
+    <PhoneTitle :title="IntlString('APP_DARKTCHAT_TITLE')" :backgroundColor="'rgb(95, 94, 198)'" :textColor="'white'" @back="onBack" />
     
     <div style="padding-top: 30px;" class="slice"></div>
 
@@ -229,16 +229,11 @@ export default {
 
 .slice:nth-child(2) {
   top: 27px;
-  background: #090f20;
+  background: rgb(95, 94, 198);
   color: white;
   clip-path: polygon(0 58%, 400% 50%, 100% 50%, 0 100%);
   padding: 3rem 70% 25%;
 }
-
-
-
-
-
 
 .glitch {
   left: 10px;

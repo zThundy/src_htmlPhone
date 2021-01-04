@@ -3,9 +3,9 @@
   <div style="width: 326px; height: 596px;" class="phone_content">
     <link rel="stylesheet" href="https://cssgram-cssgram.netdna-ssl.com/cssgram.min.css">
 
-    <div class="aggiusta_schermo">
+    <img class='image' :src="tempImage" :class="filters[selectedMessage]">
 
-      <img class='image' :src="tempImage" :class="filters[selectedMessage]">
+    <div class="aggiusta_schermo">
       <div class="text-container">{{ IntlString('APP_INSTAGRAM_CHOOSE_FILTER') }}</div>
 
       <div class="image_list">
@@ -138,13 +138,10 @@ export default {
 </script>
 
 <style scoped>
-.phone_content {
-  background: #fcedf8;
-}
 
 .aggiusta_schermo {
+  padding-top: 65%;
   overflow: hidden;
-  justify-content: center;
 }
 
 .image {
@@ -152,13 +149,16 @@ export default {
 }
 
 .text-container {
-  max-width: 100%;
-  max-height: 50px;
+  width: 100%;
+  height: 30px;
+  padding-top: 4px;
   text-align: center;
-  font-weight: bold;
   color: white;
-  background: rgb(218,153,0);
-  background: linear-gradient(13deg, rgba(218,153,0,1) 0%, rgba(177,56,0,1) 32%, rgba(189,0,150,1) 78%, rgba(149,0,198,1) 100%);
+
+  background: -moz-linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%); 
+  background: -webkit-linear-gradient(45deg, #f09433 0%,#e6683c 25%,#dc2743 50%,#cc2366 75%,#bc1888 100%); 
+  background: linear-gradient(45deg, #f09433 0%,#e6683c 25%,#dc2743 50%,#cc2366 75%,#bc1888 100%); 
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#f09433', endColorstr='#bc1888',GradientType=1 );
 }
 
 .image_list {
@@ -179,14 +179,14 @@ export default {
 
 .filtersdiv {
   position: relative;
-  background-color: rgba(140, 85, 145, 0.397);
+  background-color: rgba(141, 141, 141, 0.397);
 }
 
-.filtersdiv.select {
-  background-color: rgba(140, 85, 145, 0.397);
+.select {
+  background-color: rgba(25, 0, 117, 0.397);
   background-image: linear-gradient(to bottom, rgba(140, 85, 145, 0.397) 50%, rgba(201, 0, 219, 0.664) 50%);
   background-size: 100% 200%;
-  transition: background-position 1s;
+  transition: background-position 0.5s;
   background-position: 0 -100%;
 }
 </style>

@@ -398,7 +398,7 @@ export default {
   color: lightgrey;
 }
 
- .name_other_sms_me {
+.name_other_sms_me {
   display: none;
 }
 

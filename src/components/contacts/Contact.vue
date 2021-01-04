@@ -41,6 +41,7 @@ import PhoneTitle from './../PhoneTitle'
 import Modal from '@/components/Modal/index.js'
 
 export default {
+  name: 'contact.view',
   components: { PhoneTitle },
   data () {
     return {

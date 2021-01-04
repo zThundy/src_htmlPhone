@@ -1,6 +1,6 @@
 <template>
   <div class="phone_app">
-    <PhoneTitle :title="IntlString('APP_BANK_TITLE')" v-on:back="onBackspace" backgroundColor="rgb(40, 90, 43)" />
+    <PhoneTitle :title="IntlString('APP_BANK_TITLE')" :back="onBackspace" :color="'white'" :backgroundColor="'rgb(45, 74, 175)'" />
 
     <div class="slice"></div>
     <div class="slice2"></div>
@@ -290,7 +290,7 @@ i {
 
 .slice:nth-child(2) {
   top: 2px;
-  background: rgb(40, 90, 43);
+  background: rgb(45, 74, 175);
   color: white;
   clip-path: polygon(0% 0%, 0% 55%, 200% 40%, 0 90%);
   padding: 3rem 70% 25%;
@@ -303,7 +303,7 @@ i {
 
 .slice2:nth-child(3) {
   bottom: 2px;
-  background:rgb(40, 90, 43);
+  background: rgb(45, 74, 175);
   color: white;
   clip-path: polygon(0 20%, 100% 80%, 40% 200%, 0 100%);
   padding: 3rem 70% 25%;

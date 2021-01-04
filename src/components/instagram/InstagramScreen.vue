@@ -1,13 +1,13 @@
 <template>
-  <div style="width: 326px; height: 743px;" class="phone_app">
-    <PhoneTitle color="white" backgroundColor="rgba(255, 255, 255, 0.1)" :title="currentScreen.title" class="gradient_bg" v-on:back="quit"/>
+  <div class="phone_app">
+    <PhoneTitle :backgroundColor="'rgba(0, 0, 0, 0)'" :title="currentScreen.title" :class="{ gradient_bg: currentScreenIndex != 2 }" :back="quit"/>
     
     <div class="phone_content">
-      <component v-bind:is="currentScreen.component"/>
+      <component :is="currentScreen.component"/>
     </div>
 
     <div class="instagram-menu">
-      <div v-for="(s, i) in screen" :key="i" class="instagram-menu-item" :class="{select: i === currentScreenIndex}" @click.stop="openMenu(i)">
+      <div v-for="(s, i) in screen" :key="i" class="instagram-menu-item" :class="{ select: i === currentScreenIndex }" @click.stop="openMenu(i)">
         <i class="fa" :class="s.icon" @click.stop="openMenu(i)"></i>
       </div>
     </div>
@@ -167,7 +167,9 @@ export default {
 }
 
 .gradient_bg {
-  background: rgb(164,28,204);
-  background: linear-gradient(0deg, rgba(164,28,204,1) 0%, rgba(92,0,189,1) 46%, rgba(12,0,189,1) 96%);
+  background: -moz-linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%); 
+  background: -webkit-linear-gradient(45deg, #f09433 0%,#e6683c 25%,#dc2743 50%,#cc2366 75%,#bc1888 100%); 
+  background: linear-gradient(45deg, #f09433 0%,#e6683c 25%,#dc2743 50%,#cc2366 75%,#bc1888 100%); 
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#f09433', endColorstr='#bc1888',GradientType=1 );
 }
 </style>

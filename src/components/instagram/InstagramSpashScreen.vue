@@ -1,6 +1,6 @@
 <template>
-  <div style="width: 326px; height: 743px;" class="splash">
-    <img src="/html/static/img/icons_app/insta.png">
+  <div class="splash">
+    <img src="/html/static/img/icons_app/instagram.png">
   </div>
 </template>
 
@@ -9,30 +9,37 @@ export default {
   created: function () {
     setTimeout(() => {
       this.$router.push({ name: 'instagram.screen' })
-    }, 500)
+    }, 700)
   }
 }
 </script>
 
 <style scoped>
-.splash{
+.splash {
   width: 100%;
   height: 100%;
-  background-color: white; /*#1da1f2;*/
   display: flex;
   justify-content: center;
   align-items: center;
+
+  background: -moz-linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%); 
+  background: -webkit-linear-gradient(45deg, #f09433 0%,#e6683c 25%,#dc2743 50%,#cc2366 75%,#bc1888 100%); 
+  background: linear-gradient(45deg, #f09433 0%,#e6683c 25%,#dc2743 50%,#cc2366 75%,#bc1888 100%); 
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#f09433', endColorstr='#bc1888',GradientType=1 );
 }
 
 img {
-  width: 80px;
   animation-name: zoom;
-  animation-duration: 0.35s;
+  animation-duration: 0.7s;
   animation-fill-mode: forwards;
 }
 
 @keyframes zoom {
-  from {width: 180px;}
-    to {width: 250px;}
+  from {
+    width: 20%;
+  }
+  to {
+    width: 80%;
+  }
 }
 </style>

@@ -270,7 +270,7 @@ export default {
 
     onBackspace () {
       if (this.ignoreControls === true) return
-      this.$router.push({ name: 'home' })
+      this.$router.push({ name: 'menu' })
     },
 
     onUp: function () {

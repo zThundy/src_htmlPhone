@@ -1,15 +1,14 @@
 <template>
   <div class="splash">
-    <img src="/html/static/img/icons_app/galleria.png" alt="">
+    <img src="/html/static/img/icons_app/email.png" alt="">
   </div>
 </template>
 
 <script>
 export default {
-  name: 'galleria_splash',
   created: function () {
     setTimeout(() => {
-      this.$router.push({ name: 'galleria' })
+      this.$router.push({ name: 'email' })
     }, 700)
   }
 }
@@ -23,8 +22,7 @@ export default {
   justify-content: center;
   align-items: center;
 
-  background: rgb(227,193,139);
-  background: linear-gradient(350deg, rgba(227,193,139,1) 0%, rgba(207,99,88,1) 100%);
+  background-color: rgb(216, 71, 49);
 }
 
 img {

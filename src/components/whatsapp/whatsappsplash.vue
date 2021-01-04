@@ -1,6 +1,6 @@
 <template>
-  <div style="width: 334px; height: 678px; background: white" class="splash">
-    <img src="/html/static/img/app_whatsapp/whatsappIcon.png" alt="">
+  <div class="splash">
+    <img src="/html/static/img/icons_app/whatsapp.png" alt="">
   </div>
 </template>
 
@@ -19,20 +19,26 @@ export default {
 .splash {
   width: 100%;
   height: 100%;
-  background-color: #018021;
   display: flex;
   justify-content: center;
   align-items: center;
+  
+  background-color: rgb(49, 165, 73);
 }
+
 img {
-  width: 80px;
   animation-name: zoom;
   animation-duration: 0.7s;
   animation-fill-mode: forwards;
 }
+
 @keyframes zoom {
-  from {width: 80px;}
-    to {width: 250px;}
+  from {
+    width: 20%;
+  }
+  to {
+    width: 80%;
+  }
 }
 
 </style>
