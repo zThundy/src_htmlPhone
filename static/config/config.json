@@ -391,7 +391,7 @@
       "it_IT__name": "Email",
       "icons": "/html/static/img/icons_app/email.png",
       "routeName": "email.splash",
-      "enabled": true
+      "enabled": false
     }
   ],
   "defaultLanguage": "it_IT",
