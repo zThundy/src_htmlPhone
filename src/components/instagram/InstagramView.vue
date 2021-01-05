@@ -43,7 +43,7 @@
 </template>
 
 <script>
-import { mapGetters, mapActions } from 'vuex'
+import { mapGetters, mapActions, mapMutations } from 'vuex'
 import Modal from '@/components/Modal/index.js'
 import PhoneAPI from './../../PhoneAPI'
 
@@ -63,6 +63,7 @@ export default {
   },
   methods: {
     ...mapActions(['instagramLogin', 'instagramPostTweet', 'instagramToogleLike']),
+    ...mapMutations(['CHANGE_BRIGHTNESS_STATE']),
     async showOption () {
       this.ignoreControls = true
       const post = this.instaPosts[this.selectMessage]
@@ -87,6 +88,7 @@ export default {
           break
         case 2:
           this.imgZoom = post.message
+          this.CHANGE_BRIGHTNESS_STATE(false)
           break
       }
     },
@@ -135,6 +137,7 @@ export default {
     onBack () {
       if (this.imgZoom !== undefined) {
         this.imgZoom = undefined
+        this.CHANGE_BRIGHTNESS_STATE(true)
         return
       }
       if (this.ignoreControls === true) return

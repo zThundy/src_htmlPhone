@@ -46,7 +46,7 @@
 </template>
 
 <script>
-import { mapGetters, mapActions } from 'vuex'
+import { mapGetters, mapActions, mapMutations } from 'vuex'
 import Modal from '@/components/Modal/index.js'
 
 export default {
@@ -65,6 +65,7 @@ export default {
   },
   methods: {
     ...mapActions(['darkwebPostMessage']),
+    ...mapMutations(['CHANGE_BRIGHTNESS_STATE']),
     async showOption () {
       this.ignoreControls = true
       const message = this.darkwebMessages[this.selectMessage]
@@ -93,6 +94,7 @@ export default {
           break
         case 2:
           this.imgZoom = message.message
+          this.CHANGE_BRIGHTNESS_STATE(false)
           break
       }
     },
@@ -157,6 +159,7 @@ export default {
     onBack () {
       if (this.imgZoom !== undefined) {
         this.imgZoom = undefined
+        this.CHANGE_BRIGHTNESS_STATE(true)
         return
       }
       if (this.ignoreControls === true) return

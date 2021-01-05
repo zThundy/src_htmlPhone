@@ -54,7 +54,7 @@
 </template>
 
 <script>
-import { mapGetters, mapActions } from 'vuex'
+import { mapGetters, mapActions, mapMutations } from 'vuex'
 import Modal from '@/components/Modal/index.js'
 import { replaceEmoji } from './../../Utils'
 
@@ -77,6 +77,7 @@ export default {
   },
   methods: {
     ...mapActions(['twitterLogin', 'twitterPostTweet', 'twitterToogleLike', 'fetchFavoriteTweets']),
+    ...mapMutations(['CHANGE_BRIGHTNESS_STATE']),
     async showOption () {
       this.ignoreControls = true
       const tweet = this.tweets[this.selectMessage]
@@ -112,6 +113,7 @@ export default {
           break
         case 3:
           this.imgZoom = tweet.message
+          this.CHANGE_BRIGHTNESS_STATE(false)
           break
       }
     },
@@ -178,6 +180,7 @@ export default {
     onBack () {
       if (this.imgZoom !== undefined) {
         this.imgZoom = undefined
+        this.CHANGE_BRIGHTNESS_STATE(true)
         return
       }
       if (this.ignoreControls === true) return

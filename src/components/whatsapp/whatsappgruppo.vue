@@ -54,7 +54,7 @@
 
 
 <script>
-import { mapGetters, mapActions } from 'vuex'
+import { mapGetters, mapActions, mapMutations } from 'vuex'
 import PhoneTitle from './../PhoneTitle'
 import Modal from '@/components/Modal/index.js'
 import { Toast, ActivityIndicator } from 'mand-mobile'
@@ -80,6 +80,7 @@ export default {
   },
   methods: {
     ...mapActions(['requestWhatsappInfo', 'sendMessageInGroup']),
+    ...mapMutations(['CHANGE_BRIGHTNESS_STATE']),
     scrollIntoViewIfNeeded () {
       this.$nextTick(() => {
         const elem = this.$el.querySelector('.select')
@@ -107,7 +108,11 @@ export default {
       this.scrollIntoViewIfNeeded()
     },
     onBackspace () {
-      if (this.imgZoom !== null) { this.imgZoom = null; return }
+      if (this.imgZoom !== null) {
+        this.imgZoom = null
+        this.CHANGE_BRIGHTNESS_STATE(true)
+        return
+      }
       if (this.ignoreControls === true) { this.ignoreControls = false; return }
       if (this.currentSelected !== -1) { this.currentSelected = -1; return }
       this.$router.push({ name: 'whatsapp' })
@@ -197,6 +202,7 @@ export default {
           this.$phoneAPI.setGPS(val[1], val[3])
         } else if (data.id === 'zoom') {
           this.imgZoom = message.message
+          this.CHANGE_BRIGHTNESS_STATE(false)
         } else if (data.id === 1) {
           this.ignoreControls = false
           if (this.myPhoneNumber.includes('#') || this.myPhoneNumber === 0 || this.myPhoneNumber === '0') {

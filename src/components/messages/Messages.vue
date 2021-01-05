@@ -49,7 +49,7 @@
 </template>
 
 <script>
-import { mapGetters, mapActions } from 'vuex'
+import { mapGetters, mapActions, mapMutations } from 'vuex'
 import { generateColorForStr, getBestFontColor } from './../../Utils'
 import PhoneTitle from './../PhoneTitle'
 import Modal from '@/components/Modal/index.js'
@@ -69,6 +69,7 @@ export default {
   components: { PhoneTitle },
   methods: {
     ...mapActions(['setMessageRead', 'sendMessage', 'deleteMessage', 'startCall']),
+    ...mapMutations(['CHANGE_BRIGHTNESS_STATE']),
     resetScroll () {
       this.$nextTick(() => {
         let elem = document.querySelector('#sms_list')
@@ -150,6 +151,11 @@ export default {
         let isSMSImage = this.isSMSImage(message.message)
         let choix = [
           {
+            id: 'inoltra',
+            title: this.IntlString('APP_MESSAGE_INOLTRA_IMG'),
+            icons: 'fa-paper-plane'
+          },
+          {
             id: 'delete',
             title: this.IntlString('APP_MESSAGE_DELETE'),
             icons: 'fa-trash'
@@ -182,11 +188,6 @@ export default {
             id: 'zoom',
             title: this.IntlString('APP_MESSAGE_ZOOM_IMG'),
             icons: 'fa-search'
-          },
-          {
-            id: 'inoltra',
-            title: this.IntlString('APP_MESSAGE_INOLTRA_IMG'),
-            icons: 'fa-paper-plane'
           }, ...choix]
         }
         this.ignoreControls = true
@@ -202,6 +203,7 @@ export default {
           })
         } else if (data.id === 'zoom') {
           this.imgZoom = message.message
+          this.CHANGE_BRIGHTNESS_STATE(false)
         } else if (data.id === 'inoltra') {
           this.$router.push({ name: 'messages.chooseinoltra', params: { message: message.message } })
           // this.sendMessage({ phoneNumber: this.phoneNumber, message })
@@ -266,6 +268,7 @@ export default {
     onBackspace () {
       if (this.imgZoom !== undefined) {
         this.imgZoom = undefined
+        this.CHANGE_BRIGHTNESS_STATE(true)
         return
       }
       if (this.ignoreControls === true) return

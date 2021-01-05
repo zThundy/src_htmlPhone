@@ -4,7 +4,7 @@
 
     <div v-if="show === true && tempoHide === false" :style="getStyle()">
 
-      <div class="phone_wrapper">
+      <div class="phone_wrapper" :style="classObject()">
         <div v-if="currentCover" class="phone_coque" :style="{ backgroundImage: 'url(/html/static/img/cover/' + currentCover.value + ')' }"></div>
         
           <div id="app" class="phone_screen noselect">
@@ -56,10 +56,18 @@ export default {
         'zoom': this.zoom
         // 'filter': 'brightness(' + ((this.brightness / 100) + 0.10) + ')'
       }
+    },
+    classObject () {
+      if (this.brightnessActive) {
+        return {
+          filter: 'brightness(' + ((this.brightness / 100) + 0.10) + ')'
+        }
+      }
+      return {}
     }
   },
   computed: {
-    ...mapGetters(['show', 'zoom', 'currentCover', 'sonido', 'appelsInfo', 'myPhoneNumber', 'volume', 'tempoHide', 'brightness'])
+    ...mapGetters(['show', 'zoom', 'currentCover', 'sonido', 'appelsInfo', 'myPhoneNumber', 'volume', 'tempoHide', 'brightness', 'brightnessActive'])
   },
   watch: {
     appelsInfo (newValue, oldValue) {

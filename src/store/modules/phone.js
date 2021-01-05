@@ -19,6 +19,7 @@ const state = {
   myData: JSON.parse(window.localStorage['gc_myData'] || null),
   notification: (window.localStorage['gc_notification'] === null || window.localStorage['gc_notification'] === undefined) ? true : window.localStorage['gc_notification'],
   airplane: (window.localStorage['gc_airplane'] === null || window.localStorage['gc_airplane'] === undefined) ? false : window.localStorage['gc_airplane'],
+  brightnessActive: true,
   config: {
     reseau: 'Code',
     useFormatNumberFrance: false,
@@ -37,6 +38,7 @@ const getters = {
   tts: ({ tts }) => tts,
   notification: ({ notification }) => notification,
   airplane: ({ airplane }) => airplane,
+  brightnessActive: ({ brightnessActive }) => brightnessActive,
   brightness: ({ brightness }) => brightness,
   myImage: ({ myImage, config }) => myImage,
   myData: ({ myData, config }) => myData,
@@ -270,6 +272,10 @@ const mutations = {
   CHANGE_BRIGHTNESS (state, value) {
     window.localStorage['gc_brightness'] = parseInt(value)
     state.brightness = parseInt(value)
+  },
+  CHANGE_BRIGHTNESS_STATE (state, bool) {
+    console.log(bool)
+    state.brightnessActive = bool
   }
 }
 
