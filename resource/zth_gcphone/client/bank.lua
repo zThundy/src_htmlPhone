@@ -1,5 +1,5 @@
 RegisterNetEvent('esx:playerLoaded')
-AddEventHandler('esx:playerLoaded', function(PlayerData)
+AddEventHandler('esx:playerLoaded', function()
     ESX.TriggerServerCallback("gcphone:bank_getBankInfo", function(bank, iban)
         SendNUIMessage({event = 'updateBankbalance', soldi = bank, iban = iban})
     end)
@@ -27,7 +27,11 @@ end)
 
 
 RegisterNUICallback("requestFatture", function(data, cb)
-    ESX.TriggerServerCallback("gcphone:bank_requestMyFatture", function(fatture)
+    -- ESX.TriggerServerCallback("gcphone:bank_requestMyFatture", function(fatture)
+    --     cb(fatture)
+    -- end)
+    
+    ESX.TriggerServerCallback("esx_billing:getBills", function(fatture)
         cb(fatture)
     end)
 end)

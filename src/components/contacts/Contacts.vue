@@ -4,7 +4,6 @@
     <list :list='lcontacts' :disable="disableList" :title="IntlString('APP_CONTACT_TITLE')" @back="back" @select='onSelect' @option='onOption'></list>
   
   </div>
-
 </template>
 
 <script>
@@ -25,7 +24,7 @@ export default {
   computed: {
     ...mapGetters(['IntlString', 'contacts']),
     lcontacts () {
-      let addContact = {display: this.IntlString('APP_CONTACT_NEW'), letter: '+', num: '', id: -1}
+      let addContact = { display: this.IntlString('APP_CONTACT_NEW'), letter: '+', num: '', id: -1 }
       return [addContact, ...this.contacts.map(e => {
         if (e.icon === null || e.icon === undefined || e.icon === '') {
           e.backgroundColor = e.backgroundColor || generateColorForStr(e.number)
@@ -38,7 +37,7 @@ export default {
     ...mapActions(['updateContactPicture', 'startCall']),
     onSelect (contact) {
       if (contact.id === -1) {
-        this.$router.push({ name: 'contacts.view', params: { id: contact.id, number: 33333 } })
+        this.$router.push({ name: 'contacts.view', params: { id: contact.id } })
         // this.$router.push({ name: 'contacts.view', params: { id: contact.id } })
       } else {
         this.$router.push({ name: 'messages.view', params: { number: contact.number, display: contact.display } })
@@ -64,7 +63,7 @@ export default {
         case 2:
           const newAvatar = await PhoneAPI.takePhoto()
           if (newAvatar.url !== null && newAvatar.url !== undefined && newAvatar !== '') {
-            this.updateContactPicture({id: contact.id, display: contact.display, number: contact.number, icon: newAvatar.url})
+            this.updateContactPicture({ id: contact.id, display: contact.display, number: contact.number, icon: newAvatar.url })
           }
           this.disableList = false
           break
@@ -96,7 +95,7 @@ export default {
 </script>
 
 <style scoped>
-.contact{
+.contact {
   position: relative;
   left: 0;
   top: 0;

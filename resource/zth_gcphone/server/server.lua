@@ -250,7 +250,7 @@ AddEventHandler("gcphone:updateCachedNumber", function(number, identifier, isCha
             cachedNumbers[oldNumber].inUse = false
             cachedNumbers[number].inUse = true
         else
-            print("IDK ", number, identifier)
+            print("IDK sta registrando numero O.O", number, identifier)
         end
     elseif cachedNumbers[number] ~= nil then
         cachedNumbers[number].inUse = true
@@ -435,15 +435,15 @@ end
 
 
 function addMessage(source, identifier, phone_number, message)
-    print(source, identifier, phone_number, message)
+    -- print(source, identifier, phone_number, message)
 
     local player = tonumber(source)
-    local xPlayer = ESX.GetPlayerFromId(player)
+    -- local xPlayer = ESX.GetPlayerFromId(player)
 
     local otherIdentifier, isInstalled = gcPhone.getIdentifierByPhoneNumber(phone_number)
     local myPhone = gcPhone.getPhoneNumber(identifier)
 
-    print(otherIdentifier, isInstalled)
+    -- print(otherIdentifier, isInstalled)
     
     if otherIdentifier ~= nil then
         segnaleTransmitter = segnaliTelefoniPlayers[gcPhone.getPlayerSegnaleIndex(segnaliTelefoniPlayers, identifier)]
@@ -488,14 +488,17 @@ function addMessage(source, identifier, phone_number, message)
                         end
                     end)
                 else
-                    xPlayer.showNotification("Hai finito i messaggi previsti dal tuo piano tariffario", "error")
+                    TriggerClientEvent("esx:showNotification", player, "~r~Hai finito i messaggi previsti dal tuo piano tariffario")
+                    -- xPlayer.showNotification("Hai finito i messaggi previsti dal tuo piano tariffario", "error")
                 end
             end)
         else
-        	xPlayer.showNotification("Non c'è segnale per mandare un messaggio", "error")
+            TriggerClientEvent("esx:showNotification", player, "~r~Non c'è segnale per mandare un messaggio")
+        	-- xPlayer.showNotification("Non c'è segnale per mandare un messaggio", "error")
         end
     else
-        xPlayer.showNotification("Impossibile mandare il messaggio, il numero selezionato non esiste", "error")
+        TriggerClientEvent("esx:showNotification", player, "~r~Impossibile mandare il messaggio, il numero selezionato non esiste")
+        -- xPlayer.showNotification("Impossibile mandare il messaggio, il numero selezionato non esiste", "error")
     end 
 end
 
