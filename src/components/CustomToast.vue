@@ -1,12 +1,12 @@
 <template>
   <div class="custom-toast">
-    <md-popup :value="visible" @show="$_onShow" @hide="$_onHide" :hasMask="true" :maskClosable="false">
-
-      <div class="custom-toast-content" v-if="$slots.default">
+    <md-popup :value="visible" @show="$_onShow" @hide="$_onHide" :hasMask="false" :maskClosable="false">
+      
+      <div :class="[ hasMask ? 'custom-toast-content' : 'custom-toast-content-nobg' ]" v-if="$slots.default">
         <slot></slot>
       </div>
 
-      <div class="custom-toast-content" v-else>
+      <div :class="[ hasMask ? 'custom-toast-content' : 'custom-toast-content-nobg' ]" v-else>
 
         <md-icon v-if="icon" :name="icon" size="lg" :svg="iconSvg"/>
         <div class="custom-toast-text" v-if="content" v-text="content"></div>
@@ -43,6 +43,10 @@ export default {
     duration: {
       type: Number,
       default: 0
+    },
+    hasMask: {
+      type: Boolean,
+      default: true
     }
   },
   data () {
@@ -132,6 +136,24 @@ export default {
   line-height: 1.52857142;
   color: white;
   background-color: rgba(0, 0, 0, 0.5);
+
+  box-sizing: border-box;
+  overflow: hidden;
+}
+
+.custom-toast-content-nobg {
+  display: inline-flex;
+  align-items: center;
+  max-width: 100%;
+  min-width: 80px;
+
+  padding: 15px;
+  border-radius: 3px;
+  font-size: 10px;
+  text-align: left;
+  line-height: 1.52857142;
+  color: white;
+  background-color: rgba(0, 0, 0, 0);
 
   box-sizing: border-box;
   overflow: hidden;

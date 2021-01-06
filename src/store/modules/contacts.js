@@ -13,11 +13,11 @@ const actions = {
   updateContactPicture ({ commit }, {id, display, number, icon}) {
     PhoneAPI.updateContactAvatar(id, display, number, icon)
   },
-  updateContact (context, {id, display, number}) {
-    PhoneAPI.updateContact(id, display, number)
+  updateContact (context, {id, display, number, email}) {
+    PhoneAPI.updateContact(id, display, number, email)
   },
-  addContact (context, {display, number}) {
-    PhoneAPI.addContact(display, number)
+  addContact (context, {display, number, email}) {
+    PhoneAPI.addContact(display, number, email)
   },
   deleteContact (context, {id}) {
     PhoneAPI.deleteContact(id)
@@ -50,17 +50,20 @@ if (process.env.NODE_ENV !== 'production') {
       id: 1,
       icon: 'https://u.trs.tn/tohqw.jpg',
       number: '5554444',
-      display: 'stoprovando'
+      display: 'stoprovando',
+      email: 'stoprovando@code.it'
     },
     {
       id: 2,
       number: '55529322',
-      display: 'questoenuovo'
+      display: 'questoenuovo',
+      email: 'questoenuovo@code.it'
     },
     {
       id: 3,
       number: '55587422',
-      display: 'altrocontatto'
+      display: 'altrocontatto',
+      email: 'altrocontatto@code.it'
     }
   ]
 }

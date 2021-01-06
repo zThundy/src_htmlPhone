@@ -111,11 +111,7 @@ Citizen.CreateThread(function()
 end)
 
 
-
---====================================================================================
---  Active ou Deactive une application (appName => config.json)
---====================================================================================
-
+-- utile dal js per l'appstore, non qui :/
 RegisterNetEvent('gcPhone:setEnableApp')
 AddEventHandler('gcPhone:setEnableApp', function(appName, enable)
     SendNUIMessage({ event = 'setEnableApp', appName = appName, enable = enable })
@@ -130,6 +126,7 @@ end)
 
 RegisterNUICallback("updateAirplane", function(data, cb)
     enableGlobalAirplane = data
+    TriggerServerEvent("gcphone:updateAirplaneForUser", data)
     cb("ok")
 end)
 
@@ -211,19 +208,21 @@ AddEventHandler("gcPhone:allMessage", function(allmessages, notReceivedMessages)
     SendNUIMessage({ event = 'updateMessages', messages = allmessages })
     messages = allmessages
 
-    if notReceivedMessages ~= nil then
-        if notReceivedMessages > 0 then
-            if notReceivedMessages == 1 then
-                ESX.ShowNotification("Hai "..notReceivedMessages.." nuovo messaggo")
-            else
-                ESX.ShowNotification("Hai "..notReceivedMessages.." nuovi messaggi")
-            end
+    if not enableGlobalAirplane then
+        if notReceivedMessages ~= nil then
+            if notReceivedMessages > 0 then
+                if notReceivedMessages == 1 then
+                    ESX.ShowNotification("Hai "..notReceivedMessages.." nuovo messaggo")
+                else
+                    ESX.ShowNotification("Hai "..notReceivedMessages.." nuovi messaggi")
+                end
 
-            if enableGlobalNotification then
-                DrawNotification(false, false)
-                PlaySoundJS('msgnotify.ogg')
-                Citizen.Wait(3000)
-                StopSoundJS('msgnotify.ogg')
+                if enableGlobalNotification then
+                    DrawNotification(false, false)
+                    PlaySoundJS('msgnotify.ogg')
+                    Citizen.Wait(3000)
+                    StopSoundJS('msgnotify.ogg')
+                end
             end
         end
     end
@@ -257,30 +256,31 @@ end)
 
 RegisterNetEvent("gcPhone:receiveMessage")
 AddEventHandler("gcPhone:receiveMessage", function(message)
+    if not enableGlobalAirplane then
+        SendNUIMessage({ event = 'newMessage', message = message })
+        table.insert(messages, message)
 
-    SendNUIMessage({ event = 'newMessage', message = message })
-    table.insert(messages, message)
+        if message.owner == 0 then
+            local text = 'Hai ricevuto un messaggio'
 
-    if message.owner == 0 then
-        local text = 'Hai ricevuto un messaggio'
+            if Config.ShowNumberNotification == true then
+                text = 'Hai ricevuto un messaggio da '..message.transmitter
 
-        if Config.ShowNumberNotification == true then
-            text = 'Hai ricevuto un messaggio da '..message.transmitter
+                for _,contact in pairs(contacts) do
+                    if contact.number == message.transmitter then
+                        text = 'Hai ricevuto un messaggio da '..contact.display
 
-            for _,contact in pairs(contacts) do
-                if contact.number == message.transmitter then
-                    text = 'Hai ricevuto un messaggio da '..contact.display
-
-                    break
+                        break
+                    end
                 end
             end
-        end
 
-        ESX.ShowNotification(text)
-        if enableGlobalNotification then
-            PlaySoundJS('msgnotify.ogg')
-            Citizen.Wait(3000)
-            StopSoundJS('msgnotify.ogg')
+            ESX.ShowNotification(text)
+            if enableGlobalNotification then
+                PlaySoundJS('msgnotify.ogg')
+                Citizen.Wait(3000)
+                StopSoundJS('msgnotify.ogg')
+            end
         end
     end
 end)
@@ -304,10 +304,11 @@ end
 --  Function client | Messages
 --====================================================================================
 
-function sendMessage(num, message)
-    TriggerServerEvent('gcPhone:sendMessage', num, message)
-end
-
+--[[
+    function sendMessage(num, message)
+        TriggerServerEvent('gcPhone:sendMessage', num, message)
+    end
+]]
 
 function deleteMessage(msgId)
     TriggerServerEvent('gcPhone:deleteMessage', msgId)
@@ -558,32 +559,36 @@ end
 --  Event NUI - Appels
 --====================================================================================
 
-RegisterNUICallback('startCall', function (data, cb)
-    if data.rtcOffer == nil then data.rtcOffer = '' end
-    TriggerServerEvent('gcPhone:startCall', data.numero, data.rtcOffer, data.extraData)
+RegisterNUICallback('startCall', function(data, cb)
+    if not enableGlobalAirplane then
+        if data.rtcOffer == nil then data.rtcOffer = '' end
+        TriggerServerEvent('gcPhone:startCall', data.numero, data.rtcOffer, data.extraData)
+    else
+        ESX.ShowNotification("~r~Non puoi effetturare chiamate con la modalità aereo")
+    end
     cb("ok")
 end)
 
 
-RegisterNUICallback('acceptCall', function (data, cb)
+RegisterNUICallback('acceptCall', function(data, cb)
     acceptCall(data.infoCall, data.rtcAnswer)
     cb("ok")
 end)
 
 
-RegisterNUICallback('rejectCall', function (data, cb)
+RegisterNUICallback('rejectCall', function(data, cb)
     rejectCall(data.infoCall)
     cb("ok")
 end)
 
 
-RegisterNUICallback('ignoreCall', function (data, cb)
+RegisterNUICallback('ignoreCall', function(data, cb)
     ignoreCall(data.infoCall)
     cb("ok")
 end)
 
 
-RegisterNUICallback('notififyUseRTC', function (use, cb)
+RegisterNUICallback('notififyUseRTC', function(use, cb)
     USE_RTC = use
     if USE_RTC == true and inCall == true then
         inCall = false
@@ -699,12 +704,16 @@ end)
 
 
 RegisterNUICallback('sendMessage', function(data, cb)
-    if data.message == '%pos%' then
-        local myPos = GetEntityCoords(PlayerPedId())
-        data.message = 'GPS: ' .. myPos.x .. ', ' .. myPos.y
-    end
+    if not enableGlobalAirplane then
+        if data.message == '%pos%' then
+            local myPos = GetEntityCoords(PlayerPedId())
+            data.message = 'GPS: ' .. myPos.x .. ', ' .. myPos.y
+        end
 
-    TriggerServerEvent('gcPhone:sendMessage', data.phoneNumber, data.message)
+        TriggerServerEvent('gcPhone:sendMessage', data.phoneNumber, data.message)
+    else
+        ESX.ShowNotification("~r~Non puoi inviare messaggi con la modalità aereo")
+    end
     cb("ok")
 end)
 
@@ -739,13 +748,13 @@ end)
 
 
 RegisterNUICallback('addContact', function(data, cb) 
-    TriggerServerEvent('gcPhone:addContact', data.display, data.phoneNumber)
+    TriggerServerEvent('gcPhone:addContact', data.display, data.phoneNumber, data.email)
     cb("ok")
 end)
 
 
 RegisterNUICallback('updateContact', function(data, cb)
-    TriggerServerEvent('gcPhone:updateContact', data.id, data.display, data.phoneNumber)
+    TriggerServerEvent('gcPhone:updateContact', data.id, data.display, data.phoneNumber, data.email)
     cb("ok")
 end)
 

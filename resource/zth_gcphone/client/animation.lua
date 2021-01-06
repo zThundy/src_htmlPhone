@@ -166,6 +166,12 @@ AddEventHandler("onResourceStop", function(res)
 end)
 
 
+RegisterNetEvent("gcphone:animations_doCleanup")
+AddEventHandler("gcphone:animations_doCleanup", function()
+	doCleanup()
+end)
+
+
 --[[Citizen.CreateThread(function()
 	local idle = 0
 	while true do

@@ -15,5 +15,6 @@ end)
 
 RegisterServerEvent("gcphone:bluetooth_sendPicToUser")
 AddEventHandler("gcphone:bluetooth_sendPicToUser", function(data)
-    TriggerClientEvent("gcphone:bluetooth_receivePic", data.id, data.link)
+    local player = source
+    TriggerClientEvent("gcphone:bluetooth_receivePic", player, data.id, data.link)
 end)

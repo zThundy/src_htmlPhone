@@ -14,6 +14,11 @@ AddEventHandler("gcPhone:sendMoneyToUser", function(data)
     local player = source
     local xPlayer = ESX.GetPlayerFromId(player)
 
+    if iban:find("INSERISCI") or iban:find("IBAN") or iban:find("DESTINATARIO") then
+        xPlayer.showNotification("~r~Iban non trovato o non valido")
+        return
+    end
+
     getUserFromIban(iban, function(user)
         if user ~= nil then
             if type(tonumber(data.money)) == "number" then
@@ -65,7 +70,7 @@ end)
 
 
 function getUserFromIban(iban, cb)
-    MySQL.Async.fetchAll("SELECT * FROM users WHERE iban = '"..iban.."'", {}, function(result)
+    MySQL.Async.fetchAll("SELECT identifier FROM users WHERE iban = '"..iban.."'", {}, function(result)
         if result == nil or result[1] == nil then cb(nil) else cb(result[1]) end
     end)
 end

@@ -8,7 +8,7 @@ Citizen.CreateThread(function() --ok
 	TriggerEvent('tcm_grids:registerMarker', {
 		name = "piano_tariffario",
 		type = 20,
-		coords = vector3(Config.BlipOfferte["x"], Config.BlipOfferte["y"], Config.BlipOfferte["z"]),
+		coords = vector3(Config.MarkerOfferte["x"], Config.MarkerOfferte["y"], Config.MarkerOfferte["z"]),
 		colour = { r = 55, b = 55, g = 255 },
 		size =  vector3(0.8, 0.8, 0.8),
 		action = function()
@@ -16,6 +16,18 @@ Citizen.CreateThread(function() --ok
 		end,
 		msg = "Premi ~INPUT_CONTEXT~ per acquistare un piano tariffario",
 	})
+
+	local info = Config.BlipOfferte
+	local blip = AddBlipForCoord(info.x, info.y, info.z)
+	SetBlipHighDetail(blip, true)
+	SetBlipSprite(blip, info.sprite)
+	SetBlipColour(blip, info.color)
+	SetBlipScale(blip, info.scale)
+	SetBlipAsShortRange(blip, true)
+
+	BeginTextCommandSetBlipName("STRING")
+	AddTextComponentString(info.name)
+	EndTextCommandSetBlipName(blip)
 end)
 
 RegisterKeyMapping('+openSimMenu', 'Menù sim', 'keyboard', 'f3')

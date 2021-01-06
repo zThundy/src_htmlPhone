@@ -1,15 +1,50 @@
 <template>
   <div class="splash">
     <img src="/html/static/img/icons_app/email.png" alt="">
+    
+    <custom-toast class="caricamento" @hide="toastHide" :duration="randomWait" :hasMask="false" ref="updating">
+      <md-icon class="caricamento-content" name="spinner" size="lg"></md-icon>
+    </custom-toast>
+
   </div>
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
+import CustomToast from '@/components/CustomToast'
+
+import { Icon } from 'mand-mobile'
+import 'mand-mobile/lib/mand-mobile.css'
+
 export default {
+  name: 'email.splash',
+  data () {
+    return {
+      randomWait: Math.floor(Math.random() * (5000 - 8000) + 8000)
+    }
+  },
+  components: {
+    CustomToast,
+    [Icon.name]: Icon
+  },
+  computed: {
+    ...mapGetters(['myEmail'])
+  },
+  methods: {
+    toastHide () {
+      if (this.myEmail) {
+        this.$router.push({ name: 'email' })
+      } else {
+        this.$router.push({ name: 'email.register' })
+      }
+      // this.$refs.updating.show()
+    }
+  },
   created: function () {
+    this.$phoneAPI.requestMyEmail()
     setTimeout(() => {
-      this.$router.push({ name: 'email' })
-    }, 700)
+      this.$refs.updating.show()
+    }, 900)
   }
 }
 </script>
@@ -38,5 +73,13 @@ img {
   to {
     width: 80%;
   }
+}
+
+.caricamento {
+  top: 20%;
+}
+
+.caricamento-content {
+  padding-left: 10px;
 }
 </style>

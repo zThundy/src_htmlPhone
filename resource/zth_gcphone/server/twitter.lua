@@ -172,7 +172,7 @@ function TwitterToogleLike(username, password, tweetId, player)
               						['@id'] = tweet.id
             					}, function ()
               						TriggerClientEvent('gcPhone:twitter_updateTweetLikes', -1, tweet.id, tweet.likes - 1)
-              						TriggerClientEvent('gcPhone:twitter_setTweetLikes', sourcePlayer, tweet.id, false)
+              						TriggerClientEvent('gcPhone:twitter_setTweetLikes', player, tweet.id, false)
               						TriggerEvent('gcPhone:twitter_updateTweetLikes', tweet.id, tweet.likes - 1)
             					end)
           					end)

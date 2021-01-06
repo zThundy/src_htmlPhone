@@ -1,5 +1,5 @@
 <template>
-  <div style="width: 326px; height: 743px;" class="lockscreen" v-bind:style="{background: 'url(' + this.backgroundURL + ')'}">
+  <div style="width: 100%; height: 743px;" class="lockscreen" v-bind:style="{background: 'url(' + this.backgroundURL + ')'}">
     <div class="lockscreen-brightness">
       <InfoBare />
 

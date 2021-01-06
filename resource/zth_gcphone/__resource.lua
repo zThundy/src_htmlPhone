@@ -13,6 +13,7 @@ files {
 	'html/static/img/app_bank/*',
 	'html/static/img/app_darkweb/*',
 	'html/static/img/app_dati/*',
+	'html/static/img/app_email/*',
 	'html/static/img/app_favourites/*',
 	'html/static/img/app_galleria/*',
 	'html/static/img/app_instagram/*',
@@ -47,7 +48,8 @@ client_script {
 	"client/bluetooth.lua",
 	"client/suoneria.lua",
 	"client/modem.lua",
-	"client/darkweb.lua"
+	"client/darkweb.lua",
+	"client/email.lua"
 }
 
 server_script {
@@ -64,7 +66,8 @@ server_script {
 	"server/bluetooth.lua",
 	"server/suoneria.lua",
 	"server/modem.lua",
-	"server/darkweb.lua"
+	"server/darkweb.lua",
+	"server/email.lua"
 }
 
 data_file 'DLC_ITYP_REQUEST' 'stream/bk_phone.ytyp'

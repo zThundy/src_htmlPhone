@@ -16,8 +16,8 @@
 
       <div class="sms" v-bind:class="{ select: key === selectMessage}" v-for='(mess, key) in messagesListApp' v-bind:key="mess.id">
         <div class="sms_message_time">
-            <h6 v-bind:class="{ sms_me : mess.owner === 1}"  class="name_other_sms_me">{{displayContact}}</h6>
-            <h6 v-bind:class="{ sms_me : mess.owner === 1}"  class="name_other_sms_other"><timeago class="sms_time" :since='mess.time' :auto-update="20"></timeago></h6>
+          <h6 v-bind:class="{ sms_me : mess.owner === 1}"  class="name_other_sms_me">{{displayContact}}</h6>
+          <h6 v-bind:class="{ sms_me : mess.owner === 1}"  class="name_other_sms_other"><timeago class="sms_time" :since='mess.time' :auto-update="20"></timeago></h6>
         </div>
 
         <span class='sms_message sms_me' v-bind:class="{ sms_other : mess.owner === 0}">

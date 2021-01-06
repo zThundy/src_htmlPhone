@@ -61,9 +61,11 @@
 <script>
 import { mapGetters, mapMutations } from 'vuex'
 import PhoneTitle from './../PhoneTitle'
+
 import { NoticeBar, Progress, Icon, ActivityIndicator } from 'mand-mobile'
-import CustomToast from '@/components/CustomToast'
 import 'mand-mobile/lib/mand-mobile.css'
+
+import CustomToast from '@/components/CustomToast'
 import Modal from '@/components/Modal/index.js'
 
 export default {

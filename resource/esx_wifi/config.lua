@@ -1,7 +1,7 @@
 Config = {}
 
 Config.RaggioTorri = 550.0
-Config.RaggioWifi = 50.0
+Config.RaggioWifi = 30.0
 
 -- questo è il tempo in secondi che lo script aspetta per 
 -- controllare la distanza dalla torre di un giocatore

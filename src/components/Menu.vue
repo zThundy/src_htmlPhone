@@ -139,15 +139,17 @@ export default {
 }
 
 .backblur {
-  animation-name: blackBG;
-  animation-duration: 0.4s;
-  animation-fill-mode: forwards;
+  filter: blur(6px);
+
+  /* animation-name: blackBG; */
+  /* animation-duration: 0.4s; */
+  /* animation-fill-mode: forwards; */
 }
 
-@keyframes blackBG {
-  from { filter: blur(0px); }
-  to { filter: blur(6px); }
-}
+/* @keyframes blackBG { */
+/*   from { filter: blur(0px); } */
+/*   to { filter: blur(6px); } */
+/* } */
 
 .menu_content {
   display: flex;

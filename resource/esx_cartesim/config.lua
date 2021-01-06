@@ -1,6 +1,14 @@
 Config = {}
 
-Config.BlipOfferte = {["x"] = -1080.403, ["y"] = -247.197, ["z"] = 37.763}
+Config.MarkerOfferte = {x = -1080.403, y = -247.197, z = 37.763}
+Config.BlipOfferte = {
+	x = -1059.33,
+	y = -238.72,
+	name = "Life invader",
+	sprite = 521,
+	color = 1,
+	size = 0.8
+}
 
 Config.PianiTariffari = {
 	["standard"] = {

@@ -51,7 +51,10 @@ import DarkwebScreen from '@/components/darkweb/DarkwebScreen'
 
 import Email from '@/components/email/email'
 import EmailSplash from '@/components/email/emailsplash'
-import EmailLeftbar from '@/components/email/emailleftbar'
+import EmailView from '@/components/email/emailview'
+import EmailWrite from '@/components/email/emailwrite'
+import EmailChooseContact from '@/components/email/emailchoosecontact'
+import EmailRegister from '@/components/email/emailregister'
 
 // import AppStore from '@/components/appstore/appstore'
 // import AppStoreSplash from '@/components/appstore/appstoresplash'
@@ -257,21 +260,34 @@ export default new Router({
     //   component: AppStore
     // },
     {
+      path: '/email',
+      name: 'email',
+      component: Email
+    },
+    {
       path: '/email/splash',
       name: 'email.splash',
       component: EmailSplash
     },
     {
-      path: '/email',
-      name: 'email',
-      component: Email,
-      children: [
-        {
-          path: ':email',
-          name: 'email.leftbar',
-          component: EmailLeftbar
-        }
-      ]
+      path: '/email/register',
+      name: 'email.register',
+      component: EmailRegister
+    },
+    {
+      path: '/email/view',
+      name: 'email.view',
+      component: EmailView
+    },
+    {
+      path: '/email/write',
+      name: 'email.write',
+      component: EmailWrite
+    },
+    {
+      path: '/email/choosecontact',
+      name: 'email.choosecontact',
+      component: EmailChooseContact
     },
     {
       path: '*',

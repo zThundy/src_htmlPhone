@@ -103,12 +103,12 @@ class PhoneAPI {
     return this.post('aggiornaAvatarContatto', { id, display, number, icon })
   }
 
-  async updateContact (id, display, phoneNumber) {
-    return this.post('updateContact', { id, display, phoneNumber })
+  async updateContact (id, display, phoneNumber, email) {
+    return this.post('updateContact', { id, display, phoneNumber, email })
   }
 
-  async addContact (display, phoneNumber) {
-    return this.post('addContact', { display, phoneNumber })
+  async addContact (display, phoneNumber, email) {
+    return this.post('addContact', { display, phoneNumber, email })
   }
 
   async deleteContact (id) {
@@ -805,6 +805,34 @@ class PhoneAPI {
 
   onsendDarkwebMessages (data) {
     store.commit('RECEIVE_DARK_MESSAGES', data)
+  }
+
+  // ////////////// //
+  // EMAIL FUNZIONI //
+  // ////////////// //
+
+  async requestMyEmail () {
+    return this.post('requestMyEmail')
+  }
+
+  onreceiveMyEmail (data) {
+    store.commit('SETUP_MY_EMAIL', data.email)
+  }
+
+  async sendEmail (email) {
+    return this.post('sendEmail', email)
+  }
+
+  async requestEmails (email) {
+    return this.post('requestEmails', { email })
+  }
+
+  onreceiveEmails (emails) {
+    store.commit('SETUP_EMAILS', emails)
+  }
+
+  async deleteEmail (emailID) {
+    return this.post('deleteEmail', { emailID })
   }
 }
 

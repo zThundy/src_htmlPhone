@@ -6,6 +6,8 @@ playersInCall = {}
 built_phones = false
 phone_loaded = false
 
+enableGlobalAirplane = {}
+
 cachedNumbers = {}
 
 TriggerEvent('esx:getSharedObject', function(obj) ESX = obj end)
@@ -13,6 +15,14 @@ TriggerEvent('esx:getSharedObject', function(obj) ESX = obj end)
 RegisterServerEvent('esx_phone:getShILovePizzaaredObjILovePizzaect')
 AddEventHandler('esx_phone:getShILovePizzaaredObjILovePizzaect', function(cb)
     cb(gcPhone)
+end)
+
+
+AddEventHandler("playerDropped", function(reason)
+    local player = source
+    TriggerClientEvent("gcphone:animations_doCleanup", player)
+
+    print("^1[ZTH_Phone] ^0User "..player.." dropping. Doing cleanup")
 end)
 
 
@@ -27,18 +37,24 @@ MySQL.ready(function()
         for _, v in pairs(r) do
             cachedNumbers[tostring(v.phone_number)] = {identifier = v.identifier, inUse = false}
 
-            MySQL.Async.fetchAll("SELECT phone_number FROM users WHERE identifier = @identifier", {['@identifier'] = v.identifier}, function(user)
-                if user[1].phone_number == v.phone_number then
-                    cachedNumbers[tostring(v.phone_number)].inUse = true
-                end
-            end)
+            --[[
+                da esx_cartesim aggiorno la sim in uso al
+                login del plater, quindi non mi serve fare tutte ste query
+
+                MySQL.Async.fetchAll("SELECT phone_number FROM users WHERE identifier = @identifier", {['@identifier'] = v.identifier}, function(user)
+                    if user ~= nil and user[1] ~= nil then
+                        if user[1].phone_number == v.phone_number then
+                            cachedNumbers[tostring(v.phone_number)].inUse = true
+                        end
+                    end
+                end)
+            ]]
         end
 
         phone_loaded = true
         print("^1[ZTH_Phone] ^0Numbers cache loaded from sim database")
+        print("^1[ZTH_Phone] ^0Phone initialized")
     end)
-
-    print("^1[ZTH_Phone] ^0Phone initialized")
 end)
 
 
@@ -47,11 +63,11 @@ AddEventHandler('gcPhone:allUpdate', function()
     -- creo il thread per evitare di fare il wait sul main
     -- thread
     Citizen.CreateThreadNow(function()
+        while not phone_loaded do Citizen.Wait(100) end
+
         local player = source
         local identifier = gcPhone.getPlayerID(player)
         local num = gcPhone.getPhoneNumber(identifier)
-
-        while not phone_loaded do Citizen.Wait(100) end
 
         TriggerClientEvent("gcPhone:updatePhoneNumber", player, num)
         TriggerClientEvent("gcPhone:contactList", player, getContacts(identifier))
@@ -69,6 +85,13 @@ end)
 --==================================================================================================================
 -------- Eventi e Funzioni del segnale radio e del WiFi
 --==================================================================================================================
+
+RegisterServerEvent("gcphone:updateAirplaneForUser")
+AddEventHandler("gcphone:updateAirplaneForUser", function(bool)
+    local player = source
+    local identifier = gcPhone.getPlayerID(player)
+    enableGlobalAirplane[identifier] = bool
+end)
 
 
 RegisterServerEvent('gcPhone:updateSegnaleTelefono')
@@ -132,17 +155,21 @@ function gcPhone.isAbleToSurfInternet(identifier, neededMB, cb)
     if iWifiConnectedPlayer ~= nil and wifiConnectedPlayers[iWifiConnectedPlayer].connected then
     	cb(true, 0)
     else
-        if iSegnalePlayer ~= nil and segnaliTelefoniPlayers[iSegnalePlayer].potenzaSegnale ~= 0 then
-            ESX.GetPianoTariffarioParam(phone_number, "dati", function(dati)
-                if dati > 0 and dati >= neededMB then
-    				cb(true, neededMB)
-                else
-    				cb(false)
-    			end
-    		end)
-		else
-			cb(false)
-		end
+        if not enableGlobalAirplane[identifier] then
+            if iSegnalePlayer ~= nil and segnaliTelefoniPlayers[iSegnalePlayer].potenzaSegnale ~= 0 then
+                ESX.GetPianoTariffarioParam(phone_number, "dati", function(dati)
+                    if dati > 0 and dati >= neededMB then
+                        cb(true, neededMB)
+                    else
+                        cb(false)
+                    end
+                end)
+            else
+                cb(false)
+            end
+        else
+            cb(false)
+        end
     end
 end
 
@@ -152,14 +179,18 @@ function gcPhone.isAbleToSendMessage(identifier, cb)
 	
 	local iSegnalePlayer = gcPhone.getPlayerSegnaleIndex(segnaliTelefoniPlayers, identifier)
     
-    if segnaliTelefoniPlayers[iSegnalePlayer] ~= nil and segnaliTelefoniPlayers[iSegnalePlayer].potenzaSegnale > 0 then
-        ESX.GetPianoTariffarioParam(phone_number, "messaggi", function(messaggi)
-            if messaggi > 0 then
-                cb(true)
-            else
-                cb(false)
-            end                    
-        end)
+    if not enableGlobalAirplane[identifier] then
+        if segnaliTelefoniPlayers[iSegnalePlayer] ~= nil and segnaliTelefoniPlayers[iSegnalePlayer].potenzaSegnale > 0 then
+            ESX.GetPianoTariffarioParam(phone_number, "messaggi", function(messaggi)
+                if messaggi > 0 then
+                    cb(true)
+                else
+                    cb(false)
+                end                    
+            end)
+        else
+            cb(false)
+        end
     else
         cb(false)
     end
@@ -170,19 +201,23 @@ function gcPhone.isAbleToCall(identifier, cb)
 	local phone_number = gcPhone.getPhoneNumber(identifier)
     local xPlayer = ESX.GetPlayerFromIdentifier(identifier)
     
-    ESX.GetPianoTariffarioParam(phone_number, "minuti", function(min)
-        if xPlayer.hasJob("police", 0).check or xPlayer.hasJob("ambulance", 0).check then return cb(true, false, min) end
+    if not enableGlobalAirplane[identifier] then
+        ESX.GetPianoTariffarioParam(phone_number, "minuti", function(min)
+            if xPlayer.hasJob("police", 0).check or xPlayer.hasJob("ambulance", 0).check then return cb(true, false, min) end
 
-        if min == nil then
-            cb(false, true, 0, "Non hai un piano tariffario!")
-        else
-            if min > 0 then
-                cb(true, true, min)
+            if min == nil then
+                cb(false, true, 0, "~r~Non hai un piano tariffario!")
             else
-                cb(false, true, 0, "Hai finito i minuti previsti dalla tua offerta!")
+                if min > 0 then
+                    cb(true, true, min)
+                else
+                    cb(false, true, 0, "~r~Hai finito i minuti previsti dalla tua offerta!")
+                end
             end
-        end
-    end)
+        end)
+    else
+        cb(false, true, 0, "~r~Non puoi chiamare con la modalità aereo")
+    end
 end
 
 
@@ -250,9 +285,13 @@ AddEventHandler("gcphone:updateCachedNumber", function(number, identifier, isCha
             cachedNumbers[oldNumber].inUse = false
             cachedNumbers[number].inUse = true
         else
-            print("IDK sta registrando numero O.O", number, identifier)
+            -- da esx_cartesim al login del player
+            print("Registrando numero al login", number, identifier)
+            cachedNumbers[number].inUse = true
         end
     elseif cachedNumbers[number] ~= nil then
+        -- in realtà questo potrebbe essere inutile :/ IDK
+        -- forse evita bug :)
         cachedNumbers[number].inUse = true
     end
 
@@ -292,9 +331,11 @@ function gcPhone.getPhoneNumber(identifier)
         if #result > 0 then return result[1].phone_number end
     ]]
 
-    for number, v in pairs(cachedNumbers) do
-        if tostring(v.identifier) == tostring(identifier) and v.inUse then
-            return number
+    if identifier then
+        for number, v in pairs(cachedNumbers) do
+            if tostring(v.identifier) == tostring(identifier) and v.inUse then
+                return number
+            end
         end
     end
 
@@ -349,42 +390,40 @@ function getContacts(identifier)
 end
 
 
-function addContact(source, identifier, number, display)
-    local player = tonumber(source)
-    
+function addContact(source, identifier, number, display, email)
     if identifier ~= nil and number ~= nil and display ~= nil then
-        MySQL.Async.insert("INSERT INTO phone_users_contacts (`identifier`, `number`,`display`) VALUES(@identifier, @number, @display)", {
+        MySQL.Async.insert("INSERT INTO phone_users_contacts(`identifier`, `number`, `display`, `email`) VALUES(@identifier, @number, @display, @email)", {
             ['@identifier'] = identifier,
             ['@number'] = number,
             ['@display'] = display,
+            ['@email'] = email
         }, function()
-            notifyContactChange(player, identifier)
+            notifyContactChange(source, identifier)
         end)
+    else
+        TriggerClientEvent("esx:showNotification", source, "~r~Devi inserire un numero e un titolo validi!")
     end
 end
 
 
-function updateContact(source, identifier, id, number, display)
-    local player = tonumber(source)
-
-    MySQL.Async.insert("UPDATE phone_users_contacts SET number = @number, display = @display WHERE id = @id", { 
+function updateContact(source, identifier, id, number, display, email)
+    MySQL.Async.insert("UPDATE phone_users_contacts SET number = @number, display = @display, email = @email WHERE id = @id", { 
         ['@number'] = number,
         ['@display'] = display,
         ['@id'] = id,
+        ['@email'] = email
     },function()
-        notifyContactChange(player, identifier)
+        notifyContactChange(source, identifier)
     end)
 end
 
 
 function deleteContact(source, identifier, id)
-    local player = tonumber(source)
-
     MySQL.Sync.execute("DELETE FROM phone_users_contacts WHERE `identifier` = @identifier AND `id` = @id", {
         ['@identifier'] = identifier,
         ['@id'] = id,
     })
-    notifyContactChange(player, identifier)
+    notifyContactChange(source, identifier)
 end
 
 
@@ -398,20 +437,20 @@ end
 
 
 RegisterServerEvent('gcPhone:addContact')
-AddEventHandler('gcPhone:addContact', function(display, phoneNumber)
+AddEventHandler('gcPhone:addContact', function(display, phoneNumber, email)
     local player = tonumber(source)
     local identifier = gcPhone.getPlayerID(player)
 
-    addContact(player, identifier, phoneNumber, display)
+    addContact(player, identifier, phoneNumber, display, email)
 end)
 
 
 RegisterServerEvent('gcPhone:updateContact')
-AddEventHandler('gcPhone:updateContact', function(id, display, phoneNumber)
+AddEventHandler('gcPhone:updateContact', function(id, display, phoneNumber, email)
     local player = tonumber(source)
     local identifier = gcPhone.getPlayerID(player)
 
-    updateContact(player, identifier, id, phoneNumber, display)
+    updateContact(player, identifier, id, phoneNumber, display, email)
 end)
 
 

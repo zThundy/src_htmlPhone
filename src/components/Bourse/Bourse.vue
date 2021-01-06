@@ -1,19 +1,26 @@
 <template>
   <div class="phone_app">
     <PhoneTitle :title="IntlString('APP_BOURSE_TITLE')" @back="onBackspace"/>
+
     <div class='elements'>
+
       <div class='element'
           v-for='(elem, key) in bourseInfo' 
           v-bind:class="{ select: key === currentSelect}"
           v-bind:key="key">
         <div class="elem-evo"><i class="fa" :class="classInfo(elem)"></i></div>
-        <div class="elem-libelle">{{elem.libelle}}</div>
-        <div class="elem-price" :style="{color: colorBourse(elem)}">{{elem.price}} $ </div>
-        <div class="elem-difference" :style="{color: colorBourse(elem)}"> <span v-if="elem.difference > 0">+</span>{{elem.difference}}</div>
+        <div class="elem-libelle">{{ elem.libelle }}</div>
+        <div class="elem-price" :style="{ color: colorBourse(elem) }">{{elem.price}} $ </div>
+        <div class="elem-difference" :style="{ color: colorBourse(elem) }">
+          <span v-if="elem.difference > 0">+</span>{{ elem.difference }}
+        </div>
       </div>
+
     </div>
+
   </div>
 </template>
+
 <script>
 import { mapGetters } from 'vuex'
 import PhoneTitle from './../PhoneTitle'
@@ -78,14 +85,15 @@ export default {
 </script>
 
 <style scoped>
-.screen{
+.screen {
   position: relative;
   left: 0;
   top: 0;
   width: 100%;
   height: 100%;
 }
-.title{
+
+.title {
   padding-left: 16px;
   height: 34px;
   line-height: 34px;
@@ -93,35 +101,40 @@ export default {
   color: white;
   background-color: rgb(76, 175, 80);
 }
-.elements{
+
+.elements {
   height: calc(100% - 34px);
   overflow-y: auto;
 }
-.element{
+
+.element {
   height: 56px;
   width: 100%;
   line-height: 56px;
   display: flex;
   position: relative;
 }
-.element.select{
-   background-color: #DDD;
+
+.element.select {
+  background-color: #DDD;
 }
-    
-.element .fa{
+
+.element .fa {
   color: #2e7d32;
   font-size: 18px;
   margin-left: 6px;
 }
-.element .fa-arrow-down{
+
+.element .fa-arrow-down {
   color: #c62828;
-}   
-.element .fa-arrow-right{
+}
+
+.element .fa-arrow-right {
   color: #1565c0;
 }
 
-.elem-libelle{
-   padding-left: 6px;
+.elem-libelle {
+  padding-left: 6px;
   flex: 1;
   font-size: 22px;
   white-space: nowrap;
@@ -129,7 +142,7 @@ export default {
   font-size: 15px;
 }
 
-.elem-price{
+.elem-price {
  text-align: center;
   width: 90px;
   font-size: 18px;
@@ -138,7 +151,7 @@ export default {
   font-size: 15px;
 }
 
-.elem-difference{
+.elem-difference {
   text-align: center;
   width: 60px;
   font-size: 14px;

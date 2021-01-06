@@ -18,6 +18,13 @@
         <label>{{ IntlString('APP_CONTACT_LABEL_NUMBER') }}</label>
       </div>
 
+      <div class="group inputText" data-type="text" data-model='email' data-maxlength='35'>
+        <input type="text" v-model="contact.email" maxlength="35">
+        <span class="highlight"></span>
+        <span class="bar"></span>
+        <label>{{ IntlString('APP_CONTACT_LABEL_EMAIL') }}</label>
+      </div>
+
       <div  style="margin-top: 23px; width: 263px; margin-left: 23px; " class="group " data-type="button" data-action='save'>
         <input style="font-weight: 100;" type='button' class="btn btn-green" :value="IntlString('APP_CONTACT_SAVE')"/>
       </div>
@@ -51,6 +58,7 @@ export default {
       contact: {
         display: '',
         number: '',
+        email: '',
         id: -1
       }
     }
@@ -97,6 +105,11 @@ export default {
           text: this.contact[select.dataset.model] || ''
         }
         this.$phoneAPI.getReponseText(options).then(data => {
+          if (select.dataset.model === 'email') {
+            if (!data.text.includes('@code.it')) {
+              data.text = data.text + '@code.it'
+            }
+          }
           this.contact[select.dataset.model] = data.text
         })
       }
@@ -106,9 +119,9 @@ export default {
     },
     save () {
       if (this.id === -1 || this.id === 0) {
-        this.addContact({ display: this.contact.display, number: this.contact.number })
+        this.addContact({ display: this.contact.display, number: this.contact.number, email: this.contact.email })
       } else {
-        this.updateContact({ id: this.id, display: this.contact.display, number: this.contact.number })
+        this.updateContact({ id: this.id, display: this.contact.display, number: this.contact.number, email: this.contact.email })
       }
       history.back()
     },
@@ -122,7 +135,10 @@ export default {
     deleteC () {
       if (this.id !== -1) {
         this.ignoreControls = true
-        let choix = [{ id: 1, title: this.IntlString('APP_PHONE_DELETE'), icons: 'fa-trash', color: 'red' }, { id: 2, title: this.IntlString('CANCEL'), icons: 'fa-undo', color: 'red' }]
+        let choix = [
+          { id: 1, title: this.IntlString('APP_PHONE_DELETE'), icons: 'fa-trash', color: 'red' },
+          { id: 2, title: this.IntlString('CANCEL'), icons: 'fa-undo', color: 'red' }
+        ]
         Modal.CreateModal({ choix }).then(reponse => {
           this.ignoreControls = false
           if (reponse.id === 1) {
@@ -145,7 +161,8 @@ export default {
         this.contact = {
           id: c.id,
           display: c.display,
-          number: c.number
+          number: c.number,
+          email: c.email
         }
       }
     }
