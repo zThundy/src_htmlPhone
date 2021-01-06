@@ -2,29 +2,49 @@ RegisterServerEvent("gcphone:email_requestMyEmail")
 AddEventHandler("gcphone:email_requestMyEmail", function()
     local player = source
     local identifier = gcPhone.getPlayerID(player)
-    local email = GetUserEmail(identifier)
-    
-    TriggerClientEvent("gcphone:email_sendMyEmail", player, email)
+
+    gcPhone.isAbleToSurfInternet(identifier, 0.5, function(isAble, mbToRemove)
+		if isAble then
+            gcPhone.usaDatiInternet(identifier, mbToRemove)
+            
+            local email = GetUserEmail(identifier)
+            
+            TriggerClientEvent("gcphone:email_sendMyEmail", player, email)
+        else
+            TriggerClientEvent("esx:showNotification", player, "~r~Non hai abbastanza giga per poter richiedere la tua email")
+        end
+    end)
 end)
 
 
 RegisterServerEvent("gcphone:email_sendEmail")
 AddEventHandler("gcphone:email_sendEmail", function(data)
-    --[[
-        transmitter: this.myEmail,
-        receiver: '',
-        title: '',
-        message: '',
-        pic: '/html/static/img/app_email/defaultpic.png'
-    ]]
+    local player = source
+    local identifier = gcPhone.getPlayerID(player)
 
-    MySQL.Async.execute("INSERT INTO phone_emails(sender, receiver, title, message, pic) VALUES(@sender, @receiver, @title, @message, @pic)", {
-        ['@sender'] = data.receiver,
-        ['@receiver'] = data.transmitter,
-        ['@title'] = data.title,
-        ['@message'] = data.message,
-        ['@pic'] = data.pic,
-    })
+    gcPhone.isAbleToSurfInternet(identifier, 1.0, function(isAble, mbToRemove)
+		if isAble then
+            gcPhone.usaDatiInternet(identifier, mbToRemove)
+
+            --[[
+                transmitter: this.myEmail,
+                receiver: '',
+                title: '',
+                message: '',
+                pic: '/html/static/img/app_email/defaultpic.png'
+            ]]
+
+            MySQL.Async.execute("INSERT INTO phone_emails(sender, receiver, title, message, pic) VALUES(@sender, @receiver, @title, @message, @pic)", {
+                ['@sender'] = data.transmitter,
+                ['@receiver'] = data.receiver,
+                ['@title'] = data.title,
+                ['@message'] = data.message,
+                ['@pic'] = data.pic,
+            })
+        else
+            TriggerClientEvent("esx:showNotification", player, "~r~Non hai abbastanza giga per poter inviare questa email")
+        end
+    end)
 end)
 
 
@@ -33,7 +53,15 @@ AddEventHandler("gcphone:email_requestEmails", function(email)
     local player = source
     local emails = FetchAllEmails(email)
 
-    TriggerClientEvent("gcphone:email_sendRequestedEmails", player, emails)
+    gcPhone.isAbleToSurfInternet(identifier, #emails * 0.05, function(isAble, mbToRemove)
+		if isAble then
+            gcPhone.usaDatiInternet(identifier, mbToRemove)
+
+            TriggerClientEvent("gcphone:email_sendRequestedEmails", player, emails)
+        else
+            TriggerClientEvent("esx:showNotification", player, "~r~Non hai abbastanza giga per poter scaricare le tue email")
+        end
+    end)
 end)
 
 
@@ -46,7 +74,15 @@ AddEventHandler("gcphone:email_deleteEmail", function(emailID)
     local email = GetUserEmail(identifier)
     local emails = FetchAllEmails(email)
 
-    TriggerClientEvent("gcphone:email_sendRequestedEmails", player, emails)
+    gcPhone.isAbleToSurfInternet(identifier, #emails * 0.05, function(isAble, mbToRemove)
+		if isAble then
+            gcPhone.usaDatiInternet(identifier, mbToRemove)
+
+            TriggerClientEvent("gcphone:email_sendRequestedEmails", player, emails)
+        else
+            TriggerClientEvent("esx:showNotification", player, "~r~Non hai abbastanza giga per poter scaricare le tue email")
+        end
+    end)
 end)
 
 
@@ -55,10 +91,18 @@ AddEventHandler("gcphone:email_registerEmail", function(email)
     local player = source
     local identifier = gcPhone.getPlayerID(player)
 
-    MySQL.Async.insert("INSERT INTO phone_users_emails(identifier, email) VALUES(@identifier, @email)", {
-        ['@identifier'] = identifier,
-        ['@email'] = email
-    })
+    gcPhone.isAbleToSurfInternet(identifier, 0.5, function(isAble, mbToRemove)
+		if isAble then
+            gcPhone.usaDatiInternet(identifier, mbToRemove)
+
+            MySQL.Async.insert("INSERT INTO phone_users_emails(identifier, email) VALUES(@identifier, @email)", {
+                ['@identifier'] = identifier,
+                ['@email'] = email
+            })
+        else
+            TriggerClientEvent("esx:showNotification", player, "~r~Non hai abbastanza giga per poter registrare la tua email")
+        end
+    end)
 end)
 
 
@@ -71,8 +115,7 @@ end
 
 function GetUserEmail(identifier)
     if identifier then
-        return MySQL.Sync.fetchScalar("SELECT email FROM phone_users_emails WHERE identifier = @identifier", {
-            ['@identifier'] = identifier
-        })
+        local result = MySQL.Sync.fetchAll("SELECT email FROM phone_users_emails WHERE identifier = @identifier", {['@identifier'] = identifier})
+        return result[1].email or nil
     end
 end

@@ -118,7 +118,9 @@ export default {
         ] }).then(resp => {
           if (resp.id === 1) {
             this.$phoneAPI.pagaFattura(fattura)
-            this.ignoreControls = false
+            setTimeout(() => {
+              this.ignoreControls = false
+            }, 5000)
           }
         })
       } catch (e) { }

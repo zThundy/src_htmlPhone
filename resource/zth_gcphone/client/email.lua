@@ -12,7 +12,7 @@ end)
 
 RegisterNetEvent("gcphone:email_sendRequestedEmails")
 AddEventHandler("gcphone:email_sendRequestedEmails", function(emails)
-    SendNUIMessage({ evend = "receiveEmails", emails = emails })
+    SendNUIMessage({ event = "receiveEmails", emails = emails })
 end)
 
 
@@ -35,6 +35,6 @@ end)
 
 
 RegisterNUICallback("registerEmail", function(data, cb)
-    TriggerServerEvent("gcphone:email_registerEmail", data.email)
+    TriggerServerEvent("gcphone:email_registerEmail", data)
     cb("ok")
 end)

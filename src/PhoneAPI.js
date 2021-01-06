@@ -831,8 +831,8 @@ class PhoneAPI {
     return this.post('requestEmails', { email })
   }
 
-  onreceiveEmails (emails) {
-    store.commit('SETUP_EMAILS', emails)
+  onreceiveEmails (data) {
+    store.commit('SETUP_EMAILS', data.emails)
   }
 
   async deleteEmail (emailID) {

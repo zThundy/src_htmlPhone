@@ -147,6 +147,7 @@ export default {
           case 1:
             if (this.email.receiver && this.email.title && this.email.message) {
               this.$phoneAPI.sendEmail(this.email)
+              this.$router.push({ name: 'email' })
             } else {
               this.$phoneAPI.sendErrorMessage('Compila prima tutti i campi')
             }

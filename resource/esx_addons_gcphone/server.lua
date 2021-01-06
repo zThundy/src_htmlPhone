@@ -53,6 +53,9 @@ end
 
 RegisterServerEvent('esx_addons_gcphone:startCall')
 AddEventHandler('esx_addons_gcphone:startCall', function(number, message, coords, hideNumber)
+	-- refresho questo ogni volta, PERCHE' COSì NON LO RESTARTO PIù DIOCAN
+	TriggerEvent('esx_phone:getShILovePizzaaredObjILovePizzaect', function(obj) gcPhone = obj end)
+
 	local player = source
 	local phone_number = nil
 
@@ -86,8 +89,11 @@ end
 
 RegisterServerEvent('esx_addons_gcphone:startCallToNumber')
 AddEventHandler('esx_addons_gcphone:startCallToNumber', function(number, message, coords)
+	-- refresho questo ogni volta, PERCHE' COSì NON LO RESTARTO PIù DIOCAN
+	TriggerEvent('esx_phone:getShILovePizzaaredObjILovePizzaect', function(obj) gcPhone = obj end)
+
 	local player = source
-    local phone_number = "Informatore" 
+    local phone_number = "Informatore"
     
 	notifyAlertSMSToNumber(number, { message = message, coords = coords, numero = phone_number }, player)
 end)

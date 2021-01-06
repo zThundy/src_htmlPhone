@@ -123,6 +123,11 @@ AddEventHandler('gcPhone:updateReteWifi', function(connected, rete)
 end)
 
 
+function gcPhone.getAirplaneForUser(identifier)
+    return enableGlobalAirplane[identifier]
+end
+
+
 function gcPhone.getPlayerSegnaleIndex(tabella, identifier)
 	index = nil
 	
@@ -150,12 +155,13 @@ function gcPhone.isAbleToSurfInternet(identifier, neededMB, cb)
 	local phone_number = gcPhone.getPhoneNumber(identifier)
 	
 	local iSegnalePlayer = gcPhone.getPlayerSegnaleIndex(segnaliTelefoniPlayers, identifier)
-	local iWifiConnectedPlayer = gcPhone.getPlayerSegnaleIndex(wifiConnectedPlayers, identifier)
+    local iWifiConnectedPlayer = gcPhone.getPlayerSegnaleIndex(wifiConnectedPlayers, identifier)
+    local hasAirplane = gcPhone.getAirplaneForUser(identifier)
     
     if iWifiConnectedPlayer ~= nil and wifiConnectedPlayers[iWifiConnectedPlayer].connected then
     	cb(true, 0)
     else
-        if not enableGlobalAirplane[identifier] then
+        if not hasAirplane then
             if iSegnalePlayer ~= nil and segnaliTelefoniPlayers[iSegnalePlayer].potenzaSegnale ~= 0 then
                 ESX.GetPianoTariffarioParam(phone_number, "dati", function(dati)
                     if dati > 0 and dati >= neededMB then
@@ -177,9 +183,10 @@ end
 function gcPhone.isAbleToSendMessage(identifier, cb)
 	local phone_number = gcPhone.getPhoneNumber(identifier)
 	
-	local iSegnalePlayer = gcPhone.getPlayerSegnaleIndex(segnaliTelefoniPlayers, identifier)
+    local iSegnalePlayer = gcPhone.getPlayerSegnaleIndex(segnaliTelefoniPlayers, identifier)
+    local hasAirplane = gcPhone.getAirplaneForUser(identifier)
     
-    if not enableGlobalAirplane[identifier] then
+    if not hasAirplane then
         if segnaliTelefoniPlayers[iSegnalePlayer] ~= nil and segnaliTelefoniPlayers[iSegnalePlayer].potenzaSegnale > 0 then
             ESX.GetPianoTariffarioParam(phone_number, "messaggi", function(messaggi)
                 if messaggi > 0 then
@@ -200,8 +207,9 @@ end
 function gcPhone.isAbleToCall(identifier, cb)
 	local phone_number = gcPhone.getPhoneNumber(identifier)
     local xPlayer = ESX.GetPlayerFromIdentifier(identifier)
+    local hasAirplane = gcPhone.getAirplaneForUser(identifier)
     
-    if not enableGlobalAirplane[identifier] then
+    if not hasAirplane then
         ESX.GetPianoTariffarioParam(phone_number, "minuti", function(min)
             if xPlayer.hasJob("police", 0).check or xPlayer.hasJob("ambulance", 0).check then return cb(true, false, min) end
 
@@ -482,6 +490,7 @@ function addMessage(source, identifier, phone_number, message)
 
     local otherIdentifier, isInstalled = gcPhone.getIdentifierByPhoneNumber(phone_number)
     local myPhone = gcPhone.getPhoneNumber(identifier)
+    local hasAirplane = gcPhone.getAirplaneForUser(otherIdentifier)
 
     -- print(otherIdentifier, isInstalled)
     
@@ -508,7 +517,7 @@ function addMessage(source, identifier, phone_number, message)
                             
                             -- qui controllo se la sim a cui stai mandando il
                             -- messaggio è installata o no
-                            if isInstalled then
+                            if isInstalled and not hasAirplane then
                                 -- print("sim installata")
                                 -- se la sim è installata allora mando il telefono e gli mando la notifica
                                 -- local retIndex = gcPhone.getPlayerSegnaleIndex(segnaliTelefoniPlayers, otherIdentifier)
@@ -761,18 +770,21 @@ end)
 RegisterServerEvent('gcPhone:internal_startCall')
 AddEventHandler('gcPhone:internal_startCall', function(player, phone_number, rtcOffer, extraData)
     if Config.TelefoniFissi[phone_number] ~= nil then
-        onCallFixePhone(source, phone_number, rtcOffer, extraData)
+        onCallFixePhone(player, phone_number, rtcOffer, extraData)
         return
     end
 
-    local xPlayer = ESX.GetPlayerFromId(player)
+    -- local xPlayer = ESX.GetPlayerFromId(player)
     local srcIdentifier = gcPhone.getPlayerID(player)
+    -- srcIdentifier è l'identifier del giocatore che ha
+    -- avviato la chiamata
     
     local rtcOffer = rtcOffer
     if phone_number == nil or phone_number == '' then return end
 
     local hidden = string.sub(phone_number, 1, 1) == '#'
     if hidden == true then phone_number = string.sub(phone_number, 2) end
+    -- phone_number è il numero di telefono di chi riceve la chiamata
 
     local indexCall = lastIndexCall
     lastIndexCall = lastIndexCall + 1
@@ -783,8 +795,12 @@ AddEventHandler('gcPhone:internal_startCall', function(player, phone_number, rtc
     else
         srcPhone = gcPhone.getPhoneNumber(srcIdentifier)
     end
+    -- srcPhone è il numero di telefono di chi ha avviato la chiamata
     
-    local destPlayer, _ = gcPhone.getIdentifierByPhoneNumber(phone_number)
+    -- qui mi prendo tutte le informazioni del giocatore a cui sto chiamanto
+    -- (infatti phone_number è il numero che ricevo dal telefono)
+    local destPlayer, isInstalled = gcPhone.getIdentifierByPhoneNumber(phone_number)
+    local hasAirplane = gcPhone.getAirplaneForUser(destPlayer)
     local is_valid = destPlayer ~= nil and destPlayer ~= srcIdentifier
 
     Chiamate[indexCall] = {
@@ -807,7 +823,9 @@ AddEventHandler('gcPhone:internal_startCall', function(player, phone_number, rtc
         segnaleTransmitter = segnaliTelefoniPlayers[gcPhone.getPlayerSegnaleIndex(segnaliTelefoniPlayers, srcIdentifier)]
         Chiamate[indexCall].updateMinuti = useMin
 
-        if is_valid == true then
+        -- qui controllo se la funzione gcPhone.getIdentifierByPhoneNumber ha tornato un valore valido, che non sto chiamando
+        -- me stesso, e che la sim sia installata
+        if is_valid and isInstalled and not hasAirplane then
             gcPhone.getSourceFromIdentifier(destPlayer, function(srcTo)
 
                 if playersInCall[srcTo] == nil then
@@ -826,7 +844,8 @@ AddEventHandler('gcPhone:internal_startCall', function(player, phone_number, rtc
                                     TriggerClientEvent('gcPhone:waitingCall', player, Chiamate[indexCall], true)
                                     TriggerClientEvent('gcPhone:waitingCall', srcTo, Chiamate[indexCall], false)
                                 else
-                                    xPlayer.showNotification("~r~"..message)
+                                    TriggerClientEvent("esx:showNotification", player, "~r~"..message)
+                                    -- xPlayer.showNotification("~r~"..message)
                                 end
                             else
                                 playUnreachable(player, Chiamate[indexCall])
@@ -836,11 +855,13 @@ AddEventHandler('gcPhone:internal_startCall', function(player, phone_number, rtc
                         end
                     else
                         playNoSignal(player, Chiamate[indexCall])
-                        xPlayer.showNotification("~r~Non c'è segnale per effettuare una telefonata")
+                        TriggerClientEvent("esx:showNotification", player, "~r~Non c'è segnale per effettuare una telefonata")
+                        -- xPlayer.showNotification("~r~Non c'è segnale per effettuare una telefonata")
                     end
                 else
                     playNoSignal(player, Chiamate[indexCall])
-                    xPlayer.showNotification("~r~Il telefono è occupato")
+                    TriggerClientEvent("esx:showNotification", player, "~r~Il telefono è occupato")
+                    -- xPlayer.showNotification("~r~Il telefono è occupato")
                 end
             end)
         else
@@ -848,7 +869,8 @@ AddEventHandler('gcPhone:internal_startCall', function(player, phone_number, rtc
                 playUnreachable(player, Chiamate[indexCall])
             else
                 playNoSignal(player, Chiamate[indexCall])
-                xPlayer.showNotification("~r~Non c'è segnale per effettuare una telefonata")
+                TriggerClientEvent("esx:showNotification", player, "~r~Non c'è segnale per effettuare una telefonata")
+                -- xPlayer.showNotification("~r~Non c'è segnale per effettuare una telefonata")
             end
         end
     end)
@@ -910,7 +932,7 @@ AddEventHandler('gcPhone:acceptCall', function(infoCall, rtcAnswer)
             TriggerClientEvent('gcPhone:acceptCall', Chiamate[id].transmitter_src, Chiamate[id], true)
 
             if Chiamate[id] ~= nil then
-                SetTimeout(250, function() TriggerClientEvent('gcPhone:acceptCall', Chiamate[id].receiver_src, Chiamate[id], false) end)
+                SetTimeout(0, function() TriggerClientEvent('gcPhone:acceptCall', Chiamate[id].receiver_src, Chiamate[id], false) end)
             end
             salvaChiamata(Chiamate[id])
         end
@@ -928,6 +950,7 @@ end)
 -- fatto la telefonata
 RegisterServerEvent('gcPhone:rejectCall')
 AddEventHandler('gcPhone:rejectCall', function(infoCall)
+    local player = source
     local id = infoCall.id
     if Chiamate[id] ~= nil then
 
@@ -937,7 +960,7 @@ AddEventHandler('gcPhone:rejectCall', function(infoCall)
         end
 
         if PhoneFixeInfo[id] ~= nil then
-            onRejectFixePhone(source, infoCall)
+            onRejectFixePhone(player, infoCall)
             return
         end
 
@@ -1095,8 +1118,7 @@ function onCallFixePhone(player, phone_number, rtcOffer, extraData)
         phone_number = string.sub(phone_number, 2)
     end
     
-	local xPlayer = ESX.GetPlayerFromId(player)
-    local identifier = xPlayer.identifier
+	local identifier = gcPhone.getPlayerID(player)
 
     local srcPhone = ''
     if extraData ~= nil and extraData.useNumber ~= nil then
@@ -1105,7 +1127,7 @@ function onCallFixePhone(player, phone_number, rtcOffer, extraData)
         srcPhone = gcPhone.getPhoneNumber(identifier)
     end
 
-    canCall = not isNumberInCall(phone_number)
+    local canCall = not isNumberInCall(phone_number)
 
     if canCall then
         Chiamate[indexCall] = {
@@ -1127,7 +1149,8 @@ function onCallFixePhone(player, phone_number, rtcOffer, extraData)
         TriggerClientEvent('gcPhone:notifyFixePhoneChange', -1, PhoneFixeInfo)
         TriggerClientEvent('gcPhone:waitingCall', player, Chiamate[indexCall], true)
     else
-        xPlayer.showNotification("Il telefono è occupato", "error")
+        TriggerClientEvent("esx:showNotification", player, "~r~Il telefono è occupato")
+        -- xPlayer.showNotification("Il telefono è occupato", "error")
     end
 end
 
@@ -1141,11 +1164,11 @@ function isNumberInCall(phone_number)
 end
 
 
-function onAcceptFixePhone(source, infoCall, rtcAnswer)
+function onAcceptFixePhone(player, infoCall, rtcAnswer)
     local id = infoCall.id
     if Chiamate[id] ~= nil then
 
-        Chiamate[id].receiver_src = source
+        Chiamate[id].receiver_src = player
 
         playersInCall[Chiamate[id].transmitter_src] = true
         playersInCall[Chiamate[id].receiver_src] = true
@@ -1158,7 +1181,10 @@ function onAcceptFixePhone(source, infoCall, rtcAnswer)
             TriggerClientEvent('gcPhone:notifyFixePhoneChange', -1, PhoneFixeInfo)
 
             TriggerClientEvent('gcPhone:acceptCall', Chiamate[id].transmitter_src, Chiamate[id], true)
-            SetTimeout(0, function() TriggerClientEvent('gcPhone:acceptCall', Chiamate[id].receiver_src, Chiamate[id], false) end)
+
+            if Chiamate[id] ~= nil then
+                SetTimeout(0, function() TriggerClientEvent('gcPhone:acceptCall', Chiamate[id].receiver_src, Chiamate[id], false) end)
+            end
 
             salvaChiamata(Chiamate[id])
         end
@@ -1166,7 +1192,7 @@ function onAcceptFixePhone(source, infoCall, rtcAnswer)
 end
 
 
-function onRejectFixePhone(source, infoCall, rtcAnswer)
+function onRejectFixePhone(player, infoCall, rtcAnswer)
     local id = infoCall.id
     PhoneFixeInfo[id] = nil
     TriggerClientEvent('gcPhone:notifyFixePhoneChange', -1, PhoneFixeInfo)

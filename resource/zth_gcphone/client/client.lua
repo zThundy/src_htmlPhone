@@ -1017,49 +1017,93 @@ AddEventHandler('gcPhone:register_FixePhone', function(phone_number, data)
 end)
 
 
-Citizen.CreateThread(function ()
+Citizen.CreateThread(function()
     local mod = 0
     local inRangeToActivePhone = false
     local inRangedist = 0
 
-    while true do 
-        local coords = GetEntityCoords(GetPlayerPed(-1))
+    while true do
+        if #PhoneInCall > 0 then
+            local coords = GetEntityCoords(GetPlayerPed(-1))
 
-        for i, _ in pairs(PhoneInCall) do 
-            local dist = GetDistanceBetweenCoords( PhoneInCall[i].coords.x, PhoneInCall[i].coords.y, PhoneInCall[i].coords.z, coords.x, coords.y, coords.z, 1)
+            for i, v in pairs(PhoneInCall) do 
+                local dist = GetDistanceBetweenCoords(v.coords.x, v.coords.y, v.coords.z, coords, true)
 
-            if dist <= soundDistanceMax then
-                inRangeToActivePhone = true
-                inRangedist = dist
+                if dist <= soundDistanceMax then
+                    inRangeToActivePhone = true
+                    inRangedist = dist
 
-                if dist <= 1.0 then 
-                    SetTextComponentFormat("STRING")
-                    AddTextComponentString('Premi ~INPUT_CONTEXT~ per rispondere al telefono')
-                    DisplayHelpTextFromStringLabel(0, 0, 1, -1)
-                    if IsControlJustPressed(1, Config.KeyTakeCall) then
-                        TakeAppel(PhoneInCall[i])
-                        PhoneInCall = {}
-                        StopSoundJS('ring2.ogg')
+                    if dist <= 1.0 then 
+                        SetTextComponentFormat("STRING")
+                        AddTextComponentString('Premi ~INPUT_CONTEXT~ per rispondere al telefono')
+                        DisplayHelpTextFromStringLabel(0, 0, 1, -1)
+
+                        if IsControlJustPressed(1, Config.KeyTakeCall) then
+                            TakeAppel(PhoneInCall[i])
+                            PhoneInCall[i] = {}
+                            StopSoundJS('ring2.ogg')
+                        end
                     end
+
+                    break
                 end
-
-                break
             end
+
+            if inRangeToActivePhone == true and currentPlaySound == false then
+                PlaySoundJS('ring2.ogg', 0.2 + (inRangedist - soundDistanceMax) / - (soundDistanceMax * 0.8) )
+                currentPlaySound = true
+            elseif inRangeToActivePhone == true then
+                mod = mod + 1
+                if mod == 15 then
+                    mod = 0
+                    SetSoundVolumeJS('ring2.ogg', 0.2 + (inRangedist - soundDistanceMax) / - (soundDistanceMax * 0.8) )
+                end
+            elseif inRangeToActivePhone == false and currentPlaySound == true then
+                currentPlaySound = false
+                StopSoundJS('ring2.ogg')
+            end
+        else
+            Citizen.Wait(2000)
         end
 
-        if inRangeToActivePhone == true and currentPlaySound == false then
-            PlaySoundJS('ring2.ogg', 0.2 + (inRangedist - soundDistanceMax) / -soundDistanceMax * 0.8 )
-            currentPlaySound = true
-        elseif inRangeToActivePhone == true then
-            mod = mod + 1
-            if mod == 15 then
-                mod = 0
-                SetSoundVolumeJS('ring2.ogg', 0.2 + (inRangedist - soundDistanceMax) / -soundDistanceMax * 0.8 )
-            end
-        elseif inRangeToActivePhone == false and currentPlaySound == true then
-            currentPlaySound = false
-            StopSoundJS('ring2.ogg')
-        end
         Citizen.Wait(1)
     end
 end)
+
+
+AddEventHandler("gcPhone:phoneBoxActions", function(functionName, params)
+    if functionName == 'startFixeCall' then
+        if params and params.currentModel then
+            local pedPos = GetEntityCoords(GetPlayerPed(-1), false)
+            local phoneboxnumber = getPhoneBoxNumber(GetEntityCoords(GetClosestObjectOfType(pedPos.x, pedPos.y, pedPos.z, 1.0, params.currentModel, false, 1, 1)))
+
+            startFixeCall(phoneboxnumber, params.currentModel)
+        else
+            startFixeCall()
+        end
+    elseif functionName == 'showFixePhoneNumber' then
+        showFixePhoneNumber(params)
+    end
+end)
+
+  
+function getPhoneBoxNumber(coords)
+    local x, y, z = "0", "0", "0"
+
+    if coords.x < 0 then
+        x = "1"
+    end
+
+    x = x .. string.format("%04d", tostring(math.ceil(math.abs(coords.x))))
+    if coords.y < 0 then
+        y = "1"
+    end
+
+    y = y .. string.format("%04d", tostring(math.ceil(math.abs(coords.y))))
+    if coords.z < 0 then
+        z = "1"
+    end
+
+    z = z .. string.format("%04d", tostring(math.ceil(math.abs(coords.z))))
+    return  x .. y .. z
+end
