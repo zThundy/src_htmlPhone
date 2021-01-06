@@ -286,7 +286,8 @@ AddEventHandler("gcphone:updateCachedNumber", function(number, identifier, isCha
             cachedNumbers[number].inUse = true
         else
             -- da esx_cartesim al login del player
-            print("Registrando numero al login", number, identifier)
+            print("^1[ZTH_Phone] ^0User "..identifier.." is joining, registering "..number.." as 'inUse' number")
+            -- print("Registrando numero al login", number, identifier)
             cachedNumbers[number].inUse = true
         end
     elseif cachedNumbers[number] ~= nil then
