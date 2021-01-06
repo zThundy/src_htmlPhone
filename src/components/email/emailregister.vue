@@ -75,11 +75,11 @@ export default {
             break
           case 1:
             this.localEmail = null
-            this.onEnter()
             this.ignoreControls = false
             break
           case 2:
             this.SETUP_MY_EMAIL(this.localEmail)
+            this.$phoneAPI.registerEmail(this.localEmail)
             this.$router.push({ name: 'email' })
             this.ignoreControls = false
             break

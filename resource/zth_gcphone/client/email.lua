@@ -32,3 +32,9 @@ RegisterNUICallback("deleteEmail", function(data, cb)
     TriggerServerEvent("gcphone:email_deleteEmail", data.emailID)
     cb("ok")
 end)
+
+
+RegisterNUICallback("registerEmail", function(data, cb)
+    TriggerServerEvent("gcphone:email_registerEmail", data.email)
+    cb("ok")
+end)

@@ -32,8 +32,11 @@ RegisterNUICallback("requestFatture", function(data, cb)
     -- end)
     
     ESX.TriggerServerCallback("esx_billing:getBills", function(fatture)
-        cb(fatture)
+        -- print(ESX.DumpTable(fatture))
+        -- cb(fatture)
+        SendNUIMessage({ event = "receivePlayerFatture", fatture = fatture })
     end)
+    cb("ok")
 end)
 
 

@@ -25,9 +25,9 @@ const actions = {
     PhoneAPI.postUpdateMoney(Number(amount.text), iban.text.toUpperCase())
     // commit('ADD_MOVEMENT', { money: Number(amount.text), iban: iban.text.toUpperCase() })
   },
-  async requestFatture ({ commit }) {
-    var fatture = await PhoneAPI.requestFatture()
-    commit('UPDATE_FATTURE', fatture)
+  requestLocalFatture ({ commit }) {
+    PhoneAPI.requestFatture()
+    // commit('UPDATE_FATTURE', fatture)
   }
 }
 

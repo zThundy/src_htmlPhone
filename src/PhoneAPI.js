@@ -265,6 +265,10 @@ class PhoneAPI {
     return this.post('requestFatture')
   }
 
+  onreceivePlayerFatture (data) {
+    store.commit('UPDATE_FATTURE', data.fatture)
+  }
+
   async pagaFattura (fattura) {
     return this.post('pagaFattura', fattura)
   }
@@ -833,6 +837,10 @@ class PhoneAPI {
 
   async deleteEmail (emailID) {
     return this.post('deleteEmail', { emailID })
+  }
+
+  async registerEmail (email) {
+    return this.post('registerEmail', email)
   }
 }
 

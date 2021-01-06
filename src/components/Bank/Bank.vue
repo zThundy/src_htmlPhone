@@ -56,7 +56,7 @@ export default {
     ...mapGetters(['bankAmount', 'iban', 'IntlString', 'fatture', 'movements'])
   },
   methods: {
-    ...mapActions(['requestFatture', 'createPagamento']),
+    ...mapActions(['requestLocalFatture', 'createPagamento']),
     scrollIntoViewIfNeeded: function () {
       this.$nextTick(() => {
         document.querySelector('.selected').scrollIntoViewIfNeeded()
@@ -100,7 +100,6 @@ export default {
     async listaFatture () {
       this.ignoreControls = true
       try {
-        // DEV this.requestFatture()
         var choix = []
         for (var key in this.fatture) { choix.push({ id: this.fatture[key].id, title: this.fatture[key].label + ' - ' + this.fatture[key].amount, icons: 'fa-money', fattura: this.fatture[key] }) }
         choix.push({ id: -1, title: this.IntlString('CANCEL'), icons: 'fa-undo', color: 'red' })
@@ -118,7 +117,7 @@ export default {
           {id: -1, title: this.IntlString('CANCEL'), icons: 'fa-undo', color: 'red'}
         ] }).then(resp => {
           if (resp.id === 1) {
-            this.phoneAPI.pagaFattura(fattura)
+            this.$phoneAPI.pagaFattura(fattura)
             this.ignoreControls = false
           }
         })
@@ -127,6 +126,7 @@ export default {
   },
   created () {
     this.$phoneAPI.requestBankInfo()
+    this.requestLocalFatture()
     this.$bus.$on('keyUpBackspace', this.onBackspace)
     this.$bus.$on('keyUpArrowRight', this.onRight)
     this.$bus.$on('keyUpArrowDown', this.onDown)

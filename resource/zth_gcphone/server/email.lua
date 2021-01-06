@@ -50,6 +50,18 @@ AddEventHandler("gcphone:email_deleteEmail", function(emailID)
 end)
 
 
+RegisterServerEvent("gcphone:email_registerEmail")
+AddEventHandler("gcphone:email_registerEmail", function(email)
+    local player = source
+    local identifier = gcPhone.getPlayerID(player)
+
+    MySQL.Async.insert("INSERT INTO phone_users_emails(identifier, email) VALUES(@identifier, @email)", {
+        ['@identifier'] = identifier,
+        ['@email'] = email
+    })
+end)
+
+
 function FetchAllEmails(email)
     if email then
         return MySQL.Sync.fetchAll("SELECT * FROM phone_emails WHERE sender = @email OR receiver = @email", {['@email'] = email})
