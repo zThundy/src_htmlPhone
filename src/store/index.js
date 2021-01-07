@@ -17,6 +17,7 @@ import galleria from './modules/galleria'
 import bluetooth from './modules/bluetooth'
 import darkweb from './modules/darkweb'
 import email from './modules/email'
+import news from './modules/news'
 
 Vue.use(Vuex)
 
@@ -37,7 +38,8 @@ export default new Vuex.Store({
     galleria,
     bluetooth,
     darkweb,
-    email
+    email,
+    news
   },
   strict: true
 })

@@ -3,11 +3,13 @@ import PhoneAPI from './../../PhoneAPI'
 
 const state = {
   myEmail: null,
+  sentEmails: JSON.parse(window.localStorage['gc_sentemails'] || null),
   emails: JSON.parse(window.localStorage['gc_savedemails'] || null)
 }
 
 const getters = {
   emails: ({ emails }) => emails,
+  sentEmails: ({ sentEmails }) => sentEmails,
   myEmail: ({ myEmail }) => myEmail
 }
 
@@ -23,12 +25,19 @@ const mutations = {
     window.localStorage['gc_savedemails'] = JSON.stringify(emails)
     state.emails = emails
   },
+  SETUP_SENT_EMAILS (state, sentEmails) {
+    window.localStorage['gc_sentemails'] = JSON.stringify(sentEmails)
+    state.sentEmails = sentEmails
+  },
   SETUP_MY_EMAIL (state, email) {
-    state.myEmail = email
+    state.myEmail = String(email)
   },
   DELETE_EMAIL (state, emailID) {
     state.emails = state.emails.filter((email, id) => { return id !== emailID })
+    state.sentEmails = state.sentEmails.filter((email, id) => { return id !== emailID })
+    // risalvo entrambi i localstorage PERCHE' SI
     window.localStorage['gc_savedemails'] = JSON.stringify(state.emails)
+    window.localStorage['gc_sentemails'] = JSON.stringify(state.sentEmails)
   }
 }
 
@@ -77,6 +86,86 @@ if (process.env.NODE_ENV !== 'production') {
       receiver: 'frank_trilly@code.it',
       title: '4a email Questo è un titolo',
       message: 'Questo è il messaggio che stava nella email',
+      time: time
+    },
+    {
+      sender: 'giovanni_lucky@code.it',
+      receiver: 'frank_trilly@code.it',
+      title: '4a email Questo è un titolo',
+      message: 'Questo è il messaggio che stava nella email',
+      time: time
+    },
+    {
+      sender: 'giovanni_lucky@code.it',
+      receiver: 'frank_trilly@code.it',
+      title: '4a email Questo è un titolo',
+      message: 'Questo è il messaggio che stava nella email',
+      time: time
+    },
+    {
+      sender: 'giovanni_lucky@code.it',
+      receiver: 'frank_trilly@code.it',
+      title: '4a email Questo è un titolo',
+      message: 'Questo è il messaggio che stava nella email',
+      time: time
+    },
+    {
+      sender: 'giovanni_lucky@code.it',
+      receiver: 'frank_trilly@code.it',
+      title: '4a email Questo è un titolo',
+      message: 'Questo è il messaggio che stava nella email',
+      time: time
+    },
+    {
+      sender: 'giovanni_lucky@code.it',
+      receiver: 'frank_trilly@code.it',
+      title: '4a email Questo è un titolo',
+      message: 'Questo è il messaggio che stava nella email',
+      time: time
+    },
+    {
+      sender: 'giovanni_lucky@code.it',
+      receiver: 'frank_trilly@code.it',
+      title: '4a email Questo è un titolo',
+      message: 'Questo è il messaggio che stava nella email',
+      time: time
+    }
+  ]
+  state.sentEmails = [
+    {
+      sender: 'frank_trilly@code.it',
+      receiver: 'giovanni_lucky@code.it',
+      title: 'email inviata',
+      message: 'email inviata Questo è il messaggio che stava nella email',
+      time: time
+    },
+    {
+      sender: 'giovanni_lucky@code.it',
+      receiver: 'email_superlunga_franco@code.it',
+      title: 'email inviata ',
+      message: 'email inviata Questo è il messaggio che stava nella email Questo è il messaggio che stava nella email Questo è il messaggio che stava nella email',
+      time: time
+    },
+    {
+      pic: 'https://u.trs.tn/tohqw.jpg',
+      sender: 'giovanni_lucky@code.it',
+      receiver: 'frank_trilly@code.it',
+      title: 'email inviata ',
+      message: 'email inviata Questo è il messaggio che stava nella email Questo è il messaggio che stava nella email Questo è il messaggio che stava nella email',
+      time: time
+    },
+    {
+      sender: 'giovanni_lucky@code.it',
+      receiver: 'frank_trilly@code.it',
+      title: '4a email Questo è un titolo',
+      message: 'email inviata Questo è il messaggio che stava nella email',
+      time: time
+    },
+    {
+      sender: 'giovanni_lucky@code.it',
+      receiver: 'frank_trilly@code.it',
+      title: '4a email Questo è un titolo',
+      message: 'email inviata Questo è il messaggio che stava nella email',
       time: time
     },
     {

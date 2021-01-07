@@ -21,6 +21,7 @@ RegisterServerEvent("gcphone:email_sendEmail")
 AddEventHandler("gcphone:email_sendEmail", function(data)
     local player = source
     local identifier = gcPhone.getPlayerID(player)
+    local myEmail = GetUserEmail(identifier)
 
     gcPhone.isAbleToSurfInternet(identifier, 1.0, function(isAble, mbToRemove)
 		if isAble then
@@ -35,7 +36,7 @@ AddEventHandler("gcphone:email_sendEmail", function(data)
             ]]
 
             MySQL.Async.execute("INSERT INTO phone_emails(sender, receiver, title, message, pic) VALUES(@sender, @receiver, @title, @message, @pic)", {
-                ['@sender'] = data.transmitter,
+                ['@sender'] = myEmail,
                 ['@receiver'] = data.receiver,
                 ['@title'] = data.title,
                 ['@message'] = data.message,
@@ -106,9 +107,25 @@ AddEventHandler("gcphone:email_registerEmail", function(email)
 end)
 
 
+RegisterServerEvent("gcphone:email_requestSendEmails")
+AddEventHandler("gcphone:email_requestSendEmails", function(myEmail)
+    local player = source
+
+    MySQL.Async.fetchAll("SELECT * FROM phone_emails WHERE sender = @sender ORDER BY id DESC LIMIT 50", {
+        ['@sender'] = myEmail
+    }, function(r)
+        TriggerClientEvent("gcphone:email_sendRequestedSentEmails", player, r)
+    end)
+end)
+
+
 function FetchAllEmails(email)
     if email then
-        return MySQL.Sync.fetchAll("SELECT * FROM phone_emails WHERE sender = @email OR receiver = @email", {['@email'] = email})
+        local emails = {}
+        local tempEmails = MySQL.Sync.fetchAll("SELECT * FROM phone_emails WHERE receiver = @email ORDER BY id DESC LIMIT 50", {['@email'] = email})
+
+        for k, v in pairs(tempEmails) do emails[v.id] = v end
+        return emails
     end
 end
 

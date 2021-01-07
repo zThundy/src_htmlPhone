@@ -41,15 +41,15 @@
       <template v-else-if="state === STATI.LOGIN">
         <img class="instagram_title" src="/html/static/img/app_instagram/instagramtitle.png">
         <div class="group inputText" data-type="text" :data-defaultValue="accountLocale.username">
-            <input class="loginBoxes" :placeholder="IntlString('APP_INSTAGRAM_USERNAME_LABEL')" type="text" :value="accountLocale.username" @change="setLocalAccount($event, 'username')">
-            <span class="highlight"><i class="anim fa fa-user fa-lg"></i></span>
-            <span class="bar"></span>
+          <input class="loginBoxes" :placeholder="IntlString('APP_INSTAGRAM_USERNAME_LABEL')" type="text" :value="accountLocale.username" @change="setLocalAccount($event, 'username')">
+          <span class="highlight"><i class="anim fa fa-user fa-lg"></i></span>
+          <span class="bar"></span>
         </div>
 
         <div class="group inputText" data-type="text" data-model='password'>
-            <input class="loginBoxes" :placeholder="IntlString('APP_INSTAGRAM_PASSWORD_LABEL')" autocomplete="new-password" type="password" :value="accountLocale.password" @change="setLocalAccount($event, 'password')">
-            <span class="highlight"><i class="fa fa-key fa-lg"></i></span>
-            <span class="bar"></span>
+          <input class="loginBoxes" :placeholder="IntlString('APP_INSTAGRAM_PASSWORD_LABEL')" autocomplete="new-password" type="password" :value="accountLocale.password" @change="setLocalAccount($event, 'password')">
+          <span class="highlight"><i class="fa fa-key fa-lg"></i></span>
+          <span class="bar"></span>
         </div>
 
         <div class="group" data-type="button" @click.stop="login">
@@ -123,21 +123,21 @@
 
         <img class="instagram_title" src="/html/static/img/app_instagram/instagramtitle.png">
         <div class="group inputText" data-type="text" :data-defaultValue="accountLocale.username">
-            <input class="loginBoxes" :placeholder="IntlString('APP_INSTAGRAM_USERNAME_LABEL')" type="text" :value="accountLocale.username" @change="setLocalAccount($event, 'username')">
-            <span class="highlight"><i class="anim fa fa-user fa-lg"></i></span>
-            <span class="bar"></span>
+          <input class="loginBoxes" :placeholder="IntlString('APP_INSTAGRAM_USERNAME_LABEL')" type="text" :value="accountLocale.username" @change="setLocalAccount($event, 'username')">
+          <span class="highlight"><i class="anim fa fa-user fa-lg"></i></span>
+          <span class="bar"></span>
         </div>
 
         <div class="group inputText" data-type="text" data-model='password'>
-            <input class="loginBoxes" :placeholder="IntlString('APP_INSTAGRAM_PASSWORD_LABEL')" autocomplete="new-password" type="password" :value="accountLocale.password" @change="setLocalAccount($event, 'password')">
-            <span class="highlight"><i class="fa fa-key fa-lg"></i></span>
-            <span class="bar"></span>
+          <input class="loginBoxes" :placeholder="IntlString('APP_INSTAGRAM_PASSWORD_LABEL')" autocomplete="new-password" type="password" :value="accountLocale.password" @change="setLocalAccount($event, 'password')">
+          <span class="highlight"><i class="fa fa-key fa-lg"></i></span>
+          <span class="bar"></span>
         </div>
 
         <div class="group inputText" data-type="text" data-model='password'>
-            <input class="loginBoxes" :placeholder="IntlString('APP_INSTAGRAM_PASSWORD_CONFIRM_LABEL')" autocomplete="new-password" type="password" :value="accountLocale.passwordConfirm" @change="setLocalAccount($event, 'passwordConfirm')">
-            <span class="highlight"><i class="fa fa-key fa-lg"></i></span>
-            <span class="bar"></span>
+          <input class="loginBoxes" :placeholder="IntlString('APP_INSTAGRAM_PASSWORD_CONFIRM_LABEL')" autocomplete="new-password" type="password" :value="accountLocale.passwordConfirm" @change="setLocalAccount($event, 'passwordConfirm')">
+          <span class="highlight"><i class="fa fa-key fa-lg"></i></span>
+          <span class="bar"></span>
         </div>
 
         <div style="overflow-x: hidden; overflow-y: hidden;" class="group" data-type="button" @click.stop="createAccount">

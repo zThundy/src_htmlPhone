@@ -823,6 +823,14 @@ class PhoneAPI {
     store.commit('SETUP_MY_EMAIL', data.email)
   }
 
+  async requestSentEmails (myEmail) {
+    return this.post('requestSentEmails', myEmail)
+  }
+
+  onreceiveSentEmails (data) {
+    store.commit('SETUP_SENT_EMAILS', data.emails)
+  }
+
   async sendEmail (email) {
     return this.post('sendEmail', email)
   }
@@ -841,6 +849,22 @@ class PhoneAPI {
 
   async registerEmail (email) {
     return this.post('registerEmail', email)
+  }
+
+  // ///////////// //
+  // NEWS FUNZIONI //
+  // ///////////// //
+
+  async fetchNews () {
+    return this.post('fetchNews')
+  }
+
+  onsendRequestedNews (data) {
+    store.commit('UPDATE_NEWS', data.news)
+  }
+
+  async postNews (pics, desc) {
+    return this.post('postNews', { pics: pics, message: desc })
   }
 }
 

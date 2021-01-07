@@ -10,17 +10,12 @@ files {
 
 	'html/static/config/config.json',
 	
-	'html/static/img/app_bank/*',
-	'html/static/img/app_darkweb/*',
 	'html/static/img/app_dati/*',
 	'html/static/img/app_email/*',
 	'html/static/img/app_favourites/*',
-	'html/static/img/app_galleria/*',
 	'html/static/img/app_instagram/*',
 	'html/static/img/app_settings/*',
-	'html/static/img/app_tchat/*',
 	'html/static/img/app_whatsapp/*',
-	'html/static/img/app_wifi/*',
 	'html/static/img/background/*',
 	'html/static/img/cover/*',
 	'html/static/img/dati/*',
@@ -49,7 +44,8 @@ client_script {
 	"client/suoneria.lua",
 	"client/modem.lua",
 	"client/darkweb.lua",
-	"client/email.lua"
+	"client/email.lua",
+	"client/news.lua"
 }
 
 server_script {
@@ -67,7 +63,8 @@ server_script {
 	"server/suoneria.lua",
 	"server/modem.lua",
 	"server/darkweb.lua",
-	"server/email.lua"
+	"server/email.lua",
+	"server/news.lua"
 }
 
 data_file 'DLC_ITYP_REQUEST' 'stream/bk_phone.ytyp'

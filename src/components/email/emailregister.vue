@@ -61,6 +61,9 @@ export default {
       }
       this.$router.push({ name: 'menu' })
     },
+    async onRight () {
+      this.createModal()
+    },
     createModal () {
       this.ignoreControls = true
       var options = [
@@ -90,10 +93,12 @@ export default {
   created () {
     this.$bus.$on('keyUpEnter', this.onEnter)
     this.$bus.$on('keyUpBackspace', this.onBackspace)
+    this.$bus.$on('keyUpArrowRight', this.onRight)
   },
   beforeDestroy () {
     this.$bus.$off('keyUpEnter', this.onEnter)
     this.$bus.$off('keyUpBackspace', this.onBackspace)
+    this.$bus.$off('keyUpArrowRight', this.onRight)
   }
 }
 </script>

@@ -1,6 +1,6 @@
 <template>
   <div class="splash">
-    <img src="/html/static/img/icons_app/email.png" alt="">
+    <img src="/html/static/img/icons_app/news.png" alt="">
     
     <custom-toast class="caricamento" @hide="toastHide" :duration="randomWait" :hasMask="false" ref="updating">
       <md-icon class="caricamento-content" name="spinner" size="lg"></md-icon>
@@ -10,39 +10,30 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex'
 import CustomToast from '@/components/CustomToast'
 
 import { Icon } from 'mand-mobile'
 import 'mand-mobile/lib/mand-mobile.css'
 
 export default {
-  name: 'email.splash',
+  name: 'news.splash',
   data () {
     return {
-      randomWait: Math.floor(Math.random() * (5000 - 8000) + 8000)
+      randomWait: Math.floor(Math.random() * (5000 - 8000) + 4000)
     }
   },
   components: {
     CustomToast,
     [Icon.name]: Icon
   },
-  computed: {
-    ...mapGetters(['myEmail'])
-  },
+  computed: { },
   methods: {
     toastHide () {
-      if (this.myEmail) {
-        this.$phoneAPI.requestSentEmails(this.myEmail)
-        this.$router.push({ name: 'email' })
-      } else {
-        this.$router.push({ name: 'email.register' })
-      }
-      // this.$refs.updating.show()
+      this.$router.push({ name: 'news' })
     }
   },
   created: function () {
-    this.$phoneAPI.requestMyEmail()
+    this.$phoneAPI.fetchNews()
     setTimeout(() => {
       this.$refs.updating.show()
     }, 900)
@@ -58,7 +49,7 @@ export default {
   justify-content: center;
   align-items: center;
 
-  background-color: rgb(216, 71, 49);
+  background-color: rgb(106, 104, 231);
 }
 
 img {

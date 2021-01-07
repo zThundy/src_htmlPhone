@@ -4,6 +4,18 @@ RegisterNUICallback("requestMyEmail", function(data, cb)
 end)
 
 
+RegisterNUICallback("requestSentEmails", function(data, cb)
+    TriggerServerEvent("gcphone:email_requestSendEmails", data)
+    cb("ok")
+end)
+
+
+RegisterNetEvent("gcphone:email_sendRequestedSentEmails")
+AddEventHandler("gcphone:email_sendRequestedSentEmails", function(emails)
+    SendNUIMessage({ event = "receiveSentEmails", emails = emails })
+end)
+
+
 RegisterNetEvent("gcphone:email_sendMyEmail")
 AddEventHandler("gcphone:email_sendMyEmail", function(email)
     SendNUIMessage({ event = "receiveMyEmail", email = email })

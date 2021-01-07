@@ -85,6 +85,11 @@
     "value": "iphone_11.ogg"
   },
 
+  "weazelJob": {
+    "reporter": true,
+    "altrojob": true
+  },
+
   "serviceCall": [{
       "display": "Polizia",
       "icon": "/html/static/img/app_favourites/polizia.png",
@@ -392,6 +397,13 @@
       "icons": "/html/static/img/icons_app/email.png",
       "routeName": "email.splash",
       "enabled": true
+    },
+    {
+      "name": "News",
+      "it_IT__name": "News",
+      "icons": "/html/static/img/icons_app/news.png",
+      "routeName": "news.splash",
+      "enabled": true
     }
   ],
   "defaultLanguage": "it_IT",
@@ -602,12 +614,15 @@
       "APP_DARKWEB_REPLY": "Rispondi",
       "APP_APPSTORE_TITLE": "App store",
       "APP_APPSTORE_DOWNLOAD": "Scarica",
-      "APP_EMAIL_TITLE": "Posta in arrivo",
+      "APP_EMAIL_TITLE": "Posta in uscita",
+      "APP_EMAIL_SECOND_TITLE": "Posta in entrata",
       "APP_EMAIL_CHOOSEN_TITLE": "Email",
       "APP_EMAIL_WRITE_EMAIL": "Scrivi email",
       "APP_EMAIL_CHOOSE_CONTACT": "Scegli email da contatto",
       "APP_EMAIL_DELETE_EMAIL": "Elimina email",
+      "APP_EMAIL_VIEW": "Apri",
       "APP_EMAIL_SENDER_LABEL": "Da:",
+      "APP_EMAIL_RECEIVER_LABEL": "Per:",
       "APP_EMAIL_READING_FROM_LABEL": "Da:",
       "APP_EMAIL_READING_TO_LABEL": "A:",
       "APP_EMAIL_READING_TITLE_LABEL": "Oggetto:",
@@ -624,6 +639,10 @@
       "APP_EMAIL_REGISTER_PLACEHOLDER": "Email (Max 25)",
       "APP_EMAIL_REGISTER_CHOICE_ONE": "Modifica",
       "APP_EMAIL_REGISTER_CHOICE_TWO": "Registrati",
+      "APP_NEWS_TITLE": "News",
+      "APP_NEWS_UPLOAD_PICTURE": "Carica immagine",
+      "APP_NEWS_WRITE_MESSAGE": "Scrivi descrizione",
+      "APP_NEWS_SEND_POST": "Invia post",
 
       "TIMEAGO": [
         "Proprio adesso",

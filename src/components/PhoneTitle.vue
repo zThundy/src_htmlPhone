@@ -3,9 +3,9 @@
     <InfoBare v-if="showSegnaleSection" />
     
     <div class="phone_title" :style="{ backgroundColor: backgroundColor }">
-      <div :style="{ color: textColor }" class="title">{{ title }}</div>
+      <div :style="{ color: color }" class="title">{{ title }}</div>
       
-      <i class="backIcon fas fa-angle-left"/>
+      <i :style="{ color: color }" class="backIcon fas fa-angle-left"/>
     </div>
   
   </div>
@@ -45,7 +45,7 @@ export default {
       type: Boolean,
       default: false
     },
-    textColor: {
+    color: {
       type: String,
       default: 'black'
     }

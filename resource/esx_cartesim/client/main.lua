@@ -104,7 +104,9 @@ function OpenSimMenu()
 
                         TriggerServerEvent('esx_cartesim:sim_rename', numero, sim_name)
 
-                        ESX.ShowNotification("Sim Rinominata", "success")
+						ESX.ShowNotification("Sim Rinominata", "success")
+
+						ESX.UI.Menu.CloseAll()
                     end, function(data3, menu3)
                         menu3.close()
     
@@ -258,6 +260,8 @@ function openListaOfferte(number)
 						ESX.ShowNotification("~r~Non hai abbatsanza soldi per completare l'acquisto")
 						openListaOfferte(number)
 					end
+					
+					ESX.UI.Menu.CloseAll()
 				end, val, number)
 			end
 	
@@ -306,6 +310,8 @@ function openListaOffertePremium(number)
 						ESX.ShowNotification("~r~Non hai abbatsanza soldi per completare l'acquisto")
 						openListaOffertePremium(number)
 					end
+
+					ESX.UI.Menu.CloseAll()
 				end, val, number)
 			end
 	

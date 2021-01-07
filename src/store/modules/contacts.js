@@ -48,13 +48,14 @@ if (process.env.NODE_ENV !== 'production') {
   state.contacts = [
     {
       id: 1,
-      icon: 'https://u.trs.tn/tohqw.jpg',
+      icon: 'https://i.imgur.com/gthahbs.png',
       number: '5554444',
       display: 'stoprovando',
       email: 'stoprovando@code.it'
     },
     {
       id: 2,
+      icon: 'https://i.imgur.com/1YgvLHK.jpg',
       number: '55529322',
       display: 'questoenuovo',
       email: 'questoenuovo@code.it'

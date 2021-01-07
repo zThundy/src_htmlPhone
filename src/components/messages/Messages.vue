@@ -533,12 +533,15 @@ export default {
 .groupImage img {
   object-fit: cover;
   border-radius: 50%;
-  border-style: solid;
-  border-color: rgb(87, 87, 87);
+  border: 2px solid rgb(0, 0, 0);
+
   height: 50px;
   width: 50px;
+
   overflow: hidden;
   display: flex;
+
+  align-content: center;
   justify-content: center;
   align-items: center;
 }

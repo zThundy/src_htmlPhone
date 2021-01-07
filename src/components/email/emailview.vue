@@ -62,13 +62,14 @@ export default {
   methods: {
     ...mapActions([]),
     onBackspace () {
+      // history.back()
       this.$router.push({ name: 'email' })
     }
   },
   created () {
     // startup del component
-    this.emailID = this.$route.params.id
-    this.currentEmail = this.emails[this.emailID]
+    // this.email = this.$route.params.id
+    this.currentEmail = this.$route.params.email
     // eventi
     this.$bus.$on('keyUpBackspace', this.onBackspace)
   },

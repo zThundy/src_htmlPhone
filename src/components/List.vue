@@ -6,7 +6,7 @@
 
       <div class="element" v-for='(elem, key) in list'  v-bind:key="elem[keyDispay]" v-bind:class="{ select: key === currentSelect }">
           
-        <div class="elem-pic" v-bind:style="stylePuce(elem)">{{elem.letter || elem[keyDispay][0]}}</div>
+        <div class="elem-pic" v-bind:style="stylePuce(elem)">{{ elem.letter || elem[keyDispay][0] }}</div>
         <div v-if="elem.puce !== undefined && elem.puce !== 0" class="elem-puce">{{elem.puce}}</div>
         <div v-if="elem.keyDesc === undefined || elem.keyDesc === ''" class="elem-title">{{elem[keyDispay]}}</div>
         <div v-if="elem.keyDesc !== undefined && elem.keyDesc !== ''" class="elem-title-has-desc">{{elem[keyDispay]}}</div>
@@ -90,9 +90,11 @@ export default {
       if (data.icon !== undefined) {
         return {
           backgroundImage: `url(${data.icon})`,
+          'background-position': 'center',
           backgroundSize: 'cover',
           color: 'rgba(0,0,0,0)',
-          borderRadius: '50%'
+          borderRadius: '50%',
+          'object-fit': 'fill'
         }
       }
       return {
