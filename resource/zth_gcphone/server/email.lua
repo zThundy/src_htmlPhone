@@ -110,9 +110,11 @@ end)
 RegisterServerEvent("gcphone:email_requestSendEmails")
 AddEventHandler("gcphone:email_requestSendEmails", function(myEmail)
     local player = source
+    local identifier = gcPhone.getPlayerID(player)
+    local email = GetUserEmail(identifier)
 
     MySQL.Async.fetchAll("SELECT * FROM phone_emails WHERE sender = @sender ORDER BY id DESC LIMIT 50", {
-        ['@sender'] = myEmail
+        ['@sender'] = email
     }, function(r)
         TriggerClientEvent("gcphone:email_sendRequestedSentEmails", player, r)
     end)

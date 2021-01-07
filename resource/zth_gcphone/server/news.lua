@@ -1,3 +1,9 @@
+ESX.RegisterServerCallback("gcphone:news_requestMyJob", function(source, cb)
+    local xPlayer = ESX.GetPlayerFromId(source)
+    cb(xPlayer.job.name)
+end)
+
+
 RegisterServerEvent("gcphone:news_requestEmails")
 AddEventHandler("gcphone:news_requestEmails", function()
     local player = source

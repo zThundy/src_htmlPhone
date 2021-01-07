@@ -675,7 +675,7 @@ end)
 
 function GetResponseText(l, t)
     local limit = l or 255
-    local text = t or ' '
+    local text = t or ''
     
     DisplayOnscreenKeyboard(1, "FMMC_MPM_NA", "", text, "", "", "", limit)
     while UpdateOnscreenKeyboard() == 0 do

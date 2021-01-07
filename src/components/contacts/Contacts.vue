@@ -1,5 +1,5 @@
 <template>
-  <div style="width: 326px; height: 743px; backgroundColor: white" class="contact">
+  <div style="width: 326px; height: 100%; backgroundColor: white" class="contact">
 
     <list :list='lcontacts' :disable="disableList" :title="IntlString('APP_CONTACT_TITLE')" @back="back" @select='onSelect' @option='onOption'></list>
   

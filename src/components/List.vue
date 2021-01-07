@@ -2,9 +2,9 @@
   <div class="phone_app">
     <PhoneTitle :title="title" :showSegnaleSection="showSegnaleSection" v-if="showHeader" @back="back"/>
 
-    <div style="width: 324px; height: 595px;" class="phone_content elements">
+    <div class="phone_content elements">
 
-      <div class="element" v-for='(elem, key) in list'  v-bind:key="elem[keyDispay]" v-bind:class="{ select: key === currentSelect }">
+      <div class="element" v-for='(elem, key) in list' :key="key" v-bind:class="{ select: key === currentSelect }">
           
         <div class="elem-pic" v-bind:style="stylePuce(elem)">{{ elem.letter || elem[keyDispay][0] }}</div>
         <div v-if="elem.puce !== undefined && elem.puce !== 0" class="elem-puce">{{elem.puce}}</div>
@@ -157,7 +157,9 @@ export default {
 }
 
 .elements {
-  overflow-y: auto;
+  height: 100%;
+  width: 100%;
+  overflow: auto;
 }
 
 .element {

@@ -17,6 +17,9 @@ const mutations = {
   UPDATE_NEWS (state, news) {
     window.localStorage['gc_savednews'] = JSON.stringify(news)
     state.news = news
+  },
+  UPDATE_JOB (state, job) {
+    state.job = String(job)
   }
 }
 

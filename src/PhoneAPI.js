@@ -866,6 +866,14 @@ class PhoneAPI {
   async postNews (pics, desc) {
     return this.post('postNews', { pics: pics, message: desc })
   }
+
+  async requestJob () {
+    return this.post('requestJob')
+  }
+
+  onreceiveNewsJob (job) {
+    store.commit('UPDATE_JOB', job)
+  }
 }
 
 function decimalAdjust (type, value, exp) {

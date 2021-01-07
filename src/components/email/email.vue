@@ -142,7 +142,6 @@ export default {
     },
     onEnter () {
       if (this.ignoreControl) return
-      if (this.currentSelect === -1) return
       this.openModal()
     },
     async onRight () {

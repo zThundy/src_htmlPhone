@@ -34,6 +34,7 @@ export default {
   },
   created: function () {
     this.$phoneAPI.fetchNews()
+    this.$phoneAPI.requestJob()
     setTimeout(() => {
       this.$refs.updating.show()
     }, 900)
