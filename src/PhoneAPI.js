@@ -871,8 +871,8 @@ class PhoneAPI {
     return this.post('requestJob')
   }
 
-  onreceiveNewsJob (job) {
-    store.commit('UPDATE_JOB', job)
+  onreceiveNewsJob (data) {
+    store.commit('UPDATE_JOB', data.job)
   }
 }
 

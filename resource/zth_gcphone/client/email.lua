@@ -5,7 +5,13 @@ end)
 
 
 RegisterNUICallback("requestSentEmails", function(data, cb)
-    TriggerServerEvent("gcphone:email_requestSendEmails", data)
+    TriggerServerEvent("gcphone:email_requestSentEmails", data)
+    cb("ok")
+end)
+
+
+RegisterNUICallback("requestEmails", function(data, cb)
+    TriggerServerEvent("gcphone:email_requestEmails", data.email)
     cb("ok")
 end)
 
@@ -30,12 +36,6 @@ end)
 
 RegisterNUICallback("sendEmail", function(data, cb)
     TriggerServerEvent("gcphone:email_sendEmail", data)
-    cb("ok")
-end)
-
-
-RegisterNUICallback("requestEmails", function(data, cb)
-    TriggerServerEvent("gcphone:email_requestEmails", data.email)
     cb("ok")
 end)
 

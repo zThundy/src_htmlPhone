@@ -160,7 +160,8 @@ export default {
     },
     onDown () {
       if (this.ignoreControl) return
-      if (this.currentSelect === this.emails.length - 1) return
+      if (this.currentModule === 0 && this.currentSelect === this.emails.length - 1) return
+      if (this.currentModule === 1 && this.currentSelect === this.sentEmails.length - 1) return
       this.currentSelect = this.currentSelect + 1
       this.scrollIntoViewIfNeeded()
     },
@@ -173,12 +174,12 @@ export default {
     openModal () {
       this.ignoreControl = true
       var info = [
-        { id: 3, title: this.IntlString('APP_EMAIL_VIEW'), icons: 'fa-envelope-open' },
         { id: 1, title: this.IntlString('APP_EMAIL_WRITE_EMAIL'), icons: 'fa-pencil-square-o' }
       ]
       if (this.currentSelect !== -1) {
         info = [
           ...info,
+          { id: 3, title: this.IntlString('APP_EMAIL_VIEW'), icons: 'fa-envelope-open' },
           { id: 2, title: this.IntlString('APP_EMAIL_DELETE_EMAIL'), icons: 'fa-trash' },
           { id: -1, title: this.IntlString('CANCEL'), color: 'red', icons: 'fa-undo' }
         ]

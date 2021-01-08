@@ -50,39 +50,43 @@ end)
 
 
 RegisterServerEvent("gcphone:email_requestEmails")
-AddEventHandler("gcphone:email_requestEmails", function(email)
+AddEventHandler("gcphone:email_requestEmails", function()
     local player = source
-    local emails = FetchAllEmails(email)
+    local identifier = gcPhone.getPlayerID(player)
+    local email = GetUserEmail(identifier)
 
-    gcPhone.isAbleToSurfInternet(identifier, #emails * 0.05, function(isAble, mbToRemove)
-		if isAble then
-            gcPhone.usaDatiInternet(identifier, mbToRemove)
+    FetchAllEmails(email, function(emails)
+        gcPhone.isAbleToSurfInternet(identifier, #emails * 0.05, function(isAble, mbToRemove)
+            if isAble then
+                gcPhone.usaDatiInternet(identifier, mbToRemove)
 
-            TriggerClientEvent("gcphone:email_sendRequestedEmails", player, emails)
-        else
-            TriggerClientEvent("esx:showNotification", player, "~r~Non hai abbastanza giga per poter scaricare le tue email")
-        end
+                TriggerClientEvent("gcphone:email_sendRequestedEmails", player, emails)
+            else
+                TriggerClientEvent("esx:showNotification", player, "~r~Non hai abbastanza giga per poter scaricare le tue email")
+            end
+        end)
     end)
 end)
 
 
 RegisterServerEvent("gcphone:email_deleteEmail")
 AddEventHandler("gcphone:email_deleteEmail", function(emailID)
-    MySQL.Sync.execute("DELETE FROM phone_emails WHERE id = @id", {['@id'] = emailID})
+    MySQL.Async.execute("DELETE FROM phone_emails WHERE id = @id", {['@id'] = emailID}, function()
+        local player = source
+        local identifier = gcPhone.getPlayerID(player)
+        local email = GetUserEmail(identifier)
 
-    local player = source
-    local identifier = gcPhone.getPlayerID(player)
-    local email = GetUserEmail(identifier)
-    local emails = FetchAllEmails(email)
+        FetchAllEmails(email, function(emails)
+            gcPhone.isAbleToSurfInternet(identifier, #emails * 0.05, function(isAble, mbToRemove)
+                if isAble then
+                    gcPhone.usaDatiInternet(identifier, mbToRemove)
 
-    gcPhone.isAbleToSurfInternet(identifier, #emails * 0.05, function(isAble, mbToRemove)
-		if isAble then
-            gcPhone.usaDatiInternet(identifier, mbToRemove)
-
-            TriggerClientEvent("gcphone:email_sendRequestedEmails", player, emails)
-        else
-            TriggerClientEvent("esx:showNotification", player, "~r~Non hai abbastanza giga per poter scaricare le tue email")
-        end
+                    TriggerClientEvent("gcphone:email_sendRequestedEmails", player, emails)
+                else
+                    TriggerClientEvent("esx:showNotification", player, "~r~Non hai abbastanza giga per poter scaricare le tue email")
+                end
+            end)
+        end)
     end)
 end)
 
@@ -107,8 +111,8 @@ AddEventHandler("gcphone:email_registerEmail", function(email)
 end)
 
 
-RegisterServerEvent("gcphone:email_requestSendEmails")
-AddEventHandler("gcphone:email_requestSendEmails", function(myEmail)
+RegisterServerEvent("gcphone:email_requestSentEmails")
+AddEventHandler("gcphone:email_requestSentEmails", function(myEmail)
     local player = source
     local identifier = gcPhone.getPlayerID(player)
     local email = GetUserEmail(identifier)
@@ -116,18 +120,28 @@ AddEventHandler("gcphone:email_requestSendEmails", function(myEmail)
     MySQL.Async.fetchAll("SELECT * FROM phone_emails WHERE sender = @sender ORDER BY id DESC LIMIT 50", {
         ['@sender'] = email
     }, function(r)
-        TriggerClientEvent("gcphone:email_sendRequestedSentEmails", player, r)
+        local temp = {}
+        for k, v in pairs(r) do
+            temp[v.id] = v
+        end
+
+        TriggerClientEvent("gcphone:email_sendRequestedSentEmails", player, temp)
     end)
 end)
 
 
-function FetchAllEmails(email)
+function FetchAllEmails(email, cb)
     if email then
-        local emails = {}
-        local tempEmails = MySQL.Sync.fetchAll("SELECT * FROM phone_emails WHERE receiver = @email ORDER BY id DESC LIMIT 50", {['@email'] = email})
+        MySQL.Async.fetchAll("SELECT * FROM phone_emails WHERE receiver = @email ORDER BY id DESC LIMIT 50", {
+            ['@email'] = email
+        }, function(r)
+            local temp = {}
+            for k, v in pairs(r) do
+                temp[v.id] = v
+            end
 
-        for k, v in pairs(tempEmails) do emails[v.id] = v end
-        return emails
+            cb(temp)
+        end)
     end
 end
 

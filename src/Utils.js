@@ -21,9 +21,9 @@ function getRGB (colorStr) {
   return undefined
 }
 
-const emojiRegex = /:(.*?):/gm
-
 export function replaceEmoji (message) {
+  const emojiRegex = /:(.*?):/gm
+
   if (emojiRegex.exec(message)) {
     for (var match of message.matchAll(emojiRegex)) {
       message = message.replaceAll(match[0], emoji[match[1]])
