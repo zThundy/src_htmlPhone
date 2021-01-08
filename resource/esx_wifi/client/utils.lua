@@ -52,7 +52,7 @@ function Reti.mostraBlip()
 		SetBlipHighDetail(blip, true)
 		SetBlipSprite(blip, 459)
 		SetBlipColour(blip, 3)
-		SetBlipScale(blip, 0.8)
+		SetBlipScale(blip, 0.5)
 		SetBlipAsShortRange(blip, true)
 
 		BeginTextCommandSetBlipName("STRING")
