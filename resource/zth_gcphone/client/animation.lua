@@ -66,6 +66,8 @@ function newPhoneProp()
 	local bone = GetPedBoneIndex(ped, 28422)
 	AttachEntityToEntity(phoneProp, ped, bone, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1, 1, 0, 0, 2, 1)
 
+	SetEntityAsNoLongerNeeded(phoneModel)
+
 	table.insert(cachedProps, phoneProp)
 end
 
@@ -172,15 +174,17 @@ AddEventHandler("gcphone:animations_doCleanup", function()
 end)
 
 
---[[Citizen.CreateThread(function()
-	local idle = 0
-	while true do
-		if not menuIsOpen then idle = 2000 end
+--[[
+	Citizen.CreateThread(function()
+		local idle = 0
+		while true do
+			if not menuIsOpen then idle = 2000 end
 
-		if currentStatus == "out" and not IsEntityPlayingAnim(ped, "cellphone@", "cellphone_text_in", 50) then
-			
+			if currentStatus == "out" and not IsEntityPlayingAnim(ped, "cellphone@", "cellphone_text_in", 50) then
+				
+			end
+
+			Citizen.Wait(idle)
 		end
-
-		Citizen.Wait(idle)
-	end
-end)]]
+	end)
+]]
