@@ -56,7 +56,7 @@
 <script>
 import { mapGetters, mapActions, mapMutations } from 'vuex'
 import Modal from '@/components/Modal/index.js'
-import { replaceEmoji } from './../../Utils'
+// import { replaceEmoji } from './../../Utils'
 
 export default {
   components: {},
@@ -68,12 +68,11 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['tweets', 'IntlString'])
+    ...mapGetters(['tweets', 'twitterUsername', 'twitterPassword', 'IntlString'])
   },
-  watch: {
-  },
+  watch: { },
   methods: {
-    ...mapActions(['twitterLogin', 'twitterPostTweet', 'twitterToogleLike', 'fetchTweets']),
+    ...mapActions(['twitterLogin', 'twitterPostTweet', 'twitterToogleLike']),
     ...mapMutations(['CHANGE_BRIGHTNESS_STATE']),
     async showOption () {
       this.ignoreControls = true
@@ -192,18 +191,20 @@ export default {
       return d.toLocaleTimeString()
     },
     checkMessage (message) {
-      return replaceEmoji(message)
+      // return replaceEmoji(message)
+      return message
     }
   },
   created () {
+    // faccio la request a phoneapi per i tweets
+    this.$phoneAPI.twitter_getTweets(this.twitterUsername, this.twitterPassword)
+    // creo gli eventi
     this.$bus.$on('keyUpArrowDown', this.onDown)
     this.$bus.$on('keyUpArrowUp', this.onUp)
     this.$bus.$on('keyUpEnter', this.onEnter)
     this.$bus.$on('keyUpBackspace', this.onBack)
   },
-  mounted () {
-    this.fetchTweets()
-  },
+  mounted () { },
   beforeDestroy () {
     this.$bus.$off('keyUpArrowDown', this.onDown)
     this.$bus.$off('keyUpArrowUp', this.onUp)

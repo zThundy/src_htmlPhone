@@ -93,7 +93,7 @@ function doCleanup()
 	end
 
 	cachedProps = {}
-	print("^1[ZTH_Phone] ^0Cleared extra props for restart or overflow")
+	gcPhone.debug("^1[ZTH_Phone] ^0Cleared extra props for restart or overflow")
 end
 
 

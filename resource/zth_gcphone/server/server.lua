@@ -1,5 +1,5 @@
 ESX = nil
-gcPhone = {}
+-- gcPhone = {}
 segnaliTelefoniPlayers = {}
 wifiConnectedPlayers = {}
 playersInCall = {}
@@ -22,7 +22,7 @@ AddEventHandler("playerDropped", function(reason)
     local player = source
     TriggerClientEvent("gcphone:animations_doCleanup", player)
 
-    print("^1[ZTH_Phone] ^0User "..player.." dropping. Doing cleanup")
+    gcPhone.debug("^1[ZTH_Phone] ^0User "..player.." dropping. Doing cleanup")
 end)
 
 
@@ -31,7 +31,7 @@ MySQL.ready(function()
     MySQL.Async.execute("DELETE FROM twitter_tweets WHERE (DATEDIFF(CURRENT_DATE, time) > 20)", {})
     MySQL.Async.execute("DELETE FROM phone_calls WHERE (DATEDIFF(CURRENT_DATE, time) > 15)", {})
 
-    print("^1[ZTH_Phone] ^0Caching members. Lag expected")
+    gcPhone.debug("^1[ZTH_Phone] ^0Caching members. Lag expected")
 
     MySQL.Async.fetchAll("SELECT phone_number, identifier FROM sim", {}, function(r)
         for _, v in pairs(r) do
@@ -52,8 +52,8 @@ MySQL.ready(function()
         end
 
         phone_loaded = true
-        print("^1[ZTH_Phone] ^0Numbers cache loaded from sim database")
-        print("^1[ZTH_Phone] ^0Phone initialized")
+        gcPhone.debug("^1[ZTH_Phone] ^0Numbers cache loaded from sim database")
+        gcPhone.debug("^1[ZTH_Phone] ^0Phone initialized")
     end)
 end)
 
@@ -278,9 +278,9 @@ AddEventHandler("gcphone:updateCachedNumber", function(number, identifier, isCha
     identifier = tonumber(identifier)
 
     if identifier then
-        print("^1[ZTH_Phone] ^0Updated number "..number.." for identifier "..identifier)
+        gcPhone.debug("^1[ZTH_Phone] ^0Updated number "..number.." for identifier "..identifier)
     else
-        print("^1[ZTH_Phone] ^0Removed number "..number.." from cachedNumbers")
+        gcPhone.debug("^1[ZTH_Phone] ^0Removed number "..number.." from cachedNumbers")
     end
 
     local oldNumber = gcPhone.getPhoneNumber(identifier)
@@ -288,20 +288,22 @@ AddEventHandler("gcphone:updateCachedNumber", function(number, identifier, isCha
 
     -- qui controllo se la il numero sta venendo cambiato
     -- con un altra sim
-    if cachedNumbers[oldNumber] ~= nil then
-        if isChanging then
-            cachedNumbers[oldNumber].inUse = false
-            cachedNumbers[number].inUse = true
+    if cachedNumbers[number] ~= nil then
+        if cachedNumbers[oldNumber] ~= nil then
+            if isChanging then
+                cachedNumbers[oldNumber].inUse = false
+                cachedNumbers[number].inUse = true
+            else
+                -- da esx_cartesim al login del player
+                gcPhone.debug("^1[ZTH_Phone] ^0User "..identifier.." is joining, registering "..number.." as 'inUse' number")
+                -- print("Registrando numero al login", number, identifier)
+                cachedNumbers[number].inUse = true
+            end
         else
-            -- da esx_cartesim al login del player
-            print("^1[ZTH_Phone] ^0User "..identifier.." is joining, registering "..number.." as 'inUse' number")
-            -- print("Registrando numero al login", number, identifier)
+            -- in realtà questo potrebbe essere inutile :/ IDK
+            -- forse evita bug :)
             cachedNumbers[number].inUse = true
         end
-    elseif cachedNumbers[number] ~= nil then
-        -- in realtà questo potrebbe essere inutile :/ IDK
-        -- forse evita bug :)
-        cachedNumbers[number].inUse = true
     end
 
     -- qui modifico solo l'indentifier, quindi nel caso io

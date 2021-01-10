@@ -1,24 +1,25 @@
 <template>
-  <div style="width: 326px; height: 743px; backgroundColor: white" class="contact">
+  <div class="contact">
 
-    <list :list='lcontacts' :title="IntlString('APP_MESSAGES_INOLTRA')" @back="back" @select='onSelect'></list>
+    <list :list='lcontacts' :title="IntlString('APP_CONTACT_INOLTRA')" @back="back" @select='onSelect'></list>
   
   </div>
-
 </template>
 
 <script>
 import { mapActions, mapGetters } from 'vuex'
 import { generateColorForStr } from '@/Utils'
 import List from './../List.vue'
+
 // import PhoneAPI from './../../PhoneAPI'
 // import Modal from '@/components/Modal/index.js'
 
 export default {
+  name: 'contacts.chooseinoltra',
   components: { List },
   data () {
     return {
-      tempMessage: ''
+      contact: []
     }
   },
   computed: {
@@ -36,16 +37,18 @@ export default {
   methods: {
     ...mapActions(['sendMessage']),
     onSelect (contact) {
-      this.sendMessage({ phoneNumber: contact.number, message: this.tempMessage })
+      var message = '%CONTACT%:' + (this.contact.number || '') + '::' + (this.contact.display || '') + '::' + (this.contact.email || '') + ':'
+      // console.log(message)
+      this.sendMessage({ phoneNumber: contact.number, message: message })
       this.$router.push({ name: 'messages.view', params: { number: contact.number, display: contact.display } })
     },
     back () {
-      this.tempMessage = ''
-      this.$router.push({ name: 'menu' })
+      this.contact = []
+      this.$router.push({ name: 'contacts' })
     }
   },
   created () {
-    if (this.$route.params.message) { this.tempMessage = this.$route.params.message }
+    if (this.$route.params.contact) { this.contact = this.$route.params.contact }
     this.$bus.$on('keyUpBackspace', this.back)
   },
   beforeDestroy () {
@@ -55,10 +58,12 @@ export default {
 </script>
 
 <style scoped>
-.contact{
+.contact {
   position: relative;
+
   left: 0;
   top: 0;
+
   width: 100%;
   height: 100%;
 }

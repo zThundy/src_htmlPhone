@@ -43,14 +43,14 @@
 
         <div class="journal-container">
 
-          <md-swiper v-if="tempPics.length > 0" class="journal-swiper-container" :autoplay="5000" :transition-duration="600" ref="swiper">
-            <md-swiper-item class="journal-swiper-item" v-for="(pic, key) of tempPics" :key="key">
+          <md-swiper v-if="tempNews.pics.length > 0" class="journal-swiper-container" :autoplay="5000" :transition-duration="600" ref="swiper">
+            <md-swiper-item class="journal-swiper-item" v-for="(pic, key) of tempNews.pics" :key="key">
               <img :src="pic"/>
             </md-swiper-item>
           </md-swiper>
 
-          <div v-if="tempDescription.length > 0" class="journal-message-container">
-            <p>{{ tempDescription }}</p>
+          <div v-if="tempNews.description.length > 0" class="journal-message-container">
+            <p>{{ tempNews.description }}</p>
           </div>
 
         </div>
@@ -72,7 +72,7 @@
 </template>
 
 <script>
-import { mapGetters, mapActions } from 'vuex'
+import { mapGetters, mapMutations } from 'vuex'
 import PhoneTitle from './../PhoneTitle'
 import Modal from '@/components/Modal/index'
 
@@ -93,20 +93,19 @@ export default {
       currentSelect: -1,
       currentModule: 0,
       ignoreControl: false,
-      config: config,
-      tempPics: [],
-      tempDescription: ''
+      config: config
     }
   },
   computed: {
     ...mapGetters([
       'IntlString',
       'news',
-      'job'
+      'job',
+      'tempNews'
     ])
   },
   methods: {
-    ...mapActions([]),
+    ...mapMutations(['UPDATE_TEMP_INFO']),
     scrollIntoViewIfNeeded () {
       this.$nextTick(() => {
         const elem = this.$el.querySelector('.select')
@@ -138,14 +137,16 @@ export default {
             case 1:
               Modal.CreateTextModal({ text: 'https://i.imgur.com/' }).then(value => {
                 if (value.text !== '' && value.text !== undefined && value.text !== null && value.text !== 'https://i.imgur.com/') {
-                  this.tempPics.push(value.text)
+                  // this.tempPics.push(value.text)
+                  this.UPDATE_TEMP_INFO({ type: 'pic', text: value.text })
                   this.ignoreControl = false
                 }
               })
               break
             case 2:
               this.$phoneAPI.takePhoto().then(pic => {
-                this.tempPics.push(pic.url)
+                // this.tempPics.push(pic.url)
+                this.UPDATE_TEMP_INFO({ type: 'pic', text: pic.url })
                 this.ignoreControl = false
               })
               break
@@ -158,14 +159,16 @@ export default {
         // scrivi descrizione
         Modal.CreateTextModal({ text: '' }).then(value => {
           if (value.text !== '' && value.text !== undefined && value.text !== null) {
-            this.tempDescription = value.text
+            // this.tempDescription = value.text
+            this.UPDATE_TEMP_INFO({ type: 'description', text: value.text })
             this.ignoreControl = false
           }
         })
       } else if (this.currentSelect === 2) {
         // posta news
         if (this.tempPics.length > 0 || this.tempDescription !== '') {
-          this.$phoneAPI.postNews(this.tempPics, this.tempDescription)
+          this.$phoneAPI.postNews(this.tempNews.pics, this.tempNews.description)
+          this.UPDATE_TEMP_INFO({ type: 'clear' })
         } else {
           this.$phoneAPI.sendErrorMessage('Devi compilare almeno un campo per poter postare una news')
         }

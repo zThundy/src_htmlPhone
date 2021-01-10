@@ -9,39 +9,22 @@
 
         <div class="email-container" v-for="(email, key) of emails" :key="key" :class="{ select: key === currentSelect }">
 
-          <div class="email-timestamp">{{ formatTime(email.time) }}</div>
+          <div v-if="email" class="email-timestamp">{{ formatTime(email.time) }}</div>
 
-          <div class="email-header">
+          <div v-if="email" class="email-header">
             <i class="fa fa-arrow-circle-right"/>
             <i class="email-text">{{ IntlString('APP_EMAIL_RECEIVER_LABEL') }} {{ email.receiver }}</i>
           </div>
 
-          <div class="email-body">
+          <div v-if="email" class="email-body">
             <i class="email-text">{{ getCorrectMessage(email.title) }}</i>
           </div>
 
-          <div class="email-pic">
+          <div v-if="email" class="email-pic">
             <img :src="getEmailPic(email)"/>
           </div>
 
           <div class="email-divider"></div>
-
-          
-          <!--
-
-            {{ email.message }}
-
-            <div class="email-sender">{{ IntlString('APP_EMAIL_SENDER_LABEL') }}: {{ email.sender }}</div>
-            <div class="email-receiver">{{ IntlString('APP_EMAIL_RECEIVER_LABEL') }}: {{ email.receiver }}</div>
-
-            <div class="email-message">{{ IntlString('APP_EMAIL_MESSAGE_LABEL') }}: {{ email.message }}</div>
-
-            <tr>
-              <td class="email-headers" align="right">
-                {{ IntlString('APP_EMAIL_RECEIVER_LABEL') }}: {{ email.receiver }}
-              </td>
-            </tr>
-          -->
           
         </div>
 
@@ -55,25 +38,24 @@
 
         <div class="email-container" v-for="(email, key) of sentEmails" :key="key" :class="{ select: key === currentSelect }">
 
-          <div class="email-timestamp">{{ formatTime(email.time) }}</div>
+          <div v-if="email" class="email-timestamp">{{ formatTime(email.time) }}</div>
 
-          <div class="email-header">
+          <div v-if="email" class="email-header">
             <i class="fa fa-arrow-circle-down"/>
             <i class="email-text">{{ IntlString('APP_EMAIL_SENDER_LABEL') }} {{ email.sender }}</i>
           </div>
 
-          <div class="email-body">
+          <div v-if="email" class="email-body">
             <i class="email-text">{{ getCorrectMessage(email.title) }}</i>
           </div>
 
-          <div class="email-pic">
+          <div v-if="email" class="email-pic">
             <img :src="getEmailPic(email)"/>
           </div>
 
           <div class="email-divider"></div>
 
         </div>
-
 
         <div class="email-write-dot">
           <i class="email-write-icon fa fa-pencil"></i>
@@ -82,6 +64,21 @@
       </div>
 
     </div>
+
+    <!--
+      {{ email.message }}
+
+      <div class="email-sender">{{ IntlString('APP_EMAIL_SENDER_LABEL') }}: {{ email.sender }}</div>
+      <div class="email-receiver">{{ IntlString('APP_EMAIL_RECEIVER_LABEL') }}: {{ email.receiver }}</div>
+
+      <div class="email-message">{{ IntlString('APP_EMAIL_MESSAGE_LABEL') }}: {{ email.message }}</div>
+
+      <tr>
+        <td class="email-headers" align="right">
+          {{ IntlString('APP_EMAIL_RECEIVER_LABEL') }}: {{ email.receiver }}
+        </td>
+      </tr>
+    -->
 
     <div class="email-footer">
       <div class="email-footer-item" :class="{ select: 0 === currentModule }">
@@ -210,9 +207,9 @@ export default {
       this.$phoneAPI.requestSentEmails(this.myEmail)
       this.$phoneAPI.requestMyEmail()
     },
-    getEmailPic (sender) {
-      if (sender.pic) {
-        return sender.pic
+    getEmailPic (email) {
+      if (email.pic) {
+        return email.pic
       }
       return '/html/static/img/app_email/defaultpic.png'
     },

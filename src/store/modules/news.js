@@ -3,12 +3,14 @@
 
 const state = {
   news: JSON.parse(window.localStorage['gc_savednews'] || null),
+  tempNews: [],
   job: null
 }
 
 const getters = {
   news: ({ news }) => news,
-  job: ({ job }) => job
+  job: ({ job }) => job,
+  tempNews: ({ tempNews }) => tempNews
 }
 
 const actions = { }
@@ -20,6 +22,15 @@ const mutations = {
   },
   UPDATE_JOB (state, job) {
     state.job = String(job)
+  },
+  UPDATE_TEMP_INFO (state, data) {
+    if (data.type === 'description') {
+      state.tempNews.description = data.text
+    } else if (data.type === 'pic') {
+      state.tempNews.pics.push(data.text)
+    } else if (data.type === 'clear') {
+      state.tempNews = []
+    }
   }
 }
 

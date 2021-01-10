@@ -50,6 +50,7 @@ export default {
       var choix = [
           {id: 1, title: this.IntlString('APP_CONTACT_EDIT'), icons: 'fa-user-circle', color: 'orange'},
           {id: 2, title: this.IntlString('APP_CONTACT_ADD_PICTURE'), icons: 'fa-camera'},
+          // {id: 5, title: this.IntlString('APP_CONTACT_SHARE_CONTACT'), icons: 'fa-address-book'},
           {id: 4, title: this.IntlString('CANCEL'), icons: 'fa-undo', color: 'red'}
       ]
       if (isValid === true) { choix = [{id: 3, title: this.IntlString('APP_PHONE_CALL'), icons: 'fa-phone'}, ...choix] }
@@ -73,6 +74,10 @@ export default {
           break
         case 4:
           this.disableList = false
+          break
+        case 5:
+          this.$router.push({ name: 'contacts.chooseinoltra', params: { contact: contact } })
+          // this.$phoneAPI.shareContact(contact)
           break
       }
     },

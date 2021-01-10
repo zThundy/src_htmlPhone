@@ -2,6 +2,8 @@ Config = {}
 
 Config.KeyTakeCall = 46
 
+Config.Debug = false
+
 Config.BluetoothRange = 5.0
 Config.MaxSunoeriaDistance = 10.0
 

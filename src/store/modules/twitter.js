@@ -71,9 +71,6 @@ const actions = {
     }
     commit('ADD_TWEET', { tweet })
   },
-  fetchTweets ({ state }) {
-    PhoneAPI.twitter_getTweets(state.twitterUsername, state.twitterPassword)
-  },
   fetchFavoriteTweets ({ state }) {
     PhoneAPI.twitter_getFavoriteTweets(state.twitterUsername, state.twitterPassword)
   },

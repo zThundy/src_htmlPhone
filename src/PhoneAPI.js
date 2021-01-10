@@ -115,6 +115,10 @@ class PhoneAPI {
     return this.post('deleteContact', { id })
   }
 
+  async shareContact (contact) {
+    return this.post('shareContact', contact)
+  }
+
   // == Gestion des appels
   async appelsDeleteHistorique (numero) {
     return this.post('appelsDeleteHistorique', { numero })

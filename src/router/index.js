@@ -7,6 +7,7 @@ import Lockscreen from '@/components/Lockscreen'
 
 import Contacts from '@/components/contacts/Contacts'
 import Contact from '@/components/contacts/Contact'
+import ContactInoltra from '@/components/contacts/ContactInoltra'
 
 import MessagesList from '@/components/messages/MessagesList'
 import Messages from '@/components/messages/Messages'
@@ -98,6 +99,11 @@ export default new Router({
       path: '/contact/:id/:number?',
       name: 'contacts.view',
       component: Contact
+    },
+    {
+      path: '/contact/:contact',
+      name: 'contacts.chooseinoltra',
+      component: ContactInoltra
     },
     {
       path: '/messages',

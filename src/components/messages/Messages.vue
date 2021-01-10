@@ -1,31 +1,37 @@
 <template>
 <!--ESTE HTML ES ACOPLADO DEL VIEJO--> 
-  <div style="width: 330px; height: 743px; backgroundColor: white"  class="phone_app messages">
+  <div style="backgroundColor: white"  class="phone_app messages">
     <PhoneTitle :title="displayContact" style="backgroundColor: #F1F1F1; color: black" @back="quit"/> <!--:title="displayContact" :backgroundColor="color" -->
     
     <div class="phone_fullscreen_img" v-if="imgZoom !== undefined">
       <img :src="imgZoom" />
     </div>
 
-    <textarea ref="copyTextarea" class="copyTextarea"/>
+    <!-- <textarea ref="copyTextarea" class="copyTextarea"/> -->
     
     <div style="width: 326px; height: 678px; backgroundColor: white"  id='sms_list'>
       <div style="position: absolute;" class="groupImage" data-type="button">
-        <img v-if="isSMSImage(getContactIcon())" :src="getContactIcon()" />
+        <img v-if="isSMSImage(getContactIcon())" :src="getContactIcon()"/>
       </div>
 
-      <div class="sms" v-bind:class="{ select: key === selectMessage}" v-for='(mess, key) in messagesListApp' v-bind:key="mess.id">
+      <div class="sms" v-bind:class="{ select: key === selectMessage }" v-for='(mess, key) in messagesListApp' v-bind:key="mess.id">
         <div class="sms_message_time">
-          <h6 v-bind:class="{ sms_me : mess.owner === 1}"  class="name_other_sms_me">{{displayContact}}</h6>
-          <h6 v-bind:class="{ sms_me : mess.owner === 1}"  class="name_other_sms_other"><timeago class="sms_time" :since='mess.time' :auto-update="20"></timeago></h6>
+          <!-- <h6 v-bind:class="{ sms_me : mess.owner === 1 }" class="name_other_sms_me">{{ displayContact }}</h6> -->
+          <h6 v-bind:class="{ sms_me : mess.owner === 1 }" class="name_other_sms_other"><timeago class="sms_time" :since='mess.time' :auto-update="20"></timeago></h6>
         </div>
 
-        <span class='sms_message sms_me' v-bind:class="{ sms_other : mess.owner === 0}">
+        <span class='sms_message sms_me' v-bind:class="{ sms_other : mess.owner === 0 }">
           
           <img v-if="isSMSImage(mess.message)" class="sms-img" :src="mess.message">
-          <span v-else class="sms_message">{{mess.message}}</span>
+          <!--
+            <div v-if="mess.message.includes('%CONTACT%')">
+              {{ mess.message.split(':').pop() }}
+              <input type="button" :value="IntlString('APP_MESSAGES_ADD_CONTACT')">
+            </div>
+          -->
+          <span v-else class="sms_message">{{ mess.message }}</span>
             
-            <!--<span style="color: white; font-size: 17px; margin: 24px;" @click.stop="onActionMessage(mess)" ><timeago class="sms_time" :since='mess.time' :auto-update="20"></timeago></span>-->
+            <!-- <span style="color: white; font-size: 17px; margin: 24px;" @click.stop="onActionMessage(mess)"><timeago class="sms_time" :since='mess.time' :auto-update="20"></timeago></span> -->
         </span>
 
       </div>
@@ -368,15 +374,15 @@ export default {
 </script>
 
 <style scoped>
-.messages{
+.messages {
   position: absolute;
+
   bottom: 0;
   left: 0;
+  right: 0;
+
   width: 326px;
   height: 678px;
-  right: 0;
-  height: calc(100% - 20px);
-  background-color: #DDD;
 }
 
 #sms_contact{

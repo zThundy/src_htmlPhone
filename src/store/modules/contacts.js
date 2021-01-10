@@ -50,27 +50,23 @@ if (process.env.NODE_ENV !== 'production') {
       id: 1,
       icon: 'https://i.imgur.com/gthahbs.png',
       number: '5554444',
-      display: 'stoprovando',
-      email: 'stoprovando@code.it'
+      display: 'stoprovando'
     },
     {
       id: 2,
       icon: 'https://i.imgur.com/1YgvLHK.jpg',
       number: '55529322',
-      display: 'questoenuovo',
-      email: 'questoenuovo@code.it'
+      display: 'questoenuovo'
     },
     {
       id: 3,
       number: '55587422',
-      display: 'altrocontatto',
-      email: 'altrocontatto@code.it'
+      display: 'altrocontatto'
     },
     {
       id: 4,
       number: '55587422',
-      display: 'altrocontatto',
-      email: 'altrocontatto@code.it'
+      display: 'altrocontatto'
     },
     {
       id: 5,
