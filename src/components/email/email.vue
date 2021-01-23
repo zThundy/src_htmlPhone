@@ -148,12 +148,10 @@ export default {
         return
       }
       this.changeModule('right', this.currentModule + 1)
-      this.currentSelect = -1
     },
     async onLeft () {
       if (this.ignoreControl) return
       this.changeModule('left', this.currentModule - 1)
-      this.currentSelect = -1
     },
     onUp () {
       if (this.ignoreControl) return
@@ -171,6 +169,7 @@ export default {
     changeModule (type, module) {
       if (type === 'left' && this.currentModule === 0) return
       if (type === 'right' && this.currentModule === 1) return
+      this.currentSelect = -1
       this.requestAllEmails()
       this.currentModule = module
     },
