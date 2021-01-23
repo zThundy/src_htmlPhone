@@ -13,7 +13,7 @@
 
           <div v-if="email" class="email-header">
             <i class="fa fa-arrow-circle-right"/>
-            <i class="email-text">{{ IntlString('APP_EMAIL_RECEIVER_LABEL') }} {{ email.receiver }}</i>
+            <i class="email-text">{{ IntlString('APP_EMAIL_SENDER_LABEL') }} {{ email.sender }}</i>
           </div>
 
           <div v-if="email" class="email-body">
@@ -42,7 +42,7 @@
 
           <div v-if="email" class="email-header">
             <i class="fa fa-arrow-circle-down"/>
-            <i class="email-text">{{ IntlString('APP_EMAIL_SENDER_LABEL') }} {{ email.sender }}</i>
+            <i class="email-text">{{ IntlString('APP_EMAIL_RECEIVER_LABEL') }} {{ email.receiver }}</i>
           </div>
 
           <div v-if="email" class="email-body">
@@ -143,11 +143,17 @@ export default {
     },
     async onRight () {
       if (this.ignoreControl) return
+      if (this.currentSelect !== -1) {
+        this.openModal()
+        return
+      }
       this.changeModule('right', this.currentModule + 1)
+      this.currentSelect = -1
     },
     async onLeft () {
       if (this.ignoreControl) return
       this.changeModule('left', this.currentModule - 1)
+      this.currentSelect = -1
     },
     onUp () {
       if (this.ignoreControl) return
@@ -157,8 +163,8 @@ export default {
     },
     onDown () {
       if (this.ignoreControl) return
-      if (this.currentModule === 0 && this.currentSelect === this.emails.length - 1) return
-      if (this.currentModule === 1 && this.currentSelect === this.sentEmails.length - 1) return
+      if (this.currentModule === 0 && this.emails && this.currentSelect === this.emails.length - 1) return
+      if (this.currentModule === 1 && this.sentEmails && this.currentSelect === this.sentEmails.length - 1) return
       this.currentSelect = this.currentSelect + 1
       this.scrollIntoViewIfNeeded()
     },
@@ -188,7 +194,11 @@ export default {
             this.ignoreControl = false
             break
           case 2:
-            this.deleteEmail(this.currentSelect)
+            if (this.currentModule === 0) {
+              this.deleteEmail(this.emails[this.currentSelect].id)
+            } else if (this.currentModule === 1) {
+              this.deleteEmail(this.sentEmails[this.currentSelect].id)
+            }
             this.ignoreControl = false
             break
           case 3:
@@ -204,8 +214,9 @@ export default {
       })
     },
     requestAllEmails () {
-      this.$phoneAPI.requestSentEmails(this.myEmail)
       this.$phoneAPI.requestMyEmail()
+      this.$phoneAPI.requestSentEmails(this.myEmail)
+      this.$phoneAPI.requestEmails()
     },
     getEmailPic (email) {
       if (email.pic) {

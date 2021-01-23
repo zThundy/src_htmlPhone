@@ -20,7 +20,7 @@ export default {
   name: 'email.splash',
   data () {
     return {
-      randomWait: Math.floor(Math.random() * (5000 - 8000) + 8000)
+      randomWait: Math.floor(Math.random() * (5000 - 6000) + 6000)
     }
   },
   components: {
@@ -34,6 +34,7 @@ export default {
     toastHide () {
       if (this.myEmail) {
         this.$phoneAPI.requestSentEmails(this.myEmail)
+        this.$phoneAPI.requestEmails()
         this.$router.push({ name: 'email' })
       } else {
         this.$router.push({ name: 'email.register' })

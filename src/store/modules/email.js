@@ -33,11 +33,16 @@ const mutations = {
     state.myEmail = String(email)
   },
   DELETE_EMAIL (state, emailID) {
-    state.emails = state.emails.filter((email, id) => { return id !== emailID })
-    state.sentEmails = state.sentEmails.filter((email, id) => { return id !== emailID })
-    // risalvo entrambi i localstorage PERCHE' SI
-    window.localStorage['gc_savedemails'] = JSON.stringify(state.emails)
-    window.localStorage['gc_sentemails'] = JSON.stringify(state.sentEmails)
+    if (state.emails) {
+      state.emails = state.emails.filter((email, id) => { return id !== emailID })
+      // risalvo iò localstorage PERCHE' SI
+      window.localStorage['gc_savedemails'] = JSON.stringify(state.emails)
+    }
+    if (state.sentEmails) {
+      state.sentEmails = state.sentEmails.filter((email, id) => { return id !== emailID })
+      // risalvo iò localstorage PERCHE' SI
+      window.localStorage['gc_sentemails'] = JSON.stringify(state.sentEmails)
+    }
   }
 }
 

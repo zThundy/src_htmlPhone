@@ -66,7 +66,7 @@ function newPhoneProp()
 	local bone = GetPedBoneIndex(ped, 28422)
 	AttachEntityToEntity(phoneProp, ped, bone, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1, 1, 0, 0, 2, 1)
 
-	SetEntityAsNoLongerNeeded(phoneModel)
+	-- SetEntityAsNoLongerNeeded(phoneModel)
 
 	table.insert(cachedProps, phoneProp)
 end

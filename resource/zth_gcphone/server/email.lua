@@ -124,9 +124,7 @@ AddEventHandler("gcphone:email_requestSentEmails", function(myEmail)
             ['@sender'] = email
         }, function(r)
             local temp = {}
-            for k, v in pairs(r) do
-                temp[v.id] = v
-            end
+            for k, v in pairs(r) do table.insert(temp, v) end
 
             TriggerClientEvent("gcphone:email_sendRequestedSentEmails", player, temp)
         end)
@@ -140,9 +138,7 @@ function FetchAllEmails(email, cb)
             ['@email'] = email
         }, function(r)
             local temp = {}
-            for k, v in pairs(r) do
-                temp[v.id] = v
-            end
+            for k, v in pairs(r) do table.insert(temp, v) end
 
             cb(temp)
         end)

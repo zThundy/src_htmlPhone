@@ -8,14 +8,14 @@
 
         <div v-for="(elem, key) of news" :key="key" :class="{ select: currentSelect === key }" class="journal-container">
 
-          <md-swiper v-if="elem.pics.length > 0" class="journal-swiper-container" :autoplay="5000" :transition-duration="600" ref="swiper">
+          <md-swiper v-if="elem.pics && elem.pics.length > 0" class="journal-swiper-container" :autoplay="5000" :transition-duration="600" ref="swiper">
             <md-swiper-item class="journal-swiper-item" v-for="(pic, key) of elem.pics" :key="key">
               <img :src="pic"/>
             </md-swiper-item>
           </md-swiper>
 
-          <div v-if="elem.message.length > 0" class="journal-message-container">
-            <p>{{ elem.message }}</p>
+          <div class="journal-message-container">
+            <p v-if="elem.messages && elem.message.length > 0">{{ elem.message }}</p>
             <timeago class="journal-message-timeago" :since='elem.time' :auto-update="20"></timeago>
           </div>
           
@@ -43,13 +43,13 @@
 
         <div class="journal-container">
 
-          <md-swiper v-if="tempNews.pics.length > 0" class="journal-swiper-container" :autoplay="5000" :transition-duration="600" ref="swiper">
+          <md-swiper v-if="tempNews.pics && tempNews.pics.length > 0" class="journal-swiper-container" :autoplay="5000" :transition-duration="600" ref="swiper">
             <md-swiper-item class="journal-swiper-item" v-for="(pic, key) of tempNews.pics" :key="key">
               <img :src="pic"/>
             </md-swiper-item>
           </md-swiper>
 
-          <div v-if="tempNews.description.length > 0" class="journal-message-container">
+          <div v-if="tempNews.description && tempNews.description.length > 0" class="journal-message-container">
             <p>{{ tempNews.description }}</p>
           </div>
 

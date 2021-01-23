@@ -7,7 +7,7 @@ import emoji from './emoji.json'
 const keyEmoji = Object.keys(emoji)
 
 let USE_VOICE_RTC = false
-const BASE_URL = 'http://zth_gcphone/'
+const BASE_URL = 'https://zth_gcphone/'
 
 /* eslint-disable camelcase */
 class PhoneAPI {
@@ -839,8 +839,8 @@ class PhoneAPI {
     return this.post('sendEmail', email)
   }
 
-  async requestEmails (email) {
-    return this.post('requestEmails', { email })
+  async requestEmails () {
+    return this.post('requestEmails')
   }
 
   onreceiveEmails (data) {

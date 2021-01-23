@@ -147,7 +147,9 @@ end)
 RegisterNUICallback("sendStartupValues", function(data, cb)
     volume = data.volume
     enableGlobalNotification = data.notification
-    myCover = string.gsub(data.cover.value, ".png", "")
+    if data.cover ~= nil then
+        myCover = string.gsub(data.cover.value, ".png", "")
+    end
     
     UpdateGlobalVolume()
     cb("ok")
@@ -479,9 +481,10 @@ AddEventHandler("gcPhone:acceptCall", function(infoCall, initiator)
             Wait(1500)
             StopSoundJS('callend.ogg')
         end)
-    
-        -- exports.tokovoip_script:addPlayerToPhoneCall(infoCall.id)
-        -- TokoVoipID = infoCall.id
+        
+        -- print("aggiungo in canale "..infoCall.id)
+        exports["tokovoip_script"]:addPlayerToPhone(infoCall.id)
+        TokoVoipID = infoCall.id
     end
 
     if menuIsOpen == false then 
@@ -511,8 +514,9 @@ AddEventHandler("gcPhone:rejectCall", function(infoCall)
         -- Citizen.InvokeNative(0xE036A705F989E049)
         -- NetworkClearVoiceChannel
         -- NetworkSetTalkerProximity(2.5)
-        -- exports.tokovoip_script:removePlayerFromPhoneCall(TokoVoipID)
-        -- TokoVoipID = nil
+        -- print("rimuovo canale "..TokoVoipID)
+        exports["tokovoip_script"]:removePlayerFromPhone(TokoVoipID)
+        TokoVoipID = nil
     end
 
     PhonePlayText()
