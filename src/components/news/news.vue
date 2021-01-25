@@ -2,13 +2,24 @@
   <div class="phone_app">
     <PhoneTitle :title="IntlString('APP_NEWS_TITLE')" :color="'white'" :backgroundColor="'rgb(106, 104, 231)'" />
 
+    <div class="phone_fullscreen_img" v-if="imgZoom !== undefined" @click.stop="imgZoom = undefined">
+      <img :src="imgZoom" />
+    </div>
+
     <div class="journals-container">
 
       <div v-if="currentModule === 0">
 
         <div v-for="(elem, key) of news" :key="key" :class="{ select: currentSelect === key }" class="journal-container">
 
-          <md-swiper v-if="elem.pics && elem.pics.length > 0" class="journal-swiper-container" :autoplay="5000" :transition-duration="600" ref="swiper">
+          <md-swiper
+            v-if="elem.pics && elem.pics.length > 0"
+            class="journal-swiper-container"
+            :autoplay="5000"
+            :transition-duration="600"
+            ref="swiper"
+            @after-change="afterChange"
+          >
             <md-swiper-item class="journal-swiper-item" v-for="(pic, key) of elem.pics" :key="key">
               <img :src="pic"/>
             </md-swiper-item>
@@ -93,7 +104,9 @@ export default {
       currentSelect: -1,
       currentModule: 0,
       ignoreControl: false,
-      config: config
+      config: config,
+      currentPicIndex: 0,
+      imgZoom: undefined
     }
   },
   computed: {
@@ -105,7 +118,15 @@ export default {
     ])
   },
   methods: {
-    ...mapMutations(['UPDATE_TEMP_INFO']),
+    ...mapMutations(['UPDATE_TEMP_INFO', 'CHANGE_BRIGHTNESS_STATE']),
+    // listening
+    // beforeChange(from, to) {
+    //   this.setValue('#valueSwiper0', from)
+    //   this.setValue('#valueSwiper1', to)
+    // },
+    afterChange (from, to) {
+      this.currentPicIndex = to
+    },
     scrollIntoViewIfNeeded () {
       this.$nextTick(() => {
         const elem = this.$el.querySelector('.select')
@@ -115,6 +136,11 @@ export default {
       })
     },
     onBackspace () {
+      if (this.imgZoom !== undefined) {
+        this.imgZoom = undefined
+        this.CHANGE_BRIGHTNESS_STATE(true)
+        return
+      }
       if (this.ignoreControl) {
         this.ignoreControl = false
         return
@@ -123,54 +149,60 @@ export default {
     },
     async onEnter () {
       if (this.ignoreControl) return
-      if (this.currentModule === 0) return
-      if (this.currentSelect === 0) {
-        // carica immagine
-        this.ignoreControl = true
-        var options = [
-          { id: 1, title: this.IntlString('APP_CONFIG_LINK_PICTURE'), icons: 'fa-link' },
-          { id: 2, title: this.IntlString('APP_CONFIG_TAKE_PICTURE'), icons: 'fa-camera' },
-          { id: -1, title: this.IntlString('CANCEL'), icons: 'fa-undo', color: 'red' }
-        ]
-        Modal.CreateModal({ choix: options }).then(resp => {
-          switch (resp.id) {
-            case 1:
-              Modal.CreateTextModal({ text: 'https://i.imgur.com/' }).then(value => {
-                if (value.text !== '' && value.text !== undefined && value.text !== null && value.text !== 'https://i.imgur.com/') {
-                  // this.tempPics.push(value.text)
-                  this.UPDATE_TEMP_INFO({ type: 'pic', text: value.text })
+      if (this.currentModule === 0) {
+        if (this.news[this.currentSelect].pics && this.news[this.currentSelect].pics.length > 0) {
+          this.imgZoom = this.news[this.currentSelect].pics[this.currentPicIndex]
+          this.CHANGE_BRIGHTNESS_STATE(false)
+        }
+      } else {
+        if (this.currentSelect === 0) {
+          // carica immagine
+          this.ignoreControl = true
+          var options = [
+            { id: 1, title: this.IntlString('APP_CONFIG_LINK_PICTURE'), icons: 'fa-link' },
+            { id: 2, title: this.IntlString('APP_CONFIG_TAKE_PICTURE'), icons: 'fa-camera' },
+            { id: -1, title: this.IntlString('CANCEL'), icons: 'fa-undo', color: 'red' }
+          ]
+          Modal.CreateModal({ choix: options }).then(resp => {
+            switch (resp.id) {
+              case 1:
+                Modal.CreateTextModal({ text: 'https://i.imgur.com/' }).then(value => {
+                  if (value.text !== '' && value.text !== undefined && value.text !== null && value.text !== 'https://i.imgur.com/') {
+                    // this.tempPics.push(value.text)
+                    this.UPDATE_TEMP_INFO({ type: 'pic', text: value.text })
+                    this.ignoreControl = false
+                  }
+                })
+                break
+              case 2:
+                this.$phoneAPI.takePhoto().then(pic => {
+                  // this.tempPics.push(pic.url)
+                  this.UPDATE_TEMP_INFO({ type: 'pic', text: pic.url })
                   this.ignoreControl = false
-                }
-              })
-              break
-            case 2:
-              this.$phoneAPI.takePhoto().then(pic => {
-                // this.tempPics.push(pic.url)
-                this.UPDATE_TEMP_INFO({ type: 'pic', text: pic.url })
+                })
+                break
+              case -1:
                 this.ignoreControl = false
-              })
-              break
-            case -1:
+                break
+            }
+          })
+        } else if (this.currentSelect === 1) {
+          // scrivi descrizione
+          Modal.CreateTextModal({ text: '' }).then(value => {
+            if (value.text !== '' && value.text !== undefined && value.text !== null) {
+              // this.tempDescription = value.text
+              this.UPDATE_TEMP_INFO({ type: 'description', text: value.text })
               this.ignoreControl = false
-              break
+            }
+          })
+        } else if (this.currentSelect === 2) {
+          // posta news
+          if (this.tempPics.length > 0 || this.tempDescription !== '') {
+            this.$phoneAPI.postNews(this.tempNews.pics, this.tempNews.description)
+            this.UPDATE_TEMP_INFO({ type: 'clear' })
+          } else {
+            this.$phoneAPI.sendErrorMessage('Devi compilare almeno un campo per poter postare una news')
           }
-        })
-      } else if (this.currentSelect === 1) {
-        // scrivi descrizione
-        Modal.CreateTextModal({ text: '' }).then(value => {
-          if (value.text !== '' && value.text !== undefined && value.text !== null) {
-            // this.tempDescription = value.text
-            this.UPDATE_TEMP_INFO({ type: 'description', text: value.text })
-            this.ignoreControl = false
-          }
-        })
-      } else if (this.currentSelect === 2) {
-        // posta news
-        if (this.tempPics.length > 0 || this.tempDescription !== '') {
-          this.$phoneAPI.postNews(this.tempNews.pics, this.tempNews.description)
-          this.UPDATE_TEMP_INFO({ type: 'clear' })
-        } else {
-          this.$phoneAPI.sendErrorMessage('Devi compilare almeno un campo per poter postare una news')
         }
       }
     },

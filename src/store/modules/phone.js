@@ -274,7 +274,7 @@ const mutations = {
     state.brightness = parseInt(value)
   },
   CHANGE_BRIGHTNESS_STATE (state, bool) {
-    console.log(bool)
+    // console.log(bool)
     state.brightnessActive = bool
   }
 }
