@@ -137,7 +137,7 @@ export default {
 if (process.env.NODE_ENV !== 'production') {
   state.twitterUsername = 'Lulla'
   state.twitterPassword = 'Falla'
-  state.twitterAvatarUrl = '/html/static/img/twitter/default_profile.png'
+  state.twitterAvatarUrl = '/html/static/img/app_twitter/default_profile.png'
   state.favoriteTweets = [{
     id: 1,
     message: 'questo è il primo messaggio di twitter :grinning: :grinning: :grinning: :grinning: :grinning:',

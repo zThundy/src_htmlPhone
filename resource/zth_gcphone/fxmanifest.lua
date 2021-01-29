@@ -19,11 +19,11 @@ files {
 	'html/static/img/app_instagram/*',
 	'html/static/img/app_settings/*',
 	'html/static/img/app_whatsapp/*',
+	'html/static/img/app_twitter/*',
 	'html/static/img/background/*',
 	'html/static/img/cover/*',
 	'html/static/img/dati/*',
 	'html/static/img/icons_app/*',
-	'html/static/img/twitter/*',
 
 	'html/static/img/*.png',
 	'html/static/fonts/*',

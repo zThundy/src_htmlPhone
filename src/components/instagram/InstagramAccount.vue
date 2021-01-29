@@ -104,17 +104,17 @@
 
       <template v-else-if="state === STATI.ACCOUNT">
 
-        <div style="margin-top: 60px; margin-bottom: 82px; margin-left: 85px;" class="group img" data-type="button">
-          <img :src="instagramAvatarUrl" style="height: 128px; width: 128px; border-style: solid; border-width: 1px;">
+        <div style="margin-top: 60px; margin-bottom: 82px; margin-left: 85px;" class="group img" data-type="button" @click.stop="onPressChangeAvartar">
+          <img :src="instagramAvatarUrl" style="height: 128px; width: 128px; border-style: solid; border-width: 1px;" @click.stop="onPressChangeAvartar">
         </div>
 
-        <div style="margin-top: 30px; margin-bottom: 82px;" class="group img" data-type="button">
-          <input type='button' class="btn btn-generic" :value="IntlString('APP_INSTAGRAM_ACCOUNT_AVATAR')"/>
+        <div style="margin-top: 30px; margin-bottom: 82px;" class="group img" data-type="button" @click.stop="onPressChangeAvartar">
+          <input type='button' class="btn btn-generic" :value="IntlString('APP_INSTAGRAM_ACCOUNT_AVATAR')" @click.stop="onPressChangeAvartar"/>
         </div>
 
         <i class="fa fa-key" style="position: absolute; top: 480px; left: 155px;"></i>
-        <div style="top: 50px;" class="group" data-type="button">
-          <input type='button' class="btn btn-red" :value="IntlString('APP_INSTAGRAM_ACCOUNT_CHANGE_PASSWORD')"/>
+        <div style="top: 50px;" class="group" data-type="button" @click.stop="changePassword">
+          <input type='button' class="btn btn-red" :value="IntlString('APP_INSTAGRAM_ACCOUNT_CHANGE_PASSWORD')" @click.stop="changePassword"/>
         </div>
 
       </template>
@@ -140,12 +140,12 @@
           <span class="bar"></span>
         </div>
 
-        <div style="overflow-x: hidden; overflow-y: hidden;" class="group" data-type="button">
+        <div style="overflow-x: hidden; overflow-y: hidden;" class="group" data-type="button" @click.stop="createAccount">
           <!-- <input type='button' class="btn btn-generic" @click.stop="login" :value="IntlString('APP_INSTAGRAM_ACCOUNT_LOGIN')" /> -->
           <span class="favicon fa fa-instagram fa-3x">
             <p class="LoginText">Registrati</p>
           </span>
-          <input type='button' class="btn btn-generic"/>
+          <input type='button' class="btn btn-generic" @click.stop="createAccount"/>
         </div>
 
         <!-- 

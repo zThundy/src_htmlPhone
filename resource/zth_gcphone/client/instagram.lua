@@ -18,12 +18,12 @@ end)
 
 RegisterNUICallback('nuovoPost', function(data, cb)
     TriggerServerEvent("gcPhone:instagram_nuovoPost", data.username, data.password, data.imgTable)
-    cb()
+    cb("ok")
 end)
 
 RegisterNUICallback("requestPosts", function(data, cb)
     TriggerServerEvent("gcPhone:instagram_getPosts", data.username, data.password)
-    cb()
+    cb("ok")
 end)
 
 RegisterNetEvent("gcPhone:instagram_updatePosts")
@@ -42,7 +42,7 @@ end)
 
 RegisterNUICallback('togglePostLike', function(data, cb)
     TriggerServerEvent("gcPhone:instagram_toggleLikePost", data.username, data.password, data.postId)
-    cb()
+    cb("ok")
 end)
 
 RegisterNetEvent("gcPhone:instagram_updatePostLikes")
@@ -58,22 +58,22 @@ end)
 
 RegisterNUICallback("createNewAccount", function(data, cb)
     TriggerServerEvent("gcPhone:instagram_createAccount", data.username, data.password, data.avatarUrl)
-    cb()
+    cb("ok")
 end)
 
 RegisterNUICallback("loginInstagram", function(data, cb)
     TriggerServerEvent("gcPhone:instagram_loginAccount", data.username, data.password)
-    cb()
+    cb("ok")
 end)
 
 RegisterNUICallback('changePassword', function(data, cb)
     TriggerServerEvent("gcPhone:instagram_changePassword", data.username, data.password, data.newPassword)
-    cb()
+    cb("ok")
 end)
 
 RegisterNUICallback('instagram_changeAvatar', function(data, cb)
     TriggerServerEvent("gcPhone:instagram_setAvatarurl", data.username, data.password, data.avatarUrl)
-    cb()
+    cb("ok")
 end)
 
 
