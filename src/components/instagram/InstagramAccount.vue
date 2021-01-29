@@ -41,13 +41,13 @@
       <template v-else-if="state === STATI.LOGIN">
         <img class="instagram_title" src="/html/static/img/app_instagram/instagramtitle.png">
         <div class="group inputText" data-type="text" :data-defaultValue="accountLocale.username" data-title="Inserisci un nickname registrato">
-          <input class="loginBoxes" :placeholder="IntlString('APP_INSTAGRAM_USERNAME_LABEL')" type="text" :value="accountLocale.username">
+          <input class="loginBoxes" :placeholder="IntlString('APP_INSTAGRAM_USERNAME_LABEL')" type="text" :value="accountLocale.username" @change="setLocalAccount($event, 'username')">
           <span class="highlight"><i class="anim fa fa-user fa-lg"></i></span>
           <span class="bar"></span>
         </div>
 
         <div class="group inputText" data-type="text" data-model='password'  data-title="Inserisci la password">
-          <input class="loginBoxes" :placeholder="IntlString('APP_INSTAGRAM_PASSWORD_LABEL')" autocomplete="new-password" type="password" :value="accountLocale.password">
+          <input class="loginBoxes" :placeholder="IntlString('APP_INSTAGRAM_PASSWORD_LABEL')" autocomplete="new-password" type="password" :value="accountLocale.password" @change="setLocalAccount($event, 'password')">
           <span class="highlight"><i class="fa fa-key fa-lg"></i></span>
           <span class="bar"></span>
         </div>
