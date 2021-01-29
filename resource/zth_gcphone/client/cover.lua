@@ -4,7 +4,7 @@ local isMenuOpened = false
 Citizen.CreateThread(function()
     while ESX == nil do Citizen.Wait(100) end
 
-    TriggerEvent('tcm_grids:registerMarker', {
+    TriggerEvent('gridsystem:registerMarker', {
 		name = "negozio_cover",
 		type = 20,
 		coords = Config.CoverShop,
@@ -20,7 +20,7 @@ Citizen.CreateThread(function()
 end)
 
 
-AddEventHandler("tcm_grids:hasExitedMarker", function(marker)
+AddEventHandler("gridsystem:hasExitedMarker", function(marker)
     if marker == nil then return end
     if marker.name == "negozio_cover" then
         ESX.UI.Menu.CloseAll()

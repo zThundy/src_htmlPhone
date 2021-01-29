@@ -40,14 +40,14 @@
       <!-- PAGINA LOGIN CON USERNAME E PASSWORD -->
       <template v-else-if="state === STATI.LOGIN">
         <img class="instagram_title" src="/html/static/img/app_instagram/instagramtitle.png">
-        <div class="group inputText" data-type="text" :data-defaultValue="accountLocale.username">
-          <input class="loginBoxes" :placeholder="IntlString('APP_INSTAGRAM_USERNAME_LABEL')" type="text" :value="accountLocale.username" @change="setLocalAccount($event, 'username')">
+        <div class="group inputText" data-type="text" :data-defaultValue="accountLocale.username" data-title="Inserisci un nickname registrato">
+          <input class="loginBoxes" :placeholder="IntlString('APP_INSTAGRAM_USERNAME_LABEL')" type="text" :value="accountLocale.username">
           <span class="highlight"><i class="anim fa fa-user fa-lg"></i></span>
           <span class="bar"></span>
         </div>
 
-        <div class="group inputText" data-type="text" data-model='password'>
-          <input class="loginBoxes" :placeholder="IntlString('APP_INSTAGRAM_PASSWORD_LABEL')" autocomplete="new-password" type="password" :value="accountLocale.password" @change="setLocalAccount($event, 'password')">
+        <div class="group inputText" data-type="text" data-model='password'  data-title="Inserisci la password">
+          <input class="loginBoxes" :placeholder="IntlString('APP_INSTAGRAM_PASSWORD_LABEL')" autocomplete="new-password" type="password" :value="accountLocale.password">
           <span class="highlight"><i class="fa fa-key fa-lg"></i></span>
           <span class="bar"></span>
         </div>
@@ -104,17 +104,17 @@
 
       <template v-else-if="state === STATI.ACCOUNT">
 
-        <div style="margin-top: 60px; margin-bottom: 82px; margin-left: 85px;" class="group img" data-type="button" @click.stop="onPressChangeAvartar">
-          <img :src="instagramAvatarUrl" style="height: 128px; width: 128px; border-style: solid; border-width: 1px;" @click.stop="onPressChangeAvartar">
+        <div style="margin-top: 60px; margin-bottom: 82px; margin-left: 85px;" class="group img" data-type="button">
+          <img :src="instagramAvatarUrl" style="height: 128px; width: 128px; border-style: solid; border-width: 1px;">
         </div>
 
-        <div style="margin-top: 30px; margin-bottom: 82px;" class="group img" data-type="button" @click.stop="onPressChangeAvartar">
-          <input type='button' class="btn btn-generic" :value="IntlString('APP_INSTAGRAM_ACCOUNT_AVATAR')" @click.stop="onPressChangeAvartar"/>
+        <div style="margin-top: 30px; margin-bottom: 82px;" class="group img" data-type="button">
+          <input type='button' class="btn btn-generic" :value="IntlString('APP_INSTAGRAM_ACCOUNT_AVATAR')"/>
         </div>
 
         <i class="fa fa-key" style="position: absolute; top: 480px; left: 155px;"></i>
-        <div style="top: 50px;" class="group" data-type="button" @click.stop="changePassword">
-          <input type='button' class="btn btn-red" :value="IntlString('APP_INSTAGRAM_ACCOUNT_CHANGE_PASSWORD')" @click.stop="changePassword"/>
+        <div style="top: 50px;" class="group" data-type="button">
+          <input type='button' class="btn btn-red" :value="IntlString('APP_INSTAGRAM_ACCOUNT_CHANGE_PASSWORD')"/>
         </div>
 
       </template>
@@ -122,30 +122,30 @@
       <template v-else-if="state === STATI.NEW_ACCOUNT">
 
         <img class="instagram_title" src="/html/static/img/app_instagram/instagramtitle.png">
-        <div class="group inputText" data-type="text" :data-defaultValue="accountLocale.username">
+        <div class="group inputText" data-type="text" :data-defaultValue="accountLocale.username" data-title="Scegli un nickname unico">
           <input class="loginBoxes" :placeholder="IntlString('APP_INSTAGRAM_USERNAME_LABEL')" type="text" :value="accountLocale.username" @change="setLocalAccount($event, 'username')">
           <span class="highlight"><i class="anim fa fa-user fa-lg"></i></span>
           <span class="bar"></span>
         </div>
 
-        <div class="group inputText" data-type="text" data-model='password'>
+        <div class="group inputText" data-type="text" data-model='password' data-title="Digita una password">
           <input class="loginBoxes" :placeholder="IntlString('APP_INSTAGRAM_PASSWORD_LABEL')" autocomplete="new-password" type="password" :value="accountLocale.password" @change="setLocalAccount($event, 'password')">
           <span class="highlight"><i class="fa fa-key fa-lg"></i></span>
           <span class="bar"></span>
         </div>
 
-        <div class="group inputText" data-type="text" data-model='password'>
+        <div class="group inputText" data-type="text" data-model='password' data-title="Ripeti la password">
           <input class="loginBoxes" :placeholder="IntlString('APP_INSTAGRAM_PASSWORD_CONFIRM_LABEL')" autocomplete="new-password" type="password" :value="accountLocale.passwordConfirm" @change="setLocalAccount($event, 'passwordConfirm')">
           <span class="highlight"><i class="fa fa-key fa-lg"></i></span>
           <span class="bar"></span>
         </div>
 
-        <div style="overflow-x: hidden; overflow-y: hidden;" class="group" data-type="button" @click.stop="createAccount">
+        <div style="overflow-x: hidden; overflow-y: hidden;" class="group" data-type="button">
           <!-- <input type='button' class="btn btn-generic" @click.stop="login" :value="IntlString('APP_INSTAGRAM_ACCOUNT_LOGIN')" /> -->
           <span class="favicon fa fa-instagram fa-3x">
             <p class="LoginText">Registrati</p>
           </span>
-          <input type='button' class="btn btn-generic" @click.stop="createAccount"/>
+          <input type='button' class="btn btn-generic"/>
         </div>
 
         <!-- 
@@ -288,7 +288,8 @@ export default {
           const $input = select.querySelector('input')
           let options = {
             limit: parseInt(select.dataset.maxlength) || 64,
-            text: select.dataset.defaultValue || ''
+            text: select.dataset.defaultValue || '',
+            title: select.dataset.title || ''
           }
           this.$phoneAPI.getReponseText(options).then(data => {
             $input.value = data.text
@@ -367,9 +368,9 @@ export default {
       if (this.ignoreControls === true) return
       this.ignoreControls = true
       // SEZIONE MODAL ASYNC //
-      const password1 = await Modal.CreateTextModal({ limit: 40 })
+      const password1 = await Modal.CreateTextModal({ limit: 40, title: 'Inserisci la nuova password' })
       if (password1.text === '' || password1.text === null || password1.text === undefined) return
-      const password2 = await Modal.CreateTextModal({ limit: 40 })
+      const password2 = await Modal.CreateTextModal({ limit: 40, title: 'Ripeti la password' })
       if (password2.text === '' || password2.text === null || password2.text === undefined) return
       if (password2.text !== password1.text) {
         this.$notify({

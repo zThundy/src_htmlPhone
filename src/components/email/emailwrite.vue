@@ -12,14 +12,14 @@
           </tr>
           <tr colspan="2">
             <td class="email-header-content-title">{{ IntlString("APP_EMAIL_SENDING_TO_LABEL") }}</td>
-            <td class="email-header-content-text" :class="{ select: currentSelect == 0 }" data-model='receiver' data-maxlength='25'>
+            <td class="email-header-content-text" :class="{ select: currentSelect == 0 }" data-model='receiver' data-maxlength='25' data-title="Digita il destinatario (senza @code.it)">
               <input disabled v-model="email.receiver" maxlength="25">
               <span class="bar"></span>
             </td>
           </tr>
           <tr colspan="2">
             <td class="email-header-content-title">{{ IntlString("APP_EMAIL_SENDING_TITLE_LABEL") }}</td>
-            <td class="email-header-content-text" :class="{ select: currentSelect == 1 }" data-model='title' data-maxlength='25'>
+            <td class="email-header-content-text" :class="{ select: currentSelect == 1 }" data-model='title' data-maxlength='25' data-title="Digita l'oggetto della email">
               <input disabled type="text" v-model="email.title" :placeholder="IntlString('APP_EMAIL_SENDING_TITLE_PLACEHOLDER')" maxlength="25">
               <span class="bar"></span>
             </td>
@@ -35,7 +35,7 @@
             <td class="email-body-content-title">{{ IntlString("APP_EMAIL_SENDING_MESSAGE_LABEL") }}</td>
           </tr>
           <tr colspan="2">
-            <td class="email-body-content-text" :class="{ select: currentSelect == 2 }" data-model='message' data-maxlength='250'>
+            <td class="email-body-content-text" :class="{ select: currentSelect == 2 }" data-model='message' data-maxlength='250' data-title="Digita il messaggio della email">
               <textarea disabled v-model="email.message" :class="{ select: currentSelect == 2 }" maxlength="250" />
               <!-- <span class="bar"></span> -->
             </td>
@@ -98,7 +98,11 @@ export default {
       if (this.ignoreControls === true) return
       let select = document.querySelector('.select')
       if (select !== null) {
-        let options = { limit: parseInt(select.dataset.maxlength) || 64, text: this.email[select.dataset.model] || '' }
+        let options = {
+          limit: parseInt(select.dataset.maxlength) || 64,
+          text: this.email[select.dataset.model] || '',
+          title: select.dataset.title || ''
+        }
         // aspetto la risposta da phoneapi
         if (select.dataset.model === 'receiver') {
           this.createModal(select.dataset.model, options)

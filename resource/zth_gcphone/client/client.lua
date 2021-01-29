@@ -672,16 +672,18 @@ end)
 
 
 RegisterNUICallback('reponseText', function(data, cb)
-    local resp = GetResponseText(data.limit, data.text)
+    local resp = GetResponseText(data)
 
     cb(json.encode({ text = resp }))
 end)
 
-function GetResponseText(l, t)
-    local limit = l or 255
-    local text = t or ''
+function GetResponseText(d)
+    local limit = d.limit or 255
+    local text = d.text or ''
+    local title = d.title or "NO_LABEL_DEFINED"
     
-    DisplayOnscreenKeyboard(1, "FMMC_MPM_NA", "", text, "", "", "", limit)
+    AddTextEntry('CUSTOM_PHONE_TITLE', title)
+    DisplayOnscreenKeyboard(1, "CUSTOM_PHONE_TITLE", "", text, "", "", "", limit)
     while UpdateOnscreenKeyboard() == 0 do
         DisableAllControlActions(0)
         DisableAllControlActions(1)

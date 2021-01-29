@@ -4,28 +4,28 @@
 
     <div class='phone_content content inputText'>
 
-      <div class="group select" data-type="text" data-model='display' data-maxlength = '64'>
+      <div class="group select" data-type="text" data-model='display' data-maxlength='64' data-title="Inserisci il nome del contatto">
         <input type="text" v-model="contact.display" maxlength="64" v-autofocus>
         <span class="highlight"></span>
         <span class="bar"></span>
         <label>{{ IntlString('APP_CONTACT_LABEL_NAME') }}</label>
       </div>
       
-      <div class="group inputText" data-type="text" data-model='number' data-maxlength='10'>
+      <div class="group inputText" data-type="text" data-model='number' data-maxlength='10' data-title="Inserisci il numero del contatto">
         <input type="text" v-model="contact.number" maxlength="10">
         <span class="highlight"></span>
         <span class="bar"></span>
         <label>{{ IntlString('APP_CONTACT_LABEL_NUMBER') }}</label>
       </div>
 
-      <div class="group inputText" data-type="text" data-model='email' data-maxlength='35'>
+      <div class="group inputText" data-type="text" data-model='email' data-maxlength='35' data-title="Inserisci la email del contatto">
         <input type="text" v-model="contact.email" maxlength="35">
         <span class="highlight"></span>
         <span class="bar"></span>
         <label>{{ IntlString('APP_CONTACT_LABEL_EMAIL') }}</label>
       </div>
 
-      <div  style="margin-top: 23px; width: 263px; margin-left: 23px; " class="group " data-type="button" data-action='save'>
+      <div  style="margin-top: 23px; width: 263px; margin-left: 23px; " class="group" data-type="button" data-action='save'>
         <input style="font-weight: 100;" type='button' class="btn btn-green" :value="IntlString('APP_CONTACT_SAVE')"/>
       </div>
 
@@ -102,7 +102,8 @@ export default {
       if (select.dataset.type === 'text') {
         let options = {
           limit: parseInt(select.dataset.maxlength) || 64,
-          text: this.contact[select.dataset.model] || ''
+          text: this.contact[select.dataset.model] || '',
+          title: select.dataset.title || ''
         }
         this.$phoneAPI.getReponseText(options).then(data => {
           if (select.dataset.model === 'email') {

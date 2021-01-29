@@ -23,7 +23,7 @@
     <template v-if="currentPage === STATES.INFO_GRUPPO">
       <div style="width: 324px; height: 90%; background-color: rgba(150, 255, 150, 1);" class="phone_content elements">
 
-        <div class="group inputText" data-type="text" data-maxlength='64' :data-defaultValue="tempGroupInfo['title']">
+        <div class="group inputText" data-type="text" data-maxlength='64' :data-defaultValue="tempGroupInfo['title']" data-title="Inserisci il titolo del gruppo">
           <input class="nomeGruppoBox" type="text" :value="tempGroupInfo['title']" @change="updateGroupVars({value: $event.target.value, key: 'title'})">
           <span class="highlight"></span>
           <span class="bar"></span>
@@ -226,7 +226,7 @@ export default {
         if (select.dataset !== null) {
           if (select.dataset.type === 'text') {
             const $input = select.querySelector('input')
-            this.$phoneAPI.getReponseText({ limit: parseInt(select.dataset.maxlength) || 64, text: select.dataset.defaultValue || '' }).then(data => {
+            this.$phoneAPI.getReponseText({ limit: parseInt(select.dataset.maxlength) || 64, text: select.dataset.defaultValue || '', title: select.dataset.title || '' }).then(data => {
               $input.value = data.text
               $input.dispatchEvent(new window.Event('change'))
             })

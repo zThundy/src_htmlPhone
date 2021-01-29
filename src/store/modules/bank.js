@@ -20,8 +20,8 @@ const actions = {
   //   PhoneAPI.postUpdateMoney(money, iban)
   // },
   async createPagamento ({ commit }) {
-    var iban = await PhoneAPI.getReponseText({ limit: 200, text: 'Inserisci l\'iban del destinatario' })
-    var amount = await PhoneAPI.getReponseText({ limit: 200, text: 'Inserisci l\'ammontare del trasferimento' })
+    var iban = await PhoneAPI.getReponseText({ limit: 200, title: 'Inserisci l\'iban del destinatario', text: '' })
+    var amount = await PhoneAPI.getReponseText({ limit: 200, title: 'Inserisci l\'ammontare del trasferimento', text: '' })
     PhoneAPI.postUpdateMoney(Number(amount.text), iban.text.toUpperCase())
     // commit('ADD_MOVEMENT', { money: Number(amount.text), iban: iban.text.toUpperCase() })
   },

@@ -1,7 +1,7 @@
 Citizen.CreateThread(function()
     while ESX == nil do Citizen.Wait(1000) end
 
-    TriggerEvent('tcm_grids:registerMarker', {
+    TriggerEvent('gridsystem:registerMarker', {
 		name = "modem_management",
 		type = 20,
 		coords = Config.ModemManagement,
@@ -69,7 +69,7 @@ function OpenModemManagement()
 end
 
 
-AddEventHandler("tcm_grids:hasExitedMarker", function(marker)
+AddEventHandler("gridsystem:hasExitedMarker", function(marker)
     if marker == nil then return end
     if marker.name == "modem_management" then ESX.UI.Menu.CloseAll() end
 end)

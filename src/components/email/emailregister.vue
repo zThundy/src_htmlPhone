@@ -39,7 +39,7 @@ export default {
       // dopo i controlli metto le info nel input
       if (!this.localEmail) {
         let select = document.querySelector('.inputDiv')
-        let options = { limit: parseInt(select.dataset.maxlength) || 64 }
+        let options = { limit: parseInt(select.dataset.maxlength) || 64, title: 'Digita l\'email (senza @code.it)' }
         this.$phoneAPI.getReponseText(options).then(data => {
           if (data.text.length > 25) {
             this.$phoneAPI.sendErrorMessage('Non puoi digitare tutti questi caratteri in questo campo')

@@ -56,7 +56,7 @@ export default {
       }
     },
     async postTextTweet () {
-      const rep = await this.$phoneAPI.getReponseText({ })
+      const rep = await this.$phoneAPI.getReponseText({ title: 'A cosa stai pensando?' })
       if (rep !== undefined && rep.text !== undefined) {
         const message = rep.text.trim()
         if (message.length !== 0) {

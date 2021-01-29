@@ -4,7 +4,7 @@
 
     <div style="width: 324px; height: 90%;" class="phone_content elements">
 
-      <div class="group inputText" data-type="text" data-maxlength='64' :data-defaultValue="gruppo.gruppo" :class="{select: 1 === currentSelect}">
+      <div class="group inputText" data-type="text" data-maxlength='64' :data-defaultValue="gruppo.gruppo" :class="{select: 1 === currentSelect}" data-title="Digita il nome del gruppo">
         <input class="nomeGruppoBox" type="text" :value="gruppo.gruppo">
         <span class="highlight"></span>
         <span class="bar"></span>
@@ -116,7 +116,7 @@ export default {
         select.click()
       }
       if (select.dataset.type === 'text') {
-        this.$phoneAPI.getReponseText({ limit: parseInt(select.dataset.maxlength) || 64, text: select.dataset.defaultValue || '' }).then(data => {
+        this.$phoneAPI.getReponseText({ limit: parseInt(select.dataset.maxlength) || 64, text: select.dataset.defaultValue || '', title: select.dataset.title || '' }).then(data => {
           const $input = select.querySelector('input')
           $input.value = data.text
           this.editGroupTitle({ text: data.text, gruppo: this.gruppo })

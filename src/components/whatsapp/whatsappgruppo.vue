@@ -162,7 +162,7 @@ export default {
     },
     onEnter () {
       if (this.ignoreControls === true) return
-      this.$phoneAPI.getReponseText().then(data => {
+      this.$phoneAPI.getReponseText({ title: 'Invia un messaggio' }).then(data => {
         let message = data.text.trim()
         if (message !== '') {
           if (this.myPhoneNumber.includes('#') || this.myPhoneNumber === 0 || this.myPhoneNumber === '0') {

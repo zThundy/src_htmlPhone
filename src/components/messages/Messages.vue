@@ -118,7 +118,7 @@ export default {
       if (this.selectMessage !== -1) {
         this.onActionMessage(this.messagesListApp[this.selectMessage])
       } else {
-        this.$phoneAPI.getReponseText().then(data => {
+        this.$phoneAPI.getReponseText({ title: 'Digita il messaggio' }).then(data => {
           let message = data.text.trim()
           if (message !== '') {
             this.sendMessage({ phoneNumber: this.phoneNumber, message })

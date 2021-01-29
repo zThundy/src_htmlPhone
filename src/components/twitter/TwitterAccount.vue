@@ -34,14 +34,14 @@
       </template>
 
       <template v-else-if="state === STATES.LOGIN">
-        <div class="group inputText" data-type="text" data-maxlength='64' :data-defaultValue="localAccount.username">
+        <div class="group inputText" data-type="text" data-maxlength='64' :data-defaultValue="localAccount.username" data-title="Inserisci un username registrato">
             <input type="text" :value="localAccount.username" @change="setLocalAccount($event, 'username')">
             <span class="highlight"></span>
             <span class="bar"></span>
             <label>{{ IntlString('APP_TWITTER_ACCOUNT_USERNAME') }}</label>
         </div>
 
-        <div class="group inputText" data-type="text" data-model='password' data-maxlength='30'>
+        <div class="group inputText" data-type="text" data-model='password' data-maxlength='30' data-title="Inserisci la password">
             <input autocomplete="new-password" type="password" :value="localAccount.password" @change="setLocalAccount($event, 'password')">
             <span class="highlight"></span>
             <span class="bar"></span>
@@ -104,14 +104,14 @@
 
       <template v-else-if="state === STATES.NEW_ACCOUNT">
 
-        <div class="group inputText" data-type="text" data-maxlength='64' data-defaultValue="">
+        <div class="group inputText" data-type="text" data-maxlength='64' data-defaultValue="" data-title="Inserisci un username">
             <input type="text" :value="localAccount.username" @change="setLocalAccount($event, 'username')">
             <span class="highlight"></span>
             <span class="bar"></span>
             <label>{{ IntlString('APP_TWITTER_NEW_ACCOUNT_USERNAME') }}</label>
         </div>
 
-        <div class="group inputText" data-type="text" data-model='password' data-maxlength='30'>
+        <div class="group inputText" data-type="text" data-model='password' data-maxlength='30' data-title="Digita una password">
             <input autocomplete="new-password" type="password" :value="localAccount.password" @change="setLocalAccount($event, 'password')">
             <span class="highlight"></span>
             <span class="bar"></span>
@@ -119,7 +119,7 @@
         </div>
 
 
-        <div class="group inputText" data-type="text" data-model='password' data-maxlength='30'>
+        <div class="group inputText" data-type="text" data-model='password' data-maxlength='30' data-title="Ripeti la password">
             <input autocomplete="new-password" type="password" :value="localAccount.passwordConfirm" @change="setLocalAccount($event, 'passwordConfirm')">
             <span class="highlight"></span>
             <span class="bar"></span>
@@ -243,13 +243,13 @@ export default {
       if (this.ignoreControls === true) return
       let select = document.querySelector('.group.select')
       if (select === null) return
-
       if (select.dataset !== null) {
         if (select.dataset.type === 'text') {
           const $input = select.querySelector('input')
           let options = {
             limit: parseInt(select.dataset.maxlength) || 64,
-            text: select.dataset.defaultValue || ''
+            text: select.dataset.defaultValue || '',
+            title: select.dataset.title || ''
           }
           this.$phoneAPI.getReponseText(options).then(data => {
             $input.value = data.text
@@ -351,9 +351,9 @@ export default {
     },
     async changePassword (value) {
       try {
-        const password1 = await Modal.CreateTextModal({ limit: 30 })
+        const password1 = await Modal.CreateTextModal({ limit: 30, title: 'Inserisci la nuova password' })
         if (password1.text === '') return
-        const password2 = await Modal.CreateTextModal({ limit: 30 })
+        const password2 = await Modal.CreateTextModal({ limit: 30, title: 'Ripeti la password' })
         if (password2.text === '') return
         if (password2.text !== password1.text) {
           this.$notify({

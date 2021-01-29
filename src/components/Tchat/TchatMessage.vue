@@ -92,7 +92,7 @@ export default {
       this.scrollIntoViewIfNeeded()
     },
     async onEnter () {
-      const rep = await this.$phoneAPI.getReponseText()
+      const rep = await this.$phoneAPI.getReponseText({ title: 'Digita il messaggio' })
       if (rep !== undefined && rep.text !== undefined) {
         const message = rep.text.trim()
         if (message.length !== 0) {
