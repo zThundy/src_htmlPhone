@@ -61,6 +61,7 @@ end
 function getInstagramUser(username, password, cb)
 	MySQL.Async.fetchAll("SELECT * FROM phone_instagram_accounts WHERE username = @username AND password = @password", {['@username'] = username, ['@password'] = password}, function(data)
 		if #data > 0 then
+			-- print(ESX.DumpTable(data[1]))
 			cb(data[1])
 		else
 			cb(false)

@@ -57,11 +57,13 @@ end)
 -- account
 
 RegisterNUICallback("createNewAccount", function(data, cb)
+    -- print(data.username, data.password, data.avatarUrl)
     TriggerServerEvent("gcPhone:instagram_createAccount", data.username, data.password, data.avatarUrl)
     cb("ok")
 end)
 
 RegisterNUICallback("loginInstagram", function(data, cb)
+    -- print(data.username, data.password)
     TriggerServerEvent("gcPhone:instagram_loginAccount", data.username, data.password)
     cb("ok")
 end)
