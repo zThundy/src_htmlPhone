@@ -32,7 +32,8 @@ function notifyAlertSMS(number, alert, listSrc)
 			local phone_number = gcPhone.getPhoneNumber(xPlayer.identifier)
 
 			if phone_number ~= nil then
-				TriggerEvent('gcPhone:_internalAddMessage', services_names[number], phone_number, mess, 0, function(smsMess) TriggerClientEvent("gcPhone:receiveMessage", source, smsMess) end)
+				local message = gcPhone.internalAddMessage(services_names[number], phone_number, mess, 0)
+				TriggerClientEvent("gcPhone:receiveMessage", source, message)
 			end
 		end
 	end
@@ -79,9 +80,8 @@ function notifyAlertSMSToNumber(number, alert, src)
         local phone_number = gcPhone.getPhoneNumber(xPlayer.identifier)
 
         if phone_number ~= nil then
-            TriggerEvent('gcPhone:_internalAddMessage', number, phone_number, mess, 0, function(smsMess) 
-                TriggerClientEvent("gcPhone:receiveMessage", src, smsMess) 
-            end)
+            local message = gcPhone.internalAddMessage(number, phone_number, mess, 0)
+            TriggerClientEvent("gcPhone:receiveMessage", src, message)
         end
     end
 end
