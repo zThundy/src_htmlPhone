@@ -17,8 +17,10 @@ end)
 
 RegisterNetEvent("gcphone:modem_chooseCredentials")
 AddEventHandler("gcphone:modem_chooseCredentials", function()
-    local label = GetResponseText()
-    local password = GetResponseText()
+	local data = {limit = 255, title = "Scegli il nome della rete"}
+	local label = GetResponseText(data)
+	data.title = "Scegli la password della rete"
+    local password = GetResponseText(data)
 
     TriggerServerEvent("gcphone:modem_createModem", label, password, GetEntityCoords(GetPlayerPed(-1)))
 end)
@@ -36,7 +38,7 @@ function OpenModemManagement()
 	ESX.TriggerServerCallback("gcphone:modem_getMenuInfo", function(elements)
 		onMenuSelect = function(data, _)
 			if data.current.value == "aggiorna_password" then
-				local password = GetResponseText()
+				local password = GetResponseText({limit = 255, title = "Cambia la password della rete in:"})
 				
 				TriggerServerEvent("gcphone:modem_cambiaPassword", password)
 			end
