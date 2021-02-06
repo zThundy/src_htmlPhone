@@ -66,7 +66,9 @@ const actions = {
         message: tweet.message,
         title: tweet.author + ' :',
         icon: 'twitter',
-        sound: state.twitterNotificationSound ? 'Twitter_Sound_Effect.ogg' : undefined
+        backgroundColor: 'rgb(80, 160, 230)',
+        sound: state.twitterNotificationSound ? 'Twitter_Sound_Effect.ogg' : undefined,
+        appName: 'Twitter'
       })
     }
     commit('ADD_TWEET', { tweet })

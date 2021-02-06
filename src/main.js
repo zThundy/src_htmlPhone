@@ -4,7 +4,7 @@ import router from './router'
 import store from './store'
 import VueTimeago from './TimeAgo'
 import PhoneAPI from './PhoneAPI'
-import Notification from './Notification'
+import Notification from './components/Notification'
 import AutoFocus from './directives/autofocus'
 
 Vue.use(VueTimeago)

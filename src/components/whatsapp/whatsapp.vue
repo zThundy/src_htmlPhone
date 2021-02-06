@@ -45,7 +45,7 @@ export default {
       if (selectedGroup.icona !== null && selectedGroup.icona !== undefined) {
         return selectedGroup.icona
       } else {
-        return 'html/static/img/app_whatsapp/defaultgroup.png'
+        return '/html/static/img/app_whatsapp/defaultgroup.png'
       }
     },
     onUp () {
@@ -72,10 +72,10 @@ export default {
       if (this.ignoreControls === true) return
       // con questo controllo se il telefono
       // ha il wifi attivo
-      if (!this.hasWifi) {
-        this.$phoneAPI.sendErrorMessage('Non sei connesso al wifi')
-        return
-      }
+      // DECOMMENTARE SE SI VUOLE SOLO SOTTO WIFI if (!this.hasWifi) {
+      // DECOMMENTARE SE SI VUOLE SOLO SOTTO WIFI   this.$phoneAPI.sendErrorMessage('Non sei connesso al wifi')
+      // DECOMMENTARE SE SI VUOLE SOLO SOTTO WIFI   return
+      // DECOMMENTARE SE SI VUOLE SOLO SOTTO WIFI }
       // qui controllo se il numero che ha salvato il telefono in memoria
       // è valido oppure no
       if (this.myPhoneNumber.includes('#') || this.myPhoneNumber === 0 || this.myPhoneNumber === '0') {
@@ -124,9 +124,12 @@ export default {
       if (this.ignoreControls === true) return
       // qui invio il gruppo al router
       // console.log(this.gruppi[this.currentSelected])
-      if (!this.hasWifi) {
-        this.$phoneAPI.sendErrorMessage('Non sei connesso al wifi')
-        return
+      // DECOMMENTARE SE SI VUOLE SOLO SOTTO WIFI if (!this.hasWifi) {
+      // DECOMMENTARE SE SI VUOLE SOLO SOTTO WIFI   this.$phoneAPI.sendErrorMessage('Non sei connesso al wifi')
+      // DECOMMENTARE SE SI VUOLE SOLO SOTTO WIFI   return
+      // DECOMMENTARE SE SI VUOLE SOLO SOTTO WIFI }
+      if (!this.gruppi[this.currentSelected].icona) {
+        this.gruppi[this.currentSelected].icona = '/html/static/img/app_whatsapp/defaultgroup.png'
       }
       this.$router.push({ name: 'whatsapp.gruppo', params: { gruppo: this.gruppi[this.currentSelected] } })
     }

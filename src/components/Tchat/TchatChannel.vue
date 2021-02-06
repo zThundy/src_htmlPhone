@@ -228,7 +228,7 @@ export default {
 }
 
 .slice:nth-child(2) {
-  top: 27px;
+  top: 24px;
   background: rgb(95, 94, 198);
   color: white;
   clip-path: polygon(0 58%, 400% 50%, 100% 50%, 0 100%);

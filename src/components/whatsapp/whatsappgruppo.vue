@@ -2,11 +2,11 @@
   <div style="width: 326px; height: 743px;" class="sfondo">
     <PhoneTitle :title="this.gruppo.gruppo" :titleColor="'black'" :backgroundColor="'rgb(112,255,125)'" @back="onBackspace"/>
 
-    <div style="position: absolute;" class="groupImage" data-type="button">
+    <div class="groupImage" data-type="button">
       <img :src="gruppo.icona" />
     </div>
 
-    <div style="position: absolute;" class="img-fullscreen" v-if="imgZoom !== undefined">
+    <div class="phone_fullscreen_img" v-if="imgZoom !== undefined">
       <img :src="imgZoom" />
     </div>
 
@@ -72,7 +72,7 @@ export default {
       currentSelected: -1,
       ignoreControls: false,
       gruppo: [],
-      imgZoom: null
+      imgZoom: undefined
     }
   },
   computed: {
@@ -108,8 +108,8 @@ export default {
       this.scrollIntoViewIfNeeded()
     },
     onBackspace () {
-      if (this.imgZoom !== null) {
-        this.imgZoom = null
+      if (this.imgZoom !== undefined) {
+        this.imgZoom = undefined
         this.CHANGE_BRIGHTNESS_STATE(true)
         return
       }
@@ -201,8 +201,8 @@ export default {
           let val = message.message.match(/(-?\d+(\.\d+)?), (-?\d+(\.\d+)?)/)
           this.$phoneAPI.setGPS(val[1], val[3])
         } else if (data.id === 'zoom') {
-          this.imgZoom = message.message
           this.CHANGE_BRIGHTNESS_STATE(false)
+          this.imgZoom = message.message
         } else if (data.id === 1) {
           this.ignoreControls = false
           if (this.myPhoneNumber.includes('#') || this.myPhoneNumber === 0 || this.myPhoneNumber === '0') {
@@ -321,20 +321,21 @@ export default {
 /* IMMAGINE DEL GRUPPO */
 
 .groupImage {
+  position: inherit;
+  
   top: 35px;
   right: 15px;
 }
 
 .groupImage img {
+  object-fit: cover;
+
   border-radius: 50%;
   border-style: solid;
   border-color: rgb(6, 75, 0);
+
   height: 50px;
   width: 50px;
-  overflow: hidden;
-  display: flex;
-  justify-content: center;
-  align-items: center;
 }
 
 

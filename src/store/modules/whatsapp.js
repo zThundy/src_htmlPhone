@@ -39,7 +39,8 @@ const actions = {
       message: data.message,
       title: data.sender + ' | ' + data.label + ':',
       icon: 'whatsapp',
-      backgroundColor: 'rgba(0, 163, 0, 0.384)'
+      backgroundColor: 'rgb(90, 200, 105)',
+      appName: 'Whatsapp'
     })
     commit('ADD_MESSAGE_TO_GROUP', data)
   },

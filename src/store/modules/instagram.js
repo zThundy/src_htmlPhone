@@ -39,8 +39,9 @@ const actions = {
         message: 'Ha pubblicato un nuovo post!',
         title: imageTable.author,
         icon: 'instagram',
-        backgroundColor: '#FF66FF80',
-        sound: state.instagramNotificationSound ? 'Instagram_Notification.ogg' : undefined
+        backgroundColor: 'rgb(255, 204, 0)',
+        sound: state.instagramNotificationSound ? 'Instagram_Notification.ogg' : undefined,
+        appName: 'Instagram'
       })
     }
     PhoneAPI.instagram_postImage(state.instagramUsername, state.instagramPassword, imageTable)

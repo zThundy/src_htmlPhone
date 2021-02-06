@@ -1,16 +1,18 @@
 <template>
-  <div class="notifications">
+  <div v-if="show === true && tempoHide === false">
+    <div class="notifications">
 
-    <div v-for='notif in list' :key="notif.id" class="notification" :style="style(notif)" >
-
-      <div class="title">
-
-        <i v-if="notif.icon" class="fa" :class="'fa-' + notif.icon"/> {{ notif.title }}
+      <div v-for='notif in list' :key="notif.id" class="notification">
         
+        <div class="appName" :style="style(notif)">
+          <i v-if="notif.icon" class="fa" :class="'fa-' + notif.icon"/> {{ notif.appName }}
+        </div>
+
+        <div v-if="notif.title" class="title">{{ notif.title }}</div>
+        <div v-if="notif.message" class="message">{{ notif.message }}</div>
+
       </div>
-
-      <div v-if="notif.message" class="message">{{ notif.message }}</div>
-
+    
     </div>
 
   </div>
@@ -19,6 +21,8 @@
 <script>
 import events from './events'
 import { Howl } from 'howler'
+
+import { mapGetters } from 'vuex'
 
 export default {
   data () {
@@ -29,6 +33,9 @@ export default {
   },
   mounted () {
     events.$on('add', this.addItem)
+  },
+  computed: {
+    ...mapGetters(['show', 'tempoHide'])
   },
   methods: {
     async addItem (event = {}) {
@@ -69,13 +76,11 @@ export default {
     style (notif) {
       if (!notif.backgroundColor) {
         return {
-          opacity: 0,
-          position: 'absolute',
-          overflow: 'hidden'
+          color: 'black'
         }
       }
       return {
-        backgroundColor: notif.backgroundColor
+        color: notif.backgroundColor
       }
     },
     destroy (id) {
@@ -88,24 +93,36 @@ export default {
 <style scoped>
 .notifications {
   position: absolute;
-  margin-left: 48%; 
-  margin-top: 3%;
+  z-index: 1;
+  
+  top: 15px;
+  width: 100%;
 }
 
 .notification {
-  width: 450px;
-  background-color: rgba(29, 161, 242, 0.6);
-  color: white;
-  padding: 8px 16px;
-  margin-bottom: 8px;
-  border-radius: 6px;
+  margin-top: 3px;
+  margin-left: auto;
+  margin-right: auto;
+
+  width: 95%;
+  padding: 10px;
+
+  background-color: rgb(255, 255, 255);
+  color: rgb(0, 0, 0);
+  border-radius: 10px;
+}
+
+.appName {
+  font-size: 15px;
+  font-weight: bold;
 }
 
 .title {
-  font-size: 18px;
+  font-size: 16px;
+  font-weight: bold;
 }
 
 .message {
-  font-size: 16px;
+  font-size: 14px;
 }
 </style>

@@ -241,8 +241,24 @@ class PhoneAPI {
     store.commit('SET_MESSAGES', data.messages)
   }
 
+  /*
+    transmitter = transmitter,
+    receiver = receiver,
+    message = message,
+    isRead = owner,
+    owner = owner,
+    id = id
+  */
+
   onnewMessage (data) {
     store.commit('ADD_MESSAGE', data.message)
+    Vue.notify({
+      message: data.message,
+      title: data.receiver + ':',
+      icon: 'envelope',
+      backgroundColor: 'rgb(255, 140, 30)',
+      appName: 'Messaggi'
+    })
   }
 
   onupdateContacts (data) {
@@ -493,7 +509,8 @@ class PhoneAPI {
       title: store.getters.IntlString(data.title),
       message: store.getters.IntlString(data.message),
       icon: 'twitter',
-      backgroundColor: '#e0245e80'
+      backgroundColor: 'rgb(80, 160, 230)',
+      appName: 'Twitter'
     })
   }
 
@@ -501,7 +518,9 @@ class PhoneAPI {
     Vue.notify({
       title: store.getters.IntlString(data.title),
       message: store.getters.IntlString(data.message),
-      icon: 'twitter'
+      icon: 'twitter',
+      backgroundColor: 'rgb(80, 160, 230)',
+      appName: 'Twitter'
     })
   }
 
@@ -652,8 +671,9 @@ class PhoneAPI {
       title: store.getters.IntlString(data.title),
       message: store.getters.IntlString(data.message),
       icon: 'instagram',
-      backgroundColor: '#66000080',
-      sound: 'Instagram_Error.ogg'
+      backgroundColor: 'rgb(255, 204, 0)',
+      sound: 'Instagram_Error.ogg',
+      appName: 'Instagram'
     })
   }
 
@@ -663,8 +683,9 @@ class PhoneAPI {
       title: store.getters.IntlString(data.title),
       message: store.getters.IntlString(data.message),
       icon: 'instagram',
-      backgroundColor: '#FF66FF80',
-      sound: 'Instagram_Notification.ogg'
+      backgroundColor: 'rgb(255, 204, 0)',
+      sound: 'Instagram_Notification.ogg',
+      appName: 'Instagram'
     })
   }
 
@@ -678,8 +699,9 @@ class PhoneAPI {
       title: store.getters.IntlString(data.title),
       message: store.getters.IntlString(data.message),
       icon: 'whatsapp',
-      backgroundColor: '#00996680',
-      sound: 'Whatsapp_Error.ogg'
+      backgroundColor: 'rgb(90, 200, 105)',
+      sound: 'Whatsapp_Error.ogg',
+      appName: 'Whatsapp'
     })
   }
 
@@ -689,8 +711,9 @@ class PhoneAPI {
       title: store.getters.IntlString(data.title),
       message: store.getters.IntlString(data.message),
       icon: 'whatsapp',
-      backgroundColor: '#33CC6680',
-      sound: 'Whatsapp_Notification.ogg'
+      backgroundColor: 'rgb(90, 200, 105)',
+      sound: 'Whatsapp_Notification.ogg',
+      appName: 'Whatsapp'
     })
   }
 
