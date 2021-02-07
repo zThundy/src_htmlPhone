@@ -38,7 +38,6 @@
 import { mapGetters, mapActions } from 'vuex'
 import PhoneTitle from './../PhoneTitle'
 import Modal from '@/components/Modal/index.js'
-import PhoneAPI from './../../PhoneAPI'
 
 export default {
   components: { PhoneTitle },
@@ -79,7 +78,7 @@ export default {
           }
         })
       } else if (resp.id === 2) {
-        const pic = await PhoneAPI.takePhoto()
+        const pic = await this.$phoneAPI.takePhoto()
         if (pic.url !== null && pic.url !== undefined) {
           this.ignoreControls = false
           this.editGroupIcon({ text: pic.url, gruppo: this.gruppo })

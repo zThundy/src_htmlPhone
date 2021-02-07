@@ -190,7 +190,6 @@
 <script>
 import { mapGetters, mapActions } from 'vuex'
 import Modal from '@/components/Modal'
-import PhoneAPI from './../../PhoneAPI'
 
 const STATI = Object.freeze({
   MENU: 0,
@@ -324,7 +323,7 @@ export default {
           this.instagramSetAvatar({ avatarUrl: data.text })
           this.ignoreControls = false
         } else if (resp.id === 2) {
-          const newAvatar = await PhoneAPI.takePhoto()
+          const newAvatar = await this.$phoneAPI.takePhoto()
           if (newAvatar.url !== null) {
             if (this.accountLocale.avatarUrl === null) {
               this.accountLocale.avatarUrl = newAvatar.url

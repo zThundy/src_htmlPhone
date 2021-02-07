@@ -13,7 +13,6 @@
 <script>
 import { mapActions, mapGetters } from 'vuex'
 import Modal from '@/components/Modal/index.js'
-import PhoneAPI from './../../PhoneAPI'
 
 export default {
   components: {},
@@ -41,7 +40,7 @@ export default {
         this.postTextTweet()
         this.modalopened = false
       } else if (resp.id === 2) {
-        const resp = await PhoneAPI.takePhoto()
+        const resp = await this.$phoneAPI.takePhoto()
         if (resp.url !== undefined || resp.url !== null) {
           this.modalopened = false
           this.darkwebPostMessage({ message: resp.url, mine: 1 })

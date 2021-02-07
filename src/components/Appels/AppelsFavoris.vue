@@ -8,7 +8,6 @@
 import { mapGetters, mapActions } from 'vuex'
 import List from './../List.vue'
 import Modal from '@/components/Modal/index.js'
-import PhoneAPI from './../../PhoneAPI'
 
 export default {
   name: 'Favoris',
@@ -36,7 +35,7 @@ export default {
         if (data.text !== undefined || data.text !== null) {
           this.updateIgnoredControls(false)
           // this.$phoneAPI.callEvent(rep.eventName, rep.type)
-          PhoneAPI.sendEmergencyMessage({ eventName: response.eventName, testo: data.text, type: response.type })
+          this.$phoneAPI.sendEmergencyMessage({ eventName: response.eventName, testo: data.text, type: response.type })
           // this.$router.push({name: 'menu'})
         }
       }

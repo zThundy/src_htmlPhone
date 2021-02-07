@@ -11,7 +11,6 @@ import { mapActions, mapGetters } from 'vuex'
 import { generateColorForStr } from '@/Utils'
 import List from './../List.vue'
 
-// import PhoneAPI from './../../PhoneAPI'
 // import Modal from '@/components/Modal/index.js'
 
 export default {

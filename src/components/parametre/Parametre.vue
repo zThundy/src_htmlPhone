@@ -43,7 +43,6 @@
 import { mapGetters, mapActions } from 'vuex'
 import PhoneTitle from './../PhoneTitle'
 import Modal from '@/components/Modal/index.js'
-import PhoneAPI from './../../PhoneAPI'
 
 import CustomSwitch from '@/components/CustomSwitch'
 
@@ -379,7 +378,7 @@ export default {
             }
           })
         } else if (resp.id === 2) {
-          const newAvatar = await PhoneAPI.takePhoto()
+          const newAvatar = await this.$phoneAPI.takePhoto()
           if (newAvatar.url !== null) {
             this.setBackground({ label: 'Personalizzato', value: newAvatar.url })
             this.ignoreControls = false
@@ -400,12 +399,12 @@ export default {
         if (valueText.text !== '' && valueText.text !== undefined && valueText.text !== null) {
           if (valueText.text === password) {
             // console.log('hey ai azzecato! :P')
-            PhoneAPI.connettiAllaRete(this.retiWifiRender[data.title])
+            this.$phoneAPI.connettiAllaRete(this.retiWifiRender[data.title])
             this.updateWifiString(true)
             this.ignoreControls = false
           } else {
             // console.log('no azzecato :(')
-            PhoneAPI.connettiAllaRete(false)
+            this.$phoneAPI.connettiAllaRete(false)
             this.updateWifiString(false)
             this.ignoreControls = false
           }

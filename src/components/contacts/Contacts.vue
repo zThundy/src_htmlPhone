@@ -10,7 +10,6 @@
 import { mapActions, mapGetters } from 'vuex'
 import { generateColorForStr } from '@/Utils'
 import List from './../List.vue'
-import PhoneAPI from './../../PhoneAPI'
 import Modal from '@/components/Modal/index.js'
 
 export default {
@@ -62,7 +61,7 @@ export default {
           this.disableList = false
           break
         case 2:
-          const newAvatar = await PhoneAPI.takePhoto()
+          const newAvatar = await this.$phoneAPI.takePhoto()
           if (newAvatar.url !== null && newAvatar.url !== undefined && newAvatar !== '') {
             this.updateContactPicture({ id: contact.id, display: contact.display, number: contact.number, icon: newAvatar.url })
           }

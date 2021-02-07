@@ -135,6 +135,8 @@ export default {
     }
   },
   created () {
+    this.$phoneAPI.requestInfoOfGroups()
+
     this.$bus.$on('keyUpArrowDown', this.onDown)
     this.$bus.$on('keyUpArrowUp', this.onUp)
     this.$bus.$on('keyUpArrowRight', this.onRight)

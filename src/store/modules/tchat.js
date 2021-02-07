@@ -37,7 +37,7 @@ const actions = {
         TchatAudio = null
       }
       TchatAudio = new Howl({
-        src: '/html/static/sound/tchatNotification.ogg',
+        src: '/html/static/sound/msgnotify.ogg',
         volume: getters.volume
       })
       TchatAudio.play()

@@ -11,7 +11,6 @@
 
 <script>
 import { mapActions, mapGetters } from 'vuex'
-// import PhoneAPI from './../../PhoneAPI'
 import Modal from '@/components/Modal/index.js'
 
 export default {

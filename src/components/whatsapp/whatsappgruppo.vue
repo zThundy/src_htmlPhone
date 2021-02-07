@@ -11,7 +11,7 @@
     </div>
 
     <md-toast ref="wh_update">
-      <custom-toast @hide="toastHide" :duration="4000" ref="updating">
+      <custom-toast @hide="toastHide" :duration="500" ref="updating">
         <md-activity-indicator
           :size="20"
           :text-size="16"
@@ -230,7 +230,7 @@ export default {
         this.currentSelected = this.messaggi[String(this.gruppo.id)].length - 1
         this.scrollIntoViewIfNeeded()
         this.ignoreControls = false
-      }, 1000)
+      }, 500)
     }
   },
   created () {

@@ -21,7 +21,6 @@
 <script>
 import { mapGetters } from 'vuex'
 import PhoneTitle from './../PhoneTitle'
-import PhoneAPI from './../../PhoneAPI'
 
 export default {
   components: {
@@ -50,16 +49,16 @@ export default {
         this.acceso = !this.acceso
 
         if (!this.acceso) {
-          PhoneAPI.connettiAllaRete({shut: true})
+          this.$phoneAPI.connettiAllaRete({shut: true})
         } else {
-          PhoneAPI.connettiAllaRete({shut: false})
+          this.$phoneAPI.connettiAllaRete({shut: false})
         }
       } else if (this.acceso && this.currentSelect !== 0) {
         var rep = await this.$phoneAPI.getReponseText()
         if (rep.text != null && rep.text === this.retiWifi[this.currentSelect].password) {
-          PhoneAPI.connettiAllaRete(this.retiWifi[this.currentSelect])
+          this.$phoneAPI.connettiAllaRete(this.retiWifi[this.currentSelect])
         } else {
-          PhoneAPI.connettiAllaRete(false)
+          this.$phoneAPI.connettiAllaRete(false)
         }
       }
     },

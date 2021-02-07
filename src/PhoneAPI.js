@@ -703,7 +703,7 @@ class PhoneAPI {
       message: store.getters.IntlString(data.message),
       icon: 'whatsapp',
       backgroundColor: 'rgb(90, 200, 105)',
-      sound: 'Whatsapp_Error.ogg',
+      sound: 'Whatsapp_Message_Sound.ogg',
       appName: 'Whatsapp'
     })
   }
@@ -715,7 +715,7 @@ class PhoneAPI {
       message: store.getters.IntlString(data.message),
       icon: 'whatsapp',
       backgroundColor: 'rgb(90, 200, 105)',
-      sound: 'Whatsapp_Notification.ogg',
+      sound: 'Whatsapp_Message_Sound.ogg',
       appName: 'Whatsapp'
     })
   }

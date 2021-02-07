@@ -44,7 +44,6 @@
 <script>
 import { mapGetters, mapActions } from 'vuex'
 import InfoBare from './InfoBare'
-import PhoneAPI from './../PhoneAPI'
 
 export default {
   components: { InfoBare },
@@ -63,7 +62,7 @@ export default {
     ...mapActions(['closePhone', 'setupUnreadMessages', 'resetUnreadMessages', 'sendStartupValues']),
     onEnter () {
       this.hasPressed = true
-      PhoneAPI.postPlayUnlockSound()
+      this.$phoneAPI.postPlayUnlockSound()
       setTimeout(() => {
         this.$router.push({ name: 'home' })
       }, 450)
@@ -77,8 +76,8 @@ export default {
     }
   },
   created () {
-    PhoneAPI.requestInfoOfGroups()
-    PhoneAPI.requestOfferta()
+    // this.$phoneAPI.requestInfoOfGroups()
+    this.$phoneAPI.requestOfferta()
     this.setupUnreadMessages()
     // this.$phoneAPI.requestMyCovers()
     this.sendStartupValues()

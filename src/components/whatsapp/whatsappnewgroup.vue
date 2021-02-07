@@ -54,7 +54,6 @@
 import { mapGetters, mapActions } from 'vuex'
 import PhoneTitle from './../PhoneTitle'
 import Modal from '@/components/Modal/index.js'
-import PhoneAPI from './../../PhoneAPI'
 
 const STATES = Object.freeze({
   SCELTA_PERSONE: 0,
@@ -189,7 +188,7 @@ export default {
           }
         })
       } else if (resp.id === 2) {
-        const pic = await PhoneAPI.takePhoto()
+        const pic = await this.$phoneAPI.takePhoto()
         if (pic.url !== null && pic.url !== undefined) {
           this.ignoreControls = false
           this.updateGroupVars({value: pic.url, key: 'image'})

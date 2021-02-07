@@ -13,7 +13,6 @@
 <script>
 import { mapActions, mapGetters } from 'vuex'
 import Modal from '@/components/Modal/index.js'
-import PhoneAPI from './../../PhoneAPI'
 
 export default {
   components: {},
@@ -65,7 +64,7 @@ export default {
           }
         })
       } else if (resp.id === 2) {
-        const newAvatar = await PhoneAPI.takePhoto()
+        const newAvatar = await this.$phoneAPI.takePhoto()
         if (newAvatar.url !== null) {
           this.twitterPostTweet({ message: newAvatar.url })
           this.modalopened = false

@@ -8,7 +8,7 @@
           <i v-if="notif.icon" class="fa" :class="'fa-' + notif.icon"/> {{ notif.appName }}
         </div>
 
-        <div v-if="notif.title" class="message">{{ notif.title }}</div>
+        <div v-if="notif.title" class="message" style="font-weight: bold">{{ notif.title }}</div>
         <div v-if="notif.message" class="message">{{ notif.message }}</div>
 
       </div>

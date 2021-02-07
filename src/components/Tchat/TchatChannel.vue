@@ -24,7 +24,6 @@
 import { mapGetters, mapActions } from 'vuex'
 import Modal from '@/components/Modal/index.js'
 import PhoneTitle from './../PhoneTitle'
-import PhoneAPI from './../../PhoneAPI'
 
 export default {
   components: { PhoneTitle },
@@ -118,7 +117,7 @@ export default {
         channel = channel.toLowerCase().replace(/[^a-z]/g, '')
         for (var i in this.tchatChannels) {
           if (this.tchatChannels[i].channel === channel) {
-            PhoneAPI.sendErrorMessage(this.IntlString('APP_DARKCHAT_ERROR_NOTIFICATION'))
+            this.$phoneAPI.sendErrorMessage(this.IntlString('APP_DARKCHAT_ERROR_NOTIFICATION'))
             this.ignoreControls = false
             return
           }

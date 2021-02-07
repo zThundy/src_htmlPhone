@@ -143,7 +143,6 @@
 <script>
 import { mapGetters, mapActions } from 'vuex'
 import Modal from '@/components/Modal'
-import PhoneAPI from './../../PhoneAPI'
 import { Switch } from 'mand-mobile'
 import 'mand-mobile/lib/mand-mobile.css'
 
@@ -284,7 +283,7 @@ export default {
           this.twitterSetAvatar({avatarUrl: data.text})
           this.ignoreControls = false
         } else if (resp.id === 2) {
-          const newAvatar = await PhoneAPI.takePhoto()
+          const newAvatar = await this.$phoneAPI.takePhoto()
           if (newAvatar.url !== null) {
             if (this.localAccount.avatarUrl === null) {
               this.localAccount.avatarUrl = newAvatar.url
@@ -309,7 +308,7 @@ export default {
           this.twitterSetAvatar({avatarUrl: data.text})
           this.ignoreControls = false
         } else if (resp.id === 2) {
-          const newAvatar = await PhoneAPI.takePhoto()
+          const newAvatar = await this.$phoneAPI.takePhoto()
           if (newAvatar.url !== null) {
             if (this.localAccount.avatarUrl === null) {
               this.localAccount.avatarUrl = newAvatar.url
