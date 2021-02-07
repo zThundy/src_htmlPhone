@@ -6,17 +6,10 @@ end)
 
 
 function updateCachedGroups()
-    local query = false
-    MySQL.Async.fetchAll("SELECT * FROM phone_whatsapp_groups", {}, function(r)
-        for k, v in pairs(r) do
-            cachedGroups[tonumber(v.id)] = v
-        end
-
-        query = true
-    end)
-
-    while not query do Citizen.Wait(1000) end
-
+    local r = MySQL.Sync.fetchAll("SELECT * FROM phone_whatsapp_groups", {})
+    for k, v in pairs(r) do
+        cachedGroups[tonumber(v.id)] = v
+    end
     return cachedGroups
 end
 
@@ -73,7 +66,10 @@ end)
 RegisterServerEvent("gcPhone:getAllGroups")
 AddEventHandler("gcPhone:getAllGroups", function()
     local player = source
-    TriggerClientEvent("gcphone:whatsapp_updateGruppi", player, updateCachedGroups())
+    local xPlayer = ESX.GetPlayerFromId(player)
+    local number = gcPhone.getPhoneNumber(xPlayer.identifier)
+
+    TriggerClientEvent("gcphone:whatsapp_updateGruppi", player, updateCachedGroups(), number)
 end)
 
 
@@ -182,7 +178,7 @@ AddEventHandler("gcphone:whatsapp_addGroupMembers", function(data)
                         ['@id'] = data.gruppo.id,
                         ['@partecipanti'] = json.encode(partecipanti)
                     }, function(rowsChanged)
-                        if rowsChanged > 0 then TriggerClientEvent("gcphone:whatsapp_updateGruppi", player, updateCachedGroups()) end
+                        if rowsChanged > 0 then TriggerClientEvent("gcphone:whatsapp_updateGruppi", player, updateCachedGroups(), myNumber) end
                     end)
                 else
                     TriggerClientEvent("gcphone:whatsapp_showError", "WHATSAPP_INFO_TITLE", "WHATSAPP_NOT_ENOUGH_GIGA")
@@ -266,6 +262,7 @@ RegisterServerEvent("gcphone:whatsapp_creaNuovoGruppo")
 AddEventHandler("gcphone:whatsapp_creaNuovoGruppo", function(data)
     local player = source
     local xPlayer = ESX.GetPlayerFromId(player)
+    local phone_number = gcPhone.getPhoneNumber(xPlayer.identifier)
     local partecipanti = {}
 
     gcPhone.isAbleToSurfInternet(xPlayer.identifier, 1.5, function(isAble, mbToRemove)
@@ -302,7 +299,7 @@ AddEventHandler("gcphone:whatsapp_creaNuovoGruppo", function(data)
                 ['@gruppo'] = data.groupTitle,
                 ['@partecipanti'] = json.encode(partecipanti)
             }, function(id)
-                TriggerClientEvent("gcphone:whatsapp_updateGruppi", player, updateCachedGroups())
+                TriggerClientEvent("gcphone:whatsapp_updateGruppi", player, updateCachedGroups(), phone_number)
             end)
         else
             TriggerClientEvent("gcphone:whatsapp_showError", "WHATSAPP_INFO_TITLE", "WHATSAPP_NOT_ENOUGH_GIGA")

@@ -725,7 +725,7 @@ class PhoneAPI {
   }
 
   onwhatsappReceiveGroups (data) {
-    store.commit('UPDATE_GROUP', data.group)
+    store.commit('UPDATE_GROUPS', data.groups)
   }
 
   onwhatsappGetReturnedGroups (data) {
@@ -750,10 +750,6 @@ class PhoneAPI {
 
   async sendMessageOnGroup (messaggio, id, phoneNumber) {
     return this.post('sendMessageInGroup', { messaggio, id, phoneNumber })
-  }
-
-  async sendAudioNotification () {
-    return this.post('sendAudioNotification')
   }
 
   async requestInfoOfGroups () {

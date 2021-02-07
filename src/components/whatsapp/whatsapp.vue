@@ -2,7 +2,7 @@
   <div style="width: 326px; height: 743px;">
     <PhoneTitle :title="this.IntlString('APP_WHATSAPP_TITLE')" :textColor="'black'" :backgroundColor="'rgb(112,255,125)'" @back="onBackspace"/>
 
-    <div v-for="(s, i) in gruppi" :key="s.id" class="whatsapp-menu-item" :class="{select: i === currentSelected}">
+    <div v-for="(s, i) in gruppi" :key="s.gruppo" class="whatsapp-menu-item" :class="{select: i === currentSelected}">
       <img :src="hasImage(s)" class="immagineGruppo">
       <div class="titoloGruppo">{{s.gruppo}}
         <div class="sottotitoloGruppo">{{s.partecipantiString}}</div>
@@ -27,7 +27,12 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['IntlString', 'gruppi', 'myPhoneNumber', 'hasWifi'])
+    ...mapGetters([
+      'IntlString',
+      'gruppi',
+      'myPhoneNumber',
+      'hasWifi'
+    ])
   },
   methods: {
     // ...mapMutations(['SET_DATI_INFO']),

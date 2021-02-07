@@ -14,46 +14,48 @@ end)
 
 
 RegisterNetEvent("gcphone:whatsapp_updateGruppi")
-AddEventHandler("gcphone:whatsapp_updateGruppi", function(groups)
-    SendNUIMessage({ event = "whatsappClearGroups" })
+AddEventHandler("gcphone:whatsapp_updateGruppi", function(groups, number)
+    -- SendNUIMessage({ event = "whatsappClearGroups" })
+    -- ESX.TriggerServerCallback("gcPhone:getPhoneNumber", function(number)
 
-    ESX.TriggerServerCallback("gcPhone:getPhoneNumber", function(number)
+    local groupsToSend = {}
+    for group_id, group in pairs(groups) do
+        local index = 1
+        group.partecipanti = json.decode(group.partecipanti)
 
-        for group_id, group in pairs(groups) do
-            local index = 1
-            group.partecipanti = json.decode(group.partecipanti)
-
-            group.partecipantiString = ""
-            for _, contact in pairs(group.partecipanti) do
-                -- se il numero che loopa è il tuo, allora sostituisce il display
-                -- con "Tu"
-                if contact.number == number then contact.display = "Tu" end
-                -- mi loopo i contatti e mi creo la stringa da mandare al NUI
-                if index == 1 then
-                    group.partecipantiString = contact.display
-                else
-                    group.partecipantiString = group.partecipantiString..", "..contact.display
-                end
-
-                index = index + 1
+        group.partecipantiString = ""
+        for _, contact in pairs(group.partecipanti) do
+            -- se il numero che loopa è il tuo, allora sostituisce il display
+            -- con "Tu"
+            if contact.number == number then contact.display = "Tu" end
+            -- mi loopo i contatti e mi creo la stringa da mandare al NUI
+            if index == 1 then
+                group.partecipantiString = contact.display
+            else
+                group.partecipantiString = group.partecipantiString..", "..contact.display
             end
 
-            if string.len(group.partecipantiString) > 50 then
-                group.partecipantiString = string.sub(group.partecipantiString, 50)
-                group.partecipantiString = group.partecipantiString.."..."
-            end
-
-            for _, contact in pairs(group.partecipanti) do
-
-                -- if contact.number == myPhoneNumber then
-                if contact.number == number then
-                    -- print(group.id, group.gruppo, group.icona, "inviato al NUI")
-                    SendNUIMessage({ event = "whatsappReceiveGroups", group = group })
-                end
-            end
+            index = index + 1
         end
 
-    end)
+        if string.len(group.partecipantiString) > 50 then
+            group.partecipantiString = string.sub(group.partecipantiString, 50)
+            group.partecipantiString = group.partecipantiString.."..."
+        end
+
+        for _, contact in pairs(group.partecipanti) do
+
+            -- if contact.number == myPhoneNumber then
+            print(number)
+            if contact.number == number then
+                print(group.id, group.gruppo, group.icona, "inviato al NUI")
+                table.insert(groupsToSend, group)
+            end
+        end
+    end
+
+    SendNUIMessage({ event = "whatsappReceiveGroups", groups = groupsToSend })
+    -- end)
 end)
 
 
@@ -137,17 +139,6 @@ RegisterNUICallback("updateGroup", function(data, cb)
             ESX.ShowNotification("~r~Impossibile aggiornare il gruppo")
         end
     end, data)
-    cb("ok")
-end)
-
-RegisterNUICallback("sendAudioNotification", function(data, cb)
-    if isConnected then
-        if enableGlobalNotification then
-            PlaySoundJS('msgnotify.ogg')
-            Citizen.Wait(3000)
-            StopSoundJS('msgnotify.ogg')
-        end
-    end
     cb("ok")
 end)
 

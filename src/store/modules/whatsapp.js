@@ -34,12 +34,12 @@ const actions = {
   showMessageNotification ({ state, commit }, data) {
     // console.log('showMessageNotification is triggered')
     // console.log(data.sender, data.label, data.message)
-    PhoneAPI.sendAudioNotification()
     Vue.notify({
       message: data.message,
       title: data.sender + ' | ' + data.label + ':',
       icon: 'whatsapp',
       backgroundColor: 'rgb(90, 200, 105)',
+      sound: 'Whatsapp_Message_Sound.ogg',
       appName: 'Whatsapp'
     })
     commit('ADD_MESSAGE_TO_GROUP', data)
@@ -74,12 +74,13 @@ const mutations = {
     // pulisco la table e la preparo per i nuovi valori
     state.gruppi = []
   },
-  UPDATE_GROUP (state, data) {
+  UPDATE_GROUPS (state, data) {
+    console.log(JSON.stringify(data))
     // console.log('updating state.gruppi with data, index is', state.gruppi.length)
     // console.log(JSON.stringify(data))
     // console.log('ho loggato il json di update_group')
     // qui aggiorno la lista dei gruppi di whatsapp
-    state.gruppi[Number(state.gruppi.length)] = data
+    state.gruppi = data
   },
   ADD_MESSAGE_TO_GROUP (state, data) {
     // console.log('sto inviando il messaggio', data.message, 'da', data.sender)

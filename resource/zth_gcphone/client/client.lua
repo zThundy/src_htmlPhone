@@ -1,5 +1,4 @@
 -- Configuration
-
 local menuIsOpen = false
 local contacts = {}
 local messages = {}
@@ -80,11 +79,12 @@ Citizen.CreateThread(function()
                 end
             end
 
-            if hasFocus == ignoreFocus then
-                local nuiFocus = not hasFocus
-                SetNuiFocus(nuiFocus, nuiFocus)
-                hasFocus = nuiFocus
-            elseif hasFocus then
+            -- if useMouse == true and hasFocus == ignoreFocus then
+            --     local nuiFocus = not hasFocus
+            --     SetNuiFocus(nuiFocus, nuiFocus)
+            --     hasFocus = nuiFocus
+            -- elseif useMouse == false and hasFocus == true then
+            if hasFocus then
                 SetNuiFocus(false, false)
                 hasFocus = false
             end
