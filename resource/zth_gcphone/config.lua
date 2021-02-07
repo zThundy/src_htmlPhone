@@ -15,6 +15,15 @@ Config.TelefoniFissi = {
     ['555621458'] = { name = "Fleeca Autostrada", coords = { x = -2958.855, y = 479.614, z = 15.790 } },
 }
 
+Config.Keys = {
+    { code = 172, event = 'ArrowUp' },
+    { code = 173, event = 'ArrowDown' },
+    { code = 174, event = 'ArrowLeft' },
+    { code = 175, event = 'ArrowRight' },
+    { code = 176, event = 'Enter' },
+    { code = 177, event = 'Backspace' },
+}
+
 Config.ShowNumberNotification = false
 Config.SurePropCleanup = false
 

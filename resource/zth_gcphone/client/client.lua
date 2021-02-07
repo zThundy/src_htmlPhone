@@ -1,23 +1,10 @@
---====================================================================================
--- #Author: Jonathan D @ Gannon
---====================================================================================
- 
 -- Configuration
-local KeyToucheCloseEvent = {
-    { code = 172, event = 'ArrowUp' },
-    { code = 173, event = 'ArrowDown' },
-    { code = 174, event = 'ArrowLeft' },
-    { code = 175, event = 'ArrowRight' },
-    { code = 176, event = 'Enter' },
-    { code = 177, event = 'Backspace' },
-}
 
 local menuIsOpen = false
 local contacts = {}
 local messages = {}
 local isDead = false
 local USE_RTC = false
-local useMouse = false
 local ignoreFocus = false
 hasFocus = false
 
@@ -78,7 +65,7 @@ Citizen.CreateThread(function()
 
         if IsControlJustPressed(1, 311) then -- K
             hasPhone(function(hasPhone)
-                if hasPhone == true then
+                if hasPhone then
                     TogglePhone()
                 else
                     ESX.ShowNotification("~r~Non hai un telefono con te")
@@ -86,23 +73,23 @@ Citizen.CreateThread(function()
             end)
         end
 
-        if menuIsOpen == true then
-            for _, value in ipairs(KeyToucheCloseEvent) do
+        if menuIsOpen then
+            for _, value in ipairs(Config.Keys) do
                 if IsControlJustPressed(1, value.code) then
                     SendNUIMessage({keyUp = value.event})
                 end
             end
 
-            if useMouse == true and hasFocus == ignoreFocus then
+            if hasFocus == ignoreFocus then
                 local nuiFocus = not hasFocus
                 SetNuiFocus(nuiFocus, nuiFocus)
                 hasFocus = nuiFocus
-            elseif useMouse == false and hasFocus == true then
+            elseif hasFocus then
                 SetNuiFocus(false, false)
                 hasFocus = false
             end
         else
-            if hasFocus == true then
+            if hasFocus then
                 SetNuiFocus(false, false)
                 hasFocus = false
             end

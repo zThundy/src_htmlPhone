@@ -252,13 +252,16 @@ class PhoneAPI {
 
   onnewMessage (data) {
     store.commit('ADD_MESSAGE', data.message)
-    Vue.notify({
-      message: data.message,
-      title: data.receiver + ':',
-      icon: 'envelope',
-      backgroundColor: 'rgb(255, 140, 30)',
-      appName: 'Messaggi'
-    })
+    if (!data.message.owner) {
+      // console.log(JSON.stringify(data.message))
+      Vue.notify({
+        message: data.message.message,
+        title: data.message.receiver + ':',
+        icon: 'envelope',
+        backgroundColor: 'rgb(255, 140, 30)',
+        appName: 'Messaggi'
+      })
+    }
   }
 
   onupdateContacts (data) {

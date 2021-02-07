@@ -11,12 +11,15 @@
     </div>
 
     <md-toast ref="wh_update">
-      <md-activity-indicator
-        :size="20"
-        :text-size="16"
-        color="white"
-        text-color="white"
-      >Aggiornamento...</md-activity-indicator>
+      <custom-toast @hide="toastHide" :duration="4000" ref="updating">
+        <md-activity-indicator
+          :size="20"
+          :text-size="16"
+          color="white"
+          text-color="white"
+        >Aggiornamento...
+        </md-activity-indicator>
+      </custom-toast>
     </md-toast>
 
     <div style="width: 326px; height: 575px;" id='sms_list'>
@@ -55,16 +58,19 @@
 
 <script>
 import { mapGetters, mapActions, mapMutations } from 'vuex'
-import PhoneTitle from './../PhoneTitle'
-import Modal from '@/components/Modal/index.js'
-import { Toast, ActivityIndicator } from 'mand-mobile'
+
+import { ActivityIndicator } from 'mand-mobile'
 import 'mand-mobile/lib/mand-mobile.css'
+
+import CustomToast from '@/components/CustomToast'
+import Modal from '@/components/Modal/index.js'
+import PhoneTitle from './../PhoneTitle'
 
 export default {
   name: 'whatsapp_selected_group',
   components: {
     PhoneTitle,
-    [Toast.component.name]: Toast.component,
+    CustomToast,
     [ActivityIndicator.name]: ActivityIndicator
   },
   data () {
@@ -218,12 +224,11 @@ export default {
       } catch (e) { } finally { this.ignoreControls = false }
     },
     async startUpdatingMessages () {
-      this.$refs.wh_update.show()
+      this.$refs.updating.show()
       this.ignoreControls = true
       setTimeout(() => {
         this.currentSelected = this.messaggi[String(this.gruppo.id)].length - 1
         this.scrollIntoViewIfNeeded()
-        this.$refs.wh_update.hide()
         this.ignoreControls = false
       }, 1000)
     }
