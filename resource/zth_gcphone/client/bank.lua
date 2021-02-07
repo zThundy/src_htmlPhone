@@ -48,7 +48,6 @@ RegisterNUICallback("pagaFattura", function(data, cb)
         end
     end, data.id)
     
-    -- TriggerServerEvent("gcphone:bank_pagaFattura", data)
     cb("ok")
 end)
 

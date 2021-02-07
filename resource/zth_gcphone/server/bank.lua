@@ -1,12 +1,3 @@
-RegisterServerEvent("gcphone:bank_pagaFattura")
-AddEventHandler("gcphone:bank_pagaFattura", function(fattura)
-    local player = source
-    local xPlayer = ESX.GetPlayerFromId(player)
-
-
-end)
-
-
 RegisterServerEvent("gcPhone:sendMoneyToUser")
 AddEventHandler("gcPhone:sendMoneyToUser", function(data)
     local iban = data.iban

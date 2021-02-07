@@ -1,7 +1,6 @@
 Reti = nil
 TriggerEvent("esx_wifi:getSharedObject", function(obj) Reti = obj end)
 
-
 local creationTimeout = {}
 RegisterServerEvent("gcphone:modem_createModem")
 AddEventHandler("gcphone:modem_createModem", function(label, password, coords)

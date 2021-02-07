@@ -1,7 +1,7 @@
 <template>
   <div class="phone_app">
-    <PhoneTitle v-if="currentModule === 0" :title="IntlString('APP_EMAIL_TITLE')" :backgroundColor="'rgb(216, 71, 49)'" />
-    <PhoneTitle v-if="currentModule === 1" :title="IntlString('APP_EMAIL_SECOND_TITLE')" :backgroundColor="'rgb(216, 71, 49)'" />
+    <PhoneTitle v-if="currentModule === 0" :title="IntlString('APP_EMAIL_SECOND_TITLE')" :backgroundColor="'rgb(216, 71, 49)'" />
+    <PhoneTitle v-if="currentModule === 1" :title="IntlString('APP_EMAIL_TITLE')" :backgroundColor="'rgb(216, 71, 49)'" />
 
     <div class="emails-container">
 

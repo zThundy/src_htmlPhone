@@ -8,17 +8,14 @@
 --===============================
 
 
-
 function InstagramShowError(player, title, message)
 	TriggerClientEvent('gcPhone:instagram_showError', player, title, message)
 end
 
 
-
 function InstagramShowSuccess(player, title, message)
 	TriggerClientEvent('gcPhone:instagram_showSuccess', player, title, message)
 end
-
 
 
 function InstagramGetPosts(accountId, cb)
@@ -49,13 +46,11 @@ function InstagramGetPosts(accountId, cb)
 end
 
 
-
 function instagramGetPosts(data, cb)
 	MySQL.Async.fetchAll("SELECT * FROM phone_instagram_posts", {}, function(result)
 		cb(result)
 	end)
 end
-
 
 
 function getInstagramUser(username, password, cb)
@@ -70,14 +65,12 @@ function getInstagramUser(username, password, cb)
 end
 
 
-
 function createNewInstagramAccount(username, password, avatarUrl, cb)
 	MySQL.Async.insert('INSERT IGNORE INTO phone_instagram_accounts(`username`, `password`) VALUES(@username, @password)', {
 	  ['@username'] = username,
 	  ['@password'] = password
 	}, cb)
 end
-
 
 
 --=============================
@@ -143,9 +136,7 @@ AddEventHandler("gcPhone:instagram_nuovoPost", function(username, password, data
 			InstagramShowError(player, 'INSTAGRAM_INFO_TITLE', 'APP_INSTAGRAM_NOTIF_NO_CONNECTION')
 		end
 	end)
-
 end)
-
 
 
 RegisterServerEvent('gcPhone:instagram_getPosts')
@@ -211,7 +202,6 @@ AddEventHandler('gcPhone:instagram_getPosts', function(username, password)
 end)
 
 
-
 RegisterServerEvent('gcPhone:instagram_createAccount')
 AddEventHandler('gcPhone:instagram_createAccount', function(username, password, avatarUrl)
 	local player = source
@@ -236,7 +226,6 @@ AddEventHandler('gcPhone:instagram_createAccount', function(username, password, 
   		end
   	end)
 end)
-
 
 
 RegisterServerEvent("gcPhone:instagram_loginAccount")
@@ -302,7 +291,6 @@ AddEventHandler("gcPhone:instagram_changePassword", function(username, password,
   		end
   	end)
 end)
-
 
 
 RegisterServerEvent('gcPhone:instagram_toggleLikePost')
@@ -376,7 +364,6 @@ AddEventHandler('gcPhone:instagram_toggleLikePost', function(username, password,
   		end
   	end)
 end)
-
 
 
 RegisterServerEvent('gcPhone:instagram_setAvatarurl')
