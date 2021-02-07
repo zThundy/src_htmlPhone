@@ -46,9 +46,9 @@ AddEventHandler("gcphone:whatsapp_updateGruppi", function(groups, number)
         for _, contact in pairs(group.partecipanti) do
 
             -- if contact.number == myPhoneNumber then
-            print(number)
+            -- print(number)
             if contact.number == number then
-                print(group.id, group.gruppo, group.icona, "inviato al NUI")
+                -- print(group.id, group.gruppo, group.icona, "inviato al NUI")
                 table.insert(groupsToSend, group)
             end
         end

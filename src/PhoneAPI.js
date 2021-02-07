@@ -858,6 +858,7 @@ class PhoneAPI {
   }
 
   async sendEmail (email) {
+    Vue.notify({ sound: 'Email_Sound_Notification.ogg', hidden: true })
     return this.post('sendEmail', email)
   }
 

@@ -62,7 +62,14 @@ rm(path.join(config.build.assetsRoot, config.build.assetsSubDirectory), err => {
     //   '  Tip: built files are meant to be served over an HTTP server.\n' +
     //   '  Opening index.html over file:// won\'t work.\n'
     // ))
-    ObfuscateFile()
+    let path = 'C:/Users/anton/Desktop/src_htmlPhone/resource/zth_gcphone/html/static/js/app.js'
+    ObfuscateFile(path, "app.js", () => {
+      path = 'C:/Users/anton/Desktop/src_htmlPhone/resource/zth_gcphone/html/static/js/vendor.js'
+      ObfuscateFile(path, "vendor.js", () => {
+        path = 'C:/Users/anton/Desktop/src_htmlPhone/resource/zth_gcphone/html/static/js/manifest.js'
+        ObfuscateFile(path, "manifest.js")
+      })
+    })
 
     // disabilito la doppia obfuscazione che tanto
     // è inutile per ora
@@ -72,12 +79,12 @@ rm(path.join(config.build.assetsRoot, config.build.assetsSubDirectory), err => {
   })
 })
 
-function ObfuscateFile(path) {
-  var obf = ora('METTENDOLO IN CULO AI DUMPER...')
+function ObfuscateFile(path, file, cb) {
+  var obf = ora('METTENDOLO IN CULO AI DUMPER (' + file + ') ...')
   obf.start()
 
   setTimeout(() => {
-    fs.readFile('C:/Users/anton/Desktop/src_htmlPhone/resource/zth_gcphone/html/static/js/app.js', "utf8", function(err, data) {
+    fs.readFile(path, "utf8", function(err, data) {
       if (err) { return console.log(err) }
   
       // Obfuscate content of the JS file
@@ -85,11 +92,12 @@ function ObfuscateFile(path) {
       var obfuscationResult = JavaScriptObfuscator.obfuscate(data);
       
       // Write the obfuscated code into a new file
-      fs.writeFile('C:/Users/anton/Desktop/src_htmlPhone/resource/zth_gcphone/html/static/js/app.js', obfuscationResult.getObfuscatedCode(), function(err) {
+      fs.writeFile(path, obfuscationResult.getObfuscatedCode(), function(err) {
         if (err) { return console.log(err) }
         
         obf.stop()
-        console.log(chalk.cyan('  FILE OFFUSCATO. FANCULO DUMPERS.\n'))
+        console.log(chalk.cyan('  FILE OFFUSCATO (' + file + '). FANCULO DUMPERS.\n'))
+        if (cb) cb();
       });
     });
   }, 2500)

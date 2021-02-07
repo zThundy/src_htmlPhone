@@ -75,7 +75,7 @@ const mutations = {
     state.gruppi = []
   },
   UPDATE_GROUPS (state, data) {
-    console.log(JSON.stringify(data))
+    // console.log(JSON.stringify(data))
     // console.log('updating state.gruppi with data, index is', state.gruppi.length)
     // console.log(JSON.stringify(data))
     // console.log('ho loggato il json di update_group')
