@@ -1,5 +1,5 @@
 <template>
-  <div style="width: auto; height: 743px; overflow: hidden;" class="phone_app">
+  <div style="width: auto; height: 745px; overflow: hidden;" class="phone_app">
     <PhoneTitle :title="currentScreen.title" :color="'white'" backgroundColor="rgb(20, 40, 65)" v-on:back="quit"/>
     
     <div class="phone_content">

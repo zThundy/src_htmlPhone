@@ -17,7 +17,7 @@
       </template>
 
       <template v-if="isLogin">
-        <img :src="twitterAvatarUrl" style="height: 128px; width: 128px; overflow: auto; border-radius: 100px; align-self: center; object-fit: cover;">
+        <img :src="twitterAvatarUrl" style="margin-top: 20px; height: 128px; width: 128px; overflow: auto; border-radius: 100px; align-self: center; object-fit: cover;">
 
         <div class="group" data-type="button" @click.stop="state = STATES.ACCOUNT">
           <input type='button' class="btn btn-blue" @click.stop="state = STATES.ACCOUNT" :value="IntlString('APP_TWITTER_ACCOUNT_PARAM')" />
@@ -515,12 +515,12 @@ input:focus { outline:none; }
   width: 15px;
   height: 15px;
   background-color: white;
-  border: 3px #007aff solid;
+  border: 3px rgb(43, 85, 136) solid;
   border-radius: 50%;
 }
 
 .checkbox input:checked::after {
-  background-color: #007bff85;
+  background-color: rgb(38, 77, 124);
 }
 
 .checkbox.select {
@@ -611,8 +611,8 @@ input:focus ~ .highlight {
 .group .btn.btn-blue {
   width: 293px;
   margin-left: 6px;
-  border: 1px solid #007aff;
-  color: #007aff;
+  border: 1px solid rgb(41, 104, 182);
+  color: rgb(41, 104, 182);
   background-color: white;
   font-weight: 500;
   border-radius: 10px;
@@ -621,7 +621,7 @@ input:focus ~ .highlight {
 }
 
 .group.select .btn.btn-blue, .btn.btn-blue {
-  background-color: #007aff;
+  background-color: rgb(41, 104, 182);;
   color: white;
   border: none;
 }

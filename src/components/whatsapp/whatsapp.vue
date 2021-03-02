@@ -1,6 +1,6 @@
 <template>
-  <div style="width: 326px; height: 743px;">
-    <PhoneTitle :title="this.IntlString('APP_WHATSAPP_TITLE')" :textColor="'black'" :backgroundColor="'rgb(112,255,125)'" @back="onBackspace"/>
+  <div style="width: 330px; height: 100%;">
+    <PhoneTitle :title="IntlString('APP_WHATSAPP_TITLE')" :textColor="'black'" :backgroundColor="'rgb(112,255,125)'" @back="onBackspace"/>
 
     <div v-for="(s, i) in gruppi" :key="s.gruppo" class="whatsapp-menu-item" :class="{select: i === currentSelected}">
       <img :src="hasImage(s)" class="immagineGruppo">

@@ -4,7 +4,7 @@
     <div class="phone_app">
       <PhoneTitle :title="channelName" :backgroundColor="'rgb(95, 94, 198)'" :textColor="'white'" @back="onQuit"/>
       
-      <div style="padding-top: 30px;" class="slice"></div>
+      <div style="padding-top: 20px;" class="slice"></div>
       
       <div style="background-color: #090f20;" class="phone_content">
         <div style="padding-top: 50px;" class="elementi" ref="elementsDiv">
@@ -191,7 +191,7 @@ export default {
 }
 
 .slice:nth-child(2) {
-  top: 27px;
+  top: 24px;
   background: rgb(95, 94, 198);
   color: white;
   clip-path: polygon(0 58%, 400% 50%, 100% 50%, 0 100%);

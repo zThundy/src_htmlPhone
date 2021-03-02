@@ -43,6 +43,22 @@ if (process.env.NODE_ENV !== 'production') {
     {
       message: 'this is a message this is a message this is a message this is a message this is a message this is a message this is a message ',
       mine: 1
+    },
+    {
+      message: 'this is a message this is a message this is a message this is a message this is a message this is a message this is a message ',
+      mine: 1
+    },
+    {
+      message: 'this is a message this is a message this is a message this is a message this is a message this is a message this is a message ',
+      mine: 1
+    },
+    {
+      message: 'this is a message this is a message this is a message this is a message this is a message this is a message this is a message ',
+      mine: 1
+    },
+    {
+      message: 'this is a message this is a message this is a message this is a message this is a message this is a message this is a message ',
+      mine: 1
     }
   ]
 }

@@ -1,15 +1,15 @@
 <template>
-  <div class="phone_title_content" :style="style" :class="{ 'showSegnaleSection': showSegnaleSection }" >
+  <div :style="style" :class="{ 'showSegnaleSection': showSegnaleSection }" >
     <InfoBare v-if="showSegnaleSection" />
     
     <div class="phone_title" :style="{ backgroundColor: backgroundColor }">
-      <div :style="{ color: color }" class="title">{{ title }}</div>
-      
-      <i :style="{ color: color }" class="backIcon fas fa-angle-left"/>
+      <i :style="{ color: color }" class="fas fa-angle-left"/>
+      <span :style="{ color: color }">{{ title }}</span>
     </div>
   
   </div>
 </template>
+
 <script>
 import { mapGetters } from 'vuex'
 import InfoBare from './InfoBare'
@@ -39,7 +39,8 @@ export default {
       default: true
     },
     backgroundColor: {
-      type: String
+      type: String,
+      default: 'rgb(240, 240, 240)'
     },
     showSlice: {
       type: Boolean,
@@ -52,29 +53,36 @@ export default {
   }
 }
 </script>
+
 <style scoped>
-.title {
+
+.phone_title {
   font-family: SanFrancisco;
-  font-weight: 500;
-
-  padding-top: 20px;
-  padding-right: 10px;
-  text-align: center;
   position: relative;
+
+  display: flex;
+  flex-direction: row;
+  /* font-weight: 300; */
+  /* font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; */
+
+  margin-top: 6px;
+
+  height: 55px;
+  width: 100%;
+  /* height: 64px; */
+  /* line-height: 10px; */
+  /* font-size: 28px; */
 }
 
-.btn-back {
-  color: black;
+.phone_title i {
+  margin-top: auto;
+  margin-bottom: auto;
+  margin-left: 20px;
 }
 
-.backIcon {
-  position: absolute;
-  left: 28px;
-  margin: auto;
-  top: 24px;
-}
-
-.btn-back:hover {
-  background-color: rgba(0, 0, 0, 0);
+.phone_title span {
+  margin-top: auto;
+  margin-bottom: auto;
+  margin-left: 15px;
 }
 </style>

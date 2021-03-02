@@ -1,6 +1,6 @@
 <template>
   <div class="phone_app">
-    <PhoneTitle :title="IntlString('APP_DATI_TITLE')" @back="onBackspace" :backgroundColor="'rgba(100, 185, 255, 0.4)'" />
+    <PhoneTitle :title="IntlString('APP_DATI_TITLE')" @back="onBackspace" :backgroundColor="'rgb(120, 205, 255)'" />
 
     <div class='elements'>
 
@@ -38,7 +38,7 @@
 
       </div>
 
-      <div style="z-index: -1; padding-top:455px;">
+      <div style="z-index: -1; padding-top: 458px;">
         <div class='element' v-for='(elem, key) in datiInfo' :key="key + 'secondo'">
 
           <div class="md-example-child md-example-child-notice-bar md-example-child-notice-bar-7">

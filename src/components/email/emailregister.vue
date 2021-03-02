@@ -164,7 +164,7 @@ input {
   width: 90%;
 
   border-style: hidden;
-  border-radius: 5%;
+  border-radius: 10px;
 
   text-align: center;
   background-color: rgb(235, 235, 235);

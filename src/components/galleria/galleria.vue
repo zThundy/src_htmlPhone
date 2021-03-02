@@ -79,7 +79,7 @@ export default {
         let choix = [
           { id: 1, title: this.IntlString('APP_GALLERIA_SET_WALLPAPER'), icons: 'fa-mobile' },
           { id: 2, title: this.IntlString('APP_GALLERIA_INOLTRA'), icons: 'fa-paper-plane' },
-          { id: 4, title: this.IntlString('APP_GALLERIA_SEND_BLUETOOTH'), icons: 'fa-share-square' },
+          // { id: 4, title: this.IntlString('APP_GALLERIA_SEND_BLUETOOTH'), icons: 'fa-share-square' },
           { id: 3, title: this.IntlString('APP_GALLERIA_ELIMINA_TUTTO'), icons: 'fa-trash', color: 'orange' },
           { id: -1, title: this.IntlString('CANCEL'), icons: 'fa-undo', color: 'red' }
         ]
@@ -170,7 +170,7 @@ export default {
 }
 
 .immagine.select {
-  border: 6px solid rgb(228, 228, 228);
-  filter: brightness(70%)
+  border: 3px solid rgb(205, 116, 76);
+  filter: brightness(90%)
 }
 </style>

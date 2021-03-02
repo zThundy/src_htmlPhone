@@ -2,7 +2,7 @@
   <div class="phone_app">
     <PhoneTitle :title="IntlString('APP_DARKTCHAT_TITLE')" :backgroundColor="'rgb(95, 94, 198)'" :textColor="'white'" @back="onBack" />
     
-    <div style="padding-top: 30px;" class="slice"></div>
+    <div style="padding-top: 20px;" class="slice"></div>
 
     <div class="elementi" style="padding-top: 47px; padding-left:10px;" @contextmenu.prevent="addChannelOption">
       <div class="elemento" style="background-color: rgb(26, 26, 26);" v-for='(elem, key) in tchatChannels' 
