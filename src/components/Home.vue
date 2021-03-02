@@ -1,6 +1,6 @@
 <template>
   <div class="home" v-bind:style="{ background: 'url(' + backgroundURL +')' }">
-    <InfoBare />
+    <InfoBare style="width: 330px;" />
 
     <DropdownNotifications :show="showDropdown"/>
 
@@ -122,11 +122,12 @@ export default {
   background-size: cover !important;
   background-position: center !important;
   
+  width: 100%;
+  height: 100%;
+  
   position: relative;
   left: 0;
   top: 0;
-  width: 100%;
-  height: 100%;
   display: flex;
   align-content: center;
   justify-content: center;

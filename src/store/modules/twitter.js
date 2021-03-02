@@ -156,9 +156,10 @@ if (process.env.NODE_ENV !== 'production') {
     likes: 65
   }, {
     id: 3,
-    message: '',
-    img: 'https://cdn.discordapp.com/attachments/563443658192322576/563473765569396746/samurai-background-hd-1920x1200-45462.jpg',
+    message: 'https://wallpaperaccess.com/full/109672.jpg',
+    img: 'https://wallpaperaccess.com/full/109672.jpg',
     author: 'Gannon',
+    likes: 0,
     time: new Date()
   }, {
     id: 4,
@@ -216,9 +217,10 @@ if (process.env.NODE_ENV !== 'production') {
     likes: 65
   }, {
     id: 3,
-    message: '',
+    message: 'https://wallpaperaccess.com/full/109672.jpg',
     img: 'https://cdn.discordapp.com/attachments/563443658192322576/563473765569396746/samurai-background-hd-1920x1200-45462.jpg',
     author: 'Gannon',
+    likes: 0,
     time: new Date()
   }, {
     id: 4,

@@ -61,6 +61,7 @@ export default {
   methods: {
     ...mapActions(['closePhone', 'setupUnreadMessages', 'resetUnreadMessages', 'sendStartupValues']),
     onEnter () {
+      if (this.hasPressed) return
       this.hasPressed = true
       this.$phoneAPI.postPlayUnlockSound()
       setTimeout(() => {
@@ -216,6 +217,7 @@ export default {
 }
 
 .lockscreen-brightness {
+  width: 100%;
   background-color: rgba(0, 0, 0, 0.7);
 }
 

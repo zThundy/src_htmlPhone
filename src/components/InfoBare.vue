@@ -1,5 +1,5 @@
 <template>
-  <div style="width: 326px; top: 4px;" class='phone_infoBare barre-header'>
+  <div style="width: auto; top: 4px;" class='phone_infoBare barre-header'>
     <span class='reseau'>{{config.reseau}}</span>
     <span class="time">
       <current-time style="font-size: 12px; margin-right: 2px;"></current-time>
@@ -96,7 +96,6 @@ export default {
   bottom: 24px;
   background-color: rgba(0, 0, 0, 0);
   /* border: none; */
-  width: 0px;
   position: relative;
 }
 

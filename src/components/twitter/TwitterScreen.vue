@@ -1,19 +1,15 @@
 <template>
-  <div style="width: 326px; height: 743px;" class="phone_app">
-    <PhoneTitle :title="currentScreen.title" backgroundColor="#1da1f2" v-on:back="quit"/>
+  <div style="width: auto; height: 743px; overflow: hidden;" class="phone_app">
+    <PhoneTitle :title="currentScreen.title" :color="'white'" backgroundColor="rgb(20, 40, 65)" v-on:back="quit"/>
     
     <div class="phone_content">
       <component v-bind:is="currentScreen.component"/>
     </div>
 
     <div class="twitter_menu">
-
-      <div v-for="(s, i) in screen" :key="i" class="twitter_menu-item" :class="{select: i === currentScreenIndex}" @click.stop="openMenu(i)">
-
-        <i class="fa" :class="s.icon" @click.stop="openMenu(i)"></i>
-
+      <div v-for="(s, i) in screen" :key="i" class="twitter_menu-item" :class="{ select: i === currentScreenIndex }">
+        <i class="fa" :class="s.icon"></i>
       </div>
-
     </div>
   </div>
 </template>
@@ -131,10 +127,11 @@ export default {
 
 <style scoped>
 .twitter_menu {
-  border-top: 1px solid #CCC;
+  border-top: 1px solid rgb(61, 89, 133);
   height: 56px;
   display: flex;
   width: 100%;
+  background-color: rgb(20, 40, 65);
 }
 
 .twitter_menu-item {
@@ -143,15 +140,13 @@ export default {
   display: flex;
   justify-content: center;
   align-items: center;
-  color: #959595;
+
+  color: rgb(45, 88, 141);
+  background-color: rgb(20, 40, 65);
 }
 
 .twitter_menu-item.select {
-  color: #1da1f2;
-}
-
-.twitter_menu-item:hover {
-  color: #1da1f2;
+  color: rgb(0, 98, 255);
 }
 
 </style>

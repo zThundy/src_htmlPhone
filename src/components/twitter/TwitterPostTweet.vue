@@ -1,11 +1,14 @@
 <template>
-  <div style="width: 326px; height: 743px;" class="phone_content">
+  <div style="width: 330px; height: 100%;" class="background">
     <div class='tweet_write'>
         <!-- <textarea class="textarea-input" v-model.trim="message" v-autofocus :placeholder="IntlString('APP_TWITTER_PLACEHOLDER_MESSAGE')"></textarea> -->
         <textarea class="textarea-input" v-model.trim="message" :placeholder="IntlString('APP_TWITTER_PLACEHOLDER_MESSAGE')"></textarea>
+        <i class="fa fa-pencil-square-o" aria-hidden="true"></i>
 
-        <span class='tweet_send'>{{ IntlString('APP_TWITTER_BUTTON_ACTION_TWEETER') }}</span> 
-        <span class='tweet_send_left'>{{ IntlString('APP_TWITTER_BUTTON_ACTION_PICTURE') }}</span>
+        <div class="buttons">
+          <span class='tweet_send'>{{ IntlString('APP_TWITTER_BUTTON_ACTION_TWEETER') }}</span> 
+          <span class='tweet_send_left'>{{ IntlString('APP_TWITTER_BUTTON_ACTION_PICTURE') }}</span>
+        </div>
     </div>
   </div>
 </template>
@@ -104,11 +107,13 @@ export default {
 </script>
 
 <style scoped>
-.phone_content {
-  background: #DBF0F4;
+.background {
+  background-color: rgb(35, 51, 76);
 }
 
-.tweet_write{
+.tweet_write {
+  margin-top: 40px;
+
   widows: 100%;
   position: fixed;
   display: flex;
@@ -118,15 +123,22 @@ export default {
   padding-left: 15px;
 }
 
-.tweet_write .textarea-input{
+.tweet_write i {
+  position: absolute;
+  top: 40px;
+  right: 15px;
+  color: gray;
+}
+
+.tweet_write .textarea-input {
   align-self: center;
   margin-top: 20px;
-  border: none;
+  border: 5px solid rgb(20, 40, 65);
   outline: none;
   font-size: 16px;
   padding: 13px 16px;
 
-  height: 236px;
+  height: 200px;
   width: 300px;
   padding-left: 10px;
 
@@ -138,15 +150,21 @@ export default {
   font-size: 18px;
 }
 
-.tweet_send{
-  align-self: flex-end;
-  width: 120px;
+.buttons {
+  position: relative;
+  display: flex;
+
+  flex-direction: row;
+  margin-top: 20px;
+}
+
+.tweet_send {
+  width: 110px;
   height: 32px;
-  float: right;
-  border-radius: 16px;
-  background-color: rgb(29, 161, 242);
-  margin-right: 12px;
-  margin-bottom: 2px;
+
+  border-radius: 14px;
+  background-color: rgb(62, 89, 133);
+
   color: white;
   line-height: 32px;
   text-align: center;
@@ -155,15 +173,11 @@ export default {
 }
 
 .tweet_send_left{
-  align-self: flex-start;
-  position: absolute;
-  width: 120px;
+  width: 110px;
   height: 32px;
-  border-radius: 16px;
-  background-color: rgb(29, 161, 242);
 
-  margin-left: 12px;
-  top: 256px;
+  border-radius: 14px;
+  background-color: rgb(62, 89, 133);
 
   color: white;
   line-height: 32px;
