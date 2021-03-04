@@ -913,6 +913,10 @@ class PhoneAPI {
   async sendAziendaMessage (data) {
     return this.post('sendAziendaMessage', data.azienda, data.number, data.message)
   }
+
+  async aziendaEmployesAction (data) {
+    return this.post('aziendaEmployesAction', data.action, data.employe)
+  }
 }
 
 function decimalAdjust (type, value, exp) {

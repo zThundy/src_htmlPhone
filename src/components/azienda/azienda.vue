@@ -39,7 +39,7 @@
       <div class="extra-content-line"></div>
 
       <div v-if="showingComponent && COMPONENTS[showingComponent]">
-        <component v-bind:is="COMPONENTS[showingComponent].component"/>
+        <component v-bind:is="COMPONENTS[showingComponent]"/>
       </div>
       
       <div v-else class="extra-content-error">
@@ -58,6 +58,7 @@ import PhoneTitle from './../PhoneTitle'
 import { mapGetters, mapMutations } from 'vuex'
 
 import AziendaChat from './aziendachat'
+import AziendaEmployes from './aziendaemployes'
 
 import { Amount } from 'mand-mobile'
 import 'mand-mobile/lib/mand-mobile.css'
@@ -74,9 +75,8 @@ export default {
       currentSelect: -1,
       showingComponent: null,
       COMPONENTS: {
-        'chat': {
-          component: AziendaChat
-        }
+        'chat': AziendaChat,
+        'employes': AziendaEmployes
       },
       animate: false,
       changingRouter: 'hidden'
@@ -94,16 +94,20 @@ export default {
       if (this.showingComponent) return
       if (this.currentSelect === -1) return
       this.currentSelect = this.currentSelect - 1
+      this.checkButtonsOnScroll(true)
     },
     onDown () {
       if (this.aziendaIngoreControls) return
       if (this.showingComponent) return
       if (this.currentSelect === this.buttons.length - 1) return
       this.currentSelect = this.currentSelect + 1
+      this.checkButtonsOnScroll(false)
     },
     onEnter () {
       if (this.aziendaIngoreControls) return
       if (this.showingComponent) return
+      if (this.currentSelect === -1) return
+      if (!this.myJobInfo.buttons[this.buttons[this.currentSelect].id]) return
       this.showingComponent = this.buttons[this.currentSelect].id
       this.animate = true
       this.SET_AZIENDA_IGNORE_CONTROLS(true)
@@ -122,6 +126,24 @@ export default {
         return
       }
       this.$router.push({ name: 'menu' })
+    },
+    checkButtonsOnScroll (up) {
+      if (this.currentSelect === -1) return
+      if (!this.myJobInfo.buttons[this.buttons[this.currentSelect].id]) {
+        if (!up) {
+          if (this.currentSelect === 0) {
+            this.currentSelect = 1
+          } else if (this.currentSelect === 1) {
+            this.currentSelect = 2
+          }
+        } else {
+          if (this.currentSelect === 2) {
+            this.currentSelect = 1
+          } else if (this.currentSelect === 1) {
+            this.currentSelect = 0
+          }
+        }
+      }
     }
   },
   created () {

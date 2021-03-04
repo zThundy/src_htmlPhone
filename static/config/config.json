@@ -663,6 +663,10 @@
       "APP_AZIENDA_SEND_POSITION": "Invia posizione",
       "APP_AZIENDA_SET_POSITION": "Imposta posizione",
       "APP_AZIENDA_CALL_NUMBER": "Chiama il numero",
+      "APP_AZIENDA_GRADE_LABEL": "Grado",
+      "APP_AZIENDA_SALARY_LABEL": "Stipendio",
+      "APP_AZIENDA_PROMOTE_EMPLOYE": "Promuovi",
+      "APP_AZIENDA_DEMOTE_EMPLOYE": "Degrada / Licenzia",
 
       "TIMEAGO": [
         "Proprio adesso",

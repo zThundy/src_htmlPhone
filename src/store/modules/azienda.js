@@ -57,7 +57,6 @@ if (process.env.NODE_ENV !== 'production') {
   state.myJobInfo = {
     name: 'Juba ja',
     gradeName: 'Direttore',
-    salary: 0,
     grade: 3,
     buttons: {
       'employes': true,
@@ -70,7 +69,81 @@ if (process.env.NODE_ENV !== 'production') {
     money: 200000000,
     label: 'Supercalifragilisichespirali',
     name: 'police',
-    img: 'https://g.foolcdn.com/editorial/images/578933/square01.jpg'
+    img: 'https://g.foolcdn.com/editorial/images/578933/square01.jpg',
+    employes: [
+      {
+        steamid: 1283,
+        grade: 0,
+        gradeName: 'Dipendente',
+        name: 'Frank Trullal',
+        phoneNumber: 5557392,
+        salary: 0,
+        isOnline: false
+      },
+      {
+        steamid: 1637,
+        grade: 1,
+        gradeName: 'Operaio',
+        name: 'Johhni ok',
+        phoneNumber: 5552982,
+        salary: 0,
+        isOnline: true
+      },
+      {
+        steamid: 1938,
+        grade: 3,
+        gradeName: 'Direttore',
+        name: 'Profex gay',
+        phoneNumber: 55501367,
+        salary: 0,
+        isOnline: true
+      },
+      {
+        steamid: 1938,
+        grade: 3,
+        gradeName: 'Direttore',
+        name: 'Profex gay',
+        phoneNumber: 55501367,
+        salary: 0,
+        isOnline: true
+      },
+      {
+        steamid: 1938,
+        grade: 3,
+        gradeName: 'Direttore',
+        name: 'Profex gay',
+        phoneNumber: 55501367,
+        salary: 0,
+        isOnline: true
+      },
+      {
+        steamid: 1283,
+        grade: 0,
+        gradeName: 'Dipendente',
+        name: 'Frank Trullal',
+        phoneNumber: 5557392,
+        salary: 0,
+        isOnline: false
+      },
+      {
+        steamid: 1283,
+        grade: 0,
+        gradeName: 'Dipendente',
+        name: 'Frank Trullal',
+        phoneNumber: 5557392,
+        salary: 0,
+        isOnline: false
+      },
+      {
+        steamid: 1283,
+        grade: 0,
+        gradeName: 'Dipendente',
+        name: 'Frank Trullal',
+        phoneNumber: 5557392,
+        salary: 0,
+        isOnline: false
+      }
+    ]
   }
 
   state.aziendaMessages = [
@@ -127,6 +200,12 @@ if (process.env.NODE_ENV !== 'production') {
       author: 'Jumba ja',
       authorPhone: 55538823,
       mine: true
+    },
+    {
+      message: 'GPS: -1034.5810546875, -2734.1027832031',
+      author: 'Frank trull',
+      authorPhone: 55538823,
+      mine: false
     },
     {
       message: 'test message 12345',
