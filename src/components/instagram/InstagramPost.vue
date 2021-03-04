@@ -5,7 +5,7 @@
       <i class="fa fa-camera-retro fa-5x" style="color: #E533FF;"></i>
     </div>
 
-    <span class='instagram_send'>{{ IntlString('APP_INSTAGRAM_POST_PICTURE') }}</span> 
+    <span class='instagram_send'>{{ LangString('APP_INSTAGRAM_POST_PICTURE') }}</span> 
   </div>
 </template>
 
@@ -22,7 +22,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['IntlString'])
+    ...mapGetters(['LangString'])
   },
   watch: {
   },
@@ -43,8 +43,8 @@ export default {
     async choosePicType () {
       this.ignoreControls = true
       let choix = [
-        {id: 1, title: this.IntlString('APP_CONFIG_LINK_PICTURE'), icons: 'fa-link'},
-        {id: 2, title: this.IntlString('APP_CONFIG_TAKE_PICTURE'), icons: 'fa-camera'}
+        {id: 1, title: this.LangString('APP_CONFIG_LINK_PICTURE'), icons: 'fa-link'},
+        {id: 2, title: this.LangString('APP_CONFIG_TAKE_PICTURE'), icons: 'fa-camera'}
       ]
       const resp = await Modal.CreateModal({ choix: choix })
       if (resp.id === 1) {

@@ -2,7 +2,7 @@
 
 <template>
    <div class="phone_app">
-    <PhoneTitle :title="IntlString('APP_PHONE_TITLE')" @back="quit" />
+    <PhoneTitle :title="LangString('APP_PHONE_TITLE')" @back="quit" />
     <div class="content">
       <div class="number">
         {{ numeroFormat }}
@@ -113,7 +113,7 @@ export default {
   },
 
   computed: {
-    ...mapGetters(['IntlString', 'useFormatNumberFrance']),
+    ...mapGetters(['LangString', 'useFormatNumberFrance']),
     numeroFormat () {
       if (this.useFormatNumberFrance === true) {
         return this.numero

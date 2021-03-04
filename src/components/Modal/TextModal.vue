@@ -6,10 +6,10 @@
           <textarea v-autofocus class="modal-textarea" :class="{oneline: limit <= 18}" ref="textarea" :style="{borderColor: color}" v-model="inputText" :maxlength="limit"></textarea>
           <div class="botton-container">
             <button :style="{color}" @click="cancel">
-              {{ IntlString('CANCEL') }}
+              {{ LangString('CANCEL') }}
             </button>
             <button :style="{color}" @click="valide">
-              {{ IntlString('OK') }}
+              {{ LangString('OK') }}
             </button>
           </div>
         </div>
@@ -44,7 +44,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['IntlString', 'themeColor']),
+    ...mapGetters(['LangString', 'themeColor']),
     color () {
       return this.themeColor || '#2A56C6'
     }

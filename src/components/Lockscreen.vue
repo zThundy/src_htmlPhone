@@ -56,7 +56,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['IntlString', 'UnreadMessagesLength', 'backgroundURL', 'messages', 'unreadMessages'])
+    ...mapGetters(['LangString', 'UnreadMessagesLength', 'backgroundURL', 'messages', 'unreadMessages'])
   },
   methods: {
     ...mapActions(['closePhone', 'setupUnreadMessages', 'resetUnreadMessages', 'sendStartupValues']),

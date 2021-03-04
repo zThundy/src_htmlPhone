@@ -8,33 +8,33 @@
         <input type="text" v-model="contact.display" maxlength="64" v-autofocus>
         <span class="highlight"></span>
         <span class="bar"></span>
-        <label>{{ IntlString('APP_CONTACT_LABEL_NAME') }}</label>
+        <label>{{ LangString('APP_CONTACT_LABEL_NAME') }}</label>
       </div>
       
       <div class="group inputText" data-type="text" data-model='number' data-maxlength='10' data-title="Inserisci il numero del contatto">
         <input type="text" v-model="contact.number" maxlength="10">
         <span class="highlight"></span>
         <span class="bar"></span>
-        <label>{{ IntlString('APP_CONTACT_LABEL_NUMBER') }}</label>
+        <label>{{ LangString('APP_CONTACT_LABEL_NUMBER') }}</label>
       </div>
 
       <div class="group inputText" data-type="text" data-model='email' data-maxlength='35' data-title="Inserisci la email del contatto">
         <input type="text" v-model="contact.email" maxlength="35">
         <span class="highlight"></span>
         <span class="bar"></span>
-        <label>{{ IntlString('APP_CONTACT_LABEL_EMAIL') }}</label>
+        <label>{{ LangString('APP_CONTACT_LABEL_EMAIL') }}</label>
       </div>
 
       <div  style="margin-top: 23px; width: 263px; margin-left: 23px; " class="group" data-type="button" data-action='save'>
-        <input style="font-weight: 100;" type='button' class="btn btn-green" :value="IntlString('APP_CONTACT_SAVE')"/>
+        <input style="font-weight: 100;" type='button' class="btn btn-green" :value="LangString('APP_CONTACT_SAVE')"/>
       </div>
 
       <div style="margin-top: 23px; width: 263px; margin-left: 23px;" class="group" data-type="button" data-action='cancel'>
-        <input  style="font-weight: 100;" type='button' class="btn btn-orange" :value="IntlString('APP_CONTACT_CANCEL')"/>
+        <input  style="font-weight: 100;" type='button' class="btn btn-orange" :value="LangString('APP_CONTACT_CANCEL')"/>
       </div>
 
       <div style="margin-top: 23px; width: 263px; margin-left: 23px;" class="group" data-type="button" data-action='deleteC'>
-        <input style="font-weight: 100;" type='button' class="btn btn-red" :value="IntlString('APP_CONTACT_DELETE')"/>
+        <input style="font-weight: 100;" type='button' class="btn btn-red" :value="LangString('APP_CONTACT_DELETE')"/>
       </div>
 
     </div>
@@ -64,7 +64,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['IntlString', 'contacts'])
+    ...mapGetters(['LangString', 'contacts'])
   },
   methods: {
     ...mapActions(['updateContact', 'addContact']),
@@ -137,8 +137,8 @@ export default {
       if (this.id !== -1) {
         this.ignoreControls = true
         let choix = [
-          { id: 1, title: this.IntlString('APP_PHONE_DELETE'), icons: 'fa-trash', color: 'red' },
-          { id: 2, title: this.IntlString('CANCEL'), icons: 'fa-undo', color: 'red' }
+          { id: 1, title: this.LangString('APP_PHONE_DELETE'), icons: 'fa-trash', color: 'red' },
+          { id: 2, title: this.LangString('CANCEL'), icons: 'fa-undo', color: 'red' }
         ]
         Modal.CreateModal({ choix }).then(reponse => {
           this.ignoreControls = false
@@ -154,7 +154,7 @@ export default {
   },
   created () {
     this.id = parseInt(this.$route.params.id)
-    this.contact.display = this.IntlString('APP_CONTACT_NEW')
+    this.contact.display = this.LangString('APP_CONTACT_NEW')
     this.contact.number = this.$route.params.number
     if (this.id !== -1) {
       const c = this.contacts.find(e => e.id === this.id)

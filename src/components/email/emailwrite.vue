@@ -1,26 +1,26 @@
 <template>
   <div class="phone_app">
-    <PhoneTitle :title="IntlString('APP_EMAIL_WRITE_EMAIL')" :backgroundColor="'rgb(216, 71, 49)'" />
+    <PhoneTitle :title="LangString('APP_EMAIL_WRITE_EMAIL')" :backgroundColor="'rgb(216, 71, 49)'" />
 
     <div class="email-container">
       <div class="email-header">
 
         <table class="email-header-content">
           <tr colspan="2">
-            <td class="email-header-content-title">{{ IntlString("APP_EMAIL_SENDING_FROM_LABEL") }}</td>
+            <td class="email-header-content-title">{{ LangString("APP_EMAIL_SENDING_FROM_LABEL") }}</td>
             <td class="email-header-content-text">{{ myEmail }}</td>
           </tr>
           <tr colspan="2">
-            <td class="email-header-content-title">{{ IntlString("APP_EMAIL_SENDING_TO_LABEL") }}</td>
+            <td class="email-header-content-title">{{ LangString("APP_EMAIL_SENDING_TO_LABEL") }}</td>
             <td class="email-header-content-text" :class="{ select: currentSelect == 0 }" data-model='receiver' data-maxlength='25' data-title="Digita il destinatario (senza @code.it)">
               <input disabled v-model="email.receiver" maxlength="25">
               <span class="bar"></span>
             </td>
           </tr>
           <tr colspan="2">
-            <td class="email-header-content-title">{{ IntlString("APP_EMAIL_SENDING_TITLE_LABEL") }}</td>
+            <td class="email-header-content-title">{{ LangString("APP_EMAIL_SENDING_TITLE_LABEL") }}</td>
             <td class="email-header-content-text" :class="{ select: currentSelect == 1 }" data-model='title' data-maxlength='25' data-title="Digita l'oggetto della email">
-              <input disabled type="text" v-model="email.title" :placeholder="IntlString('APP_EMAIL_SENDING_TITLE_PLACEHOLDER')" maxlength="25">
+              <input disabled type="text" v-model="email.title" :placeholder="LangString('APP_EMAIL_SENDING_TITLE_PLACEHOLDER')" maxlength="25">
               <span class="bar"></span>
             </td>
           </tr>
@@ -32,7 +32,7 @@
 
         <table class="email-body-content">
           <tr colspan="2">
-            <td class="email-body-content-title">{{ IntlString("APP_EMAIL_SENDING_MESSAGE_LABEL") }}</td>
+            <td class="email-body-content-title">{{ LangString("APP_EMAIL_SENDING_MESSAGE_LABEL") }}</td>
           </tr>
           <tr colspan="2">
             <td class="email-body-content-text" :class="{ select: currentSelect == 2 }" data-model='message' data-maxlength='250' data-title="Digita il messaggio della email">
@@ -71,7 +71,7 @@ export default {
   },
   computed: {
     ...mapGetters([
-      'IntlString',
+      'LangString',
       'myEmail'
     ])
   },
@@ -120,8 +120,8 @@ export default {
     async createModal (model, options) {
       this.ignoreControls = true
       var info = [
-        { id: 1, title: this.IntlString('APP_EMAIL_SENDING_TITLE_CHOICE_ONE'), icons: 'fa-user' },
-        { id: 2, title: this.IntlString('APP_EMAIL_SENDING_TITLE_CHOICE_TWO'), icons: 'fa-pencil-square-o' }
+        { id: 1, title: this.LangString('APP_EMAIL_SENDING_TITLE_CHOICE_ONE'), icons: 'fa-user' },
+        { id: 2, title: this.LangString('APP_EMAIL_SENDING_TITLE_CHOICE_TWO'), icons: 'fa-pencil-square-o' }
       ]
       Modal.CreateModal({ choix: info }).then(resp => {
         switch (resp.id) {
@@ -143,8 +143,8 @@ export default {
     async onRight () {
       this.ignoreControls = true
       var info = [
-        { id: 1, title: this.IntlString('APP_EMAIL_SENDING_FINALIZE_CHOICE_ONE'), icons: 'fa-envelope' },
-        { id: 2, title: this.IntlString('APP_EMAIL_SENDING_FINALIZE_CHOICE_TWO'), icons: 'fa-trash', color: 'red' }
+        { id: 1, title: this.LangString('APP_EMAIL_SENDING_FINALIZE_CHOICE_ONE'), icons: 'fa-envelope' },
+        { id: 2, title: this.LangString('APP_EMAIL_SENDING_FINALIZE_CHOICE_TWO'), icons: 'fa-trash', color: 'red' }
       ]
       Modal.CreateModal({ choix: info }).then(resp => {
         switch (resp.id) {

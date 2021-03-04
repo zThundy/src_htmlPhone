@@ -49,7 +49,8 @@ client_script {
 	"client/modem.lua",
 	"client/darkweb.lua",
 	"client/email.lua",
-	"client/news.lua"
+	"client/news.lua",
+	"client/azienda.lua"
 }
 
 server_script {
@@ -69,7 +70,8 @@ server_script {
 	"server/modem.lua",
 	"server/darkweb.lua",
 	"server/email.lua",
-	"server/news.lua"
+	"server/news.lua",
+	"server/azienda.lua"
 }
 
 data_file 'DLC_ITYP_REQUEST' 'stream/bk_phone.ytyp'

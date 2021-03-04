@@ -21,6 +21,7 @@ import TwitterPostTweet from './TwitterPostTweet'
 import TwitterAccount from './TwitterAccount'
 import TwitterTopTweet from './TwitterTopTweet'
 import { mapGetters } from 'vuex'
+
 // import Vue from 'vue'
 
 export default {
@@ -32,26 +33,26 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['IntlString']),
+    ...mapGetters(['LangString']),
     screen () {
       return [
         {
-          title: this.IntlString('APP_TWITTER_VIEW_TWITTER'),
+          title: this.LangString('APP_TWITTER_VIEW_TWITTER'),
           component: TwitterView,
           icon: 'fa-home'
         },
         {
-          title: this.IntlString('APP_TWITTER_VIEW_TOP_TWEETS'),
+          title: this.LangString('APP_TWITTER_VIEW_TOP_TWEETS'),
           component: TwitterTopTweet,
           icon: 'fa-heart'
         },
         {
-          title: this.IntlString('APP_TWITTER_VIEW_TWEETER'),
+          title: this.LangString('APP_TWITTER_VIEW_TWEETER'),
           component: TwitterPostTweet,
           icon: ' fa-comment-o'
         },
         {
-          title: this.IntlString('APP_TWITTER_VIEW_SETTING'),
+          title: this.LangString('APP_TWITTER_VIEW_SETTING'),
           component: TwitterAccount,
           icon: 'fa-cog'
         }
@@ -70,7 +71,9 @@ export default {
       //   message: 'messaggio messaggio messaggio messaggio messaggio messaggio messaggio messaggio messaggio messaggio messaggio messaggio ',
       //   title: 'autore' + ' : SONO FIKO',
       //   icon: 'twitter',
-      //   sound: 'Twitter_Sound_Effect.ogg'
+      //   sound: 'Twitter_Sound_Effect.ogg',
+      //   backgroundColor: 'rgb(55, 55, 255)',
+      //   appName: 'Twitter'
       // })
       // Vue.notify({
       //   title: 'autore' + ' : SONO FIKO',

@@ -1,6 +1,6 @@
 <template>
   <div class="phone_app">
-    <PhoneTitle :title="IntlString('APP_BOURSE_TITLE')" @back="onBackspace"/>
+    <PhoneTitle :title="LangString('APP_BOURSE_TITLE')" @back="onBackspace"/>
 
     <div class='elements'>
 
@@ -33,7 +33,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['IntlString', 'bourseInfo'])
+    ...mapGetters(['LangString', 'bourseInfo'])
   },
   methods: {
     scrollIntoViewIfNeeded: function () {

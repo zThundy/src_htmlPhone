@@ -1,6 +1,6 @@
 <template>
   <div style="width: 326px; height: 743px;" class="sfondo">
-    <PhoneTitle :title="this.IntlString('APP_WHATSAPP_CHOOSE_CONTACTS')" :backgroundColor="'rgb(112,255,125)'" @back="onBackspace"/>
+    <PhoneTitle :title="this.LangString('APP_WHATSAPP_CHOOSE_CONTACTS')" :backgroundColor="'rgb(112,255,125)'" @back="onBackspace"/>
 
     <template v-if="currentPage === STATES.SCELTA_PERSONE">
       <div style="width: 324px; height: 595px;" class="phone_content elements">
@@ -27,7 +27,7 @@
           <input class="nomeGruppoBox" type="text" :value="tempGroupInfo['title']" @change="updateGroupVars({value: $event.target.value, key: 'title'})">
           <span class="highlight"></span>
           <span class="bar"></span>
-          <label>{{ IntlString('APP_WHATSAPP_GROUP_NAME') }}</label>
+          <label>{{ LangString('APP_WHATSAPP_GROUP_NAME') }}</label>
         </div>
 
         <div style="margin-bottom: 42px; padding-left: 30%;" class="img" data-type="button">
@@ -36,11 +36,11 @@
         </div>
 
         <div style="left: 3%; top: 45%; position: absolute;" class="group" data-type="button" @click="snapGroupImage">
-          <input type='button' class="btn btn-green" :value="IntlString('APP_WHATSAPP_GROUP_AVATAR')"/>
+          <input type='button' class="btn btn-green" :value="LangString('APP_WHATSAPP_GROUP_AVATAR')"/>
         </div>
 
         <div style="left: 3%; top: 55%; position: absolute;" class="group" data-type="button" @click="finalizzaGruppo">
-          <input type='button' class="btn btn-green" :value="IntlString('APP_WHATSAPP_NEW_GROUP')"/>
+          <input type='button' class="btn btn-green" :value="LangString('APP_WHATSAPP_NEW_GROUP')"/>
         </div>
 
       </div>
@@ -91,7 +91,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['IntlString', 'contacts', 'tempGroupInfo', 'myPhoneNumber'])
+    ...mapGetters(['LangString', 'contacts', 'tempGroupInfo', 'myPhoneNumber'])
   },
   methods: {
     ...mapActions(['getAllInfoGroups', 'updateGroupVars', 'creaGruppo', 'addSelectedMembers']),
@@ -173,8 +173,8 @@ export default {
     async snapGroupImage () {
       this.ignoreControls = true
       let choix = [
-        {id: 1, title: this.IntlString('APP_CONFIG_LINK_PICTURE'), icons: 'fa-link'},
-        {id: 2, title: this.IntlString('APP_CONFIG_TAKE_PICTURE'), icons: 'fa-camera'}
+        {id: 1, title: this.LangString('APP_CONFIG_LINK_PICTURE'), icons: 'fa-link'},
+        {id: 2, title: this.LangString('APP_CONFIG_TAKE_PICTURE'), icons: 'fa-camera'}
       ]
       const resp = await Modal.CreateModal({ choix })
       if (resp.id === 1) {
@@ -263,8 +263,8 @@ export default {
       // allora gli creo un modal custom
       if (this.isAddingMembers === null || !this.isAddingMembers) {
         let choix = [
-          {id: 1, title: this.IntlString('APP_WHATSAPP_NEXT_STEP'), icons: 'fa-arrow-right'},
-          {id: 2, title: this.IntlString('CANCEL'), icons: 'fa-undo', color: 'red'}
+          {id: 1, title: this.LangString('APP_WHATSAPP_NEXT_STEP'), icons: 'fa-arrow-right'},
+          {id: 2, title: this.LangString('CANCEL'), icons: 'fa-undo', color: 'red'}
         ]
         const resp = await Modal.CreateModal({ choix })
         switch (resp.id) {
@@ -279,8 +279,8 @@ export default {
         }
       } else {
         let choix = [
-          {id: 1, title: this.IntlString('APP_WHATSAPP_ADD_MEMBERS'), icons: 'fa-check', color: 'green'},
-          {id: 2, title: this.IntlString('CANCEL'), icons: 'fa-undo', color: 'red'}
+          {id: 1, title: this.LangString('APP_WHATSAPP_ADD_MEMBERS'), icons: 'fa-check', color: 'green'},
+          {id: 2, title: this.LangString('CANCEL'), icons: 'fa-undo', color: 'red'}
         ]
         const resp = await Modal.CreateModal({ choix })
         switch (resp.id) {

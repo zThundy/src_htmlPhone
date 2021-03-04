@@ -1,6 +1,6 @@
 <template>
   <div style="width: 326px; height: 743px; backgroundColor: white" class="contact">
-    <list :list='lcontacts' :title="IntlString('APP_MESSAGE_CONTACT_TITLE')" v-on:select="onSelect" @back="back"></list>
+    <list :list='lcontacts' :title="LangString('APP_MESSAGE_CONTACT_TITLE')" v-on:select="onSelect" @back="back"></list>
   </div>
 </template>
 
@@ -16,10 +16,10 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['IntlString', 'contacts']),
+    ...mapGetters(['LangString', 'contacts']),
     lcontacts () {
       let addContact = {
-        display: this.IntlString('APP_MESSAGE_CONTRACT_ENTER_NUMBER'),
+        display: this.LangString('APP_MESSAGE_CONTRACT_ENTER_NUMBER'),
         letter: '+',
         backgroundColor: 'orange',
         num: -1
@@ -30,7 +30,7 @@ export default {
   methods: {
     onSelect (contact) {
       if (contact.num === -1) {
-        Modal.CreateTextModal({ title: this.IntlString('APP_PHONE_ENTER_NUMBER'), limit: 10 }).then(data => {
+        Modal.CreateTextModal({ title: this.LangString('APP_PHONE_ENTER_NUMBER'), limit: 10 }).then(data => {
           let message = data.text.trim()
           if (message !== '') {
             this.$router.push({

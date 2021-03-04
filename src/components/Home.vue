@@ -7,8 +7,8 @@
     <span class="warningMess" v-if="messages.length >= warningMessageCount && warningMessageCount !== -1">
       <div class="warningMess_icon"><i class="fa fa-warning"></i></div>
       <span class="warningMess_content">
-        <span class="warningMess_title">{{ IntlString('PHONE_WARNING_MESSAGE') }}</span><br>
-        <span class="warningMess_mess">{{messages.length}} / {{warningMessageCount}} {{IntlString('PHONE_WARNING_MESSAGE_MESS')}}</span>
+        <span class="warningMess_title">{{ LangString('PHONE_WARNING_MESSAGE') }}</span><br>
+        <span class="warningMess_mess">{{messages.length}} / {{warningMessageCount}} {{LangString('PHONE_WARNING_MESSAGE_MESS')}}</span>
       </span>
     </span>
 
@@ -60,7 +60,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['IntlString', 'backgroundURL', 'messages', 'AppsHome', 'warningMessageCount'])
+    ...mapGetters(['LangString', 'backgroundURL', 'messages', 'AppsHome', 'warningMessageCount'])
   },
   methods: {
     ...mapActions(['closePhone', 'setMessages']),

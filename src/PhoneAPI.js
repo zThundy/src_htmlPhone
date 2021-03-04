@@ -509,8 +509,8 @@ class PhoneAPI {
 
   ontwitter_showError (data) {
     Vue.notify({
-      title: store.getters.IntlString(data.title),
-      message: store.getters.IntlString(data.message),
+      title: store.getters.LangString(data.title),
+      message: store.getters.LangString(data.message),
       icon: 'twitter',
       backgroundColor: 'rgb(80, 160, 230)',
       appName: 'Twitter'
@@ -519,8 +519,8 @@ class PhoneAPI {
 
   ontwitter_showSuccess (data) {
     Vue.notify({
-      title: store.getters.IntlString(data.title),
-      message: store.getters.IntlString(data.message),
+      title: store.getters.LangString(data.title),
+      message: store.getters.LangString(data.message),
       icon: 'twitter',
       backgroundColor: 'rgb(80, 160, 230)',
       appName: 'Twitter'
@@ -671,8 +671,8 @@ class PhoneAPI {
   // notifica di errore
   oninstagram_showError (data) {
     Vue.notify({
-      title: store.getters.IntlString(data.title),
-      message: store.getters.IntlString(data.message),
+      title: store.getters.LangString(data.title),
+      message: store.getters.LangString(data.message),
       icon: 'instagram',
       backgroundColor: 'rgb(255, 204, 0)',
       sound: 'Instagram_Error.ogg',
@@ -683,8 +683,8 @@ class PhoneAPI {
   // notifica di successo
   oninstagram_showSuccess (data) {
     Vue.notify({
-      title: store.getters.IntlString(data.title),
-      message: store.getters.IntlString(data.message),
+      title: store.getters.LangString(data.title),
+      message: store.getters.LangString(data.message),
       icon: 'instagram',
       backgroundColor: 'rgb(255, 204, 0)',
       sound: 'Instagram_Notification.ogg',
@@ -699,8 +699,8 @@ class PhoneAPI {
   // notifica di errore
   onwhatsapp_showError (data) {
     Vue.notify({
-      title: store.getters.IntlString(data.title),
-      message: store.getters.IntlString(data.message),
+      title: store.getters.LangString(data.title),
+      message: store.getters.LangString(data.message),
       icon: 'whatsapp',
       backgroundColor: 'rgb(90, 200, 105)',
       sound: 'Whatsapp_Message_Sound.ogg',
@@ -711,8 +711,8 @@ class PhoneAPI {
   // notifica di successo
   onwhatsapp_showSuccess (data) {
     Vue.notify({
-      title: store.getters.IntlString(data.title),
-      message: store.getters.IntlString(data.message),
+      title: store.getters.LangString(data.title),
+      message: store.getters.LangString(data.message),
       icon: 'whatsapp',
       backgroundColor: 'rgb(90, 200, 105)',
       sound: 'Whatsapp_Message_Sound.ogg',
@@ -900,6 +900,18 @@ class PhoneAPI {
 
   onreceiveNewsJob (data) {
     store.commit('UPDATE_JOB', data.job)
+  }
+
+  // //////////////// //
+  // AZIENDA FUNZIONI //
+  // //////////////// //
+
+  async requestJobInfo () {
+    return this.post('requestJobInfo')
+  }
+
+  async sendAziendaMessage (data) {
+    return this.post('sendAziendaMessage', data.azienda, data.number, data.message)
   }
 }
 

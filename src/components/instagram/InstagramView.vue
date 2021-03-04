@@ -56,7 +56,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['instaPosts', 'IntlString', 'instagramUsername', 'instagramPassword'])
+    ...mapGetters(['instaPosts', 'LangString', 'instagramUsername', 'instagramPassword'])
   },
   watch: {
   },
@@ -68,15 +68,15 @@ export default {
       const post = this.instaPosts[this.selectMessage]
       let optionsChoix = [{
         id: 1,
-        title: this.IntlString('APP_TWITTER_LIKE'),
+        title: this.LangString('APP_TWITTER_LIKE'),
         icons: 'fa-heart'
       }, {
         // id: 2,
-        // title: this.IntlString('APP_MESSAGE_ZOOM_IMG'),
+        // title: this.LangString('APP_MESSAGE_ZOOM_IMG'),
         // icons: 'fa-search'
       // }, {
         id: -1,
-        title: this.IntlString('CANCEL'),
+        title: this.LangString('CANCEL'),
         icons: 'fa-undo'
       }]
       const choix = await Modal.CreateModal({ choix: optionsChoix })

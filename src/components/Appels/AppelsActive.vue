@@ -1,5 +1,5 @@
 <template>
-   <div style="width: 326px; height: 743px;"  class="phone_app">
+   <div style="width: 100%; height: 100%;"  class="phone_app">
     <div class="backblur" v-bind:style="{background: 'url(' + backgroundURL +')'}"></div>
     <InfoBare />
     <div class="num">{{ appelsDisplayNumber }}</div>
@@ -13,34 +13,26 @@
       v-if="useMouse && status === 0"
       class="ignore"
       @click.stop="onIgnoreCall">
-      {{ IntlString('APP_PHONE_CALL_IGNORE')}}
+      {{ LangString('APP_PHONE_CALL_IGNORE')}}
     </div>
     -->
 
     <div class="actionbox">
 
-      <div class="action raccrocher" :class="{disableTrue: status === 0 && select !== 0}">
-
+      <div class="action raccrocher" :class="{ disableTrue: status === 0 && select !== 0 }">
         <svg viewBox="0 0 24 24">
-
           <g transform="rotate(135, 12, 12)">
             <path d="M6.62,10.79C8.06,13.62 10.38,15.94 13.21,17.38L15.41,15.18C15.69,14.9 16.08,14.82 16.43,14.93C17.55,15.3 18.75,15.5 20,15.5A1,1 0 0,1 21,16.5V20A1,1 0 0,1 20,21A17,17 0 0,1 3,4A1,1 0 0,1 4,3H7.5A1,1 0 0,1 8.5,4C8.5,5.25 8.7,6.45 9.07,7.57C9.18,7.92 9.1,8.31 8.82,8.59L6.62,10.79Z"/>
           </g>
-
         </svg>
-
       </div>
 
-      <div class="action deccrocher" v-if="status === 0" :class="{disableFalse: status === 0 && select !== 1}">
-
+      <div class="action deccrocher" v-if="status === 0" :class="{ disableFalse: status === 0 && select !== 1 }">
         <svg viewBox="0 0 24 24">
-          
           <g transform="rotate(0, 12, 12)">
             <path d="M6.62,10.79C8.06,13.62 10.38,15.94 13.21,17.38L15.41,15.18C15.69,14.9 16.08,14.82 16.43,14.93C17.55,15.3 18.75,15.5 20,15.5A1,1 0 0,1 21,16.5V20A1,1 0 0,1 20,21A17,17 0 0,1 3,4A1,1 0 0,1 4,3H7.5A1,1 0 0,1 8.5,4C8.5,5.25 8.7,6.45 9.07,7.57C9.18,7.92 9.1,8.31 8.82,8.59L6.62,10.79Z"/>
           </g>
-          
         </svg>
-      
       </div>
 
      </div>
@@ -134,10 +126,10 @@ export default {
   },
 
   computed: {
-    ...mapGetters(['IntlString', 'backgroundURL', 'appelsInfo', 'appelsDisplayName', 'appelsDisplayNumber', 'myPhoneNumber', 'tts']),
+    ...mapGetters(['LangString', 'backgroundURL', 'appelsInfo', 'appelsDisplayName', 'appelsDisplayNumber', 'myPhoneNumber']),
     timeDisplay () {
       if (this.time < 0) {
-        return this.IntlString('APP_PHONE_DIALING_MESSAGE')
+        return this.LangString('APP_PHONE_DIALING_MESSAGE')
       }
       const min = Math.floor(this.time / 60)
       let sec = this.time % 60
@@ -156,11 +148,11 @@ export default {
   },
 
   created () {
-    if (this.tts) {
-      var numbstring = this.appelsDisplayNumber.split('').join(' ')
-      var text = 'Chiamata in arrivo.' + numbstring
-      this.$phoneAPI.speakTTS(text)
-    }
+    // if (this.tts) {
+    //   var numbstring = this.appelsDisplayNumber.split('').join(' ')
+    //   var text = 'Chiamata in arrivo.' + numbstring
+    //   this.$phoneAPI.speakTTS(text)
+    // }
     this.$bus.$on('keyUpEnter', this.onEnter)
     this.$bus.$on('keyUpArrowLeft', this.onLeft)
     this.$bus.$on('keyUpArrowRight', this.onRight)
@@ -256,68 +248,33 @@ export default {
 
 .raccrocher {
   background-color: #fd3d2e;
-  height: 70px;
-  width: 70px;
-}
-
-.raccrocher:hover {
-  background-color: #ffffff !important;
-  height: 90px;
-  width: 90px;
-
+  height: 80px;
+  width: 80px;
 }
 
 .deccrocher {
   background-color: #4ddb62;
-  height: 70px;
-  width: 70px;
-}
-
-.deccrocher:hover {
-  background-color: #ffffff !important;
-  height: 90px;
-  width: 90px;
-
+  height: 80px;
+  width: 80px;
 }
 
 .disableTrue { 
   background-color: #fd3d2e;
-  height: 70px;
-  width: 70px;
+  height: 80px;
+  width: 80px;
 }
 
 .disable { 
   background-color: #4ddb62;
-  height: 70px;
-  width: 70px;
+  height: 80px;
+  width: 80px;
 }
 
 .action svg {
   width: 60px;
   height: 60px;
-  margin: 5px;
+  margin: 10px;
   fill: #EEE;
-}
-
-.ignore {
-  position: absolute;
-  display: flex;
-  bottom: 220px;
-  height: 40px;
-  line-height: 40px;
-  border-radius: 20px;
-  text-align: center;
-  left: 0;
-  right: 0;
-  justify-content: space-around;
-  background-color: #4d4d4d;
-  width: 70%;
-  left: 15%;
-  color: #CCC;
-}
-
-.ignore:hover {
-  background-color: #818080;
 }
 
 @keyframes rond {

@@ -1,6 +1,6 @@
 <template>
   <div class="phone_app">
-    <PhoneTitle :title="IntlString('APP_DATI_TITLE')" @back="onBackspace" :backgroundColor="'rgb(120, 205, 255)'" />
+    <PhoneTitle :title="LangString('APP_DATI_TITLE')" @back="onBackspace" :backgroundColor="'rgb(120, 205, 255)'" />
 
     <div class='elements'>
 
@@ -98,7 +98,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['IntlString', 'datiInfo', 'segnale'])
+    ...mapGetters(['LangString', 'datiInfo', 'segnale'])
   },
   methods: {
     ...mapMutations(['SET_DATI_INFO']),
@@ -110,8 +110,8 @@ export default {
       if (this.disableBackspace) return
       this.disableBackspace = true
       let choix = [
-        {id: 1, title: this.IntlString('APP_DATI_REFRESH'), icons: 'fa-plus'},
-        {id: 2, title: this.IntlString('CANCEL'), color: 'red', icons: 'fa-undo'}
+        {id: 1, title: this.LangString('APP_DATI_REFRESH'), icons: 'fa-plus'},
+        {id: 2, title: this.LangString('CANCEL'), color: 'red', icons: 'fa-undo'}
       ]
       const resp = await Modal.CreateModal({ choix })
       // risposta del menù

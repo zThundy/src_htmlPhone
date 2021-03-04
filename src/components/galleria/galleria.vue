@@ -1,6 +1,6 @@
 <template>
   <div class="phone_app">
-    <PhoneTitle :title="IntlString('APP_GALLERIA_TITLE')" backgroundColor="rgb(217, 122, 81)" :titleColor="'black'" />
+    <PhoneTitle :title="LangString('APP_GALLERIA_TITLE')" backgroundColor="rgb(217, 122, 81)" :titleColor="'black'" />
 
     <div class="div_immagini">
       
@@ -31,7 +31,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['IntlString', 'fotografie', 'closestPlayers', 'bluetooth'])
+    ...mapGetters(['LangString', 'fotografie', 'closestPlayers', 'bluetooth'])
   },
   methods: {
     ...mapActions(['setBackground', 'clearGallery']),
@@ -77,11 +77,11 @@ export default {
       this.ignoredControls = true
       try {
         let choix = [
-          { id: 1, title: this.IntlString('APP_GALLERIA_SET_WALLPAPER'), icons: 'fa-mobile' },
-          { id: 2, title: this.IntlString('APP_GALLERIA_INOLTRA'), icons: 'fa-paper-plane' },
-          // { id: 4, title: this.IntlString('APP_GALLERIA_SEND_BLUETOOTH'), icons: 'fa-share-square' },
-          { id: 3, title: this.IntlString('APP_GALLERIA_ELIMINA_TUTTO'), icons: 'fa-trash', color: 'orange' },
-          { id: -1, title: this.IntlString('CANCEL'), icons: 'fa-undo', color: 'red' }
+          { id: 1, title: this.LangString('APP_GALLERIA_SET_WALLPAPER'), icons: 'fa-mobile' },
+          { id: 2, title: this.LangString('APP_GALLERIA_INOLTRA'), icons: 'fa-paper-plane' },
+          // { id: 4, title: this.LangString('APP_GALLERIA_SEND_BLUETOOTH'), icons: 'fa-share-square' },
+          { id: 3, title: this.LangString('APP_GALLERIA_ELIMINA_TUTTO'), icons: 'fa-trash', color: 'orange' },
+          { id: -1, title: this.LangString('CANCEL'), icons: 'fa-undo', color: 'red' }
         ]
         const data = await Modal.CreateModal({ choix })
         switch (data.id) {
@@ -102,7 +102,7 @@ export default {
               try {
                 this.ignoredControls = true
                 let choix = []
-                var cancel = { id: -1, title: this.IntlString('CANCEL'), icons: 'fa-undo', color: 'red' }
+                var cancel = { id: -1, title: this.LangString('CANCEL'), icons: 'fa-undo', color: 'red' }
                 for (var i in this.closestPlayers) { choix.push({ id: this.closestPlayers[i].id, label: this.closestPlayers[i].name, title: this.closestPlayers[i].name, icons: 'fa-share-square' }) }
                 choix.push(cancel)
                 const data = await Modal.CreateModal({ choix })

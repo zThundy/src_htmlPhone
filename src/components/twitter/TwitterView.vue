@@ -78,7 +78,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['tweets', 'twitterUsername', 'twitterPassword', 'IntlString'])
+    ...mapGetters(['tweets', 'twitterUsername', 'twitterPassword', 'LangString'])
   },
   watch: { },
   methods: {
@@ -89,22 +89,22 @@ export default {
       const tweet = this.tweets[this.selectMessage]
       let optionsChoix = [{
         id: 1,
-        title: this.IntlString('APP_TWITTER_LIKE'),
+        title: this.LangString('APP_TWITTER_LIKE'),
         icons: 'fa-heart'
       }, {
         id: 2,
-        title: this.IntlString('APP_TWITTER_REPLY'),
+        title: this.LangString('APP_TWITTER_REPLY'),
         icons: 'fa-retweet'
       }, {
         id: -1,
-        title: this.IntlString('CANCEL'),
+        title: this.LangString('CANCEL'),
         icons: 'fa-undo',
         color: 'red'
       }]
       if (this.isImage(tweet.message)) {
         optionsChoix = [{
           id: 3,
-          title: this.IntlString('APP_MESSAGE_ZOOM_IMG'),
+          title: this.LangString('APP_MESSAGE_ZOOM_IMG'),
           icons: 'fa-search'
         }, ...optionsChoix]
       }

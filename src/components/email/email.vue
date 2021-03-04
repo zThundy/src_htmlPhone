@@ -1,7 +1,7 @@
 <template>
   <div class="phone_app">
-    <PhoneTitle v-if="currentModule === 0" :title="IntlString('APP_EMAIL_SECOND_TITLE')" :backgroundColor="'rgb(216, 71, 49)'" />
-    <PhoneTitle v-if="currentModule === 1" :title="IntlString('APP_EMAIL_TITLE')" :backgroundColor="'rgb(216, 71, 49)'" />
+    <PhoneTitle v-if="currentModule === 0" :title="LangString('APP_EMAIL_SECOND_TITLE')" :backgroundColor="'rgb(216, 71, 49)'" />
+    <PhoneTitle v-if="currentModule === 1" :title="LangString('APP_EMAIL_TITLE')" :backgroundColor="'rgb(216, 71, 49)'" />
 
     <div class="emails-container">
 
@@ -13,7 +13,7 @@
 
           <div v-if="email" class="email-header">
             <i class="fa fa-arrow-circle-right"/>
-            <i class="email-text">{{ IntlString('APP_EMAIL_SENDER_LABEL') }} {{ email.sender }}</i>
+            <i class="email-text">{{ LangString('APP_EMAIL_SENDER_LABEL') }} {{ email.sender }}</i>
           </div>
 
           <div v-if="email" class="email-body">
@@ -42,7 +42,7 @@
 
           <div v-if="email" class="email-header">
             <i class="fa fa-arrow-circle-down"/>
-            <i class="email-text">{{ IntlString('APP_EMAIL_RECEIVER_LABEL') }} {{ email.receiver }}</i>
+            <i class="email-text">{{ LangString('APP_EMAIL_RECEIVER_LABEL') }} {{ email.receiver }}</i>
           </div>
 
           <div v-if="email" class="email-body">
@@ -68,14 +68,14 @@
     <!--
       {{ email.message }}
 
-      <div class="email-sender">{{ IntlString('APP_EMAIL_SENDER_LABEL') }}: {{ email.sender }}</div>
-      <div class="email-receiver">{{ IntlString('APP_EMAIL_RECEIVER_LABEL') }}: {{ email.receiver }}</div>
+      <div class="email-sender">{{ LangString('APP_EMAIL_SENDER_LABEL') }}: {{ email.sender }}</div>
+      <div class="email-receiver">{{ LangString('APP_EMAIL_RECEIVER_LABEL') }}: {{ email.receiver }}</div>
 
-      <div class="email-message">{{ IntlString('APP_EMAIL_MESSAGE_LABEL') }}: {{ email.message }}</div>
+      <div class="email-message">{{ LangString('APP_EMAIL_MESSAGE_LABEL') }}: {{ email.message }}</div>
 
       <tr>
         <td class="email-headers" align="right">
-          {{ IntlString('APP_EMAIL_RECEIVER_LABEL') }}: {{ email.receiver }}
+          {{ LangString('APP_EMAIL_RECEIVER_LABEL') }}: {{ email.receiver }}
         </td>
       </tr>
     -->
@@ -109,7 +109,7 @@ export default {
   },
   computed: {
     ...mapGetters([
-      'IntlString',
+      'LangString',
       'emails',
       'sentEmails'
     ])
@@ -176,14 +176,14 @@ export default {
     openModal () {
       this.ignoreControl = true
       var info = [
-        { id: 1, title: this.IntlString('APP_EMAIL_WRITE_EMAIL'), icons: 'fa-pencil-square-o' }
+        { id: 1, title: this.LangString('APP_EMAIL_WRITE_EMAIL'), icons: 'fa-pencil-square-o' }
       ]
       if (this.currentSelect !== -1) {
         info = [
           ...info,
-          { id: 3, title: this.IntlString('APP_EMAIL_VIEW'), icons: 'fa-envelope-open' },
-          { id: 2, title: this.IntlString('APP_EMAIL_DELETE_EMAIL'), icons: 'fa-trash' },
-          { id: -1, title: this.IntlString('CANCEL'), color: 'red', icons: 'fa-undo' }
+          { id: 3, title: this.LangString('APP_EMAIL_VIEW'), icons: 'fa-envelope-open' },
+          { id: 2, title: this.LangString('APP_EMAIL_DELETE_EMAIL'), icons: 'fa-trash' },
+          { id: -1, title: this.LangString('CANCEL'), color: 'red', icons: 'fa-undo' }
         ]
       }
       Modal.CreateModal({ choix: info }).then(response => {

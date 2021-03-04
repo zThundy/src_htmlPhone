@@ -5,13 +5,13 @@
       <InfoBare style="width: 326px;top: -207px; margin-left: -17px;"/>
       <img class="logo_maze" src="/html/static/img/app_bank/fleeca_tar.png">
       <div class="money-div" >
-        <span class="moneyTitle">{{ IntlString('APP_BANK_TITLE_BALANCE') }}:</span>
+        <span class="moneyTitle">{{ LangString('APP_BANK_TITLE_BALANCE') }}:</span>
         <md-amount class="moneyTitle" :value="bankAmount" :duration="2500" transition has-separator></md-amount>$
         <!-- <span class="moneyTitle">{{ bankAmount }}$</span> -->
       </div>
 
       <div class="iban">
-        <span class="ibanTitle">{{ IntlString('APP_BANK_TITLE_IBAN') }}:</span>
+        <span class="ibanTitle">{{ LangString('APP_BANK_TITLE_IBAN') }}:</span>
         <span class="ibanTitle">{{ iban }}</span>
       </div>
       
@@ -28,8 +28,8 @@
 
         <div class="element-content">           
           <input style=" border-radius: 23px; font-size: 16px;" v-bind:class="{ select: 1 === currentSelect}" oninput="this.value = this.value.replace(/[^0-9.]/g, ''); this.value = this.value.replace(/(\..*)\./g, '$1'); this.value = this.value + '$'" ref="form1" v-model="soldi" class="paragonder" placeholder="$">
-          <button v-bind:class="{ select: 2 === currentSelect}" ref="form2" id="gonder" class="buton-transfer">{{ IntlString('APP_BANK_BUTTON_TRANSFER') }}</button><br/>
-          <button v-bind:class="{ select: 3 === currentSelect}" ref="form3" id="cancella" class="buton-cancel">{{ IntlString('APP_BANK_BUTTON_CANCEL') }}</button>
+          <button v-bind:class="{ select: 2 === currentSelect}" ref="form2" id="gonder" class="buton-transfer">{{ LangString('APP_BANK_BUTTON_TRANSFER') }}</button><br/>
+          <button v-bind:class="{ select: 3 === currentSelect}" ref="form3" id="cancella" class="buton-cancel">{{ LangString('APP_BANK_BUTTON_CANCEL') }}</button>
         </div>
         
       </div>
@@ -57,7 +57,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['bankAmount', 'iban', 'IntlString'])
+    ...mapGetters(['bankAmount', 'iban', 'LangString'])
   },
   methods: {
     ...mapActions(['inviaSoldiAPI']),

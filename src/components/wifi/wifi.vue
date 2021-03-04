@@ -1,6 +1,6 @@
 <template>
   <div class="phone_app">
-    <PhoneTitle :title="IntlString('APP_WIFI_TITLE')" @back="onBackspace"/>
+    <PhoneTitle :title="LangString('APP_WIFI_TITLE')" @back="onBackspace"/>
     <div class='elements'>
 
       <div class='element' v-for='(elem, key) in retiWifi' v-bind:class="{select: key === currentSelect}" v-bind:key="key">
@@ -33,7 +33,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['IntlString', 'retiWifi'])
+    ...mapGetters(['LangString', 'retiWifi'])
   },
   methods: {
     scrollIntoViewIfNeeded: function () {

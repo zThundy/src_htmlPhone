@@ -6,16 +6,16 @@
 
         <template v-if="!isLogin">
           <div class="group" data-type="button" @click.stop="state = STATI.LOGIN">
-            <input type='button' class="btn btn-gray" @click.stop="state = STATI.LOGIN" :value="IntlString('APP_INSTAGRAM_ACCOUNT_LOGIN')"/>
+            <input type='button' class="btn btn-gray" @click.stop="state = STATI.LOGIN" :value="LangString('APP_INSTAGRAM_ACCOUNT_LOGIN')"/>
           </div>
 
           <div class="group" data-type="button" @click.stop="state = STATI.NOTIFICATION">
-            <input type='button' class="btn btn-gray" @click.stop="state = STATI.NOTIFICATION" :value="IntlString('APP_INSTAGRAM_NOTIFICATION')" />
+            <input type='button' class="btn btn-gray" @click.stop="state = STATI.NOTIFICATION" :value="LangString('APP_INSTAGRAM_NOTIFICATION')" />
           </div>
 
           <div class="group bottom" data-type="button" @click.stop="state = STATI.NEW_ACCOUNT">
             <span style="position: absolute; bottom: 120px; left: 145px;" class="fa fa-user"></span>
-            <input type='button' class="btn btn-green" @click.stop="state = STATI.NEW_ACCOUNT" :value="IntlString('APP_INSTAGRAM_ACCOUNT_NEW')" />
+            <input type='button' class="btn btn-green" @click.stop="state = STATI.NEW_ACCOUNT" :value="LangString('APP_INSTAGRAM_ACCOUNT_NEW')" />
           </div>
         </template>
 
@@ -23,15 +23,15 @@
           <img :src="instagramAvatarUrl" class="loggedInImage">
 
           <div class="group" data-type="button" @click.stop="state = STATI.ACCOUNT">
-            <input type='button' class="btn btn-gray" @click.stop="state = STATI.ACCOUNT" :value="IntlString('APP_INSTAGRAM_ACCOUNT_PARAM')" />
+            <input type='button' class="btn btn-gray" @click.stop="state = STATI.ACCOUNT" :value="LangString('APP_INSTAGRAM_ACCOUNT_PARAM')" />
           </div>
 
           <div class="group" data-type="button" @click.stop="state = STATI.NOTIFICATION">
-            <input type='button' class="btn btn-gray" @click.stop="state = STATI.NOTIFICATION" :value="IntlString('APP_INSTAGRAM_NOTIFICATION')" />
+            <input type='button' class="btn btn-gray" @click.stop="state = STATI.NOTIFICATION" :value="LangString('APP_INSTAGRAM_NOTIFICATION')" />
           </div>
 
           <div class="group bottom" data-type="button" @click.stop="logout">
-            <input type='button' class="btn btn-red" @click.stop="logout" :value="IntlString('APP_INSTAGRAM_ACCOUNT_LOGOUT')" />
+            <input type='button' class="btn btn-red" @click.stop="logout" :value="LangString('APP_INSTAGRAM_ACCOUNT_LOGOUT')" />
           </div>
         </template>
 
@@ -41,19 +41,19 @@
       <template v-else-if="state === STATI.LOGIN">
         <img class="instagram_title" src="/html/static/img/app_instagram/instagramtitle.png">
         <div class="group inputText" data-type="text" :data-defaultValue="accountLocale.username" data-title="Inserisci un nickname registrato">
-          <input class="loginBoxes" :placeholder="IntlString('APP_INSTAGRAM_USERNAME_LABEL')" type="text" :value="accountLocale.username" @change="setLocalAccount($event, 'username')">
+          <input class="loginBoxes" :placeholder="LangString('APP_INSTAGRAM_USERNAME_LABEL')" type="text" :value="accountLocale.username" @change="setLocalAccount($event, 'username')">
           <span class="highlight"><i class="anim fa fa-user fa-lg"></i></span>
           <span class="bar"></span>
         </div>
 
         <div class="group inputText" data-type="text" data-model='password'  data-title="Inserisci la password">
-          <input class="loginBoxes" :placeholder="IntlString('APP_INSTAGRAM_PASSWORD_LABEL')" autocomplete="new-password" type="password" :value="accountLocale.password" @change="setLocalAccount($event, 'password')">
+          <input class="loginBoxes" :placeholder="LangString('APP_INSTAGRAM_PASSWORD_LABEL')" autocomplete="new-password" type="password" :value="accountLocale.password" @change="setLocalAccount($event, 'password')">
           <span class="highlight"><i class="fa fa-key fa-lg"></i></span>
           <span class="bar"></span>
         </div>
 
         <div class="group" data-type="button" @click.stop="login">
-          <!-- <input type='button' class="btn btn-generic" @click.stop="login" :value="IntlString('APP_INSTAGRAM_ACCOUNT_LOGIN')" /> -->
+          <!-- <input type='button' class="btn btn-generic" @click.stop="login" :value="LangString('APP_INSTAGRAM_ACCOUNT_LOGIN')" /> -->
           <span class="favicon fa fa-instagram fa-3x">
             <p class="LoginText">Login</p>
           </span>
@@ -67,37 +67,37 @@
       <template v-else-if="state === STATI.NOTIFICATION">
         <div class="groupCheckBoxTitle">
           <i class="fa fa-cogs" style="position: absolute; padding-top: 5px; padding-left: 5px;"></i>
-          <label style="font-weight: 500; justify-content: center; align-content: center; display: flex;">{{ IntlString('APP_INSTAGRAM_NOTIFICATION_SOUND') }}</label>
+          <label style="font-weight: 500; justify-content: center; align-content: center; display: flex;">{{ LangString('APP_INSTAGRAM_NOTIFICATION_SOUND') }}</label>
         </div>
 
         <label class="group checkbox" data-type="button" @click.prevent.stop="setNotification(2)">
           <input type="checkbox" :checked="instagramNotification === 2" @click.prevent.stop="setNotification(2)">
-          {{ IntlString('APP_TWITTER_NOTIFICATION_ALL') }}
+          {{ LangString('APP_TWITTER_NOTIFICATION_ALL') }}
         </label>
 
         <label class="group checkbox" data-type="button" @click.prevent.stop="setNotification(1)">
           <input type="checkbox" :checked="instagramNotification === 1" @click.prevent.stop="setNotification(1)">
-          {{ IntlString('APP_TWITTER_NOTIFICATION_MENTION') }}
+          {{ LangString('APP_TWITTER_NOTIFICATION_MENTION') }}
         </label>
 
         <label class="group checkbox" data-type="button" @click.prevent.stop="setNotification(0)">
           <input type="checkbox" :checked="instagramNotification === 0" @click.prevent.stop="setNotification(0)">
-          {{ IntlString('APP_TWITTER_NOTIFICATION_NEVER') }}
+          {{ LangString('APP_TWITTER_NOTIFICATION_NEVER') }}
         </label>
 
         <div class="groupCheckBoxTitle">
           <i class="fa fa-bell" style="position: absolute; padding-top: 5px; padding-left: 5px;"></i>
-          <label style="font-weight: 500; justify-content: center; align-content: center; display: flex;">{{ IntlString('APP_TWITTER_NOTIFICATION_SOUND') }}</label>
+          <label style="font-weight: 500; justify-content: center; align-content: center; display: flex;">{{ LangString('APP_TWITTER_NOTIFICATION_SOUND') }}</label>
         </div>
 
         <label class="group checkbox" data-type="button" @click.prevent.stop="setNotificationSound(true)">
           <input type="checkbox" :checked="instagramNotificationSound" @click.prevent.stop="setNotificationSound(true)">
-          {{ IntlString('APP_TWITTER_NOTIFICATION_SOUND_YES') }}
+          {{ LangString('APP_TWITTER_NOTIFICATION_SOUND_YES') }}
         </label>
 
         <label class="group checkbox" data-type="button" @click.prevent.stop="setNotificationSound(false)">
           <input type="checkbox" :checked="!instagramNotificationSound" @click.prevent.stop="setNotificationSound(false)">
-          {{ IntlString('APP_TWITTER_NOTIFICATION_SOUND_NO') }}
+          {{ LangString('APP_TWITTER_NOTIFICATION_SOUND_NO') }}
         </label>
 
       </template>
@@ -109,12 +109,12 @@
         </div>
 
         <div style="margin-top: 30px; margin-bottom: 82px;" class="group img" data-type="button" @click.stop="onPressChangeAvartar">
-          <input type='button' class="btn btn-generic" :value="IntlString('APP_INSTAGRAM_ACCOUNT_AVATAR')" @click.stop="onPressChangeAvartar"/>
+          <input type='button' class="btn btn-generic" :value="LangString('APP_INSTAGRAM_ACCOUNT_AVATAR')" @click.stop="onPressChangeAvartar"/>
         </div>
 
         <i class="fa fa-key" style="position: absolute; top: 480px; left: 155px;"></i>
         <div style="top: 50px;" class="group" data-type="button" @click.stop="changePassword">
-          <input type='button' class="btn btn-red" :value="IntlString('APP_INSTAGRAM_ACCOUNT_CHANGE_PASSWORD')" @click.stop="changePassword"/>
+          <input type='button' class="btn btn-red" :value="LangString('APP_INSTAGRAM_ACCOUNT_CHANGE_PASSWORD')" @click.stop="changePassword"/>
         </div>
 
       </template>
@@ -123,25 +123,25 @@
 
         <img class="instagram_title" src="/html/static/img/app_instagram/instagramtitle.png">
         <div class="group inputText" data-type="text" :data-defaultValue="accountLocale.username" data-title="Scegli un nickname unico">
-          <input class="loginBoxes" :placeholder="IntlString('APP_INSTAGRAM_USERNAME_LABEL')" type="text" :value="accountLocale.username" @change="setLocalAccount($event, 'username')">
+          <input class="loginBoxes" :placeholder="LangString('APP_INSTAGRAM_USERNAME_LABEL')" type="text" :value="accountLocale.username" @change="setLocalAccount($event, 'username')">
           <span class="highlight"><i class="anim fa fa-user fa-lg"></i></span>
           <span class="bar"></span>
         </div>
 
         <div class="group inputText" data-type="text" data-model='password' data-title="Digita una password">
-          <input class="loginBoxes" :placeholder="IntlString('APP_INSTAGRAM_PASSWORD_LABEL')" autocomplete="new-password" type="password" :value="accountLocale.password" @change="setLocalAccount($event, 'password')">
+          <input class="loginBoxes" :placeholder="LangString('APP_INSTAGRAM_PASSWORD_LABEL')" autocomplete="new-password" type="password" :value="accountLocale.password" @change="setLocalAccount($event, 'password')">
           <span class="highlight"><i class="fa fa-key fa-lg"></i></span>
           <span class="bar"></span>
         </div>
 
         <div class="group inputText" data-type="text" data-model='password' data-title="Ripeti la password">
-          <input class="loginBoxes" :placeholder="IntlString('APP_INSTAGRAM_PASSWORD_CONFIRM_LABEL')" autocomplete="new-password" type="password" :value="accountLocale.passwordConfirm" @change="setLocalAccount($event, 'passwordConfirm')">
+          <input class="loginBoxes" :placeholder="LangString('APP_INSTAGRAM_PASSWORD_CONFIRM_LABEL')" autocomplete="new-password" type="password" :value="accountLocale.passwordConfirm" @change="setLocalAccount($event, 'passwordConfirm')">
           <span class="highlight"><i class="fa fa-key fa-lg"></i></span>
           <span class="bar"></span>
         </div>
 
         <div style="overflow-x: hidden; overflow-y: hidden;" class="group" data-type="button" @click.stop="createAccount">
-          <!-- <input type='button' class="btn btn-generic" @click.stop="login" :value="IntlString('APP_INSTAGRAM_ACCOUNT_LOGIN')" /> -->
+          <!-- <input type='button' class="btn btn-generic" @click.stop="login" :value="LangString('APP_INSTAGRAM_ACCOUNT_LOGIN')" /> -->
           <span class="favicon fa fa-instagram fa-3x">
             <p class="LoginText">Registrati</p>
           </span>
@@ -153,14 +153,14 @@
             <input type="text" :value="accountLocale.username" @change="setLocalAccount($event, 'username')">
             <span class="highlight"></span>
             <span class="bar"></span>
-            <label>{{ IntlString('APP_TWITTER_NEW_ACCOUNT_USERNAME') }}</label>
+            <label>{{ LangString('APP_TWITTER_NEW_ACCOUNT_USERNAME') }}</label>
         </div>
 
         <div class="group inputText" data-type="text" data-model='password' data-maxlength='30'>
             <input autocomplete="new-password" type="password" :value="accountLocale.password" @change="setLocalAccount($event, 'password')">
             <span class="highlight"></span>
             <span class="bar"></span>
-            <label>{{ IntlString('APP_TWITTER_NEW_ACCOUNT_PASSWORD') }}</label>
+            <label>{{ LangString('APP_TWITTER_NEW_ACCOUNT_PASSWORD') }}</label>
         </div>
 
 
@@ -168,16 +168,16 @@
             <input autocomplete="new-password" type="password" :value="accountLocale.passwordConfirm" @change="setLocalAccount($event, 'passwordConfirm')">
             <span class="highlight"></span>
             <span class="bar"></span>
-            <label>{{ IntlString('APP_TWITTER_NEW_ACCOUNT_PASSWORD_CONFIRM') }}</label>
+            <label>{{ LangString('APP_TWITTER_NEW_ACCOUNT_PASSWORD_CONFIRM') }}</label>
         </div>
 
         <div style="margin-top: 42px; margin-bottom: 42px;" class="group img" data-type="button" @click.stop="setLocalAccountAvartar($event)">
           <img :src="accountLocale.avatarUrl" style="height: 128px; width: 128px; overflow: auto;" @click.stop="setLocalAccountAvartar($event)">
-          <input type='button' class="btn btn-generic" :value="IntlString('APP_TWITTER_NEW_ACCOUNT_AVATAR')" @click.stop="setLocalAccountAvartar($event)"/>
+          <input type='button' class="btn btn-generic" :value="LangString('APP_TWITTER_NEW_ACCOUNT_AVATAR')" @click.stop="setLocalAccountAvartar($event)"/>
         </div>
 
         <div class="group" data-type="button" @click.stop="createAccount">
-          <input type='button' class="btn" :class="validAccount ? 'btn-generic' : 'btn-gray'" :value="IntlString('APP_TWIITER_ACCOUNT_CREATE')" @click.stop="createAccount"/>
+          <input type='button' class="btn" :class="validAccount ? 'btn-generic' : 'btn-gray'" :value="LangString('APP_TWIITER_ACCOUNT_CREATE')" @click.stop="createAccount"/>
         </div>
         -->
       </template>
@@ -218,7 +218,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['IntlString', 'instagramUsername', 'instagramPassword', 'instagramAvatarUrl', 'instagramNotification', 'instagramNotificationSound']),
+    ...mapGetters(['LangString', 'instagramUsername', 'instagramPassword', 'instagramAvatarUrl', 'instagramNotification', 'instagramNotificationSound']),
     isLogin () {
       return this.instagramUsername !== undefined && this.instagramUsername !== ''
     },
@@ -314,8 +314,8 @@ export default {
       try {
         this.ignoreControls = true
         let choix = [
-          {id: 1, title: this.IntlString('APP_TWITTER_LINK_PICTURE'), icons: 'fa-link'},
-          {id: 2, title: this.IntlString('APP_TWITTER_TAKE_PICTURE'), icons: 'fa-camera'}
+          {id: 1, title: this.LangString('APP_TWITTER_LINK_PICTURE'), icons: 'fa-link'},
+          {id: 2, title: this.LangString('APP_TWITTER_TAKE_PICTURE'), icons: 'fa-camera'}
         ]
         const resp = await Modal.CreateModal({ choix: choix })
         if (resp.id === 1) {
@@ -373,8 +373,8 @@ export default {
       if (password2.text === '' || password2.text === null || password2.text === undefined) return
       if (password2.text !== password1.text) {
         this.$notify({
-          title: this.IntlString('APP_INSTAGRAM_NAME'),
-          message: this.IntlString('APP_INSTAGRAM_NOTIF_NEW_PASSWORD_MISS_MATCH'),
+          title: this.LangString('APP_INSTAGRAM_NAME'),
+          message: this.LangString('APP_INSTAGRAM_NOTIF_NEW_PASSWORD_MISS_MATCH'),
           icon: 'instagram',
           backgroundColor: '#66000080'
         })
@@ -382,8 +382,8 @@ export default {
         return
       } else if (password2.text.length < 6) {
         this.$notify({
-          title: this.IntlString('APP_INSTAGRAM_NAME'),
-          message: this.IntlString('APP_INSTAGRAM_NOTIF_NEW_PASSWORD_LENGTH_ERROR'),
+          title: this.LangString('APP_INSTAGRAM_NAME'),
+          message: this.LangString('APP_INSTAGRAM_NOTIF_NEW_PASSWORD_LENGTH_ERROR'),
           icon: 'instagram',
           backgroundColor: '#66000080'
         })

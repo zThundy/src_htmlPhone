@@ -1,6 +1,6 @@
 <template>
   <div style="width: 326px; height: 743px;" class="sfondo">
-    <PhoneTitle :title="this.IntlString('APP_WHATSAPP_EDIT_GROUP')" :backgroundColor="'rgb(112,255,125)'" @back="onBackspace"/>
+    <PhoneTitle :title="this.LangString('APP_WHATSAPP_EDIT_GROUP')" :backgroundColor="'rgb(112,255,125)'" @back="onBackspace"/>
 
     <div style="width: 324px; height: 90%;" class="phone_content elements">
 
@@ -8,7 +8,7 @@
         <input class="nomeGruppoBox" type="text" :value="gruppo.gruppo">
         <span class="highlight"></span>
         <span class="bar"></span>
-        <label>{{ IntlString('APP_WHATSAPP_GROUP_NAME') }}</label>
+        <label>{{ LangString('APP_WHATSAPP_GROUP_NAME') }}</label>
       </div>
 
       <div style="margin-bottom: 42px; padding-left: 30%;" class="img" data-type="button">
@@ -17,15 +17,15 @@
       </div>
 
       <div style="left: 3%; top: 45%; position: absolute;" class="group" data-type="button" :class="{select: 2 === currentSelect}" @click="addNewMembers">
-        <input type='button' class="btn btn-green" :value="IntlString('APP_WHATSAPP_ADD_MEMBERS')"/>
+        <input type='button' class="btn btn-green" :value="LangString('APP_WHATSAPP_ADD_MEMBERS')"/>
       </div>
 
       <div style="left: 3%; top: 55%; position: absolute;" class="group" data-type="button" :class="{select: 3 === currentSelect}" @click="snapGroupImage">
-        <input type='button' class="btn btn-green" :value="IntlString('APP_WHATSAPP_GROUP_AVATAR')"/>
+        <input type='button' class="btn btn-green" :value="LangString('APP_WHATSAPP_GROUP_AVATAR')"/>
       </div>
 
       <div style="left: 3%; top: 65%; position: absolute;" class="group" data-type="button" :class="{select: 4 === currentSelect}" @click="modificaGruppo">
-        <input type='button' class="btn btn-green" :value="IntlString('APP_WHATSAPP_EDIT_GROUP')"/>
+        <input type='button' class="btn btn-green" :value="LangString('APP_WHATSAPP_EDIT_GROUP')"/>
       </div>
 
     </div>
@@ -49,7 +49,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['IntlString'])
+    ...mapGetters(['LangString'])
   },
   methods: {
     ...mapActions(['editGroupTitle', 'editGroupIcon']),
@@ -66,8 +66,8 @@ export default {
     async snapGroupImage () {
       this.ignoreControls = true
       let choix = [
-        {id: 1, title: this.IntlString('APP_CONFIG_LINK_PICTURE'), icons: 'fa-link'},
-        {id: 2, title: this.IntlString('APP_CONFIG_TAKE_PICTURE'), icons: 'fa-camera'}
+        {id: 1, title: this.LangString('APP_CONFIG_LINK_PICTURE'), icons: 'fa-link'},
+        {id: 2, title: this.LangString('APP_CONFIG_TAKE_PICTURE'), icons: 'fa-camera'}
       ]
       const resp = await Modal.CreateModal({ choix })
       if (resp.id === 1) {

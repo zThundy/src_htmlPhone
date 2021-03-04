@@ -4,8 +4,8 @@
     <div class="modal-mask">
       <div class="modal-container">
 
-        <div class="modal-choix" v-bind:class="{ select: index === currentSelect}" v-for="(val, index) in choix" :key='index' v-bind:style="{color: val.color}">
-          <i @click.stop="selectItem(val)" class="fas" :class="val.icons" ></i>{{val.title}}
+        <div class="modal-choix" v-for="(val, index) in choix" :key='index' :style="{ color: val.color }" :class="{ select: index === currentSelect }">
+          <i class="fas" :class="val.icons"></i>{{val.title}}
         </div>
 
       </div>
@@ -100,7 +100,6 @@ export default {
   margin: 0;
   padding: 0;
   background-color: #fff;
-  border-radius: 2px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, .33);
   transition: all .3s ease;
   padding-bottom: 16px;
@@ -108,6 +107,7 @@ export default {
   overflow-y: auto;
 
   transition: all 0.1s ease-in-out;
+  border-radius: 15px 15px 0px 0px;
 }
 
 .modal-title {
@@ -144,10 +144,9 @@ export default {
 }
 
 .modal-choix.select {
-    background-color: #E3E3E3;
-    color: #0079d3
+  background-color: rgba(209, 209, 209, 0.3);
+  color: #0079d3
 }
-
 
 .modal-container {
   animation-name: up;

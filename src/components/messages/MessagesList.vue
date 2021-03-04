@@ -1,7 +1,7 @@
 <template>
   <div style="width: 326px; height: 743px;" class="screen">
 
-    <list class="fontList" :list='messagesData' :disable="disableList" :title="IntlString('APP_MESSAGE_TITLE')" @back="back" @select="onSelect" @option='onOption'></list>
+    <list class="fontList" :list='messagesData' :disable="disableList" :title="LangString('APP_MESSAGE_TITLE')" @back="back" @select="onSelect" @option='onOption'></list>
   
   </div>
 </template>
@@ -33,15 +33,15 @@ export default {
       this.disableList = true
       Modal.CreateModal({
         choix: [
-          {id: 4, title: this.IntlString('APP_PHONE_CALL'), icons: 'fa-phone'},
-          {id: 5, title: this.IntlString('APP_PHONE_CALL_ANONYMOUS'), icons: 'fa-mask'},
-          {id: 6, title: this.IntlString('APP_MESSAGE_NEW_MESSAGE'), icons: 'fa-sms'}
+          {id: 4, title: this.LangString('APP_PHONE_CALL'), icons: 'fa-phone'},
+          {id: 5, title: this.LangString('APP_PHONE_CALL_ANONYMOUS'), icons: 'fa-mask'},
+          {id: 6, title: this.LangString('APP_MESSAGE_NEW_MESSAGE'), icons: 'fa-sms'}
         ]
-        .concat(data.unknowContact ? [{id: 7, title: this.IntlString('APP_MESSAGE_SAVE_CONTACT'), icons: 'fa-save'}] : [])
+        .concat(data.unknowContact ? [{id: 7, title: this.LangString('APP_MESSAGE_SAVE_CONTACT'), icons: 'fa-save'}] : [])
         .concat([
-          {id: 1, title: this.IntlString('APP_MESSAGE_ERASE_CONVERSATION'), icons: 'fa-trash', color: 'orange'},
-          {id: 2, title: this.IntlString('APP_MESSAGE_ERASE_ALL_CONVERSATIONS'), icons: 'fa-trash', color: 'red'},
-          {id: 3, title: this.IntlString('CANCEL'), icons: 'fa-undo', color: 'red'}
+          {id: 1, title: this.LangString('APP_MESSAGE_ERASE_CONVERSATION'), icons: 'fa-trash', color: 'orange'},
+          {id: 2, title: this.LangString('APP_MESSAGE_ERASE_ALL_CONVERSATIONS'), icons: 'fa-trash', color: 'red'},
+          {id: 3, title: this.LangString('CANCEL'), icons: 'fa-undo', color: 'red'}
         ])
       }).then(rep => {
         if (rep.id === 1) {
@@ -66,7 +66,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['IntlString', 'contacts', 'messages']),
+    ...mapGetters(['LangString', 'contacts', 'messages']),
     messagesData: function () {
       let messages = this.messages
       let contacts = this.contacts
@@ -114,7 +114,7 @@ export default {
     newMessageOption () {
       return {
         backgroundColor: '#C0C0C0',
-        display: this.IntlString('APP_MESSAGE_NEW_MESSAGE'),
+        display: this.LangString('APP_MESSAGE_NEW_MESSAGE'),
         letter: '+',
         id: -1
       }

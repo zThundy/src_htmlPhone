@@ -18,6 +18,7 @@ import bluetooth from './modules/bluetooth'
 import darkweb from './modules/darkweb'
 import email from './modules/email'
 import news from './modules/news'
+import azienda from './modules/azienda'
 
 Vue.use(Vuex)
 
@@ -39,7 +40,8 @@ export default new Vuex.Store({
     bluetooth,
     darkweb,
     email,
-    news
+    news,
+    azienda
   },
   strict: true
 })

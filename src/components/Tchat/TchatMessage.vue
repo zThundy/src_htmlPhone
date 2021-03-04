@@ -20,7 +20,7 @@
         </div>
 
         <div style="width: 306px; bottom: 5px;" id='sms_write'>
-          <input type="text" :placeholder="IntlString('APP_DARKTCHAT_PLACEHOLDER_ENTER_MESSAGE')">
+          <input type="text" :placeholder="LangString('APP_DARKTCHAT_PLACEHOLDER_ENTER_MESSAGE')">
           
           <div style="font-size: 10px;" class="sms_send">
 
@@ -52,7 +52,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['tchatMessages', 'tchatCurrentChannel', 'IntlString']),
+    ...mapGetters(['tchatMessages', 'tchatCurrentChannel', 'LangString']),
     channelName () {
       return '# ' + this.channel
     }

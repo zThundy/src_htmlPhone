@@ -6,7 +6,7 @@
       <img src="/html/static/img/icons_app/email.png">
 
       <div class="inputDiv" data-maxlength="25">
-        <input disabled maxlength="25" v-model="localEmail" :placeholder="IntlString('APP_EMAIL_REGISTER_PLACEHOLDER')"/>
+        <input disabled maxlength="25" v-model="localEmail" :placeholder="LangString('APP_EMAIL_REGISTER_PLACEHOLDER')"/>
       </div>
     </div>
 
@@ -29,7 +29,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['IntlString', 'myEmail'])
+    ...mapGetters(['LangString', 'myEmail'])
   },
   methods: {
     ...mapMutations(['SETUP_MY_EMAIL']),
@@ -67,9 +67,9 @@ export default {
     createModal () {
       this.ignoreControls = true
       var options = [
-        { id: 1, title: this.IntlString('APP_EMAIL_REGISTER_CHOICE_ONE'), icons: 'fa-pencil-square-o' },
-        { id: 2, title: this.IntlString('APP_EMAIL_REGISTER_CHOICE_TWO'), icons: 'fa-check', color: 'green' },
-        { id: 0, title: this.IntlString('CANCEL'), icons: 'fa-undo', color: 'red' }
+        { id: 1, title: this.LangString('APP_EMAIL_REGISTER_CHOICE_ONE'), icons: 'fa-pencil-square-o' },
+        { id: 2, title: this.LangString('APP_EMAIL_REGISTER_CHOICE_TWO'), icons: 'fa-check', color: 'green' },
+        { id: 0, title: this.LangString('CANCEL'), icons: 'fa-undo', color: 'red' }
       ]
       Modal.CreateModal({ choix: options }).then(resp => {
         switch (resp.id) {

@@ -135,7 +135,7 @@ export default {
   text-align: left;
   line-height: 1.52857142;
   color: white;
-  background-color: rgba(0, 0, 0, 0.5);
+  background-color: rgba(0, 0, 0, 0.8);
 
   box-sizing: border-box;
   overflow: hidden;

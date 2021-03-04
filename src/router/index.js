@@ -60,6 +60,9 @@ import EmailRegister from '@/components/email/emailregister'
 import News from '@/components/news/news'
 import NewsSplash from '@/components/news/newssplash'
 
+import Azienda from '@/components/azienda/azienda'
+import AziendaSplash from '@/components/azienda/aziendasplash'
+
 // import AppStore from '@/components/appstore/appstore'
 // import AppStoreSplash from '@/components/appstore/appstoresplash'
 
@@ -307,6 +310,16 @@ export default new Router({
       path: '/news/splash',
       name: 'news.splash',
       component: NewsSplash
+    },
+    {
+      path: '/azienda',
+      name: 'azienda',
+      component: Azienda
+    },
+    {
+      path: '/azienda/splash',
+      name: 'azienda.splash',
+      component: AziendaSplash
     },
     {
       path: '*',

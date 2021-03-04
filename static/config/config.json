@@ -404,6 +404,13 @@
       "icons": "/html/static/img/icons_app/news.png",
       "routeName": "news.splash",
       "enabled": true
+    },
+    {
+      "name": "Azienda",
+      "it_IT__name": "Azienda",
+      "icons": "/html/static/img/icons_app/azienda.png",
+      "routeName": "azienda.splash",
+      "enabled": true
     }
   ],
   "defaultLanguage": "it_IT",
@@ -646,6 +653,16 @@
       "APP_NEWS_UPLOAD_PICTURE": "Carica immagine",
       "APP_NEWS_WRITE_MESSAGE": "Scrivi descrizione",
       "APP_NEWS_SEND_POST": "Invia post",
+      "APP_AZIENDA_TITLE": "Azienda",
+      "APP_AZIENDA_NO_AZIENDA": "Nessun'azienda",
+      "APP_AZIENDA_ERROR_LOADING": "C'è stato un errore",
+      "APP_AZIENDA_EMPLYES_LIST": "Gestione dipendenti",
+      "APP_AZIENDA_MANAGE_SALARY": "Gestione stipendi",
+      "APP_AZIENDA_EMPLOYES_CHAT": "Chat aziendale",
+      "APP_AZIENDA_MESSAGE_PLACEHOLDER": "Scrivi un messaggio...",
+      "APP_AZIENDA_SEND_POSITION": "Invia posizione",
+      "APP_AZIENDA_SET_POSITION": "Imposta posizione",
+      "APP_AZIENDA_CALL_NUMBER": "Chiama il numero",
 
       "TIMEAGO": [
         "Proprio adesso",

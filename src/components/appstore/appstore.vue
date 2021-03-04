@@ -1,6 +1,6 @@
 <template>
   <div class="phone_app">
-    <PhoneTitle :title="IntlString('APP_APPSTORE_TITLE')" :backgroundColor="'rgb(0,0,0,0.1)'" />
+    <PhoneTitle :title="LangString('APP_APPSTORE_TITLE')" :backgroundColor="'rgb(0,0,0,0.1)'" />
 
     <div class="app_container">
       <!--
@@ -43,7 +43,7 @@ export default {
   computed: {
     ...mapGetters([
       'downloadableApps',
-      'IntlString'
+      'LangString'
     ])
   },
   methods: {
@@ -71,8 +71,8 @@ export default {
     },
     async onRight () {
       let choix = [
-        {id: 1, title: this.IntlString('APP_APPSTORE_DOWNLOAD'), icons: 'fa-download'},
-        {id: 2, title: this.IntlString('CANCEL'), color: 'red', icons: 'fa-undo'}
+        {id: 1, title: this.LangString('APP_APPSTORE_DOWNLOAD'), icons: 'fa-download'},
+        {id: 2, title: this.LangString('CANCEL'), color: 'red', icons: 'fa-undo'}
       ]
       const resp = await Modal.CreateModal({ choix })
       // risposta del menù

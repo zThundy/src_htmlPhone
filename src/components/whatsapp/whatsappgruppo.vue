@@ -10,17 +10,15 @@
       <img :src="imgZoom" />
     </div>
 
-    <md-toast ref="wh_update">
-      <custom-toast @hide="toastHide" :duration="500" ref="updating">
-        <md-activity-indicator
-          :size="20"
-          :text-size="16"
-          color="white"
-          text-color="white"
-        >Aggiornamento...
-        </md-activity-indicator>
-      </custom-toast>
-    </md-toast>
+    <custom-toast class="toastPosition" :duration="1000" ref="updating">
+      <md-activity-indicator
+        :size="20"
+        :text-size="16"
+        color="white"
+        text-color="white"
+      >Aggiornamento...
+      </md-activity-indicator>
+    </custom-toast>
 
     <div style="width: 326px; height: 575px;" id='sms_list'>
 
@@ -42,7 +40,7 @@
 
     <div style="height: 70px; position: fixed;">
       <div style="width: 306px;" id='sms_write'>
-        <input type="text" :placeholder="IntlString('APP_WHATSAPP_PLACEHOLDER_ENTER_MESSAGE')" v-autofocus>
+        <input type="text" :placeholder="LangString('APP_WHATSAPP_PLACEHOLDER_ENTER_MESSAGE')" v-autofocus>
         <div style="font-size: 10px;" class="sms_send">
           <svg height="24" viewBox="0 0 24 24" width="24">
             <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/>
@@ -82,7 +80,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['IntlString', 'messaggi', 'myPhoneNumber', 'enableTakePhoto', 'contacts'])
+    ...mapGetters(['LangString', 'messaggi', 'myPhoneNumber', 'enableTakePhoto', 'contacts'])
   },
   methods: {
     ...mapActions(['requestWhatsappInfo', 'sendMessageInGroup']),
@@ -132,14 +130,14 @@ export default {
         try {
           this.ignoreControls = true
           let choix = [
-            {id: 1, title: this.IntlString('APP_WHATSAPP_SEND_GPS'), icons: 'fa-location-arrow'},
-            {id: -1, title: this.IntlString('CANCEL'), icons: 'fa-undo', color: 'red'}
+            {id: 1, title: this.LangString('APP_WHATSAPP_SEND_GPS'), icons: 'fa-location-arrow'},
+            {id: -1, title: this.LangString('CANCEL'), icons: 'fa-undo', color: 'red'}
           ]
           if (this.enableTakePhoto) {
             choix = [
-              {id: 1, title: this.IntlString('APP_WHATSAPP_SEND_GPS'), icons: 'fa-location-arrow'},
-              {id: 2, title: this.IntlString('APP_WHATSAPP_SEND_PHOTO'), icons: 'fa-picture-o'},
-              {id: -1, title: this.IntlString('CANCEL'), icons: 'fa-undo', color: 'red'}
+              {id: 1, title: this.LangString('APP_WHATSAPP_SEND_GPS'), icons: 'fa-location-arrow'},
+              {id: 2, title: this.LangString('APP_WHATSAPP_SEND_PHOTO'), icons: 'fa-picture-o'},
+              {id: -1, title: this.LangString('CANCEL'), icons: 'fa-undo', color: 'red'}
             ]
           }
           const resp = await Modal.CreateModal({ choix })
@@ -194,12 +192,12 @@ export default {
         let isSMSImage = this.isImage(message)
         // dopo aver controllato che tipo di messaggio è, creo il modal
         let choix = [
-          { id: 1, title: this.IntlString('APP_WHATSAPP_SEND_GPS'), icons: 'fa-location-arrow' },
-          { id: 2, title: this.IntlString('APP_WHATSAPP_SEND_PHOTO'), icons: 'fa-picture-o' },
-          { id: -1, title: this.IntlString('CANCEL'), icons: 'fa-undo', color: 'red' }
+          { id: 1, title: this.LangString('APP_WHATSAPP_SEND_GPS'), icons: 'fa-location-arrow' },
+          { id: 2, title: this.LangString('APP_WHATSAPP_SEND_PHOTO'), icons: 'fa-picture-o' },
+          { id: -1, title: this.LangString('CANCEL'), icons: 'fa-undo', color: 'red' }
         ]
-        if (isGPS === true) { choix = [{ id: 'gps', title: this.IntlString('APP_WHATSAPP_SET_GPS'), icons: 'fa-location-arrow' }, ...choix] }
-        if (isSMSImage === true) { choix = [{ id: 'zoom', title: this.IntlString('APP_MESSAGE_ZOOM_IMG'), icons: 'fa-search' }, ...choix] }
+        if (isGPS === true) { choix = [{ id: 'gps', title: this.LangString('APP_WHATSAPP_SET_GPS'), icons: 'fa-location-arrow' }, ...choix] }
+        if (isSMSImage === true) { choix = [{ id: 'zoom', title: this.LangString('APP_MESSAGE_ZOOM_IMG'), icons: 'fa-search' }, ...choix] }
         // disabilito i controlli
         this.ignoreControls = true
         const data = await Modal.CreateModal({ choix })
@@ -230,7 +228,7 @@ export default {
         this.currentSelected = this.messaggi[String(this.gruppo.id)].length - 1
         this.scrollIntoViewIfNeeded()
         this.ignoreControls = false
-      }, 500)
+      }, 1000)
     }
   },
   created () {
@@ -336,11 +334,10 @@ export default {
   object-fit: cover;
 
   border-radius: 50%;
-  border-style: solid;
-  border-color: rgb(6, 75, 0);
+  border: 2px solid rgb(255, 255, 255);
 
-  height: 50px;
-  width: 50px;
+  height: 40px;
+  width: 40px;
 }
 
 
@@ -404,6 +401,10 @@ export default {
 
 .daMe.select { background-color: rgb(118, 255, 137); }
 .daMe.select::before { background-color: rgb(118, 255, 137); }
+
+.toastPosition {
+  bottom: 40px;
+}
 
 
 </style>

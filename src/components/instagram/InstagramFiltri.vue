@@ -6,7 +6,7 @@
     <img class='image' :src="tempImage" :class="filters[selectedMessage]">
 
     <div class="aggiusta_schermo">
-      <div class="text-container">{{ IntlString('APP_INSTAGRAM_CHOOSE_FILTER') }}</div>
+      <div class="text-container">{{ LangString('APP_INSTAGRAM_CHOOSE_FILTER') }}</div>
 
       <div class="image_list">
 
@@ -66,7 +66,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['IntlString', 'tempImage', 'instagramUsername', 'instagramPassword'])
+    ...mapGetters(['LangString', 'tempImage', 'instagramUsername', 'instagramPassword'])
   },
   watch: {
   },
@@ -100,8 +100,8 @@ export default {
       if (this.ignoreControls) return
       this.ignoreControls = true
       let choix = [
-        {id: 1, title: this.IntlString('APP_INSTAGRAM_WRITE_CAPTION'), icons: 'fa-pencil-square-o'},
-        {id: 2, title: this.IntlString('APP_INSTAGRAM_POST_IMAGE'), icons: 'fa-camera'}
+        {id: 1, title: this.LangString('APP_INSTAGRAM_WRITE_CAPTION'), icons: 'fa-pencil-square-o'},
+        {id: 2, title: this.LangString('APP_INSTAGRAM_POST_IMAGE'), icons: 'fa-camera'}
       ]
       const resp = await Modal.CreateModal({ choix: choix })
       if (resp.id === 1) {

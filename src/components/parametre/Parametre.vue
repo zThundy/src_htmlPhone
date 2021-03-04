@@ -1,6 +1,6 @@
 <template>
   <div style="background-color: rgb(240, 240, 240)" class="phone_app">
-    <PhoneTitle :title="IntlString('APP_CONFIG_TITLE')" :backgroundColor="'rgb(255, 255, 255)'" :textColor="'black'" @back="onBackspace"/>
+    <PhoneTitle :title="LangString('APP_CONFIG_TITLE')" :backgroundColor="'rgb(255, 255, 255)'" :textColor="'black'" @back="onBackspace"/>
 
     <div class="infoContainer">
       <div class="whiteContainer">
@@ -68,7 +68,7 @@ export default {
   },
   computed: {
     ...mapGetters([
-      'IntlString',
+      'LangString',
       'myPhoneNumber',
       'backgroundLabel',
       'sonidoLabel',
@@ -91,11 +91,11 @@ export default {
     ]),
     paramList () {
       // stringa di conferma reset
-      const confirmResetStr = this.IntlString('APP_CONFIG_RESET_CONFIRM')
+      const confirmResetStr = this.LangString('APP_CONFIG_RESET_CONFIRM')
       const confirmReset = {}
       confirmReset[confirmResetStr] = {value: 'accept', icons: 'fa-exclamation-triangle'}
       // stringa di annulla
-      const cancelStr = this.IntlString('CANCEL')
+      const cancelStr = this.LangString('CANCEL')
       const cancelTB = {}
       cancelTB[cancelStr] = {value: 'cancel', icons: 'fa-undo', color: 'red'}
       // stringa di nessuna cover
@@ -104,14 +104,14 @@ export default {
       return [
         {
           icons: 'fa-phone',
-          title: this.IntlString('APP_CONFIG_MY_MUNBER'),
+          title: this.LangString('APP_CONFIG_MY_MUNBER'),
           value: this.myPhoneNumber
         },
         {
           meta: 'wifi',
           icons: 'fa-wifi',
           onValid: 'connectToWifi',
-          title: this.IntlString('APP_CONFIG_WIFI'),
+          title: this.LangString('APP_CONFIG_WIFI'),
           value: this.wifiString,
           values: []
         },
@@ -119,14 +119,14 @@ export default {
         //   meta: 'bluetooth',
         //   icons: 'fa-bluetooth-b',
         //   onValid: 'toggleBluetooth',
-        //   title: this.IntlString('APP_CONFIG_BLUETOOTH'),
+        //   title: this.LangString('APP_CONFIG_BLUETOOTH'),
         //   value: this.bluetoothString
         // },
         {
           meta: 'notifications',
           icons: 'fa-bell',
           onValid: 'toggleNotificationsLocally',
-          title: this.IntlString('APP_CONFIG_NOTIFICATION'),
+          title: this.LangString('APP_CONFIG_NOTIFICATION'),
           value: (this.notification) ? 'Attive' : 'Disattive',
           bottone: true
         },
@@ -134,14 +134,14 @@ export default {
           meta: 'airplane',
           icons: 'fa-plane',
           onValid: 'toggleAirplaneModeLocally',
-          title: this.IntlString('APP_CONFIG_AIRPLANE_MODE'),
+          title: this.LangString('APP_CONFIG_AIRPLANE_MODE'),
           value: (this.airplane) ? 'Attiva' : 'Disattiva',
           bottone: true
         },
         {
           meta: 'background',
           icons: 'fa-picture-o',
-          title: this.IntlString('APP_CONFIG_WALLPAPER'),
+          title: this.LangString('APP_CONFIG_WALLPAPER'),
           value: this.backgroundLabel,
           onValid: 'onChangeBackground',
           values: this.config.background
@@ -149,7 +149,7 @@ export default {
         {
           meta: 'cover',
           icons: 'fa-mobile',
-          title: this.IntlString('APP_CONFIG_CASE'),
+          title: this.LangString('APP_CONFIG_CASE'),
           value: this.currentCover.label,
           onValid: 'onChangeCover',
           values: {
@@ -161,14 +161,14 @@ export default {
         {
           meta: 'suoneria',
           icons: 'fa-bell-o',
-          title: this.IntlString('APP_CONFIG_SOUND'),
+          title: this.LangString('APP_CONFIG_SOUND'),
           value: this.sonidoLabel,
           onValid: 'onChangeSonido',
           values: this.config.sonido
         },
         {
           icons: 'fa-search',
-          title: this.IntlString('APP_CONFIG_ZOOM'),
+          title: this.LangString('APP_CONFIG_ZOOM'),
           value: this.zoom,
           onValid: 'setLocalZoom',
           onLeft: this.ajustZoom(-1),
@@ -183,7 +183,7 @@ export default {
         },
         {
           icons: 'fa-volume-down',
-          title: this.IntlString('APP_CONFIG_VOLUME'),
+          title: this.LangString('APP_CONFIG_VOLUME'),
           value: this.valumeDisplay,
           onValid: 'setPhoneVolume',
           onLeft: this.ajustVolume(-0.01),
@@ -200,12 +200,12 @@ export default {
         // {
         //   icons: 'fa-microphone',
         //   onValid: 'toggleTextToSpeech',
-        //   title: this.IntlString('APP_CONFIG_TEXT_TO_SPEECH'),
+        //   title: this.LangString('APP_CONFIG_TEXT_TO_SPEECH'),
         //   value: (this.tts) ? 'Attiva' : 'Disattiva'
         // },
         {
           icons: 'fa-globe',
-          title: this.IntlString('APP_CONFIG_LANGUAGE'),
+          title: this.LangString('APP_CONFIG_LANGUAGE'),
           onValid: 'onChangeLanguages',
           values: {
             ...this.availableLanguages,
@@ -215,7 +215,7 @@ export default {
         {
           icons: 'fa-exclamation-triangle',
           color: '#ee3838',
-          title: this.IntlString('APP_CONFIG_RESET'),
+          title: this.LangString('APP_CONFIG_RESET'),
           onValid: 'resetPhone',
           values: {
             ...cancelTB,
@@ -366,8 +366,8 @@ export default {
       if (val === 'Link') {
         this.ignoreControls = true
         let choix = [
-          {id: 1, title: this.IntlString('APP_CONFIG_LINK_PICTURE'), icons: 'fa-link'},
-          {id: 2, title: this.IntlString('APP_CONFIG_TAKE_PICTURE'), icons: 'fa-camera'}
+          {id: 1, title: this.LangString('APP_CONFIG_LINK_PICTURE'), icons: 'fa-link'},
+          {id: 2, title: this.LangString('APP_CONFIG_TAKE_PICTURE'), icons: 'fa-camera'}
         ]
         const resp = await Modal.CreateModal({ choix: choix })
         if (resp.id === 1) {
@@ -475,12 +475,12 @@ export default {
       if (data.value !== 'cancel') {
         this.ignoreControls = true
         let choix = [{
-          title: this.IntlString('APP_CONFIG_RESET_CONFIRM'),
+          title: this.LangString('APP_CONFIG_RESET_CONFIRM'),
           color: 'red',
           icons: 'fa-exclamation-triangle',
           reset: true
         }, {
-          title: this.IntlString('CANCEL'),
+          title: this.LangString('CANCEL'),
           icons: 'fa-undo',
           color: 'red'
         }]

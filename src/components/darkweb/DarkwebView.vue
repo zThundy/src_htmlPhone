@@ -12,7 +12,7 @@
         <div class="dark-content">
 
           <div class="dark-head">
-            <div class="dark-head-author">{{ IntlString("APP_DARKWEB_USER_TITLE") }}</div>
+            <div class="dark-head-author">{{ LangString("APP_DARKWEB_USER_TITLE") }}</div>
             <i v-if="val.mine == 1" class="dark-user-icon fa fa-user"></i>
           </div>
 
@@ -60,7 +60,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['darkwebMessages', 'IntlString'])
+    ...mapGetters(['darkwebMessages', 'LangString'])
   },
   watch: {
   },
@@ -72,18 +72,18 @@ export default {
       const message = this.darkwebMessages[this.selectMessage]
       let optionsChoix = [{
         id: 1,
-        title: this.IntlString('APP_DARKWEB_REPLY'),
+        title: this.LangString('APP_DARKWEB_REPLY'),
         icons: 'fa-retweet'
       }, {
         id: -1,
-        title: this.IntlString('CANCEL'),
+        title: this.LangString('CANCEL'),
         icons: 'fa-undo',
         color: 'red'
       }]
       if (this.isImage(message.message)) {
         optionsChoix = [{
           id: 2,
-          title: this.IntlString('APP_MESSAGE_ZOOM_IMG'),
+          title: this.LangString('APP_MESSAGE_ZOOM_IMG'),
           icons: 'fa-search'
         }, ...optionsChoix]
       }

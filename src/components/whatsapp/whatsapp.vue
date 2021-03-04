@@ -1,6 +1,6 @@
 <template>
   <div style="width: 330px; height: 100%;">
-    <PhoneTitle :title="IntlString('APP_WHATSAPP_TITLE')" :textColor="'black'" :backgroundColor="'rgb(112,255,125)'" @back="onBackspace"/>
+    <PhoneTitle :title="LangString('APP_WHATSAPP_TITLE')" :textColor="'black'" :backgroundColor="'rgb(112,255,125)'" @back="onBackspace"/>
 
     <div v-for="(s, i) in gruppi" :key="s.gruppo" class="whatsapp-menu-item" :class="{select: i === currentSelected}">
       <img :src="hasImage(s)" class="immagineGruppo">
@@ -28,7 +28,7 @@ export default {
   },
   computed: {
     ...mapGetters([
-      'IntlString',
+      'LangString',
       'gruppi',
       'myPhoneNumber',
       'hasWifi'
@@ -90,13 +90,13 @@ export default {
       let gruppo = this.gruppi[this.currentSelected]
       this.ignoreControls = true
       let scelte = [
-        {id: 3, title: this.IntlString('APP_WHATSAPP_EDIT_GROUP'), icons: 'fa-cog'},
-        {id: 1, title: this.IntlString('APP_WHATSAPP_QUIT_GROUP'), icons: 'fa-trash', color: 'red'}
+        {id: 3, title: this.LangString('APP_WHATSAPP_EDIT_GROUP'), icons: 'fa-cog'},
+        {id: 1, title: this.LangString('APP_WHATSAPP_QUIT_GROUP'), icons: 'fa-trash', color: 'red'}
       ]
       if (this.currentSelected === -1) {
         scelte = [
-          {id: 0, title: this.IntlString('APP_WHATSAPP_SETTINGS'), icons: 'fa-cog'},
-          {id: 2, title: this.IntlString('APP_WHATSAPP_NEW_GROUP'), icons: 'fa-plus', color: 'green'}
+          {id: 0, title: this.LangString('APP_WHATSAPP_SETTINGS'), icons: 'fa-cog'},
+          {id: 2, title: this.LangString('APP_WHATSAPP_NEW_GROUP'), icons: 'fa-plus', color: 'green'}
         ]
       }
       const rep = await Modal.CreateModal({ choix: scelte })

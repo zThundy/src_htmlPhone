@@ -1,11 +1,11 @@
 <template>
   <div style="width: 326px; height: 743px;" class="phone_content">
     <div class='tweet_write'>
-        <!-- <textarea class="textarea-input" v-model.trim="message" v-autofocus :placeholder="IntlString('APP_TWITTER_PLACEHOLDER_MESSAGE')"></textarea> -->
-        <textarea class="textarea-input" v-model.trim="message" :placeholder="IntlString('APP_DARKWEB_PLACEHOLDER_MESSAGE')"></textarea>
+        <!-- <textarea class="textarea-input" v-model.trim="message" v-autofocus :placeholder="LangString('APP_TWITTER_PLACEHOLDER_MESSAGE')"></textarea> -->
+        <textarea class="textarea-input" v-model.trim="message" :placeholder="LangString('APP_DARKWEB_PLACEHOLDER_MESSAGE')"></textarea>
 
-        <span class='tweet_send'>{{ IntlString('APP_DARKWEB_BUTTON_ACTION_MESSAGE') }}</span> 
-        <span class='tweet_send_left'>{{ IntlString('APP_DARKWEB_BUTTON_ACTION_PICTURE') }}</span>
+        <span class='tweet_send'>{{ LangString('APP_DARKWEB_BUTTON_ACTION_MESSAGE') }}</span> 
+        <span class='tweet_send_left'>{{ LangString('APP_DARKWEB_BUTTON_ACTION_PICTURE') }}</span>
     </div>
   </div>
 </template>
@@ -23,7 +23,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['IntlString'])
+    ...mapGetters(['LangString'])
   },
   watch: {
   },
@@ -33,8 +33,8 @@ export default {
       if (this.modalopened) return
       this.modalopened = true
       let resp = await Modal.CreateModal({ choix: [
-        {id: 1, title: this.IntlString('APP_DARKWEB_POST_MESSAGE'), icons: 'fa-comment'},
-        {id: 2, title: this.IntlString('APP_DARKWEB_POST_PICTURE'), icons: 'fa-camera'}
+        {id: 1, title: this.LangString('APP_DARKWEB_POST_MESSAGE'), icons: 'fa-comment'},
+        {id: 2, title: this.LangString('APP_DARKWEB_POST_PICTURE'), icons: 'fa-camera'}
       ] })
       if (resp.id === 1) {
         this.postTextTweet()

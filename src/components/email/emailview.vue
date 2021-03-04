@@ -1,21 +1,21 @@
 <template>
   <div class="phone_app">
-    <PhoneTitle :title="IntlString('APP_EMAIL_CHOOSEN_TITLE')" :backgroundColor="'rgb(216, 71, 49)'" />
+    <PhoneTitle :title="LangString('APP_EMAIL_CHOOSEN_TITLE')" :backgroundColor="'rgb(216, 71, 49)'" />
 
     <div class="email-container">
       <div class="email-header">
 
         <table class="email-header-content">
           <tr colspan="2">
-            <td class="email-header-content-title">{{ IntlString("APP_EMAIL_READING_FROM_LABEL") }}</td>
+            <td class="email-header-content-title">{{ LangString("APP_EMAIL_READING_FROM_LABEL") }}</td>
             <td class="email-header-content-text">{{ currentEmail.sender }}</td>
           </tr>
           <tr colspan="2">
-            <td class="email-header-content-title">{{ IntlString("APP_EMAIL_READING_TO_LABEL") }}</td>
+            <td class="email-header-content-title">{{ LangString("APP_EMAIL_READING_TO_LABEL") }}</td>
             <td class="email-header-content-text">{{ currentEmail.receiver }}</td>
           </tr>
           <tr colspan="2">
-            <td class="email-header-content-title">{{ IntlString("APP_EMAIL_READING_TITLE_LABEL") }}</td>
+            <td class="email-header-content-title">{{ LangString("APP_EMAIL_READING_TITLE_LABEL") }}</td>
             <td class="email-header-content-text">{{ currentEmail.title }}</td>
           </tr>
         </table>
@@ -26,7 +26,7 @@
 
         <table class="email-body-content">
           <tr colspan="2">
-            <td class="email-body-content-title">{{ IntlString("APP_EMAIL_READING_MESSAGE_LABEL") }}</td>
+            <td class="email-body-content-title">{{ LangString("APP_EMAIL_READING_MESSAGE_LABEL") }}</td>
           </tr>
           <tr colspan="2">
             <td class="email-body-content-text">{{ currentEmail.message }}</td>
@@ -55,7 +55,7 @@ export default {
   },
   computed: {
     ...mapGetters([
-      'IntlString',
+      'LangString',
       'emails'
     ])
   },

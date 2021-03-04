@@ -1,6 +1,6 @@
 <template>
   <div class="phone_app">
-    <PhoneTitle :title="IntlString('APP_BANK_TITLE')" :back="onBackspace" :color="'white'" :backgroundColor="'rgb(45, 74, 175)'" />
+    <PhoneTitle :title="LangString('APP_BANK_TITLE')" :back="onBackspace" :color="'white'" :backgroundColor="'rgb(45, 74, 175)'" />
 
     <div class="slice"></div>
     <div class="slice2"></div>
@@ -22,9 +22,9 @@
       <div class="movementsCard" v-for="(elem, key) in movements" :key="key" v-bind:class="{selected: key === currentSelect}">
         <i v-if="elem.type == 'positive'" style="color: lime;" class="fas fa-arrow-up"></i>
         <i v-else style="color: red;" class="fas fa-arrow-down"></i>
-        <label class="to">{{ IntlString('APP_BANK_MOVEMENTS_TO') }}: {{ elem.to }}</label>
-        <label class="from">{{ IntlString('APP_BANK_MOVEMENTS_FROM') }}: {{ elem.from }}</label>
-        <label class="amount">{{ IntlString('APP_BANK_MOVEMENTS_AMOUNT') }}: {{ elem.amount }} $</label>
+        <label class="to">{{ LangString('APP_BANK_MOVEMENTS_TO') }}: {{ elem.to }}</label>
+        <label class="from">{{ LangString('APP_BANK_MOVEMENTS_FROM') }}: {{ elem.from }}</label>
+        <label class="amount">{{ LangString('APP_BANK_MOVEMENTS_AMOUNT') }}: {{ elem.amount }} $</label>
         <hr class="mov-separator">
       </div>
 
@@ -53,7 +53,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['bankAmount', 'iban', 'IntlString', 'fatture', 'movements'])
+    ...mapGetters(['bankAmount', 'iban', 'LangString', 'fatture', 'movements'])
   },
   methods: {
     ...mapActions(['requestLocalFatture', 'createPagamento']),
@@ -72,9 +72,9 @@ export default {
       this.ignoreControls = true
       try {
         Modal.CreateModal({ choix: [
-          {id: 1, title: this.IntlString('APP_BANK_LISTA_FATTURE'), icons: 'fa-list-alt'},
-          {id: 2, title: this.IntlString('APP_BANK_CREATE_MOVEMENT'), icons: 'fa-plus'},
-          {id: -1, title: this.IntlString('CANCEL'), icons: 'fa-undo', color: 'red'}
+          {id: 1, title: this.LangString('APP_BANK_LISTA_FATTURE'), icons: 'fa-list-alt'},
+          {id: 2, title: this.LangString('APP_BANK_CREATE_MOVEMENT'), icons: 'fa-plus'},
+          {id: -1, title: this.LangString('CANCEL'), icons: 'fa-undo', color: 'red'}
         ] }).then(resp => {
           if (resp.id === 1) {
             this.listaFatture()
@@ -102,7 +102,7 @@ export default {
       try {
         var choix = []
         for (var key in this.fatture) { choix.push({ id: this.fatture[key].id, title: this.fatture[key].label + ' - ' + this.fatture[key].amount, icons: 'fa-money', fattura: this.fatture[key] }) }
-        choix.push({ id: -1, title: this.IntlString('CANCEL'), icons: 'fa-undo', color: 'red' })
+        choix.push({ id: -1, title: this.LangString('CANCEL'), icons: 'fa-undo', color: 'red' })
         // dopo essermi creato la lista delle fatture, mi buildo il menù
         Modal.CreateModal({ choix }).then(resp => {
           if (resp.id === -1) { this.ignoreControls = false } else { this.selectedFatturaOptions(resp.fattura) }
@@ -113,8 +113,8 @@ export default {
       this.ignoreControls = true
       try {
         Modal.CreateModal({ choix: [
-          {id: 1, title: this.IntlString('APP_BANK_MODAL_PAGA_FATTURE'), icons: 'fa-check-square'},
-          {id: -1, title: this.IntlString('CANCEL'), icons: 'fa-undo', color: 'red'}
+          {id: 1, title: this.LangString('APP_BANK_MODAL_PAGA_FATTURE'), icons: 'fa-check-square'},
+          {id: -1, title: this.LangString('CANCEL'), icons: 'fa-undo', color: 'red'}
         ] }).then(resp => {
           if (resp.id === 1) {
             this.$phoneAPI.pagaFattura(fattura)

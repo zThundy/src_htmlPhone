@@ -1,6 +1,6 @@
 <template>
   <div class="phone_app">
-    <PhoneTitle :title="IntlString('APP_DARKTCHAT_TITLE')" :backgroundColor="'rgb(95, 94, 198)'" :textColor="'white'" @back="onBack" />
+    <PhoneTitle :title="LangString('APP_DARKTCHAT_TITLE')" :backgroundColor="'rgb(95, 94, 198)'" :textColor="'white'" @back="onBack" />
     
     <div style="padding-top: 20px;" class="slice"></div>
 
@@ -39,7 +39,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['IntlString', 'tchatChannels'])
+    ...mapGetters(['LangString', 'tchatChannels'])
   },
   methods: {
     ...mapActions(['tchatAddChannel', 'tchatRemoveChannel']),
@@ -65,9 +65,9 @@ export default {
       if (this.ignoreControls === true) return
       this.ignoreControls = true
       let choix = [
-        {id: 1, title: this.IntlString('APP_DARKTCHAT_NEW_CHANNEL'), icons: 'fa-plus', color: 'green'},
-        {id: 2, title: this.IntlString('APP_DARKTCHAT_DELETE_CHANNEL'), icons: 'fa-minus', color: 'orange'},
-        {id: 3, title: this.IntlString('APP_DARKTCHAT_CANCEL'), icons: 'fa-undo', color: 'red'}
+        {id: 1, title: this.LangString('APP_DARKTCHAT_NEW_CHANNEL'), icons: 'fa-plus', color: 'green'},
+        {id: 2, title: this.LangString('APP_DARKTCHAT_DELETE_CHANNEL'), icons: 'fa-minus', color: 'orange'},
+        {id: 3, title: this.LangString('APP_DARKTCHAT_CANCEL'), icons: 'fa-undo', color: 'red'}
       ]
       if (this.tchatChannels.length === 0) {
         choix.splice(1, 1)
@@ -89,8 +89,8 @@ export default {
       if (this.tchatChannels.length === 0) {
         this.ignoreControls = true
         let choix = [
-          {id: 1, title: this.IntlString('APP_DARKTCHAT_NEW_CHANNEL'), icons: 'fa-plus', color: 'green'},
-          {id: 3, title: this.IntlString('APP_DARKTCHAT_CANCEL'), icons: 'fa-undo', color: 'red'}
+          {id: 1, title: this.LangString('APP_DARKTCHAT_NEW_CHANNEL'), icons: 'fa-plus', color: 'green'},
+          {id: 3, title: this.LangString('APP_DARKTCHAT_CANCEL'), icons: 'fa-undo', color: 'red'}
         ]
         const rep = await Modal.CreateModal({ choix })
         this.ignoreControls = false
@@ -112,12 +112,12 @@ export default {
     async addChannelOption () {
       try {
         this.ignoreControls = true
-        const rep = await Modal.CreateTextModal({ limit: 20, title: this.IntlString('APP_DARKTCHAT_NEW_CHANNEL') })
+        const rep = await Modal.CreateTextModal({ limit: 20, title: this.LangString('APP_DARKTCHAT_NEW_CHANNEL') })
         let channel = (rep || {}).text || ''
         channel = channel.toLowerCase().replace(/[^a-z]/g, '')
         for (var i in this.tchatChannels) {
           if (this.tchatChannels[i].channel === channel) {
-            this.$phoneAPI.sendErrorMessage(this.IntlString('APP_DARKCHAT_ERROR_NOTIFICATION'))
+            this.$phoneAPI.sendErrorMessage(this.LangString('APP_DARKCHAT_ERROR_NOTIFICATION'))
             this.ignoreControls = false
             return
           }

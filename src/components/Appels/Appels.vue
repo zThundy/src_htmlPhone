@@ -1,6 +1,6 @@
 <template>
    <div style="width: 326px; height: 743px;" class="phone_app">
-    <PhoneTitle :title="IntlString('APP_PHONE_TITLE')" v-on:back="onBackspace" />
+    <PhoneTitle :title="LangString('APP_PHONE_TITLE')" v-on:back="onBackspace" />
     
     <div class="content">
       <component :is="subMenu[currentMenuIndex].Comp" />
@@ -10,7 +10,7 @@
     
       <div class="subMenu-elem" :style="getColorItem(i)" v-for="(Comp, i) of subMenu" :key="i">
         <i class="subMenu-icon fa" :class="['fa-' + Comp.icon]"></i>
-        <span class="subMenu-name">{{Comp.name}}</span>
+        <span class="subMenu-name">{{ Comp.name }}</span>
       </div>
       
     </div>
@@ -35,20 +35,20 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['IntlString', 'themeColor', 'ignoreControls']),
+    ...mapGetters(['LangString', 'themeColor', 'ignoreControls']),
     ...mapActions(['updateIgnoredControls']),
     subMenu () {
       return [{
         Comp: AppelsFavoris,
-        name: this.IntlString('APP_PHONE_MENU_FAVORITES'),
+        name: this.LangString('APP_PHONE_MENU_FAVORITES'),
         icon: 'star'
       }, {
         Comp: AppelsRecents,
-        name: this.IntlString('APP_PHONE_MENU_RECENTS'),
+        name: this.LangString('APP_PHONE_MENU_RECENTS'),
         icon: 'clock-o'
       }, {
         Comp: AppelsContacts,
-        name: this.IntlString('APP_PHONE_MENU_CONTACTS'),
+        name: this.LangString('APP_PHONE_MENU_CONTACTS'),
         icon: 'user'
       }]
     }

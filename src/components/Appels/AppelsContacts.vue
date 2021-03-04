@@ -29,10 +29,10 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['IntlString', 'contacts']),
+    ...mapGetters(['LangString', 'contacts']),
     contactsList () {
       return [{
-        display: this.IntlString('APP_PHONE_ENTER_NUMBER'),
+        display: this.LangString('APP_PHONE_ENTER_NUMBER'),
         letter: '#',
         backgroundColor: '#D32F2F',
         custom: true

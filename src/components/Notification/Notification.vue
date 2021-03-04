@@ -1,18 +1,18 @@
 <template>
   <div v-if="show === true && tempoHide === false">
-    <div class="notifications">
 
+    <div class="notifications">
       <div v-for='notif in list' :key="notif.id" class="notification">
 
         <div class="appName" :style="style(notif)">
-          <i v-if="notif.icon" class="fa" :class="'fa-' + notif.icon"/> {{ notif.appName }}
+          <i v-if="notif.icon" class="fa" :class="'fa-' + notif.icon"/>
+          <span>{{ notif.appName }}</span>
         </div>
 
         <div v-if="notif.title" class="message" style="font-weight: bold">{{ notif.title }}</div>
         <div v-if="notif.message" class="message">{{ notif.message }}</div>
 
       </div>
-    
     </div>
 
   </div>
@@ -60,7 +60,7 @@ export default {
       }
       if (event.sound !== null && event.sound !== undefined) {
         var path = '/html/static/sound/' + event.sound
-        this.audio = new Howl({ src: path })
+        this.audio = new Howl({ src: path, onend () { this.audio = null } })
         // qui controllo se viene passato il volume.
         // se si lo imposto al valore, altrimenti lo metto a 0.5
         // console.log('event.volume dentro notification', event.volume)
@@ -72,9 +72,6 @@ export default {
           }
           this.audio.play()
           // ascolto quando l'audio termina e via
-          this.audio.on('end', () => {
-            this.audio = null
-          })
         })
       }
     },
@@ -100,7 +97,7 @@ export default {
   position: absolute;
   z-index: 1;
   
-  top: 15px;
+  top: 12px;
   width: 100%;
 }
 
@@ -110,7 +107,7 @@ export default {
   margin-right: auto;
 
   width: 95%;
-  padding: 10px;
+  padding: 8px;
 
   background-color: rgb(255, 255, 255);
   color: rgb(0, 0, 0);
@@ -119,6 +116,11 @@ export default {
 
 .appName {
   font-size: 15px;
+  font-weight: bold;
+}
+
+.appName span {
+  font-size: 18px;
   font-weight: bold;
 }
 

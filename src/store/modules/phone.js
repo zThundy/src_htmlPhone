@@ -116,7 +116,7 @@ const getters = {
     }
     return AvailableLanguage
   },
-  IntlString ({ config, lang }) {
+  LangString ({ config, lang }) {
     lang = lang || config.defaultLanguage
     if (config.language[lang] === undefined) {
       return (LABEL) => LABEL

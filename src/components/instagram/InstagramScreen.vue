@@ -32,26 +32,26 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['IntlString']),
+    ...mapGetters(['LangString']),
     screen () {
       return [
         {
-          title: this.IntlString('APP_INSTAGRAM_SHOW_POSTS_TITLE'),
+          title: this.LangString('APP_INSTAGRAM_SHOW_POSTS_TITLE'),
           component: InstagramView,
           icon: 'fa-instagram'
         },
         {
-          title: this.IntlString('APP_INSTAGRAM_NEW_POST'),
+          title: this.LangString('APP_INSTAGRAM_NEW_POST'),
           component: InstagramPost,
           icon: 'fa-camera'
         },
         {
-          title: this.IntlString('APP_INSTAGRAM_ACCOUNT'),
+          title: this.LangString('APP_INSTAGRAM_ACCOUNT'),
           component: InstagramAccount,
           icon: 'fa-user'
         },
         {
-          title: this.IntlString('APP_INSTAGRAM_EDIT_PICTURE'),
+          title: this.LangString('APP_INSTAGRAM_EDIT_PICTURE'),
           component: InstagramFiltri,
           icon: 'fa-filter'
         }

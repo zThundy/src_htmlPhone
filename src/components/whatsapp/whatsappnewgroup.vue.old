@@ -1,8 +1,8 @@
 <template>
   <div style="width: 326px; height: 743px;">
-    <PhoneTitle :title="this.IntlString('APP_WHATSAPP_TITLE')" @back="onBackspace"/>
+    <PhoneTitle :title="this.LangString('APP_WHATSAPP_TITLE')" @back="onBackspace"/>
 
-    <list :list='lcontacts' :disable="disableList" :title="IntlString('APP_WHATSAPP_CHOOSE_CONTACTS')" @back="back" @select='onSelect' @option='onOption'></list>
+    <list :list='lcontacts' :disable="disableList" :title="LangString('APP_WHATSAPP_CHOOSE_CONTACTS')" @back="back" @select='onSelect' @option='onOption'></list>
 
     </div>
 
@@ -25,9 +25,9 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['IntlString', 'contacts']),
+    ...mapGetters(['LangString', 'contacts']),
     lcontacts () {
-      let addContact = {display: this.IntlString('APP_CONTACT_NEW'), letter: '+', num: '', id: -1}
+      let addContact = {display: this.LangString('APP_CONTACT_NEW'), letter: '+', num: '', id: -1}
       return [addContact, ...this.contacts.map(e => {
         if (e.icon === null || e.icon === undefined || e.icon === '') {
           e.backgroundColor = e.backgroundColor || generateColorForStr(e.number)

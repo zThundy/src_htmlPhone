@@ -33,16 +33,16 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['IntlString']),
+    ...mapGetters(['LangString']),
     screen () {
       return [
         {
-          title: this.IntlString('APP_DARKWEB_TITLE'),
+          title: this.LangString('APP_DARKWEB_TITLE'),
           component: DarkwebView,
           icon: 'fa-home'
         },
         {
-          title: this.IntlString('APP_DARKWEB_TITLE'),
+          title: this.LangString('APP_DARKWEB_TITLE'),
           component: DarkwebPost,
           icon: ' fa-comment-o'
         }

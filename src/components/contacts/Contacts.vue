@@ -1,7 +1,7 @@
 <template>
   <div style="width: 326px; height: 100%; backgroundColor: white" class="contact">
 
-    <list :list='lcontacts' :disable="disableList" :title="IntlString('APP_CONTACT_TITLE')" @back="back" @select='onSelect' @option='onOption'></list>
+    <list :list='lcontacts' :disable="disableList" :title="LangString('APP_CONTACT_TITLE')" @back="back" @select='onSelect' @option='onOption'></list>
   
   </div>
 </template>
@@ -21,9 +21,9 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['IntlString', 'contacts']),
+    ...mapGetters(['LangString', 'contacts']),
     lcontacts () {
-      let addContact = { display: this.IntlString('APP_CONTACT_NEW'), letter: '+', num: '', id: -1 }
+      let addContact = { display: this.LangString('APP_CONTACT_NEW'), letter: '+', num: '', id: -1 }
       return [addContact, ...this.contacts.map(e => {
         if (e.icon === null || e.icon === undefined || e.icon === '') {
           e.backgroundColor = e.backgroundColor || generateColorForStr(e.number)
@@ -47,12 +47,12 @@ export default {
       const isValid = contact.number.startsWith('#') === false
       this.disableList = true
       var choix = [
-          {id: 1, title: this.IntlString('APP_CONTACT_EDIT'), icons: 'fa-user-circle', color: 'orange'},
-          {id: 2, title: this.IntlString('APP_CONTACT_ADD_PICTURE'), icons: 'fa-camera'},
-          // {id: 5, title: this.IntlString('APP_CONTACT_SHARE_CONTACT'), icons: 'fa-address-book'},
-          {id: 4, title: this.IntlString('CANCEL'), icons: 'fa-undo', color: 'red'}
+          {id: 1, title: this.LangString('APP_CONTACT_EDIT'), icons: 'fa-user-circle', color: 'orange'},
+          {id: 2, title: this.LangString('APP_CONTACT_ADD_PICTURE'), icons: 'fa-camera'},
+          // {id: 5, title: this.LangString('APP_CONTACT_SHARE_CONTACT'), icons: 'fa-address-book'},
+          {id: 4, title: this.LangString('CANCEL'), icons: 'fa-undo', color: 'red'}
       ]
-      if (isValid === true) { choix = [{id: 3, title: this.IntlString('APP_PHONE_CALL'), icons: 'fa-phone'}, ...choix] }
+      if (isValid === true) { choix = [{id: 3, title: this.LangString('APP_PHONE_CALL'), icons: 'fa-phone'}, ...choix] }
       const resp = await Modal.CreateModal({ choix: choix })
       // lista delle scelte
       switch (resp.id) {

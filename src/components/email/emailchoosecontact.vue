@@ -1,8 +1,8 @@
 <template>
   <div style="width: 100%; height: 743px;" class="contact">
-    <PhoneTitle :title="IntlString('APP_EMAIL_CHOOSE_CONTACT')" :backgroundColor="'rgb(216, 71, 49)'" />
+    <PhoneTitle :title="LangString('APP_EMAIL_CHOOSE_CONTACT')" :backgroundColor="'rgb(216, 71, 49)'" />
 
-    <list :list='lcontacts' :showHeader="false" :disable="disableList" :title="IntlString('APP_CONTACT_TITLE')" @back="back" @select='onSelect'></list>
+    <list :list='lcontacts' :showHeader="false" :disable="disableList" :title="LangString('APP_CONTACT_TITLE')" @back="back" @select='onSelect'></list>
   
   </div>
 </template>
@@ -24,7 +24,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['IntlString', 'contacts']),
+    ...mapGetters(['LangString', 'contacts']),
     lcontacts () {
       return [...this.contacts.map(e => {
         if (e.icon === null || e.icon === undefined || e.icon === '') {

@@ -1,6 +1,6 @@
 <template>
   <div class="phone_app">
-    <PhoneTitle :title="IntlString('APP_NEWS_TITLE')" :color="'white'" :backgroundColor="'rgb(106, 104, 231)'" />
+    <PhoneTitle :title="LangString('APP_NEWS_TITLE')" :color="'white'" :backgroundColor="'rgb(106, 104, 231)'" />
 
     <div class="phone_fullscreen_img" v-if="imgZoom !== undefined" @click.stop="imgZoom = undefined">
       <img :src="imgZoom" />
@@ -39,15 +39,15 @@
         <div class="bottoni">
           
           <div class="bottone">
-            <input type='button' :value="IntlString('APP_NEWS_UPLOAD_PICTURE')" :class="{ select: currentSelect === 0 }"/>
+            <input type='button' :value="LangString('APP_NEWS_UPLOAD_PICTURE')" :class="{ select: currentSelect === 0 }"/>
           </div>
 
           <div class="bottone">
-            <input type='button' :value="IntlString('APP_NEWS_WRITE_MESSAGE')" :class="{ select: currentSelect === 1 }"/>
+            <input type='button' :value="LangString('APP_NEWS_WRITE_MESSAGE')" :class="{ select: currentSelect === 1 }"/>
           </div>
 
           <div class="bottone">
-            <input type='button' :value="IntlString('APP_NEWS_SEND_POST')" :class="{ select: currentSelect === 2 }"/>
+            <input type='button' :value="LangString('APP_NEWS_SEND_POST')" :class="{ select: currentSelect === 2 }"/>
           </div>
 
         </div>
@@ -111,7 +111,7 @@ export default {
   },
   computed: {
     ...mapGetters([
-      'IntlString',
+      'LangString',
       'news',
       'job',
       'tempNews'
@@ -159,9 +159,9 @@ export default {
           // carica immagine
           this.ignoreControl = true
           var options = [
-            { id: 1, title: this.IntlString('APP_CONFIG_LINK_PICTURE'), icons: 'fa-link' },
-            { id: 2, title: this.IntlString('APP_CONFIG_TAKE_PICTURE'), icons: 'fa-camera' },
-            { id: -1, title: this.IntlString('CANCEL'), icons: 'fa-undo', color: 'red' }
+            { id: 1, title: this.LangString('APP_CONFIG_LINK_PICTURE'), icons: 'fa-link' },
+            { id: 2, title: this.LangString('APP_CONFIG_TAKE_PICTURE'), icons: 'fa-camera' },
+            { id: -1, title: this.LangString('CANCEL'), icons: 'fa-undo', color: 'red' }
           ]
           Modal.CreateModal({ choix: options }).then(resp => {
             switch (resp.id) {

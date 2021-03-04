@@ -1,7 +1,7 @@
 <template>
   <div style="width: 326px; height: 743px; backgroundColor: white" class="contact">
 
-    <list :list='lcontacts' :title="IntlString('APP_MESSAGES_INOLTRA')" @back="back" @select='onSelect'></list>
+    <list :list='lcontacts' :title="LangString('APP_MESSAGES_INOLTRA')" @back="back" @select='onSelect'></list>
   
   </div>
 
@@ -21,7 +21,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['IntlString', 'contacts']),
+    ...mapGetters(['LangString', 'contacts']),
     lcontacts () {
       return [...this.contacts.map(e => {
         if (e.icon === null || e.icon === undefined || e.icon === '') {

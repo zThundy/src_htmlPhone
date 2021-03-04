@@ -1,6 +1,6 @@
 <template>
 <!--ESTE HTML ES ACOPLADO DEL VIEJO--> 
-  <div style="backgroundColor: white"  class="phone_app messages">
+  <div style="backgroundColor: white" class="phone_app messages">
     <PhoneTitle :title="displayContact" style="backgroundColor: #F1F1F1; color: black" @back="quit"/> <!--:title="displayContact" :backgroundColor="color" -->
     
     <div class="phone_fullscreen_img" v-if="imgZoom !== undefined">
@@ -26,7 +26,7 @@
           <!--
             <div v-if="mess.message.includes('%CONTACT%')">
               {{ mess.message.split(':').pop() }}
-              <input type="button" :value="IntlString('APP_MESSAGES_ADD_CONTACT')">
+              <input type="button" :value="LangString('APP_MESSAGES_ADD_CONTACT')">
             </div>
           -->
           <span v-else class="sms_message">{{ mess.message }}</span>
@@ -39,7 +39,7 @@
 
     <div style="width: 306px;" id='sms_write'>
 
-      <input type="text" v-model="message" :placeholder="IntlString('APP_MESSAGE_PLACEHOLDER_ENTER_MESSAGE')">
+      <input type="text" v-model="message" :placeholder="LangString('APP_MESSAGE_PLACEHOLDER_ENTER_MESSAGE')">
       
       <div class="sms_send">
 
@@ -158,17 +158,17 @@ export default {
         let choix = [
           {
             id: 'inoltra',
-            title: this.IntlString('APP_MESSAGE_INOLTRA_IMG'),
+            title: this.LangString('APP_MESSAGE_INOLTRA_IMG'),
             icons: 'fa-paper-plane'
           },
           {
             id: 'delete',
-            title: this.IntlString('APP_MESSAGE_DELETE'),
+            title: this.LangString('APP_MESSAGE_DELETE'),
             icons: 'fa-trash'
           },
           {
             id: -1,
-            title: this.IntlString('CANCEL'),
+            title: this.LangString('CANCEL'),
             icons: 'fa-undo',
             color: 'red'
           }
@@ -176,7 +176,7 @@ export default {
         if (isGPS === true) {
           choix = [{
             id: 'gps',
-            title: this.IntlString('APP_MESSAGE_SET_GPS'),
+            title: this.LangString('APP_MESSAGE_SET_GPS'),
             icons: 'fa-location-arrow'
           }, ...choix]
         }
@@ -184,7 +184,7 @@ export default {
           const num = message.message.match(/#([0-9-]*)/)[1]
           choix = [{
             id: 'num',
-            title: `${this.IntlString('APP_MESSAGE_MESS_NUMBER')} ${num}`,
+            title: `${this.LangString('APP_MESSAGE_MESS_NUMBER')} ${num}`,
             number: num,
             icons: 'fa-phone'
           }, ...choix]
@@ -192,7 +192,7 @@ export default {
         if (isSMSImage === true) {
           choix = [{
             id: 'zoom',
-            title: this.IntlString('APP_MESSAGE_ZOOM_IMG'),
+            title: this.LangString('APP_MESSAGE_ZOOM_IMG'),
             icons: 'fa-search'
           }, ...choix]
         }
@@ -226,23 +226,23 @@ export default {
         let choix = [
           {
             id: 'sms',
-            title: this.IntlString('APP_MESSAGE_MESS_SMS'),
+            title: this.LangString('APP_MESSAGE_MESS_SMS'),
             icons: 'fa-comment'
           },
           {
             id: 'call',
-            title: this.IntlString('APP_MESSAGE_MESS_CALL'),
+            title: this.LangString('APP_MESSAGE_MESS_CALL'),
             icons: 'fa-phone'
           },
           {
             id: -1,
-            title: this.IntlString('CANCEL'),
+            title: this.LangString('CANCEL'),
             icons: 'fa-undo',
             color: 'red'
           }// ,
           // {
           //   id: 'copy',
-          //   title: this.IntlString('APP_MESSAGE_MESS_COPY'),
+          //   title: this.LangString('APP_MESSAGE_MESS_COPY'),
           //   icons: 'fa-copy'
           // }
         ]
@@ -294,14 +294,14 @@ export default {
       try {
         this.ignoreControls = true
         let choix = [
-          {id: 1, title: this.IntlString('APP_MESSAGE_SEND_GPS'), icons: 'fa-location-arrow'},
-          {id: -1, title: this.IntlString('CANCEL'), icons: 'fa-undo', color: 'red'}
+          {id: 1, title: this.LangString('APP_MESSAGE_SEND_GPS'), icons: 'fa-location-arrow'},
+          {id: -1, title: this.LangString('CANCEL'), icons: 'fa-undo', color: 'red'}
         ]
         if (this.enableTakePhoto) {
           choix = [
-            {id: 1, title: this.IntlString('APP_MESSAGE_SEND_GPS'), icons: 'fa-location-arrow'},
-            {id: 2, title: this.IntlString('APP_MESSAGE_SEND_PHOTO'), icons: 'fa-picture-o'},
-            {id: -1, title: this.IntlString('CANCEL'), icons: 'fa-undo', color: 'red'}
+            {id: 1, title: this.LangString('APP_MESSAGE_SEND_GPS'), icons: 'fa-location-arrow'},
+            {id: 2, title: this.LangString('APP_MESSAGE_SEND_PHOTO'), icons: 'fa-picture-o'},
+            {id: -1, title: this.LangString('CANCEL'), icons: 'fa-undo', color: 'red'}
           ]
         }
         const data = await Modal.CreateModal({ choix })
@@ -322,7 +322,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['IntlString', 'messages', 'contacts', 'enableTakePhoto']),
+    ...mapGetters(['LangString', 'messages', 'contacts', 'enableTakePhoto']),
     messagesListApp () {
       return this.messages.filter(e => e.transmitter === this.phoneNumber).sort((a, b) => a.time - b.time)
     },
@@ -541,8 +541,8 @@ export default {
   border-radius: 50%;
   border: 2px solid rgb(0, 0, 0);
 
-  height: 50px;
-  width: 50px;
+  height: 40px;
+  width: 40px;
 
   overflow: hidden;
   display: flex;
