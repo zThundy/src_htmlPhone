@@ -2,7 +2,7 @@
 
 const state = {
   myJobInfo: null,
-  aziendaInfo: null,
+  myAziendaInfo: null,
   buttons: [
     {
       id: 'employes',
@@ -23,7 +23,7 @@ const state = {
 
 const getters = {
   myJobInfo: ({ myJobInfo }) => myJobInfo,
-  aziendaInfo: ({ aziendaInfo }) => aziendaInfo,
+  myAziendaInfo: ({ myAziendaInfo }) => myAziendaInfo,
   buttons: ({ buttons }) => buttons,
   aziendaMessages: ({ aziendaMessages }) => aziendaMessages,
   aziendaIngoreControls: ({ aziendaIngoreControls }) => aziendaIngoreControls
@@ -35,6 +35,16 @@ const actions = {
 const mutations = {
   SET_AZIENDA_IGNORE_CONTROLS (state, bool) {
     state.aziendaIngoreControls = bool
+  },
+  UPDATE_AZIENDA_APP (state, data) {
+    state.myJobInfo = data.myJobInfo
+    state.myAziendaInfo = data.myAziendaInfo
+  },
+  UPDATE_AZIENDA_MESSAGES (state, messages) {
+    state.aziendaMessages = messages
+  },
+  UPDATE_AZIENDA_EMPLOYES (state, employes) {
+    state.myAziendaInfo.employes = employes
   }
 }
 
@@ -65,11 +75,11 @@ if (process.env.NODE_ENV !== 'production') {
     }
   }
 
-  state.aziendaInfo = {
+  state.myAziendaInfo = {
     money: 200000000,
     label: 'Supercalifragilisichespirali',
     name: 'police',
-    img: 'https://g.foolcdn.com/editorial/images/578933/square01.jpg',
+    // img: 'https://g.foolcdn.com/editorial/images/578933/square01.jpg',
     employes: [
       {
         steamid: 1283,

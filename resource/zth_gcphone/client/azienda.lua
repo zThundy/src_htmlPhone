@@ -1,13 +1,28 @@
-RegisterNetEvent("gcphone:azienda_sendMyInfo")
-AddEventHandler("gcphone:azienda_sendMyInfo", function(data)
-    --[[
-        name = "Tizio caio",
-        gradeName = "Capo",
-        salary = 0,
-        grade = 3,
-        jobName = "mechanic",
-        jobLabel = "Meccanico",
-        canedit = true -- permette di modificare le cose da capo
-        buttons = {"emolyes", ""}
-    ]]
+RegisterNUICallback("requestJobInfo", function(data, cb)
+    TriggerServerEvent("gcphone:azienda_requestJobInfo")
+end)
+
+RegisterNUICallback("sendAziendaMessage", function(data, cb)
+    -- data.azienda, data.number, data.message
+    TriggerServerEvent("gcphone:azienda_sendAziendaMessage", data.azienda, data.number, data.message)
+end)
+
+RegisterNUICallback("aziendaEmployesAction", function(data, cb)
+    -- data.azienda, data.number, data.message
+    TriggerServerEvent("gcphone:azienda_employeAction", data.action, data.employe)
+end)
+
+RegisterNetEvent("gcphone:azienda_sendJobInfo")
+AddEventHandler("gcphone:azienda_sendJobInfo", function(myJobInfo, myAziendaInfo)
+    SendNUIMessage({ event = 'updateAziendaInfo', myJobInfo = myJobInfo, myAziendaInfo = myAziendaInfo })
+end)
+
+RegisterNetEvent("gcphone:azienda_retriveMessages")
+AddEventHandler("gcphone:azienda_retriveMessages", function(messages)
+    SendNUIMessage({ event = 'updateAziendaMessages', messages = messages })
+end)
+
+RegisterNetEvent("gcphone:azienda_updateEmployes")
+AddEventHandler("gcphone:azienda_updateEmployes", function(employes)
+    SendNUIMessage({ event = 'updateAziendaEmployes', employes = employes })
 end)

@@ -89,3 +89,158 @@ Config.AddDaysOnRenewal = 30
 Config.WaitBeforeCreatingAgaing = 600
 
 Config.ModemManagement = vector3(-1083.502, -248.6952, 37.76329)
+
+Config.MinAziendaGrade = {
+    ["cardealer"] = {
+        [3] = {"salary", "employes", "chat"},
+        [2] = {"salary", "chat"},
+        [1] = {"chat"},
+        [0] = {"chat"}
+    },
+    ["realestateagent"] = {
+        [3] = {"salary", "employes", "chat"},
+        [2] = {"salary", "chat"},
+        [1] = {"chat"},
+        [0] = {"chat"}
+    },
+    ["ambulance"] = {
+        [4] = {"salary", "employes", "chat"},
+        [3] = {"salary", "employes", "chat"},
+        [2] = {"salary", "chat"},
+        [1] = {"chat"},
+        [0] = {"chat"}
+    },
+    ["mecano"] = {
+        [4] = {"salary", "employes", "chat"},
+        [3] = {"salary", "employes", "chat"},
+        [2] = {"salary", "chat"},
+        [1] = {"chat"},
+        [0] = {"chat"}
+    },
+    ["armeria"] = {
+        [5] = {"salary", "employes", "chat"},
+        [4] = {"salary", "employes", "chat"},
+        [3] = {"salary", "chat"},
+        [2] = {"salary", "chat"},
+        [1] = {"chat"},
+        [0] = {"chat"}
+    },
+    ["import"] = {
+        [6] = {"salary", "employes", "chat"},
+        [5] = {"salary", "employes", "chat"},
+        [4] = {"salary", "chat"},
+        [3] = {"salary", "chat"},
+        [2] = {"salary", "chat"},
+        [1] = {"chat"},
+        [0] = {"chat"}
+    },
+    ["tequila"] = {
+        [3] = {"salary", "employes", "chat"},
+        [2] = {"salary", "chat"},
+        [1] = {"chat"},
+        [0] = {"chat"}
+    },
+    ["unicorn"] = {
+        [3] = {"salary", "employes", "chat"},
+        [2] = {"salary", "chat"},
+        [1] = {"chat"},
+        [0] = {"chat"}
+    },
+    ["bahama_mamas"] = {
+        [3] = {"salary", "employes", "chat"},
+        [2] = {"salary", "chat"},
+        [1] = {"chat"},
+        [0] = {"chat"}
+    },
+    ["burgershot"] = {
+        [3] = {"salary", "employes", "chat"},
+        [2] = {"salary", "chat"},
+        [1] = {"chat"},
+        [0] = {"chat"}
+    },
+    ["crucialfix"] = {
+        [3] = {"salary", "employes", "chat"},
+        [2] = {"salary", "chat"},
+        [1] = {"chat"},
+        [0] = {"chat"}
+    },
+    ["bayviewlodge"] = {
+        [3] = {"salary", "employes", "chat"},
+        [2] = {"salary", "chat"},
+        [1] = {"chat"},
+        [0] = {"chat"}
+    },
+    ["central"] = {
+        [3] = {"salary", "employes", "chat"},
+        [2] = {"salary", "chat"},
+        [1] = {"chat"},
+        [0] = {"chat"}
+    },
+    ["yellow"] = {
+        [3] = {"salary", "employes", "chat"},
+        [2] = {"salary", "chat"},
+        [1] = {"chat"},
+        [0] = {"chat"}
+    },
+    ["galaxy"] = {
+        [3] = {"salary", "employes", "chat"},
+        [2] = {"salary", "chat"},
+        [1] = {"chat"},
+        [0] = {"chat"}
+    },
+    ["casino"] = {
+        [4] = {"salary", "employes", "chat"},
+        [3] = {"salary", "chat"},
+        [2] = {"salary", "chat"},
+        [1] = {"chat"},
+        [0] = {"chat"}
+    },
+    ["motorcycle"] = {
+        [3] = {"salary", "employes", "chat"},
+        [2] = {"salary", "chat"},
+        [1] = {"chat"},
+        [0] = {"chat"}
+    },
+    ["police"] = {
+        [11] = {"salary", "employes", "chat"},
+        [10] = {"salary", "employes", "chat"},
+        [9] = {"salary", "chat"},
+        [8] = {"salary", "chat"},
+        [7] = {"salary", "chat"},
+        [6] = {"chat"},
+        [5] = {"chat"},
+        [4] = {"chat"},
+        [3] = {"chat"},
+        [2] = {"chat"},
+        [1] = {"chat"},
+        [0] = {"chat"}
+    },
+    ["reporter"] = {
+        [2] = {"salary", "employes", "chat"},
+        [1] = {"chat"},
+        [0] = {"chat"}
+    },
+    ["autousate"] = {
+        [3] = {"salary", "employes", "chat"},
+        [2] = {"salary", "chat"},
+        [1] = {"chat"},
+        [0] = {"chat"}
+    },
+    ["tribunale"] = {
+        [3] = {"salary", "employes", "chat"},
+        [2] = {"salary", "chat"},
+        [1] = {"chat"},
+        [0] = {"chat"}
+    },
+    ["lolly"] = {
+        [4] = {"salary", "employes", "chat"},
+        [3] = {"salary", "employes", "chat"},
+        [2] = {"chat"},
+        [1] = {"chat"},
+        [0] = {"chat"}
+    },
+    ["wallmart"] = {
+        [1] = {"salary", "employes", "chat"},
+        [0] = {"salary", "chat"}
+    },
+}

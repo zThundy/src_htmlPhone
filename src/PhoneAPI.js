@@ -911,11 +911,25 @@ class PhoneAPI {
   }
 
   async sendAziendaMessage (data) {
-    return this.post('sendAziendaMessage', data.azienda, data.number, data.message)
+    // data.azienda, data.number, data.message
+    return this.post('sendAziendaMessage', data)
   }
 
   async aziendaEmployesAction (data) {
-    return this.post('aziendaEmployesAction', data.action, data.employe)
+    // data.action, data.employe
+    return this.post('aziendaEmployesAction', data)
+  }
+
+  onupdateAziendaInfo (data) {
+    store.commit('UPDATE_AZIENDA_APP', data)
+  }
+
+  onupdateAziendaMessages (data) {
+    store.commit('UPDATE_AZIENDA_MESSAGES', data.messages)
+  }
+
+  onupdateAziendaEmployes (data) {
+    store.commit('UPDATE_AZIENDA_EMPLOYES', data.employes)
   }
 }
 

@@ -2,7 +2,7 @@
   <div style="width: 100%; height: 630px;">
 
     <div class="employes-container">
-      <div class="employe-container" v-for="(elem, key) in aziendaInfo.employes" :key="key" :class="{ selected: key === currentSelected }">
+      <div class="employe-container" v-for="(elem, key) in myAziendaInfo.employes" :key="key" :class="{ selected: key === currentSelected }">
         <div class="employe-header">
           <div class="employe-status" :class="[ elem.isOnline ? 'online' : 'offline']">
             <div class="fa fa-user-o" aria-hidden="true"></div>
@@ -45,7 +45,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['LangString', 'aziendaIngoreControls', 'aziendaInfo'])
+    ...mapGetters(['LangString', 'aziendaIngoreControls', 'myAziendaInfo'])
   },
   watch: {
   },
@@ -67,7 +67,7 @@ export default {
     },
     onDown () {
       if (this.aziendaIngoreControls) return
-      if (this.currentSelected === this.aziendaInfo.employes.length - 1) return
+      if (this.currentSelected === this.myAziendaInfo.employes.length - 1) return
       this.currentSelected = this.currentSelected + 1
       this.scrollIntoViewIfNeeded()
     },
@@ -76,6 +76,7 @@ export default {
       if (this.currentSelected === -1) return
       this.SET_AZIENDA_IGNORE_CONTROLS(true)
       try {
+        let currentEmploye = this.myAziendaInfo.employes[this.currentSelected]
         let choix = [
           {id: 1, title: this.LangString('APP_AZIENDA_PROMOTE_EMPLOYE'), icons: 'fa-plus-square', color: 'green'},
           {id: 2, title: this.LangString('APP_AZIENDA_DEMOTE_EMPLOYE'), icons: 'fa-minus-square', color: 'orange'},
@@ -83,11 +84,9 @@ export default {
         ]
         Modal.CreateModal({ choix }).then(resp => {
           if (resp.id === 1) {
-            let currentEmploye = this.aziendaInfo.employes[this.currentSelected]
             this.$phoneAPI.aziendaEmployesAction({ action: 'promote', employe: currentEmploye })
             this.SET_AZIENDA_IGNORE_CONTROLS(false)
           } else if (resp.id === 2) {
-            let currentEmploye = this.aziendaInfo.employes[this.currentSelected]
             this.$phoneAPI.aziendaEmployesAction({ action: 'demote', employe: currentEmploye })
             this.SET_AZIENDA_IGNORE_CONTROLS(false)
           } else if (resp.id === -1) { this.SET_AZIENDA_IGNORE_CONTROLS(false) }

@@ -2,16 +2,16 @@
   <div style="width: 100%; height: 100%;" class="phone_app">
     <PhoneTitle :title="LangString('APP_AZIENDA_TITLE')" :color="'black'" backgroundColor="rgb(255, 180, 89)"/>
 
-    <div v-if="myJobInfo" class="container">
+    <div v-if="myJobInfo && myJobInfo.buttons" class="container">
       <div class="informations-container">
         <div class="informations-head">
-          <img :src="aziendaInfo.img">
+          <img :src="myAziendaInfo.img ? myAziendaInfo.img : '/html/static/img/icons_app/azienda.png'">
           <div class="informations-inline">
             <span class="informations-label">
               {{ myJobInfo.name }}
             </span>
             <p class="informations-money">
-              <md-amount class="bankAmount" :value="aziendaInfo.money" :duration="1500" has-separator transition></md-amount>$
+              <md-amount class="bankAmount" :value="myAziendaInfo.money" :duration="1500" has-separator transition></md-amount>$
             </p>
           </div>
         </div>
@@ -19,7 +19,7 @@
         
       <div class="informations-line">
         <div class="informations-divider">
-          <span class="informations-azienda-label">{{ aziendaInfo.label }}</span>
+          <span class="informations-azienda-label">{{ myAziendaInfo.label }}</span>
         </div>
       </div>
 
@@ -83,7 +83,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['LangString', 'myJobInfo', 'aziendaInfo', 'buttons', 'aziendaIngoreControls'])
+    ...mapGetters(['LangString', 'myJobInfo', 'myAziendaInfo', 'buttons', 'aziendaIngoreControls'])
   },
   watch: {
   },

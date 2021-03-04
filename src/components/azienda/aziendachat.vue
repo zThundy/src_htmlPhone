@@ -41,7 +41,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['LangString', 'aziendaMessages', 'aziendaIngoreControls', 'aziendaInfo'])
+    ...mapGetters(['LangString', 'aziendaMessages', 'aziendaIngoreControls', 'myAziendaInfo'])
   },
   watch: {
   },
@@ -98,7 +98,7 @@ export default {
             this.startCall({ numero: currentMessage.authorPhone })
             this.SET_AZIENDA_IGNORE_CONTROLS(false)
           } else if (resp.id === 2) {
-            this.$phoneAPI.sendAziendaMessage({ azienda: this.aziendaInfo.name, number: currentMessage.authorPhone, message: '%pos%' })
+            this.$phoneAPI.sendAziendaMessage({ azienda: this.myAziendaInfo.name, number: currentMessage.authorPhone, message: '%pos%' })
             this.SET_AZIENDA_IGNORE_CONTROLS(false)
           } else if (resp.id === 3) {
             let val = currentMessage.message.match(/(-?\d+(\.\d+)?), (-?\d+(\.\d+)?)/)
