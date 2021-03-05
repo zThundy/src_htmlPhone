@@ -1,15 +1,18 @@
 RegisterNUICallback("requestJobInfo", function(data, cb)
     TriggerServerEvent("gcphone:azienda_requestJobInfo")
+    cb("ok")
 end)
 
 RegisterNUICallback("sendAziendaMessage", function(data, cb)
     -- data.azienda, data.number, data.message
     TriggerServerEvent("gcphone:azienda_sendAziendaMessage", data.azienda, data.number, data.message)
+    cb("ok")
 end)
 
 RegisterNUICallback("aziendaEmployesAction", function(data, cb)
     -- data.azienda, data.number, data.message
     TriggerServerEvent("gcphone:azienda_employeAction", data.action, data.employe)
+    cb("ok")
 end)
 
 RegisterNetEvent("gcphone:azienda_sendJobInfo")

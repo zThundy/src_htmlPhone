@@ -5,18 +5,23 @@ AddEventHandler("gcphone:azienda_requestJobInfo", function()
     local jobPlayers = ESX.GetPlayersWithJob(xPlayer.job.name)
     local myJobInfo, myAziendaInfo = {}, {}
 
+    -- for i, v in pairs(xPlayer) do
+    --     print(i, v)
+    -- end
+
+    -- print(xPlayer.firstname, xPlayer.lastname)
+
     if Config.MinAziendaGrade[xPlayer.job.name] then
-        if xPlayer then
-            myJobInfo = {
-                steamid = xPlayer.identifier,
-                gradeName = xPlayer.job.grade_label,
-                grade = xPlayer.job.grade,
-                buttons = {},
-                name = xPlayer.firstname.." "..xPlayer.lastname
-            }
-        end
+        myJobInfo = {
+            steamid = xPlayer.identifier,
+            gradeName = xPlayer.job.grade_label,
+            grade = xPlayer.job.grade,
+            buttons = {},
+            name = xPlayer.firstname.." "..xPlayer.lastname
+        }
 
         myJobInfo.buttons = GetButtons(xPlayer.job.name, xPlayer.job.grade)
+        -- print(json.encode(myJobInfo.buttons))
 
         TriggerEvent('esx_addonaccount:getSharedAccount', "society_"..xPlayer.job.name, function(account)
             if account ~= nil then
@@ -62,6 +67,7 @@ end)
 RegisterServerEvent("gcphone:azienda_sendAziendaMessage")
 AddEventHandler("gcphone:azienda_sendAziendaMessage", function(azienda, number, message)
     local player = source
+    print(azienda, number, message)
     MySQL.Async.insert("INSERT INTO phone_azienda_messages(azienda, authorIdentifier, authorNumber, authorName, message) VALUES(@azienda, @identifier, @number, @name, @message)", {
         ['@azienda'] = azienda,
         ['@identifier'] = xPlayer.identifier,
@@ -126,7 +132,11 @@ function GetMaxGradeForJob(job)
 end
 
 function GetButtons(job_name, grade)
-    return Config.MinAziendaGrade[job_name][grade]
+    local buttons = {}
+    for _, button in pairs(Config.MinAziendaGrade[job_name][grade]) do
+        buttons[button] = true
+    end
+    return buttons
 end
 
 function GetAziendaMessages(source, azienda, cb)

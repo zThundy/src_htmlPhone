@@ -17,7 +17,7 @@ const state = {
       label: 'APP_AZIENDA_EMPLOYES_CHAT'
     }
   ],
-  aziendaMessages: null,
+  aziendaMessages: [],
   aziendaIngoreControls: false
 }
 

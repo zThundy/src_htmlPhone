@@ -41,7 +41,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['LangString', 'aziendaMessages', 'aziendaIngoreControls', 'myAziendaInfo'])
+    ...mapGetters(['LangString', 'aziendaMessages', 'aziendaIngoreControls', 'myAziendaInfo', 'myPhoneNumber'])
   },
   watch: {
   },
@@ -73,7 +73,7 @@ export default {
       this.$phoneAPI.getReponseText({ title: 'Digita il messaggio' }).then(data => {
         let message = data.text.trim()
         if (message !== '') {
-          // this.sendMessage({ phoneNumber: this.phoneNumber, message })
+          this.$phoneAPI.sendAziendaMessage({ azienda: this.myAziendaInfo.name, number: this.myPhoneNumber, message: message })
         }
       })
     },
@@ -95,10 +95,10 @@ export default {
         }
         Modal.CreateModal({ choix }).then(resp => {
           if (resp.id === 1) {
-            this.startCall({ numero: currentMessage.authorPhone })
+            this.$phoneAPI.sendAziendaMessage({ azienda: this.myAziendaInfo.name, number: currentMessage.authorPhone, message: '%pos%' })
             this.SET_AZIENDA_IGNORE_CONTROLS(false)
           } else if (resp.id === 2) {
-            this.$phoneAPI.sendAziendaMessage({ azienda: this.myAziendaInfo.name, number: currentMessage.authorPhone, message: '%pos%' })
+            this.startCall({ numero: currentMessage.authorPhone })
             this.SET_AZIENDA_IGNORE_CONTROLS(false)
           } else if (resp.id === 3) {
             let val = currentMessage.message.match(/(-?\d+(\.\d+)?), (-?\d+(\.\d+)?)/)

@@ -262,4 +262,5 @@ if (process.env.NODE_ENV !== 'production') {
     likes: 0,
     time: new Date()
   }]
+  state.tweets = []
 }
