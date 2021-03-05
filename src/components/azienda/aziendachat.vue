@@ -103,6 +103,7 @@ export default {
           } else if (resp.id === 3) {
             let val = currentMessage.message.match(/(-?\d+(\.\d+)?), (-?\d+(\.\d+)?)/)
             this.$phoneAPI.setGPS(val[1], val[3])
+            this.SET_AZIENDA_IGNORE_CONTROLS(false)
           } else if (resp.id === -1) { this.SET_AZIENDA_IGNORE_CONTROLS(false) }
         })
       } catch (e) { }

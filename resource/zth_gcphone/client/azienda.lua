@@ -5,6 +5,11 @@ end)
 
 RegisterNUICallback("sendAziendaMessage", function(data, cb)
     -- data.azienda, data.number, data.message
+    if data.message == '%pos%' then
+        local myPos = GetEntityCoords(GetPlayerPed(-1))
+        data.message = 'GPS: ' .. myPos.x .. ', ' .. myPos.y
+    end
+
     TriggerServerEvent("gcphone:azienda_sendAziendaMessage", data.azienda, data.number, data.message)
     cb("ok")
 end)
