@@ -67,7 +67,7 @@ end)
 RegisterServerEvent("gcphone:azienda_sendAziendaMessage")
 AddEventHandler("gcphone:azienda_sendAziendaMessage", function(azienda, number, message)
     local player = source
-    print(azienda, number, message)
+    local xPlayer = ESX.GetPlayerFromId(player)
     MySQL.Async.insert("INSERT INTO phone_azienda_messages(azienda, authorIdentifier, authorNumber, authorName, message) VALUES(@azienda, @identifier, @number, @name, @message)", {
         ['@azienda'] = azienda,
         ['@identifier'] = xPlayer.identifier,
@@ -103,17 +103,24 @@ AddEventHandler("gcphone:azienda_employeAction", function(action, employe)
     c_xPlayer.job.grade = tonumber(c_xPlayer.job.grade)
     xPlayer.job.grade = tonumber(xPlayer.job.grade)
 	
-    if type == "promote" then
+    if action == "promote" then
         if c_xPlayer.job.grade < tonumber(maxGrade) then
             c_xPlayer.setJob(xPlayer.job.name, c_xPlayer.job.grade + 1)
+            xPlayer.showNotification("~g~"..c_xPlayer.firstname.." "..c_xPlayer.lastname.." promosso al grado "..c_xPlayer.job.grade_label.." ["..c_xPlayer.job.grade.."]")
+        else
+            xPlayer.showNotification("~r~Non puoi eseguire questa azione")
         end
-    elseif type == "demote" then
+    elseif action == "demote" then
         if xPlayer.job.grade > c_xPlayer.job.grade then
             if c_xPlayer.job.grade ~= 0 then
                 c_xPlayer.setJob(xPlayer.job.name, c_xPlayer.job.grade - 1)
+                xPlayer.showNotification("~g~"..c_xPlayer.firstname.." "..c_xPlayer.lastname.." degradato al grado "..c_xPlayer.job.grade_label.." ["..c_xPlayer.job.grade.."]")
             else
+                xPlayer.showNotification("~g~"..c_xPlayer.firstname.." "..c_xPlayer.lastname.." licenziato")
                 c_xPlayer.setJob("unemployed", 0)
             end
+        else
+            xPlayer.showNotification("~r~Non puoi eseguire questa azione")
         end
     end
 
@@ -121,11 +128,12 @@ AddEventHandler("gcphone:azienda_employeAction", function(action, employe)
 end)
 
 function GetMaxGradeForJob(job)
-    local result = MySQL.Sync.fetchAll("SELECT grade FROM job_grades WHERE job_name == @job", {['@job'] = job})
+    local result = MySQL.Sync.fetchAll("SELECT grade FROM job_grades WHERE job_name = @job", {['@job'] = job})
     if result then
         local lastGrade = 0
         for _, v in pairs(result) do
-            if v > lastGrade then lastGrade = v end
+            v.grade = tonumber(v.grade)
+            if v.grade > lastGrade then lastGrade = v.grade end
         end
         return lastGrade
     end
