@@ -59,18 +59,30 @@ end
 --  
 --====================================================================================
 Citizen.CreateThread(function()
+    RegisterKeyMapping('+openPhone', 'Apri telefono', 'keyboard', 'k')
+    RegisterCommand('+openPhone', function()
+        hasPhone(function(hasPhone)
+            if hasPhone then
+                TogglePhone()
+            else
+                ESX.ShowNotification("~r~Non hai un telefono con te")
+            end
+        end)
+    end, false)
+    RegisterCommand('-openPhone', function() end, false)
+
     while true do
         Citizen.Wait(0)
 
-        if IsControlJustPressed(1, 311) then -- K
-            hasPhone(function(hasPhone)
-                if hasPhone then
-                    TogglePhone()
-                else
-                    ESX.ShowNotification("~r~Non hai un telefono con te")
-                end
-            end)
-        end
+        -- if IsControlJustPressed(1, 311) then -- K
+        --     hasPhone(function(hasPhone)
+        --         if hasPhone then
+        --             TogglePhone()
+        --         else
+        --             ESX.ShowNotification("~r~Non hai un telefono con te")
+        --         end
+        --     end)
+        -- end
 
         if menuIsOpen then
             for _, value in ipairs(Config.Keys) do
