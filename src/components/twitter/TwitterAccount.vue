@@ -86,7 +86,7 @@
       </div>
 
       <div style="width: 250px;" class="group" data-type="button" @click.stop="createAccount">
-        <input type='button' class="btn" :class="validAccount ? 'btn-blue' : 'btn-gray'" :value="LangString('APP_TWIITER_ACCOUNT_CREATE')" @click.stop="createAccount"/>
+        <input type='button' style="width: 240px;" class="btn" :class="validAccount ? 'btn-blue' : 'btn-gray'" :value="LangString('APP_TWIITER_ACCOUNT_CREATE')" @click.stop="createAccount"/>
       </div>
     </template>
 
@@ -620,8 +620,8 @@ input:focus ~ .highlight {
   font-size: 19px;
 }
 
-.group.select .btn.btn-blue, .btn.btn-blue {
-  background-color: rgb(41, 104, 182);;
+.group.select .btn.btn-blue {
+  background-color: rgb(41, 104, 182);
   color: white;
   border: none;
 }
