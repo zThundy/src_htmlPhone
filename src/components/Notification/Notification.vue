@@ -60,19 +60,26 @@ export default {
       }
       if (event.sound !== null && event.sound !== undefined) {
         var path = '/html/static/sound/' + event.sound
-        this.audio = new Howl({ src: path, onend () { this.audio = null } })
+        this.audio = new Howl({
+          src: path,
+          onend () {
+            // ascolto quando l'audio termina e via
+            // console.log('audio ended')
+            this.audio = null
+          },
+          onload () {
+            // console.log('audio loaded')
+          }
+        })
         // qui controllo se viene passato il volume.
         // se si lo imposto al valore, altrimenti lo metto a 0.5
         // console.log('event.volume dentro notification', event.volume)
-        this.audio.once('load', () => {
-          if (event.volume !== undefined || event.volume !== null) {
-            this.audio.volume(Number(event.volume))
-          } else {
-            this.audio.volume(0.5)
-          }
-          this.audio.play()
-          // ascolto quando l'audio termina e via
-        })
+        if (event.volume) {
+          this.audio.volume(Number(event.volume))
+        } else {
+          this.audio.volume(0.5)
+        }
+        this.audio.play()
       }
     },
     style (notif) {
