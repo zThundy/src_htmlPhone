@@ -121,7 +121,7 @@ AddEventHandler("gcphone:sendGenericNotification", function(data)
             appName: data.appName
         })
     ]]
-    SendNUIMessage({ event = "genericNotification", data = data })
+    SendNUIMessage({ event = "genericNotification", notif = data })
 end)
 
 
