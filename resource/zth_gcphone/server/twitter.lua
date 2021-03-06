@@ -1,10 +1,33 @@
 function TwitterShowError(player, title, message)
-	TriggerClientEvent('gcPhone:twitter_showError', player, title, message)
+	--[[
+		Vue.notify({
+			message: store.getters.LangString(data.message),
+			title: store.getters.LangString(data.title) + ':',
+			icon: data.icon,
+			backgroundColor: data.color,
+			appName: data.appName
+		})
+	]]
+	TriggerClientEvent("gcphone:sendGenericNotification", player, {
+		message = message,
+		title = title,
+		icon = "twitter",
+		color = "rgb(80, 160, 230)",
+		appName = "Twitter"
+	})
+	-- TriggerClientEvent('gcPhone:twitter_showError', player, title, message)
 end
 
 
 function TwitterShowSuccess(player, title, message)
-	TriggerClientEvent('gcPhone:twitter_showSuccess', player, title, message)
+	TriggerClientEvent("gcphone:sendGenericNotification", player, {
+		message = message,
+		title = title,
+		icon = "twitter",
+		color = "rgb(80, 160, 230)",
+		appName = "Twitter"
+	})
+	-- TriggerClientEvent('gcPhone:twitter_showSuccess', player, title, message)
 end
 
 

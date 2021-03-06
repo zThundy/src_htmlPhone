@@ -127,6 +127,16 @@ AddEventHandler("gcphone:azienda_employeAction", function(action, employe)
     UpdateAziendaEmployes(xPlayer.job.name)
 end)
 
+RegisterServerEvent("gcphone:azienda_requestAziendaMessages")
+AddEventHandler("gcphone:azienda_requestAziendaMessages", function()
+    local player = source
+    local xPlayer = ESX.GetPlayerFromId(player)
+
+    GetAziendaMessages(player, xPlayer.job.name, function(messages)
+        TriggerClientEvent("gcphone:azienda_retriveMessages", player, messages)
+    end)
+end)
+
 function GetMaxGradeForJob(job)
     local result = MySQL.Sync.fetchAll("SELECT grade FROM job_grades WHERE job_name = @job", {['@job'] = job})
     if result then
@@ -156,10 +166,12 @@ function GetAziendaMessages(source, azienda, cb)
             local messages = {}
             for _, v in pairs(result) do
                 table.insert(messages, {
+                    id = v.id,
                     message = v.message,
                     author = v.authorName,
                     authorPhone = v.authorNumber,
-                    mine = tonumber(xPlayer.identifier) == tonumber(v.authorIdentifier)
+                    mine = tonumber(xPlayer.identifier) == tonumber(v.authorIdentifier),
+                    isRead = 0
                 })
             end
             cb(messages)

@@ -9,12 +9,37 @@
 
 
 function InstagramShowError(player, title, message)
-	TriggerClientEvent('gcPhone:instagram_showError', player, title, message)
+	--[[
+		Vue.notify({
+			message: store.getters.LangString(data.message),
+			title: store.getters.LangString(data.title) + ':',
+			icon: data.icon,
+			backgroundColor: data.color,
+			appName: data.appName
+		})
+	]]
+	TriggerClientEvent("gcphone:sendGenericNotification", player, {
+		message = message,
+		title = title,
+		icon = "instagram",
+		color = "rgb(255, 204, 0)",
+		appName = "Instagram",
+		sound = "Instagram_Error.ogg"
+	})
+	-- TriggerClientEvent('gcPhone:instagram_showError', player, title, message)
 end
 
 
 function InstagramShowSuccess(player, title, message)
-	TriggerClientEvent('gcPhone:instagram_showSuccess', player, title, message)
+	TriggerClientEvent("gcphone:sendGenericNotification", player, {
+		message = message,
+		title = title,
+		icon = "instagram",
+		color = "rgb(255, 204, 0)",
+		appName = "Instagram",
+		sound = "Instagram_Notification.ogg"
+	})
+	-- TriggerClientEvent('gcPhone:instagram_showSuccess', player, title, message)
 end
 
 

@@ -46,7 +46,7 @@ export default {
   watch: {
   },
   methods: {
-    ...mapMutations(['SET_AZIENDA_IGNORE_CONTROLS']),
+    ...mapMutations(['SET_AZIENDA_IGNORE_CONTROLS', 'SET_ALL_MESSAGES_AS_READ']),
     ...mapActions(['startCall']),
     scrollIntoViewIfNeeded () {
       this.$nextTick(() => {

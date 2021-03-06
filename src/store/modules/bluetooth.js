@@ -1,4 +1,4 @@
-import PhoneAPI from './../../PhoneAPI'
+// import PhoneAPI from './../../PhoneAPI'
 // tutto questo codice è trovabile sulle impostazioni del telefono
 
 const state = {
@@ -23,10 +23,10 @@ const mutations = {
   UPDATE_BLUETOOTH (state, bool) {
     if (bool) {
       state.bluetoothString = 'Acceso'
-      PhoneAPI.requestClosestPlayers(true)
+      // PhoneAPI.requestClosestPlayers(true)
     } else {
       state.bluetoothString = 'Spento'
-      PhoneAPI.requestClosestPlayers(false)
+      // PhoneAPI.requestClosestPlayers(false)
     }
     state.bluetooth = bool
   },

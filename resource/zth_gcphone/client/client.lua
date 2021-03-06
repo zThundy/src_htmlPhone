@@ -110,6 +110,21 @@ Citizen.CreateThread(function()
 end)
 
 
+RegisterNetEvent("gcphone:sendGenericNotification")
+AddEventHandler("gcphone:sendGenericNotification", function(data)
+    --[[
+        Vue.notify({
+            message: store.getters.LangString(data.message),
+            title: store.getters.LangString(data.title) + ':',
+            icon: data.icon,
+            backgroundColor: data.color,
+            appName: data.appName
+        })
+    ]]
+    SendNUIMessage({ event = "genericNotification", data = data })
+end)
+
+
 -- utile dal js per l'appstore, non qui :/
 RegisterNetEvent('gcPhone:setEnableApp')
 AddEventHandler('gcPhone:setEnableApp', function(appName, enable)
@@ -229,11 +244,12 @@ AddEventHandler("gcPhone:allMessage", function(allmessages, notReceivedMessages)
     end
 end)
 
-
-RegisterNetEvent("gcPhone:getBourse")
-AddEventHandler("gcPhone:getBourse", function(bourse)
-    SendNUIMessage({ event = 'updateBourse', bourse = bourse })
-end)
+--[[
+    RegisterNetEvent("gcPhone:getBourse")
+    AddEventHandler("gcPhone:getBourse", function(bourse)
+        SendNUIMessage({ event = 'updateBourse', bourse = bourse })
+    end)
+]]
 
 
 RegisterNetEvent("gcphone:updateValoriDati")

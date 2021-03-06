@@ -6,11 +6,11 @@ import contacts from './modules/contacts'
 import messages from './modules/messages'
 import appels from './modules/appels'
 import bank from './modules/bank'
-import bourse from './modules/bourse'
+// import bourse from './modules/bourse'
 import tchat from './modules/tchat'
 import twitter from './modules/twitter'
 import dati from './modules/dati'
-import wifi from './modules/wifi'
+// import wifi from './modules/wifi'
 import instagram from './modules/instagram'
 import whatsapp from './modules/whatsapp'
 import galleria from './modules/galleria'
@@ -29,11 +29,11 @@ export default new Vuex.Store({
     messages,
     appels,
     bank,
-    bourse,
+    // bourse,
     tchat,
     twitter,
     dati,
-    wifi,
+    // wifi,
     instagram,
     whatsapp,
     galleria,

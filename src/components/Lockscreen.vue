@@ -8,17 +8,17 @@
       </div>
 
       <div v-if="hasUnredMessages">
-        <div v-for="(elem, key) in unreadMessages" v-bind:key="key">
+        <div v-for="(elem, key) in buildUnreadMessages" v-bind:key="key">
 
           <div class="separatore"></div>
 
-          <span v-if="key < 4" class="messlist">
+          <span v-if="key < 5" class="messlist">
             <div class="warningMess_icon">
-              <i class="fa fa-envelope"></i>
+              <i class="fa fa-envelope" :style="{ color: colors[key] }"></i>
             </div>
 
             <span class="warningMess_content">
-              <div class="transmitter">{{elem.transmitter}}</div>
+              <div class="transmitter">{{elem.transmitter || elem.authorPhone}}</div>
               <div v-if="!isSMSImage(elem.message)" class="messaggio">{{elem.message}}</div>
               <div v-else class="messaggio">Immagine</div>
             </span>
@@ -52,14 +52,49 @@ export default {
       unloacked: false,
       hasUnredMessages: false,
       hasPressed: false,
-      listaMessaggi: []
+      listaMessaggi: [],
+      colors: {}
     }
   },
   computed: {
-    ...mapGetters(['LangString', 'UnreadMessagesLength', 'backgroundURL', 'messages', 'unreadMessages'])
+    ...mapGetters([
+      'LangString',
+      'UnreadMessagesLength',
+      'backgroundURL',
+      'messages',
+      'unreadMessages',
+      'UnreadAziendaMessagesLength',
+      'unreadAziendaMessages'
+    ]),
+    buildUnreadMessages () {
+      this.buildColors()
+      if (this.UnreadMessagesLength > 5) {
+        return this.unreadMessages
+      } else if (this.UnreadMessagesLength < 5 && this.UnreadAziendaMessagesLength > 1) {
+        return [...this.unreadMessages, ...this.unreadAziendaMessages]
+      } else {
+        return [...this.unreadMessages, ...this.unreadAziendaMessages]
+      }
+    }
   },
   methods: {
-    ...mapActions(['closePhone', 'setupUnreadMessages', 'resetUnreadMessages', 'sendStartupValues']),
+    ...mapActions([
+      'closePhone',
+      'setupUnreadMessages',
+      'resetUnreadMessages',
+      'sendStartupValues',
+      'setupUnreadAziendaMessages'
+    ]),
+    buildColors () {
+      var total = [...this.unreadMessages, ...this.unreadAziendaMessages]
+      for (var i in total) {
+        if (i < this.UnreadMessagesLength) {
+          this.colors[i] = '#019208d2'
+        } else {
+          this.colors[i] = 'rgb(255, 160, 40)'
+        }
+      }
+    },
     onEnter () {
       if (this.hasPressed) return
       this.hasPressed = true
@@ -79,7 +114,9 @@ export default {
   created () {
     // this.$phoneAPI.requestInfoOfGroups()
     this.$phoneAPI.requestOfferta()
+    this.$phoneAPI.requestAziendaMessages()
     this.setupUnreadMessages()
+    this.setupUnreadAziendaMessages()
     // this.$phoneAPI.requestMyCovers()
     this.sendStartupValues()
     /*

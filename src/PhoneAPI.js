@@ -250,6 +250,17 @@ class PhoneAPI {
     id = id
   */
 
+  ongenericNotification (data) {
+    Vue.notify({
+      message: store.getters.LangString(data.message),
+      title: store.getters.LangString(data.title) + ':',
+      icon: data.icon,
+      backgroundColor: data.color,
+      appName: data.appName,
+      sound: data.sound
+    })
+  }
+
   onnewMessage (data) {
     store.commit('ADD_MESSAGE', data.message)
     if (!data.message.owner) {
@@ -300,9 +311,9 @@ class PhoneAPI {
     return this.post('sendMoneyToIban', { money, iban })
   }
 
-  onupdateBourse (data) {
-    store.commit('SET_BOURSE_INFO', data.bourse)
-  }
+  // onupdateBourse (data) {
+  //   store.commit('SET_BOURSE_INFO', data.bourse)
+  // }
 
   // Call
   async startCall (numero, extraData = undefined) {
@@ -370,13 +381,13 @@ class PhoneAPI {
     return this.post('updateVolume', data)
   }
 
-  async endSuoneriaForOthers () {
-    return this.post('endSuoneriaForOthers')
-  }
+  // async endSuoneriaForOthers () {
+  //   return this.post('endSuoneriaForOthers')
+  // }
 
-  async startSuoneriaForOthers (sound) {
-    return this.post('startSuoneriaForOthers', { sound: sound })
-  }
+  // async startSuoneriaForOthers (sound) {
+  //   return this.post('startSuoneriaForOthers', { sound: sound })
+  // }
 
   onplaySound (data) {
     // console.log(data.sound, data.volume)
@@ -507,25 +518,25 @@ class PhoneAPI {
     store.commit('UPDATE_TWEET_ISLIKE', data)
   }
 
-  ontwitter_showError (data) {
-    Vue.notify({
-      title: store.getters.LangString(data.title),
-      message: store.getters.LangString(data.message),
-      icon: 'twitter',
-      backgroundColor: 'rgb(80, 160, 230)',
-      appName: 'Twitter'
-    })
-  }
+  // ontwitter_showError (data) {
+  //   Vue.notify({
+  //     title: store.getters.LangString(data.title),
+  //     message: store.getters.LangString(data.message),
+  //     icon: 'twitter',
+  //     backgroundColor: 'rgb(80, 160, 230)',
+  //     appName: 'Twitter'
+  //   })
+  // }
 
-  ontwitter_showSuccess (data) {
-    Vue.notify({
-      title: store.getters.LangString(data.title),
-      message: store.getters.LangString(data.message),
-      icon: 'twitter',
-      backgroundColor: 'rgb(80, 160, 230)',
-      appName: 'Twitter'
-    })
-  }
+  // ontwitter_showSuccess (data) {
+  //   Vue.notify({
+  //     title: store.getters.LangString(data.title),
+  //     message: store.getters.LangString(data.message),
+  //     icon: 'twitter',
+  //     backgroundColor: 'rgb(80, 160, 230)',
+  //     appName: 'Twitter'
+  //   })
+  // }
 
   // ==========================================================================
   //  Zona eventi e funzioni Chiamate di emergenza
@@ -669,56 +680,56 @@ class PhoneAPI {
   }
 
   // notifica di errore
-  oninstagram_showError (data) {
-    Vue.notify({
-      title: store.getters.LangString(data.title),
-      message: store.getters.LangString(data.message),
-      icon: 'instagram',
-      backgroundColor: 'rgb(255, 204, 0)',
-      sound: 'Instagram_Error.ogg',
-      appName: 'Instagram'
-    })
-  }
+  // oninstagram_showError (data) {
+  //   Vue.notify({
+  //     title: store.getters.LangString(data.title),
+  //     message: store.getters.LangString(data.message),
+  //     icon: 'instagram',
+  //     backgroundColor: 'rgb(255, 204, 0)',
+  //     sound: 'Instagram_Error.ogg',
+  //     appName: 'Instagram'
+  //   })
+  // }
 
   // notifica di successo
-  oninstagram_showSuccess (data) {
-    Vue.notify({
-      title: store.getters.LangString(data.title),
-      message: store.getters.LangString(data.message),
-      icon: 'instagram',
-      backgroundColor: 'rgb(255, 204, 0)',
-      sound: 'Instagram_Notification.ogg',
-      appName: 'Instagram'
-    })
-  }
+  // oninstagram_showSuccess (data) {
+  //   Vue.notify({
+  //     title: store.getters.LangString(data.title),
+  //     message: store.getters.LangString(data.message),
+  //     icon: 'instagram',
+  //     backgroundColor: 'rgb(255, 204, 0)',
+  //     sound: 'Instagram_Notification.ogg',
+  //     appName: 'Instagram'
+  //   })
+  // }
 
   // ///////////////////////// //
   // SEZIONE WHATSAPP TELEFONO //
   // ///////////////////////// //
 
   // notifica di errore
-  onwhatsapp_showError (data) {
-    Vue.notify({
-      title: store.getters.LangString(data.title),
-      message: store.getters.LangString(data.message),
-      icon: 'whatsapp',
-      backgroundColor: 'rgb(90, 200, 105)',
-      sound: 'Whatsapp_Message_Sound.ogg',
-      appName: 'Whatsapp'
-    })
-  }
+  // onwhatsapp_showError (data) {
+  //   Vue.notify({
+  //     title: store.getters.LangString(data.title),
+  //     message: store.getters.LangString(data.message),
+  //     icon: 'whatsapp',
+  //     backgroundColor: 'rgb(90, 200, 105)',
+  //     sound: 'Whatsapp_Message_Sound.ogg',
+  //     appName: 'Whatsapp'
+  //   })
+  // }
 
   // notifica di successo
-  onwhatsapp_showSuccess (data) {
-    Vue.notify({
-      title: store.getters.LangString(data.title),
-      message: store.getters.LangString(data.message),
-      icon: 'whatsapp',
-      backgroundColor: 'rgb(90, 200, 105)',
-      sound: 'Whatsapp_Message_Sound.ogg',
-      appName: 'Whatsapp'
-    })
-  }
+  // onwhatsapp_showSuccess (data) {
+  //   Vue.notify({
+  //     title: store.getters.LangString(data.title),
+  //     message: store.getters.LangString(data.message),
+  //     icon: 'whatsapp',
+  //     backgroundColor: 'rgb(90, 200, 105)',
+  //     sound: 'Whatsapp_Message_Sound.ogg',
+  //     appName: 'Whatsapp'
+  //   })
+  // }
 
   onwhatsappClearGroups () {
     store.commit('CLEAR_GROUP')
@@ -801,9 +812,9 @@ class PhoneAPI {
   // SEZIONE BLUETOOTH TELEFONO //
   // ////////////////////////// //
 
-  async requestClosestPlayers (bool) {
-    return this.post('requestBluetoothPlayers', { toggle: bool })
-  }
+  // async requestClosestPlayers (bool) {
+  //   return this.post('requestBluetoothPlayers', { toggle: bool })
+  // }
 
   async sendPicToUser (data) {
     this.post('sendPicToUser', data)
@@ -908,6 +919,10 @@ class PhoneAPI {
 
   async requestJobInfo () {
     return this.post('requestJobInfo')
+  }
+
+  async requestAziendaMessages () {
+    return this.post('requestAziendaMessages')
   }
 
   async sendAziendaMessage (data) {

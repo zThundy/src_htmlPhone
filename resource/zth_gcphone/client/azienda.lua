@@ -20,6 +20,11 @@ RegisterNUICallback("aziendaEmployesAction", function(data, cb)
     cb("ok")
 end)
 
+RegisterNUICallback("requestAziendaMessages", function(data, cb)
+    TriggerServerEvent("gcphone:azienda_requestAziendaMessages")
+    cb("ok")
+end)
+
 RegisterNetEvent("gcphone:azienda_sendJobInfo")
 AddEventHandler("gcphone:azienda_sendJobInfo", function(myJobInfo, myAziendaInfo)
     SendNUIMessage({ event = 'updateAziendaInfo', myJobInfo = myJobInfo, myAziendaInfo = myAziendaInfo })

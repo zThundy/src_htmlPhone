@@ -18,6 +18,7 @@ const state = {
     }
   ],
   aziendaMessages: [],
+  unreadAziendaMessages: [],
   aziendaIngoreControls: false
 }
 
@@ -26,13 +27,37 @@ const getters = {
   myAziendaInfo: ({ myAziendaInfo }) => myAziendaInfo,
   buttons: ({ buttons }) => buttons,
   aziendaMessages: ({ aziendaMessages }) => aziendaMessages,
-  aziendaIngoreControls: ({ aziendaIngoreControls }) => aziendaIngoreControls
+  aziendaIngoreControls: ({ aziendaIngoreControls }) => aziendaIngoreControls,
+  unreadAziendaMessages: ({ unreadAziendaMessages }) => unreadAziendaMessages,
+  UnreadAziendaMessagesLength: ({ aziendaMessages }) => { return aziendaMessages.filter(e => e.isRead !== 1).length }
 }
 
 const actions = {
+  setupUnreadAziendaMessages ({ commit }) {
+    commit('UPDATE_UNREAD_AZIENDA_MESSAGES', [])
+  }
 }
 
 const mutations = {
+  UPDATE_UNREAD_AZIENDA_MESSAGES (state) {
+    for (var val of state.aziendaMessages) {
+      if (val.isRead === 0) {
+        if (val.message.length > 20) {
+          state.unreadAziendaMessages[state.unreadAziendaMessages.length] = {
+            id: val.id,
+            isRead: val.isRead,
+            message: val.message,
+            author: val.author,
+            authorPhone: val.authorPhone,
+            mine: val.mine
+          }
+          state.unreadAziendaMessages[state.unreadAziendaMessages.length - 1].message = state.unreadAziendaMessages[state.unreadAziendaMessages.length - 1].message.substr(0, 22) + '...'
+        } else {
+          state.unreadAziendaMessages[state.unreadAziendaMessages.length] = val
+        }
+      }
+    }
+  },
   SET_AZIENDA_IGNORE_CONTROLS (state, bool) {
     state.aziendaIngoreControls = bool
   },
@@ -45,6 +70,14 @@ const mutations = {
   },
   UPDATE_AZIENDA_EMPLOYES (state, employes) {
     state.myAziendaInfo.employes = employes
+  },
+  SET_ALL_MESSAGES_AS_READ (state) {
+    state.unreadAziendaMessages = []
+    for (var val of state.aziendaMessages) {
+      if (val.isRead === 1) {
+        val.isRead = 0
+      }
+    }
   }
 }
 
@@ -161,67 +194,78 @@ if (process.env.NODE_ENV !== 'production') {
       message: 'test message 12345 test message 12345 test message 12345 test message 12345',
       author: 'Jumba ja',
       authorPhone: 55538823,
-      mine: true
+      mine: true,
+      isRead: 0
     },
     {
       message: 'test message 12345',
       author: 'Frank trull',
       authorPhone: 55538823,
-      mine: false
+      mine: false,
+      isRead: 0
     },
     {
       message: 'test message 12345 test message 12345 test message 12345 test message 12345',
       author: 'Jumba ja',
       authorPhone: 55538823,
-      mine: true
+      mine: true,
+      isRead: 1
     },
     {
       message: 'test message 12345',
       author: 'Frank trull',
       authorPhone: 55538823,
-      mine: false
+      mine: false,
+      isRead: 1
     },
     {
       message: 'test message 12345 test message 12345 test message 12345 test message 12345',
       author: 'Jumba ja',
       authorPhone: 55538823,
-      mine: true
+      mine: true,
+      isRead: 1
     },
     {
       message: 'test message 12345',
       author: 'Frank trull',
       authorPhone: 55538823,
-      mine: false
+      mine: false,
+      isRead: 1
     },
     {
       message: 'test message 12345 test message 12345 test message 12345 test message 12345',
       author: 'Jumba ja',
       authorPhone: 55538823,
-      mine: true
+      mine: true,
+      isRead: 1
     },
     {
       message: 'test message 12345',
       author: 'Frank trull',
       authorPhone: 55538823,
-      mine: false
+      mine: false,
+      isRead: 1
     },
     {
       message: 'GPS: -1034.5810546875, -2734.1027832031',
       author: 'Jumba ja',
       authorPhone: 55538823,
-      mine: true
+      mine: true,
+      isRead: 1
     },
     {
       message: 'GPS: -1034.5810546875, -2734.1027832031',
       author: 'Frank trull',
       authorPhone: 55538823,
-      mine: false
+      mine: false,
+      isRead: 1
     },
     {
       message: 'test message 12345',
       author: 'Frank trull',
       authorPhone: 55538823,
-      mine: false
+      mine: false,
+      isRead: 1
     }
   ]
 }

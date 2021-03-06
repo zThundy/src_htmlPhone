@@ -858,7 +858,7 @@ AddEventHandler("gcPhone:requestOffertaFromDatabase", function()
         end
     end)
 
-    TriggerClientEvent('gcPhone:getBourse', player, getInfoBorsa())
+    -- TriggerClientEvent('gcPhone:getBourse', player, getInfoBorsa())
 end)
 
 

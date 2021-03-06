@@ -58,7 +58,8 @@ export default {
         this.list.push(dataNotif)
         window.setTimeout(() => { this.destroy(dataNotif.id) }, dataNotif.duration)
       }
-      if (event.sound !== null && event.sound !== undefined) {
+      if (event.sound) {
+        if (this.audio != null) { this.audio = null }
         var path = '/html/static/sound/' + event.sound
         this.audio = new Howl({
           src: path,

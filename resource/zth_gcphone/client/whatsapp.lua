@@ -1,14 +1,16 @@
 -- notifiche
 
-RegisterNetEvent("gcPhone:whatsapp_showError")
-AddEventHandler("gcPhone:whatsapp_showError", function(title, message)
-    SendNUIMessage({ event = 'whatsapp_showError', message = message, title = title, volume = volume })
-end)
+--[[
+    RegisterNetEvent("gcPhone:whatsapp_showError")
+    AddEventHandler("gcPhone:whatsapp_showError", function(title, message)
+        SendNUIMessage({ event = 'whatsapp_showError', message = message, title = title, volume = volume })
+    end)
 
-RegisterNetEvent("gcPhone:whatsapp_showSuccess")
-AddEventHandler("gcPhone:whatsapp_showSuccess", function(title, message)
-    SendNUIMessage({ event = 'whatsapp_showSuccess', message = message, title = title, volume = volume })
-end)
+    RegisterNetEvent("gcPhone:whatsapp_showSuccess")
+    AddEventHandler("gcPhone:whatsapp_showSuccess", function(title, message)
+        SendNUIMessage({ event = 'whatsapp_showSuccess', message = message, title = title, volume = volume })
+    end)
+]]
 
 -- eventi e funzioni per funzionamento
 

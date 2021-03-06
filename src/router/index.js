@@ -29,7 +29,7 @@ import InstaSpashScreen from '@/components/instagram/InstagramSpashScreen'
 import InstaScreen from '@/components/instagram/InstagramScreen'
 
 import Parametre from '@/components/parametre/Parametre'
-import Bourse from '@/components/Bourse/Bourse'
+// import Bourse from '@/components/Bourse/Bourse'
 import Photo from '@/components/Photo/Photo'
 
 import Bank from '@/components/Bank/Bank'
@@ -128,11 +128,11 @@ export default new Router({
       name: 'messages.view',
       component: Messages
     },
-    {
-      path: '/bourse',
-      name: 'bourse',
-      component: Bourse
-    },
+    // {
+    //   path: '/bourse',
+    //   name: 'bourse',
+    //   component: Bourse
+    // },
     {
       path: '/dati',
       name: 'dati',

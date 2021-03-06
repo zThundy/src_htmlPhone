@@ -5,6 +5,47 @@ MySQL.ready(function()
 end)
 
 
+function WhatsappShowNotificationError(player, titile, message)
+	--[[
+		Vue.notify({
+			message: store.getters.LangString(data.message),
+			title: store.getters.LangString(data.title) + ':',
+			icon: data.icon,
+			backgroundColor: data.color,
+			appName: data.appName
+		})
+	]]
+	TriggerClientEvent("gcphone:sendGenericNotification", player, {
+		message = message,
+		title = title,
+		icon = "whatsapp",
+		color = "rgb(90, 200, 105)",
+		appName = "Whatsapp",
+		sound = "Whatsapp_Message_Sound.ogg"
+	})
+end
+
+function WhatsappShowNotificationSuccess(player, titile, message)
+	--[[
+		Vue.notify({
+			message: store.getters.LangString(data.message),
+			title: store.getters.LangString(data.title) + ':',
+			icon: data.icon,
+			backgroundColor: data.color,
+			appName: data.appName
+		})
+	]]
+	TriggerClientEvent("gcphone:sendGenericNotification", player, {
+		message = message,
+		title = title,
+		icon = "whatsapp",
+		color = "rgb(90, 200, 105)",
+		appName = "Whatsapp",
+		sound = "Whatsapp_Message_Sound.ogg"
+	})
+end
+
+
 function updateCachedGroups()
     local r = MySQL.Sync.fetchAll("SELECT * FROM phone_whatsapp_groups", {})
     for k, v in pairs(r) do
@@ -49,7 +90,8 @@ ESX.RegisterServerCallback("gcPhone:getMessaggiFromGroupId", function(source, cb
 				gcPhone.usaDatiInternet(xPlayer.identifier, mbToRemove)
                 cb(messages)
             else
-                TriggerClientEvent("gcphone:whatsapp_showError", "WHATSAPP_INFO_TITLE", "WHATSAPP_NOT_ENOUGH_GIGA")
+                WhatsappShowNotificationError(source, "WHATSAPP_INFO_TITLE", "WHATSAPP_NOT_ENOUGH_GIGA")
+                -- TriggerClientEvent("gcphone:whatsapp_showError", "WHATSAPP_INFO_TITLE", "WHATSAPP_NOT_ENOUGH_GIGA")
                 cb(false)
             end
         end)
@@ -104,7 +146,8 @@ AddEventHandler("gcphone:whatsapp_sendMessage", function(data)
                 end
             end)
         else
-            TriggerClientEvent("gcphone:whatsapp_showError", "WHATSAPP_INFO_TITLE", "WHATSAPP_NOT_ENOUGH_GIGA")
+            WhatsappShowNotificationError(source, "WHATSAPP_INFO_TITLE", "WHATSAPP_NOT_ENOUGH_GIGA")
+            -- TriggerClientEvent("gcphone:whatsapp_showError", "WHATSAPP_INFO_TITLE", "WHATSAPP_NOT_ENOUGH_GIGA")
         end
     end)
 end)
@@ -181,11 +224,13 @@ AddEventHandler("gcphone:whatsapp_addGroupMembers", function(data)
                         if rowsChanged > 0 then TriggerClientEvent("gcphone:whatsapp_updateGruppi", player, updateCachedGroups(), myNumber) end
                     end)
                 else
-                    TriggerClientEvent("gcphone:whatsapp_showError", "WHATSAPP_INFO_TITLE", "WHATSAPP_NOT_ENOUGH_GIGA")
+                    WhatsappShowNotificationError(source, "WHATSAPP_INFO_TITLE", "WHATSAPP_NOT_ENOUGH_GIGA")
+                    -- TriggerClientEvent("gcphone:whatsapp_showError", "WHATSAPP_INFO_TITLE", "WHATSAPP_NOT_ENOUGH_GIGA")
                 end
             end)
         else
-            TriggerClientEvent("gcphone:whatsapp_showError", "WHATSAPP_INFO_TITLE", "WHATSAPP_NOT_ENOUGH_GIGA")
+            WhatsappShowNotificationError(source, "WHATSAPP_INFO_TITLE", "WHATSAPP_NOT_ENOUGH_GIGA")
+            -- TriggerClientEvent("gcphone:whatsapp_showError", "WHATSAPP_INFO_TITLE", "WHATSAPP_NOT_ENOUGH_GIGA")
         end
     end)
 end)
@@ -231,7 +276,8 @@ AddEventHandler("gcphone:whatsapp_leaveGroup", function(group)
                 }, function() updateCachedGroups() end)
             end)
         else
-            TriggerClientEvent("gcphone:whatsapp_showError", "WHATSAPP_INFO_TITLE", "WHATSAPP_NOT_ENOUGH_GIGA")
+            WhatsappShowNotificationError(source, "WHATSAPP_INFO_TITLE", "WHATSAPP_NOT_ENOUGH_GIGA")
+            -- TriggerClientEvent("gcphone:whatsapp_showError", "WHATSAPP_INFO_TITLE", "WHATSAPP_NOT_ENOUGH_GIGA")
         end
     end)
 end)
@@ -302,7 +348,8 @@ AddEventHandler("gcphone:whatsapp_creaNuovoGruppo", function(data)
                 TriggerClientEvent("gcphone:whatsapp_updateGruppi", player, updateCachedGroups(), phone_number)
             end)
         else
-            TriggerClientEvent("gcphone:whatsapp_showError", "WHATSAPP_INFO_TITLE", "WHATSAPP_NOT_ENOUGH_GIGA")
+            WhatsappShowNotificationError(source, "WHATSAPP_INFO_TITLE", "WHATSAPP_NOT_ENOUGH_GIGA")
+            -- TriggerClientEvent("gcphone:whatsapp_showError", "WHATSAPP_INFO_TITLE", "WHATSAPP_NOT_ENOUGH_GIGA")
         end
     end)
 end)
@@ -322,7 +369,8 @@ ESX.RegisterServerCallback("gcphone:whatsapp_editGroup", function(source, cb, gr
                 if rowsChanged > 0 then cb(true) else cb(false) end
             end)
         else
-            TriggerClientEvent("gcphone:whatsapp_showError", "WHATSAPP_INFO_TITLE", "WHATSAPP_NOT_ENOUGH_GIGA")
+            WhatsappShowNotificationError(source, "WHATSAPP_INFO_TITLE", "WHATSAPP_NOT_ENOUGH_GIGA")
+            -- TriggerClientEvent("gcphone:whatsapp_showError", "WHATSAPP_INFO_TITLE", "WHATSAPP_NOT_ENOUGH_GIGA")
             cb(false)
         end
     end)

@@ -86,10 +86,10 @@ export default {
           this.soundCall = new Howl({
             src: path,
             onend: function () {
-              this.$phoneAPI.endSuoneriaForOthers()
+              // this.$phoneAPI.endSuoneriaForOthers()
             },
             onplay: function () {
-              this.$phoneAPI.startSuoneriaForOthers(this.sonido.value)
+              // this.$phoneAPI.startSuoneriaForOthers(this.sonido.value)
             }
           })
         }

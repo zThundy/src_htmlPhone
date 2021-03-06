@@ -361,7 +361,7 @@
       "it_IT__name": "Borsa",
       "icons": "/html/static/img/icons_app/borsa.png",
       "routeName": "bourse",
-      "enabled": true
+      "enabled": false
     },
     {
       "name": "Dark Chat",
@@ -410,6 +410,7 @@
       "it_IT__name": "Azienda",
       "icons": "/html/static/img/icons_app/azienda.png",
       "routeName": "azienda.splash",
+      "puceRef": "UnreadAziendaMessagesLength",
       "enabled": true
     }
   ],
