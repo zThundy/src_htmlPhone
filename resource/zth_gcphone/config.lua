@@ -189,6 +189,7 @@ Config.MinAziendaGrade = {
         [0] = {"chat"}
     },
     ["casino"] = {
+        [5] = {"salary", "employes", "chat"},
         [4] = {"salary", "employes", "chat"},
         [3] = {"salary", "chat"},
         [2] = {"salary", "chat"},
