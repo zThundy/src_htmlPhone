@@ -191,21 +191,21 @@ if (process.env.NODE_ENV !== 'production') {
 
   state.aziendaMessages = [
     {
-      message: 'test message 12345 test message 12345 test message 12345 test message 12345',
+      message: 'test :rofl:',
       author: 'Jumba ja',
       authorPhone: 55538823,
       mine: true,
       isRead: 0
     },
     {
-      message: 'test message 12345',
+      message: 'test message :rofl:',
       author: 'Frank trull',
       authorPhone: 55538823,
       mine: false,
       isRead: 0
     },
     {
-      message: 'test message 12345 test message 12345 test message 12345 test message 12345',
+      message: 'test message 12345 test message 12345 test message 12345 test message 12345 :rofl:',
       author: 'Jumba ja',
       authorPhone: 55538823,
       mine: true,
@@ -226,7 +226,7 @@ if (process.env.NODE_ENV !== 'production') {
       isRead: 1
     },
     {
-      message: 'test message 12345',
+      message: 'test message 12345 :rofl:',
       author: 'Frank trull',
       authorPhone: 55538823,
       mine: false,
@@ -240,7 +240,7 @@ if (process.env.NODE_ENV !== 'production') {
       isRead: 1
     },
     {
-      message: 'test message 12345',
+      message: 'test message 12345 :rofl:',
       author: 'Frank trull',
       authorPhone: 55538823,
       mine: false,
@@ -261,7 +261,7 @@ if (process.env.NODE_ENV !== 'production') {
       isRead: 1
     },
     {
-      message: 'test message 12345',
+      message: 'test message :rofl:',
       author: 'Frank trull',
       authorPhone: 55538823,
       mine: false,

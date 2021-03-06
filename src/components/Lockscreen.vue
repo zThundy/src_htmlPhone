@@ -18,8 +18,8 @@
             </div>
 
             <span class="warningMess_content">
-              <div class="transmitter">{{elem.transmitter || elem.authorPhone}}</div>
-              <div v-if="!isSMSImage(elem.message)" class="messaggio">{{elem.message}}</div>
+              <div class="transmitter">{{ elem.transmitter || elem.authorPhone }}</div>
+              <div v-if="!isSMSImage(elem.message)" class="messaggio">{{ formatEmoji(elem.message) }}</div>
               <div v-else class="messaggio">Immagine</div>
             </span>
 
@@ -85,6 +85,9 @@ export default {
       'sendStartupValues',
       'setupUnreadAziendaMessages'
     ]),
+    formatEmoji (message) {
+      return this.$phoneAPI.convertEmoji(message)
+    },
     buildColors () {
       var total = [...this.unreadMessages, ...this.unreadAziendaMessages]
       for (var i in total) {

@@ -6,12 +6,12 @@
       <div class="chat-messages-container">
         <div class="chat-message-container" v-for="(elem, key) in aziendaMessages" :key="key">
           <div :class="{ selected: key === currentSelected }" class="chat-message-bouble-mine" v-if="elem.mine">
-            <span class="chat-message-bouble-author">{{elem.author}}</span>
-            <p class="chat-message-bouble-message">{{elem.message}}</p>
+            <span class="chat-message-bouble-author">{{ elem.author }}</span>
+            <p class="chat-message-bouble-message">{{ formatEmoji(elem.message) }}</p>
           </div>
           <div :class="{ selected: key === currentSelected }" class="chat-message-bouble" v-else>
-            <span class="chat-message-bouble-author">{{elem.author}} ({{elem.authorPhone}})</span>
-            <p class="chat-message-bouble-message">{{elem.message}}</p>
+            <span class="chat-message-bouble-author">{{ elem.author }} ({{ elem.authorPhone }})</span>
+            <p class="chat-message-bouble-message">{{ formatEmoji(elem.message) }}</p>
           </div>
         </div>
       </div>
@@ -48,6 +48,9 @@ export default {
   methods: {
     ...mapMutations(['SET_AZIENDA_IGNORE_CONTROLS', 'SET_ALL_MESSAGES_AS_READ']),
     ...mapActions(['startCall']),
+    formatEmoji (message) {
+      return this.$phoneAPI.convertEmoji(message)
+    },
     scrollIntoView () {
       this.$nextTick(() => {
         const elem = this.$el.querySelector('.selected')

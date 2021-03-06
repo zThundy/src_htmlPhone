@@ -6,11 +6,11 @@
 
       <div class="element" v-for='(elem, key) in list' :key="key" v-bind:class="{ select: key === currentSelect }">
           
-        <div class="elem-pic" v-bind:style="stylePuce(elem)">{{ elem.letter || elem[keyDispay][0] }}</div>
-        <div v-if="elem.puce !== undefined && elem.puce !== 0" class="elem-puce">{{elem.puce}}</div>
-        <div v-if="elem.keyDesc === undefined || elem.keyDesc === ''" class="elem-title">{{elem[keyDispay]}}</div>
-        <div v-if="elem.keyDesc !== undefined && elem.keyDesc !== ''" class="elem-title-has-desc">{{elem[keyDispay]}}</div>
-        <div v-if="elem.keyDesc !== undefined && elem.keyDesc !== ''" class="elem-description">{{elem.keyDesc}}</div>
+        <div class="elem-pic" v-bind:style="stylePuce(elem)">{{ formatEmoji(elem.letter || elem[keyDispay][0]) }}</div>
+        <div v-if="elem.puce !== undefined && elem.puce !== 0" class="elem-puce">{{ elem.puce }}</div>
+        <div v-if="elem.keyDesc === undefined || elem.keyDesc === ''" class="elem-title">{{ formatEmoji(elem[keyDispay]) }}</div>
+        <div v-if="elem.keyDesc !== undefined && elem.keyDesc !== ''" class="elem-title-has-desc">{{ formatEmoji(elem[keyDispay]) }}</div>
+        <div v-if="elem.keyDesc !== undefined && elem.keyDesc !== ''" class="elem-description">{{ formatEmoji(elem.keyDesc) }}</div>
       
       </div>
 
@@ -79,6 +79,9 @@ export default {
     ...mapGetters([])
   },
   methods: {
+    formatEmoji (message) {
+      return this.$phoneAPI.convertEmoji(message)
+    },
     styleTitle: function () {
       return {
         color: this.color,
@@ -227,7 +230,7 @@ export default {
   white-space: nowrap;
 
   font-size: 12.5px;
-  font-style: italic;
+  /* font-style: italic; */
   /* font-weight: 800; */
 }
 </style>

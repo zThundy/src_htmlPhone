@@ -152,7 +152,7 @@ if (process.env.NODE_ENV !== 'production') {
     image: 'https://i.imgur.com/AwpBPXO.jpg',
     author: 'Gannon',
     data,
-    description: 'Questo testo è una prova. Da qua sto testando cosa succede se scrivi un cazzo di poema',
+    didascalia: 'Questo testo è una prova. Da qua sto testando cosa succede se scrivi un cazzo di poema :rofl:',
     likes: 3,
     filter: 'moon',
     isLike: 1
@@ -162,7 +162,7 @@ if (process.env.NODE_ENV !== 'production') {
     author: 'Gearbox Official',
     authorIcon: 'https://i.imgur.com/8hMQzlk.jpg',
     data,
-    description: 'Questo testo è una prova. Da qua sto testando cosa succede se scrivi un cazzo di poema',
+    didascalia: 'Questo testo è una prova. Da qua sto testando cosa succede se scrivi un cazzo di poema',
     filter: 'Originale',
     likes: 61
   }, {
@@ -171,7 +171,7 @@ if (process.env.NODE_ENV !== 'production') {
     author: 'Gearbox Official',
     authorIcon: 'https://i.imgur.com/o0Yciqc.jpg',
     data,
-    description: 'Questo testo è una prova. Da qua sto testando cosa succede se scrivi un cazzo di poema',
+    didascalia: 'Questo testo è una prova. Da qua sto testando cosa succede se scrivi un cazzo di poema',
     filter: 'Originale',
     likes: 43
   }, {
@@ -180,7 +180,7 @@ if (process.env.NODE_ENV !== 'production') {
     author: 'Gearbox Official',
     authorIcon: 'https://i.imgur.com/Zp6i4CB.jpg',
     data,
-    description: 'Questo testo è una prova. Da qua sto testando cosa succede se scrivi un cazzo di poema',
+    didascalia: 'Questo testo è una prova. Da qua sto testando cosa succede se scrivi un cazzo di poema',
     filter: 'moon',
     likes: 21
   }]

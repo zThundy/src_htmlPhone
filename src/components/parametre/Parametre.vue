@@ -83,7 +83,6 @@ export default {
       'bluetoothString',
       'closestPlayers',
       'bluetooth',
-      'tts',
       'currentCover',
       'myCovers',
       'myImage',
@@ -240,8 +239,7 @@ export default {
       'toggleNotifications',
       'toggleAirplane',
       'updateWifiString',
-      'updateBluetooth',
-      'setTTS'
+      'updateBluetooth'
     ]),
     scrollIntoView: function () {
       this.$nextTick(() => {
@@ -455,10 +453,6 @@ export default {
       if (data.value !== 'cancel') {
         this.setLanguage(data.value)
       }
-    },
-
-    toggleTextToSpeech (param, data) {
-      this.setTTS(!this.tts)
     },
 
     toggleNotificationsLocally () {

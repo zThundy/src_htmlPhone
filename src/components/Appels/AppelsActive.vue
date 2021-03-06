@@ -3,7 +3,7 @@
     <div class="backblur" v-bind:style="{background: 'url(' + backgroundURL +')'}"></div>
     <InfoBare />
     <div class="num">{{ appelsDisplayNumber }}</div>
-    <div class="contactName">{{ appelsDisplayName }}</div>
+    <div class="contactName">{{ formatEmoji(appelsDisplayName) }}</div>
 
     <div class="time"></div>
     <div class="time-display">{{ timeDisplay }}</div>
@@ -56,6 +56,9 @@ export default {
   },
   methods: {
     ...mapActions(['acceptCall', 'rejectCall', 'ignoreCall']),
+    formatEmoji (message) {
+      return this.$phoneAPI.convertEmoji(message)
+    },
     onBackspace () {
       if (this.status === 1) {
         this.onRejectCall()

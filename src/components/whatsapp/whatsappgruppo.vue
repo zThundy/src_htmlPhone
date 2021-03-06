@@ -1,6 +1,6 @@
 <template>
   <div style="width: 326px; height: 743px;" class="sfondo">
-    <PhoneTitle :title="this.gruppo.gruppo" :titleColor="'black'" :backgroundColor="'rgb(112,255,125)'" @back="onBackspace"/>
+    <PhoneTitle :title="formatEmoji(this.gruppo.gruppo)" :titleColor="'black'" :backgroundColor="'rgb(112,255,125)'" @back="onBackspace"/>
 
     <div class="groupImage" data-type="button">
       <img :src="gruppo.icona" />
@@ -25,8 +25,8 @@
       <div v-for="(s, i) of messaggi[String(gruppo.id)]" :key="i" v-bind:class="{select: i === currentSelected}" class="whatsapp-menu-item">
 
         <div v-if="!isImage(s)" style="overflow: auto;">
-          <div v-if="isSentByMe(s)" class="bubble daMe" :class="{select: i === currentSelected}">{{s.sender}}: {{s.message}}</div>
-          <div v-else class="bubble daAltri" :class="{select: i === currentSelected}">{{s.sender}}: {{s.message}}</div>
+          <div v-if="isSentByMe(s)" class="bubble daMe" :class="{select: i === currentSelected}">{{ s.sender }}: {{ formatEmoji(s.message) }}</div>
+          <div v-else class="bubble daAltri" :class="{select: i === currentSelected}">{{ s.sender }}: {{ formatEmoji(s.message) }}</div>
         </div>
 
         <div v-else style="overflow: auto;">
@@ -85,6 +85,9 @@ export default {
   methods: {
     ...mapActions(['requestWhatsappInfo', 'sendMessageInGroup']),
     ...mapMutations(['CHANGE_BRIGHTNESS_STATE']),
+    formatEmoji (message) {
+      return this.$phoneAPI.convertEmoji(message)
+    },
     scrollIntoView () {
       this.$nextTick(() => {
         const elem = this.$el.querySelector('.select')
