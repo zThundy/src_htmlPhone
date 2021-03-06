@@ -1,8 +1,12 @@
 <template>
-  <div class="phone_app">
-    <PhoneTitle :backgroundColor="'rgba(0, 0, 0, 0)'" :title="currentScreen.title" :class="{ gradient_bg: currentScreenIndex != 2 }" :back="quit"/>
+  <div style="width: 100%; height: 100%;" class="phone_app">
+    <!-- <PhoneTitle :backgroundColor="'rgba(0, 0, 0, 0)'" :title="currentScreen.title" :class="{ gradient_bg: currentScreenIndex != 2 }" :back="quit"/> -->
+    <PhoneTitle class="decor-border" :backgroundColor="'white'" :title="currentScreen.title" :back="quit"/>
+    <div class="phone-title-icon">
+      <i class="fa fa-instagram"></i>
+    </div>
     
-    <div class="phone_content">
+    <div style="width: 100%; height: 100%; overflow: hidden;" class="phone_content">
       <component :is="currentScreen.component"/>
     </div>
 
@@ -139,14 +143,14 @@ export default {
 /* ######################## */
 
 .instagram-menu {
-  border-top: 1px solid rgb(250, 108, 238);
+  border-top: 1px solid rgb(230, 230, 230);
   height: 56px;
   display: flex;
   width: 100%;
 }
 
-.dadel {
-  color: rgba(248, 99, 218, 0.5);
+.decor-border {
+  border-bottom: 1px solid black;
 }
 
 .instagram-menu-item {
@@ -155,21 +159,18 @@ export default {
   display: flex;
   justify-content: center;
   align-items: center;
-  color: rgb(250, 108, 238);
+  color: rgb(180, 180, 180);
 }
 
 .instagram-menu-item.select {
-  color: #ff009d;
+  color: rgb(0, 0, 0);
 }
 
-.instagram-menu-item:hover {
-  color: #ff009d;
-}
-
-.gradient_bg {
-  background: -moz-linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%); 
-  background: -webkit-linear-gradient(45deg, #f09433 0%,#e6683c 25%,#dc2743 50%,#cc2366 75%,#bc1888 100%); 
-  background: linear-gradient(45deg, #f09433 0%,#e6683c 25%,#dc2743 50%,#cc2366 75%,#bc1888 100%); 
-  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#f09433', endColorstr='#bc1888',GradientType=1 );
+.phone-title-icon {
+  font-size: 40px;
+  position: absolute;
+  margin-top: 35px;
+  margin-left: 280px;
+  color: rgba(0, 0, 0, 0.9);
 }
 </style>

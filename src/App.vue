@@ -29,6 +29,7 @@
 
 import './PhoneBaseStyle.scss'
 import './assets/css/font-awesome.min.css'
+import './assets/css/cssgram.css'
 // import './assets/css/fontawesome.min.css'
 
 import { mapGetters, mapActions } from 'vuex'

@@ -1,11 +1,9 @@
 <template>
-  <div style="width: 326px; height: 743px;" class="phone_content">
-
-    <div class='resize_immagine'>
-      <i class="fa fa-camera-retro fa-5x" style="color: #E533FF;"></i>
+  <div class="general-container">
+    <div class="picture-snap-cyrcle-contaniner">
+      <div class="picture-snap-cyrcle-ext"></div>
+      <div class="picture-snap-cyrcle-int"></div>
     </div>
-
-    <span class='instagram_send'>{{ LangString('APP_INSTAGRAM_POST_PICTURE') }}</span> 
   </div>
 </template>
 
@@ -86,34 +84,40 @@ export default {
 </script>
 
 <style scoped>
-.phone_content {
-  background: #f4dbe7;
+.general-container {
+  background-color: black;
+  width: 100%;
+  height: 100%;
 }
 
-.resize_immagine {
-  top: 200px;
-  left: 115px;
-  font-size: 20px;
-  position: absolute;
-  align-content: center;
+.picture-snap-cyrcle-contaniner {
+  position: relative;
+  top: 495px;
+  width: 100%;
+  height: 15%;
 }
 
-.instagram_send {
+.picture-snap-cyrcle-ext {
+  margin-left: auto;
+  margin-right: auto;
+
+  height: 90px;
+  width: 90px;
+  background-color: white;
+  border-radius: 50px;
+}
+
+.picture-snap-cyrcle-int {
   position: absolute;
-  top: 320px;
-  right: 0px;
-  left: 85px;
-  width: 120px;
-  height: 32px;
-  border-radius: 16px;
-  background-color: rgba(242, 29, 231, 0.61);
 
-  margin-bottom: 2px;
-  color: white;
+  bottom: 5px;
+  left: 125px;
 
-  line-height: 32px;
-  text-align: center;
-  margin: 26px 20px;
-  font-size: 16px;
+  height: 80px;
+  width: 80px;
+  background-color: white;
+  border-radius: 50px;
+
+  border: 3px solid black;
 }
 </style>

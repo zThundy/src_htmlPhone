@@ -1,23 +1,25 @@
 <template>
   <!-- https://una.im/CSSgram/ -->
-  <div style="width: 326px; height: 596px;" class="phone_content">
-    <link rel="stylesheet" href="https://cssgram-cssgram.netdna-ssl.com/cssgram.min.css">
+  <div class="filters-screen-container">
+    <!-- <link rel="stylesheet" href="/assets/css/cssgram.css"> -->
+    <!-- <link rel="stylesheet" href="https://cssgram-cssgram.netdna-ssl.com/cssgram.min.css"> -->
 
-    <img class='image' :src="tempImage" :class="filters[selectedMessage]">
+    <div class="central-image-div">
+      <img class='image' :src="tempImage" :class="filters[selectedMessage]">
+    </div>
 
-    <div class="aggiusta_schermo">
-      <div class="text-container">{{ LangString('APP_INSTAGRAM_CHOOSE_FILTER') }}</div>
+    <div class="filters-images-container">
+      <!-- <div class="text-container">{{ LangString('APP_INSTAGRAM_CHOOSE_FILTER') }}</div> -->
 
-      <div class="image_list">
-
-        <div v-for='(val, key) in filters' :key="key" class="filtersdiv" :class="{ select: Number(key) === Number(selectedMessage) }">
-
-          <div style="text-align: center;">{{ val }}</div>
-          <img :class="val" :src="tempImage">
-
-        </div>
-
-      </div>
+      <button
+        v-for='(val, key) in filters'
+        :key="key"
+        :class="[{ selected: Number(key) === Number(selectedMessage)}, val]"
+        :style="{ backgroundImage: 'url(' + tempImage + ')' }"
+      >
+        <!-- <img class="single-filter-image" :class="val" :src="tempImage"> -->
+        {{ val }}
+      </button>
 
     </div>
 
@@ -74,7 +76,7 @@ export default {
     ...mapActions(['instagramPostImage']),
     scrollIntoView () {
       this.$nextTick(() => {
-        const elem = this.$el.querySelector('.select')
+        const elem = this.$el.querySelector('.selected')
         if (elem !== null) {
           elem.scrollIntoView({ behavior: 'smooth', block: 'start', inline: 'nearest' })
         }
@@ -95,6 +97,20 @@ export default {
     onBack () {
       if (this.ignoreControls) return
       this.$bus.$emit('instagramHome')
+    },
+    onUp () {
+      if (this.ignoreControls) return
+      // il 26 in questa funzione sarebbe il massimo di filtri: non ho idea
+      // di perche non prenda this.filters.length
+      this.selectedMessage = (this.selectedMessage < 3) ? this.selectedMessage : this.selectedMessage - 3
+      this.scrollIntoView()
+    },
+    onDown () {
+      if (this.ignoreControls) return
+      // il 26 in questa funzione sarebbe il massimo di filtri: non ho idea
+      // di perche non prenda this.filters.length
+      this.selectedMessage = (this.selectedMessage > 23) ? this.selectedMessage : this.selectedMessage + 3
+      this.scrollIntoView()
     },
     async onEnter () {
       if (this.ignoreControls) return
@@ -122,12 +138,16 @@ export default {
     }
   },
   created () {
+    this.$bus.$on('keyUpArrowUp', this.onUp)
+    this.$bus.$on('keyUpArrowDown', this.onDown)
     this.$bus.$on('keyUpArrowLeft', this.onLeft)
     this.$bus.$on('keyUpArrowRight', this.onRight)
     this.$bus.$on('keyUpBackspace', this.onBack)
     this.$bus.$on('keyUpEnter', this.onEnter)
   },
   beforeDestroy () {
+    this.$bus.$off('keyUpArrowUp', this.onUp)
+    this.$bus.$off('keyUpArrowDown', this.onDown)
     this.$bus.$off('keyUpArrowLeft', this.onLeft)
     this.$bus.$off('keyUpArrowRight', this.onRight)
     this.$bus.$off('keyUpBackspace', this.onBack)
@@ -137,55 +157,73 @@ export default {
 </script>
 
 <style scoped>
-
-.aggiusta_schermo {
-  padding-top: 65%;
+.filters-screen-container {
+  height: 100%;
+  width: 100%;
   overflow: hidden;
-}
 
-.image {
-  width: 100%;
-}
-
-.text-container {
-  width: 100%;
-  height: 30px;
-  padding-top: 4px;
-  text-align: center;
-  color: white;
-
-  background: -moz-linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%); 
-  background: -webkit-linear-gradient(45deg, #f09433 0%,#e6683c 25%,#dc2743 50%,#cc2366 75%,#bc1888 100%); 
-  background: linear-gradient(45deg, #f09433 0%,#e6683c 25%,#dc2743 50%,#cc2366 75%,#bc1888 100%); 
-  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#f09433', endColorstr='#bc1888',GradientType=1 );
-}
-
-.image_list {
-  position: relative;
-  margin: 0;
-  padding: 0;
   display: flex;
-  flex-direction: row;
-  overflow-x: auto;
+  flex-direction: column;
+  background-color: rgba(50, 50, 50, 0.1);
 }
 
-.image_list img {
-  flex: 0 0 auto;
-  width: 90px;
-  height: 90px;
-  object-fit: cover;
+/* IMMAGINE CENTRALE */
+
+.central-image-div {
+  position: fixed;
+  width: 330px;
+  height: 188px;
+
+  border-bottom: 2px solid black;
 }
 
-.filtersdiv {
-  position: relative;
-  background-color: rgba(141, 141, 141, 0.397);
+.central-image-div img {
+  width: 100%;
 }
 
-.select {
-  background-color: rgba(25, 0, 117, 0.397);
-  background-image: linear-gradient(to bottom, rgba(140, 85, 145, 0.397) 50%, rgba(201, 0, 219, 0.664) 50%);
-  background-size: 100% 200%;
-  transition: background-position 0.5s;
-  background-position: 0 -100%;
+/* SELEZIONE FILTRO */
+
+.filters-images-container {
+  overflow: hidden;
+  position: inherit;
+
+  margin-top: 190px;
+  display: flex;
+  width: 330px;
+  height: 420px;
+  align-items: flex-start;
+  align-content: flex-start;
+
+  margin-left: auto;
+  margin-right: auto;
+
+  flex-flow: row;
+  flex-wrap: wrap;
+
+  border-radius: 20px;
+}
+
+button {
+  margin-top: 10px;
+  display: flex;
+  width: 30%;
+  height: 50px;
+  align-items: flex-start;
+  align-content: flex-start;
+
+  margin-left: auto;
+  margin-right: auto;
+
+  flex-flow: row;
+  flex-wrap: wrap;
+
+  border: none;
+  align-content: center;
+  border-radius: 10px;
+  border: 1px solid black;
+}
+
+.selected {
+  border: 3px solid black;
 }
 </style>

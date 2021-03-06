@@ -144,41 +144,42 @@ export default {
 }
 
 if (process.env.NODE_ENV !== 'production') {
+  let data = new Date().getTime()
   state.instagramAvatarUrl = '/html/static/img/app_instagram/default_profile.png'
   state.tempImage = 'https://pbs.twimg.com/profile_images/702982240184107008/tUKxvkcs_400x400.jpg'
   state.instaPosts = [{
     id: 1,
-    message: 'https://pbs.twimg.com/profile_images/702982240184107008/tUKxvkcs_400x400.jpg',
+    image: 'https://i.imgur.com/AwpBPXO.jpg',
     author: 'Gannon',
-    time: new Date(),
+    data,
     description: 'Questo testo è una prova. Da qua sto testando cosa succede se scrivi un cazzo di poema',
     likes: 3,
     filter: 'moon',
     isLike: 1
   }, {
     id: 2,
-    message: 'https://images.alphacoders.com/943/thumb-1920-943148.jpg',
+    image: 'https://i.imgur.com/AwpBPXO.jpg',
     author: 'Gearbox Official',
-    authorIcon: 'https://pbs.twimg.com/profile_images/702982240184107008/tUKxvkcs_400x400.jpg',
-    time: new Date(),
+    authorIcon: 'https://i.imgur.com/8hMQzlk.jpg',
+    data,
     description: 'Questo testo è una prova. Da qua sto testando cosa succede se scrivi un cazzo di poema',
     filter: 'Originale',
     likes: 61
   }, {
     id: 3,
-    message: 'https://images.alphacoders.com/943/thumb-1920-943148.jpg',
+    image: 'https://i.imgur.com/8hMQzlk.jpg',
     author: 'Gearbox Official',
-    authorIcon: 'https://pbs.twimg.com/profile_images/702982240184107008/tUKxvkcs_400x400.jpg',
-    time: new Date(),
+    authorIcon: 'https://i.imgur.com/o0Yciqc.jpg',
+    data,
     description: 'Questo testo è una prova. Da qua sto testando cosa succede se scrivi un cazzo di poema',
     filter: 'Originale',
     likes: 43
   }, {
     id: 4,
-    message: 'https://images.alphacoders.com/943/thumb-1920-943148.jpg',
+    image: 'https://i.imgur.com/o0Yciqc.jpg',
     author: 'Gearbox Official',
-    authorIcon: 'https://pbs.twimg.com/profile_images/702982240184107008/tUKxvkcs_400x400.jpg',
-    time: new Date(),
+    authorIcon: 'https://i.imgur.com/Zp6i4CB.jpg',
+    data,
     description: 'Questo testo è una prova. Da qua sto testando cosa succede se scrivi un cazzo di poema',
     filter: 'moon',
     likes: 21

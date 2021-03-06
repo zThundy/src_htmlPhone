@@ -1,5 +1,5 @@
 <template>
-  <div style="width: 100%; height: 630px;">
+  <div style="width: 100%; height: 630px; overflow: hidden;">
 
     <div class="employes-container">
       <div class="employe-container" v-for="(elem, key) in myAziendaInfo.employes" :key="key" :class="{ selected: key === currentSelected }">

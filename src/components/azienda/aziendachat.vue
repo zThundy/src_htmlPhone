@@ -1,5 +1,5 @@
 <template>
-  <div style="width: 100%; height: 630px;">
+  <div style="width: 100%; height: 630px; overflow: hidden;">
 
     <div class="chat-container">
 
