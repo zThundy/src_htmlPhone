@@ -36,9 +36,9 @@ export default {
     ...mapGetters(['LangString', 'bourseInfo'])
   },
   methods: {
-    scrollIntoViewIfNeeded: function () {
+    scrollIntoView: function () {
       this.$nextTick(() => {
-        this.$el.querySelector('.select').scrollIntoViewIfNeeded()
+        this.$el.querySelector('.select').scrollIntoView({ behavior: 'smooth', block: 'start', inline: 'nearest' })
       })
     },
     colorBourse (bouseItem) {
@@ -64,11 +64,11 @@ export default {
     },
     onUp () {
       this.currentSelect = this.currentSelect === 0 ? 0 : this.currentSelect - 1
-      this.scrollIntoViewIfNeeded()
+      this.scrollIntoView()
     },
     onDown () {
       this.currentSelect = this.currentSelect === this.bourseInfo.length - 1 ? this.currentSelect : this.currentSelect + 1
-      this.scrollIntoViewIfNeeded()
+      this.scrollIntoView()
     }
   },
   created () {

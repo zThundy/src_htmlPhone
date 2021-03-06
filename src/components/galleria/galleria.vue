@@ -35,36 +35,36 @@ export default {
   },
   methods: {
     ...mapActions(['setBackground', 'clearGallery']),
-    scrollIntoViewIfNeeded: function () {
+    scrollIntoView: function () {
       this.$nextTick(() => {
-        var query = this.$el.querySelector('.select')
-        if (query === undefined || query === null) return
-        query.scrollIntoViewIfNeeded()
+        var elem = this.$el.querySelector('.select')
+        if (elem === undefined || elem === null) return
+        elem.scrollIntoView({ behavior: 'smooth', block: 'start', inline: 'nearest' })
       })
     },
     onUp () {
       if (this.ignoredControls) return
       if (this.currentSelect === 1 || this.currentSelect === 2) return
       this.currentSelect = this.currentSelect - 2
-      this.scrollIntoViewIfNeeded()
+      this.scrollIntoView()
     },
     onDown () {
       if (this.ignoredControls) return
       if (this.currentSelect === this.fotografie.length || this.currentSelect === this.fotografie.length - 1) return
       this.currentSelect = this.currentSelect + 2
-      this.scrollIntoViewIfNeeded()
+      this.scrollIntoView()
     },
     onLeft () {
       if (this.ignoredControls) return
       if (this.currentSelect === 1) return
       this.currentSelect = this.currentSelect - 1
-      this.scrollIntoViewIfNeeded()
+      this.scrollIntoView()
     },
     onRight () {
       if (this.ignoredControls) return
       if (this.currentSelect === this.fotografie.length) return
       this.currentSelect = this.currentSelect + 1
-      this.scrollIntoViewIfNeeded()
+      this.scrollIntoView()
     },
     onBackspace () {
       if (this.ignoredControls) return

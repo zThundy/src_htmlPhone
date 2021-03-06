@@ -72,25 +72,25 @@ export default {
   },
   methods: {
     ...mapActions(['instagramPostImage']),
-    scrollIntoViewIfNeeded () {
+    scrollIntoView () {
       this.$nextTick(() => {
         const elem = this.$el.querySelector('.select')
         if (elem !== null) {
-          elem.scrollIntoViewIfNeeded()
+          elem.scrollIntoView({ behavior: 'smooth', block: 'start', inline: 'nearest' })
         }
       })
     },
     onLeft () {
       if (this.ignoreControls) return
       this.selectedMessage = this.selectedMessage === 0 ? 0 : this.selectedMessage - 1
-      this.scrollIntoViewIfNeeded()
+      this.scrollIntoView()
     },
     onRight () {
       if (this.ignoreControls) return
       // il 26 in questa funzione sarebbe il massimo di filtri: non ho idea
       // di perche non prenda this.filters.length
       this.selectedMessage = this.selectedMessage === 26 ? this.selectedMessage : this.selectedMessage + 1
-      this.scrollIntoViewIfNeeded()
+      this.scrollIntoView()
     },
     onBack () {
       if (this.ignoreControls) return

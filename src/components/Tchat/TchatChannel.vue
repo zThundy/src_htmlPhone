@@ -43,23 +43,23 @@ export default {
   },
   methods: {
     ...mapActions(['tchatAddChannel', 'tchatRemoveChannel']),
-    scrollIntoViewIfNeeded () {
+    scrollIntoView () {
       this.$nextTick(() => {
-        const $select = this.$el.querySelector('.select')
-        if ($select !== null) {
-          $select.scrollIntoViewIfNeeded()
+        const elem = this.$el.querySelector('.select')
+        if (elem !== null) {
+          elem.scrollIntoView({ behavior: 'smooth', block: 'start', inline: 'nearest' })
         }
       })
     },
     onUp () {
       if (this.ignoreControls === true) return
       this.currentSelect = this.currentSelect === 0 ? 0 : this.currentSelect - 1
-      this.scrollIntoViewIfNeeded()
+      this.scrollIntoView()
     },
     onDown () {
       if (this.ignoreControls === true) return
       this.currentSelect = this.currentSelect === this.tchatChannels.length - 1 ? this.currentSelect : this.currentSelect + 1
-      this.scrollIntoViewIfNeeded()
+      this.scrollIntoView()
     },
     async onRight () {
       if (this.ignoreControls === true) return

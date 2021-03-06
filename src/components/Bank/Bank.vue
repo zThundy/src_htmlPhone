@@ -57,9 +57,9 @@ export default {
   },
   methods: {
     ...mapActions(['requestLocalFatture', 'createPagamento']),
-    scrollIntoViewIfNeeded: function () {
+    scrollIntoView: function () {
       this.$nextTick(() => {
-        document.querySelector('.selected').scrollIntoViewIfNeeded()
+        document.querySelector('.selected').scrollIntoView({ behavior: 'smooth', block: 'start', inline: 'nearest' })
       })
     },
     onBackspace () {
@@ -89,13 +89,13 @@ export default {
       if (this.ignoreControls) return
       if (this.currentSelect === 0) return
       this.currentSelect = this.currentSelect - 1
-      this.scrollIntoViewIfNeeded()
+      this.scrollIntoView()
     },
     onDown () {
       if (this.ignoreControls) return
       if (this.currentSelect === this.movements.length - 1) return
       this.currentSelect = this.currentSelect + 1
-      this.scrollIntoViewIfNeeded()
+      this.scrollIntoView()
     },
     async listaFatture () {
       this.ignoreControls = true

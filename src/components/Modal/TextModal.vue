@@ -50,18 +50,18 @@ export default {
     }
   },
   methods: {
-    scrollIntoViewIfNeeded () {
+    scrollIntoView () {
       this.$nextTick(() => {
-        document.querySelector('.modal-choix.select').scrollIntoViewIfNeeded()
+        document.querySelector('.modal-choix.select').scrollIntoView({ behavior: 'smooth', block: 'start', inline: 'nearest' })
       })
     },
     onUp () {
       this.currentSelect = this.currentSelect === 0 ? 0 : this.currentSelect - 1
-      this.scrollIntoViewIfNeeded()
+      this.scrollIntoView()
     },
     onDown () {
       this.currentSelect = this.currentSelect === this.choix.length - 1 ? this.currentSelect : this.currentSelect + 1
-      this.scrollIntoViewIfNeeded()
+      this.scrollIntoView()
     },
     selectItem (elem) {
       this.$emit('select', elem)

@@ -118,11 +118,11 @@ export default {
     ...mapActions([
       'deleteEmail'
     ]),
-    scrollIntoViewIfNeeded () {
+    scrollIntoView () {
       this.$nextTick(() => {
         const elem = this.$el.querySelector('.select')
         if (elem !== null) {
-          elem.scrollIntoViewIfNeeded()
+          elem.scrollIntoView({ behavior: 'smooth', block: 'start', inline: 'nearest' })
         }
       })
     },
@@ -157,14 +157,14 @@ export default {
       if (this.ignoreControl) return
       if (this.currentSelect === -1) return
       this.currentSelect = this.currentSelect - 1
-      this.scrollIntoViewIfNeeded()
+      this.scrollIntoView()
     },
     onDown () {
       if (this.ignoreControl) return
       if (this.currentModule === 0 && this.emails && this.currentSelect === this.emails.length - 1) return
       if (this.currentModule === 1 && this.sentEmails && this.currentSelect === this.sentEmails.length - 1) return
       this.currentSelect = this.currentSelect + 1
-      this.scrollIntoViewIfNeeded()
+      this.scrollIntoView()
     },
     changeModule (type, module) {
       if (type === 'left' && this.currentModule === 0) return

@@ -85,11 +85,11 @@ export default {
   methods: {
     ...mapActions(['requestWhatsappInfo', 'sendMessageInGroup']),
     ...mapMutations(['CHANGE_BRIGHTNESS_STATE']),
-    scrollIntoViewIfNeeded () {
+    scrollIntoView () {
       this.$nextTick(() => {
         const elem = this.$el.querySelector('.select')
         if (elem !== null) {
-          elem.scrollIntoViewIfNeeded()
+          elem.scrollIntoView({ behavior: 'smooth', block: 'start', inline: 'nearest' })
         }
       })
     },
@@ -100,7 +100,7 @@ export default {
       } else {
         this.currentSelected = this.currentSelected === 0 ? 0 : this.currentSelected - 1
       }
-      this.scrollIntoViewIfNeeded()
+      this.scrollIntoView()
     },
     onDown () {
       if (this.ignoreControls === true) return
@@ -109,7 +109,7 @@ export default {
       } else {
         this.currentSelected = this.currentSelected === this.messaggi[this.gruppo.id].length - 1 ? this.currentSelected : this.currentSelected + 1
       }
-      this.scrollIntoViewIfNeeded()
+      this.scrollIntoView()
     },
     onBackspace () {
       if (this.imgZoom !== undefined) {
@@ -177,7 +177,7 @@ export default {
           // qui aggiorno la visualizzazione dei messaggi
           setTimeout(() => {
             this.currentSelected = this.messaggi[String(this.gruppo.id)].length - 1
-            this.scrollIntoViewIfNeeded()
+            this.scrollIntoView()
           }, 200)
         }
       })
@@ -226,7 +226,7 @@ export default {
       this.ignoreControls = true
       setTimeout(() => {
         this.currentSelected = this.messaggi[String(this.gruppo.id)].length - 1
-        this.scrollIntoViewIfNeeded()
+        this.scrollIntoView()
         this.ignoreControls = false
       }, 1000)
     }

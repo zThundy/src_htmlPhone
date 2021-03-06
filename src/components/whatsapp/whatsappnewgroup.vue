@@ -95,9 +95,9 @@ export default {
   },
   methods: {
     ...mapActions(['getAllInfoGroups', 'updateGroupVars', 'creaGruppo', 'addSelectedMembers']),
-    scrollIntoViewIfNeeded: function () {
+    scrollIntoView: function () {
       this.$nextTick(() => {
-        document.querySelector('.select').scrollIntoViewIfNeeded()
+        document.querySelector('.select').scrollIntoView({ behavior: 'smooth', block: 'start', inline: 'nearest' })
       })
     },
     finalizzaGruppo () {
@@ -137,7 +137,7 @@ export default {
         }
       } else {
         this.currentSelect = this.currentSelect === 0 ? this.contacts.length - 1 : this.currentSelect - 1
-        this.scrollIntoViewIfNeeded()
+        this.scrollIntoView()
       }
     },
     onDown: function () {
@@ -167,7 +167,7 @@ export default {
         }
       } else {
         this.currentSelect = this.currentSelect === this.contacts.length - 1 ? 0 : this.currentSelect + 1
-        this.scrollIntoViewIfNeeded()
+        this.scrollIntoView()
       }
     },
     async snapGroupImage () {

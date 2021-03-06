@@ -37,11 +37,11 @@ export default {
   methods: {
     // ...mapMutations(['SET_DATI_INFO']),
     ...mapActions(['leaveGroup']),
-    scrollIntoViewIfNeeded () {
+    scrollIntoView () {
       this.$nextTick(() => {
         const elem = this.$el.querySelector('.select')
         if (elem !== null) {
-          elem.scrollIntoViewIfNeeded()
+          elem.scrollIntoView({ behavior: 'smooth', block: 'start', inline: 'nearest' })
         }
       })
     },
@@ -61,7 +61,7 @@ export default {
       } else {
         this.currentSelected = this.currentSelected === 0 ? 0 : this.currentSelected - 1
       }
-      this.scrollIntoViewIfNeeded()
+      this.scrollIntoView()
     },
     onDown () {
       if (this.ignoreControls === true) return
@@ -71,7 +71,7 @@ export default {
       } else {
         this.currentSelected = this.currentSelected === this.gruppi.length - 1 ? this.currentSelected : this.currentSelected + 1
       }
-      this.scrollIntoViewIfNeeded()
+      this.scrollIntoView()
     },
     async onRight () {
       if (this.ignoreControls === true) return

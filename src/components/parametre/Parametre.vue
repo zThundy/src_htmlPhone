@@ -243,9 +243,9 @@ export default {
       'updateBluetooth',
       'setTTS'
     ]),
-    scrollIntoViewIfNeeded: function () {
+    scrollIntoView: function () {
       this.$nextTick(() => {
-        document.querySelector('.select').scrollIntoViewIfNeeded()
+        document.querySelector('.select').scrollIntoView({ behavior: 'smooth', block: 'start', inline: 'nearest' })
       })
     },
 
@@ -275,13 +275,13 @@ export default {
     onUp: function () {
       if (this.ignoreControls === true) return
       this.currentSelect = this.currentSelect === 0 ? 0 : this.currentSelect - 1
-      this.scrollIntoViewIfNeeded()
+      this.scrollIntoView()
     },
 
     onDown: function () {
       if (this.ignoreControls === true) return
       this.currentSelect = this.currentSelect === this.paramList.length - 1 ? this.currentSelect : this.currentSelect + 1
-      this.scrollIntoViewIfNeeded()
+      this.scrollIntoView()
     },
 
     onRight () {

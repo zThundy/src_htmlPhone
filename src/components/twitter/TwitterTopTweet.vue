@@ -155,11 +155,11 @@ export default {
         this.selectMessage = -1
       })
     },
-    scrollIntoViewIfNeeded () {
+    scrollIntoView () {
       this.$nextTick(() => {
         const elem = this.$el.querySelector('.select')
         if (elem !== null) {
-          elem.scrollIntoViewIfNeeded()
+          elem.scrollIntoView({ behavior: 'smooth', block: 'start', inline: 'nearest' })
         }
       })
     },
@@ -170,7 +170,7 @@ export default {
       } else {
         this.selectMessage = this.selectMessage === 0 ? 0 : this.selectMessage - 1
       }
-      this.scrollIntoViewIfNeeded()
+      this.scrollIntoView()
     },
     onDown () {
       if (this.ignoreControls === true) return
@@ -179,7 +179,7 @@ export default {
       } else {
         this.selectMessage = this.selectMessage === this.tweets.length - 1 ? this.selectMessage : this.selectMessage + 1
       }
-      this.scrollIntoViewIfNeeded()
+      this.scrollIntoView()
     },
     async onEnter () {
       if (this.ignoreControls === true) return

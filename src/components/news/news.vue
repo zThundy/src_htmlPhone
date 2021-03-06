@@ -127,11 +127,11 @@ export default {
     afterChange (from, to) {
       this.currentPicIndex = to
     },
-    scrollIntoViewIfNeeded () {
+    scrollIntoView () {
       this.$nextTick(() => {
         const elem = this.$el.querySelector('.select')
         if (elem !== null) {
-          elem.scrollIntoViewIfNeeded()
+          elem.scrollIntoView()
         }
       })
     },
@@ -223,7 +223,7 @@ export default {
       if (this.ignoreControl) return
       if (this.currentSelect === -1) return
       this.currentSelect = this.currentSelect - 1
-      this.scrollIntoViewIfNeeded()
+      this.scrollIntoView()
     },
     onDown () {
       if (this.ignoreControl) return
@@ -233,7 +233,7 @@ export default {
         if (this.currentSelect === 2) return
       }
       this.currentSelect = this.currentSelect + 1
-      this.scrollIntoViewIfNeeded()
+      this.scrollIntoView()
     },
     formatTime (time) {
       const dateObject = new Date(time)

@@ -51,11 +51,11 @@ export default {
   },
   methods: {
     ...mapMutations(['SET_AZIENDA_IGNORE_CONTROLS']),
-    scrollIntoViewIfNeeded () {
+    scrollIntoView () {
       this.$nextTick(() => {
         const elem = this.$el.querySelector('.selected')
         if (elem !== null) {
-          elem.scrollIntoViewIfNeeded()
+          elem.scrollIntoView({ behavior: 'smooth', block: 'start', inline: 'nearest' })
         }
       })
     },
@@ -63,13 +63,13 @@ export default {
       if (this.aziendaIngoreControls) return
       if (this.currentSelected === -1) return
       this.currentSelected = this.currentSelected - 1
-      this.scrollIntoViewIfNeeded()
+      this.scrollIntoView()
     },
     onDown () {
       if (this.aziendaIngoreControls) return
       if (this.currentSelected === this.myAziendaInfo.employes.length - 1) return
       this.currentSelected = this.currentSelected + 1
-      this.scrollIntoViewIfNeeded()
+      this.scrollIntoView()
     },
     onEnter () {
       if (this.aziendaIngoreControls) return

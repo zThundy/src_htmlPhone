@@ -65,20 +65,20 @@ export default {
       const find = this.contacts.find(e => e.number === num)
       return find
     },
-    scrollIntoViewIfNeeded: function () {
+    scrollIntoView: function () {
       this.$nextTick(() => {
-        this.$el.querySelector('.active').scrollIntoViewIfNeeded()
+        this.$el.querySelector('.active').scrollIntoView({ behavior: 'smooth', block: 'start', inline: 'nearest' })
       })
     },
     onUp () {
       if (this.ignoreControls === true) return
       this.selectIndex = Math.max(0, this.selectIndex - 1)
-      this.scrollIntoViewIfNeeded()
+      this.scrollIntoView()
     },
     onDown () {
       if (this.ignoreControls === true) return
       this.selectIndex = Math.min(this.historique.length - 1, this.selectIndex + 1)
-      this.scrollIntoViewIfNeeded()
+      this.scrollIntoView()
     },
     async selectItem (item) {
       const numero = item.num

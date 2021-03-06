@@ -48,11 +48,11 @@ export default {
   methods: {
     ...mapMutations(['SET_AZIENDA_IGNORE_CONTROLS', 'SET_ALL_MESSAGES_AS_READ']),
     ...mapActions(['startCall']),
-    scrollIntoViewIfNeeded () {
+    scrollIntoView () {
       this.$nextTick(() => {
         const elem = this.$el.querySelector('.selected')
         if (elem !== null) {
-          elem.scrollIntoViewIfNeeded()
+          elem.scrollIntoView({ behavior: 'smooth', block: 'start', inline: 'nearest' })
         }
       })
     },
@@ -60,13 +60,13 @@ export default {
       if (this.aziendaIngoreControls) return
       if (this.currentSelected === -1) return
       this.currentSelected = this.currentSelected - 1
-      this.scrollIntoViewIfNeeded()
+      this.scrollIntoView()
     },
     onDown () {
       if (this.aziendaIngoreControls) return
       if (this.currentSelected === this.aziendaMessages.length - 1) return
       this.currentSelected = this.currentSelected + 1
-      this.scrollIntoViewIfNeeded()
+      this.scrollIntoView()
     },
     onEnter () {
       if (this.aziendaIngoreControls) return
@@ -122,7 +122,7 @@ export default {
     this.$bus.$on('keyUpBackspace', this.onBack)
     this.currentSelected = this.aziendaMessages.length - 1
     setTimeout(() => {
-      this.scrollIntoViewIfNeeded()
+      this.scrollIntoView()
     }, 500)
   },
   mounted () {

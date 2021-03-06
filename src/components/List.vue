@@ -103,20 +103,20 @@ export default {
         borderRadius: '50%'
       }
     },
-    scrollIntoViewIfNeeded: function () {
+    scrollIntoView: function () {
       this.$nextTick(() => {
-        document.querySelector('.select').scrollIntoViewIfNeeded()
+        document.querySelector('.select').scrollIntoView({ behavior: 'smooth', block: 'start', inline: 'nearest' })
       })
     },
     onUp: function () {
       if (this.disable === true) return
       this.currentSelect = this.currentSelect === 0 ? this.list.length - 1 : this.currentSelect - 1
-      this.scrollIntoViewIfNeeded()
+      this.scrollIntoView()
     },
     onDown: function () {
       if (this.disable === true) return
       this.currentSelect = this.currentSelect === this.list.length - 1 ? 0 : this.currentSelect + 1
-      this.scrollIntoViewIfNeeded()
+      this.scrollIntoView()
     },
     selectItem (item) {
       this.$emit('select', item)

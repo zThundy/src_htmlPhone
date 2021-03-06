@@ -36,9 +36,9 @@ export default {
     ...mapGetters(['LangString', 'retiWifi'])
   },
   methods: {
-    scrollIntoViewIfNeeded: function () {
+    scrollIntoView: function () {
       this.$nextTick(() => {
-        this.$el.querySelector('.select').scrollIntoViewIfNeeded()
+        this.$el.querySelector('.select').scrollIntoView({ behavior: 'smooth', block: 'start', inline: 'nearest' })
       })
     },
     onBackspace () {
@@ -68,7 +68,7 @@ export default {
       } else {
         this.currentSelect = this.currentSelect === 0 ? 0 : this.currentSelect - 1
       }
-      this.scrollIntoViewIfNeeded()
+      this.scrollIntoView()
     },
     onDown () {
       if (!this.acceso) {
@@ -76,7 +76,7 @@ export default {
       } else {
         this.currentSelect = this.currentSelect === this.retiWifi.length - 1 ? this.currentSelect : this.currentSelect + 1
       }
-      this.scrollIntoViewIfNeeded()
+      this.scrollIntoView()
     }
   },
   created () {

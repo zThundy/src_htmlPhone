@@ -61,9 +61,9 @@ export default {
   },
   methods: {
     ...mapActions(['inviaSoldiAPI']),
-    scrollIntoViewIfNeeded: function () {
+    scrollIntoView: function () {
       this.$nextTick(() => {
-        document.querySelector('focus').scrollIntoViewIfNeeded()
+        document.querySelector('focus').scrollIntoView({ behavior: 'smooth', block: 'start', inline: 'nearest' })
       })
     },
     onBackspace () {

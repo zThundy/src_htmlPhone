@@ -69,11 +69,11 @@ export default {
       this.tchatSetChannel({ channel })
     },
     ...mapActions(['tchatSetChannel', 'tchatSendMessage']),
-    scrollIntoViewIfNeeded () {
+    scrollIntoView () {
       this.$nextTick(() => {
-        const $select = this.$el.querySelector('.select')
-        if ($select !== null) {
-          $select.scrollIntoViewIfNeeded()
+        const elem = this.$el.querySelector('.select')
+        if (elem !== null) {
+          elem.scrollIntoView({ behavior: 'smooth', block: 'start', inline: 'nearest' })
         }
       })
     },
@@ -82,14 +82,14 @@ export default {
       // c.scrollTop = c.scrollTop - 120
       if (this.currentSelect === 0) return
       this.currentSelect = this.currentSelect - 1
-      this.scrollIntoViewIfNeeded()
+      this.scrollIntoView()
     },
     onDown () {
       // const c = this.$refs.elementsDiv
       // c.scrollTop = c.scrollTop + 120
       if (this.currentSelect === this.tchatMessages.length - 1) return
       this.currentSelect = this.currentSelect + 1
-      this.scrollIntoViewIfNeeded()
+      this.scrollIntoView()
     },
     async onEnter () {
       const rep = await this.$phoneAPI.getReponseText({ title: 'Digita il messaggio' })

@@ -51,11 +51,11 @@ export default {
       'setupApps',
       'installApp'
     ]),
-    scrollIntoViewIfNeeded () {
+    scrollIntoView () {
       this.$nextTick(() => {
         const elem = this.$el.querySelector('.select')
         if (elem !== null) {
-          elem.scrollIntoViewIfNeeded()
+          elem.scrollIntoView({ behavior: 'smooth', block: 'start', inline: 'nearest' })
         }
       })
     },
@@ -86,12 +86,12 @@ export default {
     onUp () {
       if (this.currentSelect === -1) return
       this.currentSelect = this.currentSelect - 1
-      this.scrollIntoViewIfNeeded()
+      this.scrollIntoView()
     },
     onDown () {
       if (this.currentSelect === this.downloadableApps.length - 1) return
       this.currentSelect = this.currentSelect + 1
-      this.scrollIntoViewIfNeeded()
+      this.scrollIntoView()
     },
     onEnd (identifier) {
       this.installApp({ identifier: identifier, app: this.downloadableApps[identifier] })
