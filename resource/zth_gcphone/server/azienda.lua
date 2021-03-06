@@ -47,7 +47,7 @@ AddEventHandler("gcphone:azienda_requestJobInfo", function()
             end
                 
             table.sort(myAziendaInfo.employes, function(a, b)
-                return a.grade < b.grade
+                return a.grade > b.grade
             end)
 
             GetAziendaMessages(player, xPlayer.job.name, function(messages)
