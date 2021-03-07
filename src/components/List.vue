@@ -166,7 +166,8 @@ export default {
 }
 
 .element {
-  height: 58px;
+  height: 60px;
+  border-bottom: 1px solid #d8d8d8;
   line-height: 58px;
   display: flex;
   align-items: center;

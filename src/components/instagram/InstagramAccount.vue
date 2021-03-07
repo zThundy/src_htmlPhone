@@ -1,11 +1,12 @@
 <template>
-  <div style="width: 314px; height: 579px;" class='phone_content content inputText'>
+  <!--314px, 579px-->
+  <div style="width: 100%; height: 600px;" class='phone_content content inputText'>
 
     <template v-if="state === STATI.MENU">
 
       <template v-if="!isLogin">
         <div class="group" data-type="button" @click.stop="state = STATI.LOGIN">
-          <input type='button' class="btn btn-gray" @click.stop="state = STATI.LOGIN" :value="LangString('APP_INSTAGRAM_ACCOUNT_LOGIN')"/>
+          <input type='button' class="btn btn-cyan" @click.stop="state = STATI.LOGIN" :value="LangString('APP_INSTAGRAM_ACCOUNT_LOGIN')"/>
         </div>
 
         <div class="group" data-type="button" @click.stop="state = STATI.NOTIFICATION">
@@ -13,8 +14,7 @@
         </div>
 
         <div class="group bottom" data-type="button" @click.stop="state = STATI.NEW_ACCOUNT">
-          <span style="position: absolute; bottom: 120px; left: 145px;" class="fa fa-user"></span>
-          <input type='button' class="btn btn-green" @click.stop="state = STATI.NEW_ACCOUNT" :value="LangString('APP_INSTAGRAM_ACCOUNT_NEW')" />
+          <input type='button' class="btn btn-border" @click.stop="state = STATI.NEW_ACCOUNT" :value="LangString('APP_INSTAGRAM_ACCOUNT_NEW')" />
         </div>
       </template>
 
@@ -42,22 +42,17 @@
       <div class="group inputText" data-type="text" :data-defaultValue="accountLocale.username" data-title="Inserisci un nickname registrato">
         <input class="loginBoxes" :placeholder="LangString('APP_INSTAGRAM_USERNAME_LABEL')" type="text" :value="accountLocale.username" @change="setLocalAccount($event, 'username')">
         <span class="highlight"><i class="anim fa fa-user fa-lg"></i></span>
-        <span class="bar"></span>
       </div>
 
       <div class="group inputText" data-type="text" data-model='password'  data-title="Inserisci la password">
         <input class="loginBoxes" :placeholder="LangString('APP_INSTAGRAM_PASSWORD_LABEL')" autocomplete="new-password" type="password" :value="accountLocale.password" @change="setLocalAccount($event, 'password')">
-        <span class="highlight"><i class="fa fa-key fa-lg"></i></span>
-        <span class="bar"></span>
+        <span class="highlight"><i class="fa fa-lock fa-lg"></i></span>
       </div>
 
       <div class="group" data-type="button" @click.stop="login">
         <!-- <input type='button' class="btn btn-generic" @click.stop="login" :value="LangString('APP_INSTAGRAM_ACCOUNT_LOGIN')" /> -->
-        <span class="favicon fa fa-instagram fa-3x">
-          <p class="LoginText">Login</p>
-        </span>
-        <input type='button' class="btn btn-generic" @click.stop="login"/>
-
+        <input name="login-btn" type='button' class="btn btn-cyan btn-action" @click.stop="login"/>
+        <label for="login-btn" class="login-btn-label">Log in</label>
       </div>
 
     </template>
@@ -65,8 +60,8 @@
     <!-- PAGINA CON IMPOSTAZIONI DELLE NOTIFICHE -->
     <template v-else-if="state === STATI.NOTIFICATION">
       <div class="groupCheckBoxTitle">
-        <i class="fa fa-cogs" style="position: absolute; padding-top: 5px; padding-left: 5px;"></i>
-        <label style="font-weight: 500; justify-content: center; align-content: center; display: flex;">{{ LangString('APP_INSTAGRAM_NOTIFICATION_SOUND') }}</label>
+        <i class="fa fa-cogs" style="padding-top: 5px; padding-left: 5px; margin-right: 10px;"></i>
+        <label style="font-weight: 500;">{{ LangString('APP_INSTAGRAM_NOTIFICATION_SOUND') }}</label>
       </div>
 
       <label class="group checkbox" data-type="button" @click.prevent.stop="setNotification(2)">
@@ -85,8 +80,8 @@
       </label>
 
       <div class="groupCheckBoxTitle">
-        <i class="fa fa-bell" style="position: absolute; padding-top: 5px; padding-left: 5px;"></i>
-        <label style="font-weight: 500; justify-content: center; align-content: center; display: flex;">{{ LangString('APP_TWITTER_NOTIFICATION_SOUND') }}</label>
+        <i class="fa fa-bell" style="padding-top: 5px; padding-left: 5px; margin-right: 10px;"></i>
+        <label style="font-weight: 500;">{{ LangString('APP_TWITTER_NOTIFICATION_SOUND') }}</label>
       </div>
 
       <label class="group checkbox" data-type="button" @click.prevent.stop="setNotificationSound(true)">
@@ -111,7 +106,7 @@
         <input type='button' class="btn btn-generic" :value="LangString('APP_INSTAGRAM_ACCOUNT_AVATAR')" @click.stop="onPressChangeAvartar"/>
       </div>
 
-      <i class="fa fa-key" style="position: absolute; top: 480px; left: 155px;"></i>
+      <i class="fa fa-lock" style="position: absolute; top: 480px; left: 155px;"></i>
       <div style="top: 50px;" class="group" data-type="button" @click.stop="changePassword">
         <input type='button' class="btn btn-red" :value="LangString('APP_INSTAGRAM_ACCOUNT_CHANGE_PASSWORD')" @click.stop="changePassword"/>
       </div>
@@ -124,27 +119,22 @@
       <div class="group inputText" data-type="text" :data-defaultValue="accountLocale.username" data-title="Scegli un nickname unico">
         <input class="loginBoxes" :placeholder="LangString('APP_INSTAGRAM_USERNAME_LABEL')" type="text" :value="accountLocale.username" @change="setLocalAccount($event, 'username')">
         <span class="highlight"><i class="anim fa fa-user fa-lg"></i></span>
-        <span class="bar"></span>
       </div>
 
       <div class="group inputText" data-type="text" data-model='password' data-title="Digita una password">
         <input class="loginBoxes" :placeholder="LangString('APP_INSTAGRAM_PASSWORD_LABEL')" autocomplete="new-password" type="password" :value="accountLocale.password" @change="setLocalAccount($event, 'password')">
-        <span class="highlight"><i class="fa fa-key fa-lg"></i></span>
-        <span class="bar"></span>
+        <span class="highlight"><i class="fa fa-lock fa-lg"></i></span>
       </div>
 
       <div class="group inputText" data-type="text" data-model='password' data-title="Ripeti la password">
         <input class="loginBoxes" :placeholder="LangString('APP_INSTAGRAM_PASSWORD_CONFIRM_LABEL')" autocomplete="new-password" type="password" :value="accountLocale.passwordConfirm" @change="setLocalAccount($event, 'passwordConfirm')">
-        <span class="highlight"><i class="fa fa-key fa-lg"></i></span>
-        <span class="bar"></span>
+        <span class="highlight"><i class="fa fa-lock fa-lg"></i></span>
       </div>
 
       <div style="overflow-x: hidden; overflow-y: hidden;" class="group" data-type="button" @click.stop="createAccount">
         <!-- <input type='button' class="btn btn-generic" @click.stop="login" :value="LangString('APP_INSTAGRAM_ACCOUNT_LOGIN')" /> -->
-        <span class="favicon fa fa-instagram fa-3x">
-          <p class="LoginText">Registrati</p>
-        </span>
-        <input type='button' class="btn btn-generic" @click.stop="createAccount"/>
+        <input name="login-btn" type='button' class="btn btn-cyan btn-action" @click.stop="createAccount"/>
+        <label for="login-btn" class="login-btn-label">Registrati</label>
       </div>
 
       <!-- 
@@ -419,7 +409,6 @@ export default {
 
 .content {
   padding-top: 20px;
-  margin: 6px 10px;
   margin-top: 0px;
   height: calc(100% - 48px);
   display: flex;
@@ -439,7 +428,6 @@ export default {
 .group.inputText {
   position: relative;
   padding-left: 25px;
-  margin-top: 45px;
 }
 
 .group.bottom {
@@ -468,22 +456,30 @@ export default {
 /* ######################### */
 
 .instagram_title {
-  height: 120px;
+  width: 250px;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 .loginBoxes {
   opacity: 0.6;
   border-radius: 5px;
   background-color: rgb(228, 228, 228);
+  border: 1px solid rgba(0,0,0,0.3);
   padding-left: 50px;
   font-size: 18px;
+}
+
+.select .loginBoxes {
+  border: 1px solid rgb(0, 149, 248);
+  box-shadow: 0px 0px 3px 1px rgb(0, 149, 248);
 }
 
 input {
   font-size: 24px;
   display: flexbox;
   padding-left: 2px;
-  width: 90%;
+  width: 91%;
   height: 50px;
   border: none;
   border-bottom: 1px solid #757575;
@@ -497,18 +493,14 @@ input:focus {
 .LoginText {
   top: 18px;
   bottom: 0px;
-  position: absolute;
   justify-content: center;
-  opacity: 0;
   color: black;
   font-size: 20px;
-  font-weight: bold;
-  animation: textOff 0.5s ease;
 }
 
 .group.select .LoginText {
-  animation: textOn 0.5s ease;
-  animation-fill-mode: forwards;
+  color: #fff;
+  background-color: #2196f3;
 }
 
 .favicon {
@@ -559,23 +551,34 @@ input:focus {
 }
 
 .group .btn.btn-gray{
-  left: 27px;
   position: absolute;
   color: #222;
-  background-color: rgba(170, 170, 170, 0);
-  font-weight: bold;
-  border-style: solid;
-  border-width: 1px;
+  background-color: rgba(163, 163, 163, 0.4);
   border-radius: 10px;
 }
 
-.group.select .btn.btn-gray {
-  background-color: rgba(0, 0, 0, 0.9);;
+.group .btn.btn-cyan{
+  position: absolute;
+  color: #fff;
+  background-color: #2196f3;
+  border-radius: 10px;
+}
+
+.btn-action {
+  border-radius: 7px !important;
+}
+
+.group.select .btn.btn-gray, .group.select .btn.btn-cyan, .group.select .btn.btn-border {
+  background-color: rgba(0, 0, 0, 0.9);
   color: white;
 }
 
+.group.select .btn-action {
+  background-color: rgba(0, 0, 0, 0.0) !important;
+  border: 1px solid #2196f3;
+}
+
 .group .btn.btn-red {
-  left: 55px;
   bottom: 50px;
   position: absolute;
   font-weight: bold;
@@ -620,6 +623,16 @@ input:focus {
   animation-fill-mode: forwards; 
 }
 
+.group .btn.btn-border {
+  bottom: 0;
+  border-top: 2px solid rgb(153, 153, 153);
+  position: absolute;
+  background-color: rgba(0, 0, 0, 0.0);
+  color: black;
+  width: 100%;
+  box-shadow: 0px 0px 11px 1px rgba(0,0,0,0.35);
+}
+
 @keyframes redButton {
 	from { opacity: 0.0; }
   to { opacity: 1.0; }
@@ -637,6 +650,7 @@ input:focus {
 .groupCheckBoxTitle {
   font-weight: 700;
   margin-top: 12px;
+  margin-left: 10px;
 }
 
 .group.inputText label {
@@ -654,7 +668,7 @@ input:focus {
 
 .checkbox {
   display: flex;
-  height: 65px;
+  height: 50px;
   line-height: 45px;
   align-items: center;
   color: #000000;
@@ -682,6 +696,7 @@ input:focus {
   width: 24px;
   height: 0px;
   opacity: 1;
+  margin-left: 20px;
 }
 
 .checkbox.select {
@@ -710,7 +725,7 @@ input:focus {
   content: '';
   opacity: 1;
   position: absolute;
-  left: 6px;
+  left: 25px;
   margin-top: -10px;
 
   font-family: FontAwesome;
@@ -758,69 +773,33 @@ input:focus {
   color: rgba(0,0,0,0.7);
 }
 
-/* BOTTOM BARS ================================= */
-.bar { 
-  position: relative; 
-  display: block; 
-  width: 90%; 
-}
-
-.bar:before, .bar:after {
-  content: '';
-  height: 3px;
-  width: 0;
-  bottom: 1px;
-  position: absolute;
-  background: rgba(0,0,0,0.7);
-  transition: 0.2s ease all;
-  -moz-transition: 0.2s ease all;
-  -webkit-transition: 0.2s ease all;
-}
-
-.bar:before {
-  left: 50%;
-}
-
-.bar:after {
-  right: 50%;
-}
-
-/* active state */
-input:focus ~ .bar:before, input:focus ~ .bar:after,
-.group.select input ~ .bar:before, .group.select input ~ .bar:after{
-  width:50%;
-}
-
 /* HIGHLIGHTER ================================== */
 .highlight {
   position: absolute;
   height: 70%;
   width: 20%;
   border-radius: 10px;
-  top: 17%;
+  top: 20%;
   left: 40px;
   pointer-events: none;
   opacity: 0.5;
 }
 
-/* active state */
-input:focus ~ .highlight {
-  -webkit-animation: inputHighlighter 0.3s ease;
-  -moz-animation: inputHighlighter 0.3s ease;
-  animation: inputHighlighter 0.3s ease;
-}
-
 .group .btn {
-  width: 80%;
+  width: 85%;
   padding: 0px 0px;
-  height: 60px;
+  height: 50px;
   color: rgb(156, 156, 156);
   border: 0 none;
   font-size: 22px;
-  font-weight: 500;
+  font-weight: 200;
   line-height: 34px;
   color: #202129;
   background-color: rgb(156, 156, 156);
+  margin-left: auto;
+  margin-right: auto;
+  left: 0;
+  right: 0;
 }
 
 .group .btn.btn-generic {
@@ -843,15 +822,18 @@ input:focus ~ .highlight {
   border: none;
 }
 
-/* ANIMATIONS ================ */
+.login-btn-label {
+  position: absolute;
+  width: max-content;
+  margin-left: auto;
+  margin-right: auto;
+  left: 0;
+  right: 0;
+  top: 12px;
+  color: white;
+}
 
-@keyframes inputHighlighter {
-	from {
-    background:rgba(0,0,0,0.7);
-  }
-  to {
-    width: 0;
-    background: transparent;
-  }
+.select .login-btn-label {
+  color: #000000 !important;
 }
 </style>
