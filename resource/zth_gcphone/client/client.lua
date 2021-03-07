@@ -86,7 +86,7 @@ Citizen.CreateThread(function()
 
         if menuIsOpen then
             for _, value in ipairs(Config.Keys) do
-                if IsControlJustPressed(1, value.code) then
+                if IsControlJustPressed(1, value.code) or IsDisabledControlJustPressed(1, value.code) then
                     SendNUIMessage({keyUp = value.event})
                 end
             end
