@@ -22,7 +22,7 @@ export default {
   data () {
     return {
       computedEmojis: [],
-      currentSelect: -1
+      currentSelect: 0
     }
   },
   computed: {
@@ -52,7 +52,7 @@ export default {
       this.$router.push({ name: 'menu' })
     },
     onUp () {
-      if (this.currentSelect === -1) {
+      if (this.currentSelect === 0) {
         this.currentSelect = this.emojis.length - 1
         this.scrollIntoView()
         return
@@ -62,7 +62,7 @@ export default {
     },
     onDown () {
       if (this.currentSelect === this.emojis.length - 1) {
-        this.currentSelect = -1
+        this.currentSelect = 0
         this.scrollIntoView()
       }
       this.currentSelect = this.currentSelect + 1
