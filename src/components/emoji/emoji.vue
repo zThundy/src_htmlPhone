@@ -52,12 +52,19 @@ export default {
       this.$router.push({ name: 'menu' })
     },
     onUp () {
-      if (this.currentSelect === -1) return
+      if (this.currentSelect === -1) {
+        this.currentSelect = this.emojis.length - 1
+        this.scrollIntoView()
+        return
+      }
       this.currentSelect = this.currentSelect - 1
       this.scrollIntoView()
     },
     onDown () {
-      if (this.currentSelect === this.emojis.length - 1) return
+      if (this.currentSelect === this.emojis.length - 1) {
+        this.currentSelect = -1
+        this.scrollIntoView()
+      }
       this.currentSelect = this.currentSelect + 1
       this.scrollIntoView()
     }
@@ -94,6 +101,7 @@ export default {
 
 .emoji-div span {
   font-size: 25px;
+  margin-left: 5px;
 }
 
 .selected {
