@@ -66,6 +66,10 @@ class PhoneAPI {
   //   }
   // }
 
+  getEmojis () {
+    return emoji
+  }
+
   convertEmoji (text) {
     for (const e of keyEmoji) {
       text = text.replace(new RegExp(`:${e}:`, 'g'), emoji[e])

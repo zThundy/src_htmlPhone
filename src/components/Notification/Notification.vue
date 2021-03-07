@@ -9,8 +9,8 @@
           <span>{{ notif.appName }}</span>
         </div>
 
-        <div v-if="notif.title" class="message" style="font-weight: bold">{{ notif.title }}</div>
-        <div v-if="notif.message" class="message">{{ notif.message }}</div>
+        <div v-if="notif.title" class="message" style="font-weight: bold">{{ formatEmoji(notif.title) }}</div>
+        <div v-if="notif.message" class="message">{{ formatEmoji(notif.message) }}</div>
 
       </div>
     </div>
@@ -39,6 +39,9 @@ export default {
     ...mapGetters(['show', 'tempoHide'])
   },
   methods: {
+    formatEmoji (message) {
+      return this.$phoneAPI.convertEmoji(message)
+    },
     async addItem (event = {}) {
       // console.log(JSON.stringify(event))
       // if (event.hidden) {

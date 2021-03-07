@@ -412,6 +412,13 @@
       "routeName": "azienda.splash",
       "puceRef": "UnreadAziendaMessagesLength",
       "enabled": true
+    },
+    {
+      "name": "Emoji",
+      "it_IT__name": "Emoji",
+      "icons": "/html/static/img/icons_app/emoji.png",
+      "routeName": "emoji.splash",
+      "enabled": true
     }
   ],
   "defaultLanguage": "it_IT",
@@ -670,6 +677,7 @@
       "APP_AZIENDA_SALARY_LABEL": "Stipendio",
       "APP_AZIENDA_PROMOTE_EMPLOYE": "Promuovi",
       "APP_AZIENDA_DEMOTE_EMPLOYE": "Degrada / Licenzia",
+      "APP_EMOJI_TITLE": "Lista emoji",
 
       "TIMEAGO": [
         "Proprio adesso",

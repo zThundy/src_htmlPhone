@@ -63,6 +63,9 @@ import NewsSplash from '@/components/news/newssplash'
 import Azienda from '@/components/azienda/azienda'
 import AziendaSplash from '@/components/azienda/aziendasplash'
 
+import Emoji from '@/components/emoji/emoji'
+import EmojiSplash from '@/components/emoji/emojisplash'
+
 // import AppStore from '@/components/appstore/appstore'
 // import AppStoreSplash from '@/components/appstore/appstoresplash'
 
@@ -320,6 +323,16 @@ export default new Router({
       path: '/azienda/splash',
       name: 'azienda.splash',
       component: AziendaSplash
+    },
+    {
+      path: '/emoji/splash',
+      name: 'emoji.splash',
+      component: EmojiSplash
+    },
+    {
+      path: '/emoji',
+      name: 'emoji',
+      component: Emoji
     },
     {
       path: '*',
