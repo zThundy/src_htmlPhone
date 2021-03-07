@@ -654,6 +654,8 @@
       "APP_NEWS_WRITE_MESSAGE": "Scrivi descrizione",
       "APP_NEWS_SEND_POST": "Invia post",
       "APP_AZIENDA_TITLE": "Azienda",
+      "AZIENDA_INFO_TITLE": "Azienda info",
+      "APP_AZIENDA_NOTIF_NO_CONNECTION": "Nessuna connessione a internet",
       "APP_AZIENDA_NO_AZIENDA": "Nessun'azienda",
       "APP_AZIENDA_ERROR_LOADING": "C'è stato un errore",
       "APP_AZIENDA_EMPLYES_LIST": "Gestione dipendenti",

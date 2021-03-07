@@ -29,7 +29,12 @@ const getters = {
   aziendaMessages: ({ aziendaMessages }) => aziendaMessages,
   aziendaIngoreControls: ({ aziendaIngoreControls }) => aziendaIngoreControls,
   unreadAziendaMessages: ({ unreadAziendaMessages }) => unreadAziendaMessages,
-  UnreadAziendaMessagesLength: ({ aziendaMessages }) => { return aziendaMessages.filter(e => e.isRead !== 1).length }
+  UnreadAziendaMessagesLength: ({ aziendaMessages }) => {
+    if (aziendaMessages) {
+      return aziendaMessages.filter(e => e.isRead !== 1).length
+    }
+    return 0
+  }
 }
 
 const actions = {
@@ -40,8 +45,9 @@ const actions = {
 
 const mutations = {
   UPDATE_UNREAD_AZIENDA_MESSAGES (state) {
+    state.unreadAziendaMessages = []
     for (var val of state.aziendaMessages) {
-      if (val.isRead === 0) {
+      if (val.isRead === 0 && val.message) {
         if (val.message.length > 20) {
           state.unreadAziendaMessages[state.unreadAziendaMessages.length] = {
             id: val.id,

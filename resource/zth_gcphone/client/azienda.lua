@@ -32,6 +32,7 @@ end)
 
 RegisterNetEvent("gcphone:azienda_retriveMessages")
 AddEventHandler("gcphone:azienda_retriveMessages", function(messages)
+    -- print(json.encode(messages))
     SendNUIMessage({ event = 'updateAziendaMessages', messages = messages })
 end)
 
