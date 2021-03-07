@@ -52,7 +52,7 @@ function InstagramGetPosts(accountId, cb)
 			FROM phone_instagram_posts
 			LEFT JOIN phone_instagram_accounts
 				ON phone_instagram_posts.authorId = phone_instagram_accounts.id
-			ORDER BY data DESC LIMIT 130
+			ORDER BY id DESC LIMIT 50
 		]===], {}, cb)
 	else
 	  	MySQL.Async.fetchAll([===[
@@ -65,7 +65,7 @@ function InstagramGetPosts(accountId, cb)
 				ON phone_instagram_posts.authorId = phone_instagram_accounts.id
 			LEFT JOIN phone_instagram_likes 
 				ON phone_instagram_posts.id = phone_instagram_likes.postId AND phone_instagram_likes.authorId = @accountId
-			ORDER BY data DESC LIMIT 130
+			ORDER BY id DESC LIMIT 50
 	  	]===], {['@accountId'] = accountId}, cb)
 	end
 end

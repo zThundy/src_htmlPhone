@@ -40,7 +40,7 @@ function TwitterGetTweets (accountId, cb)
 			FROM twitter_tweets
 				LEFT JOIN twitter_accounts
 				ON twitter_tweets.authorId = twitter_accounts.id
-			ORDER BY time DESC LIMIT 130
+			ORDER BY id DESC LIMIT 130
 		]===], {}, cb)
 	else
 		MySQL.Async.fetchAll([===[
@@ -53,7 +53,7 @@ function TwitterGetTweets (accountId, cb)
 				ON twitter_tweets.authorId = twitter_accounts.id
 				LEFT JOIN twitter_likes 
 				ON twitter_tweets.id = twitter_likes.tweetId AND twitter_likes.authorId = @accountId
-			ORDER BY time DESC LIMIT 130
+			ORDER BY id DESC LIMIT 130
 		]===], { ['@accountId'] = accountId }, cb)
 	end
 end
