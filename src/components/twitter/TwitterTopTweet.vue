@@ -22,7 +22,7 @@
           </div>
 
           <div class="tweet-message">
-            <template v-if="!isImage(tweet.message)">{{ checkMessage(tweet.message) }}</template>
+            <template v-if="!isImage(tweet.message)">{{ formatEmoji(tweet.message) }}</template>
             <img v-else :src="tweet.message" class="tweet-attachement-img" @click.stop="imgZoom = tweet.message">
           </div>
 
@@ -68,7 +68,6 @@
 <script>
 import { mapGetters, mapActions, mapMutations } from 'vuex'
 import Modal from '@/components/Modal/index.js'
-import { replaceEmoji } from './../../Utils'
 
 export default {
   components: {},
@@ -90,6 +89,9 @@ export default {
   methods: {
     ...mapActions(['twitterLogin', 'twitterPostTweet', 'twitterToogleLike', 'fetchFavoriteTweets']),
     ...mapMutations(['CHANGE_BRIGHTNESS_STATE']),
+    formatEmoji (message) {
+      return this.$phoneAPI.convertEmoji(message)
+    },
     async showOption () {
       this.ignoreControls = true
       const tweet = this.tweets[this.selectMessage]
@@ -205,9 +207,6 @@ export default {
     formatTime (time) {
       const d = new Date(time)
       return d.toLocaleTimeString()
-    },
-    checkMessage (message) {
-      return replaceEmoji(message)
     }
   },
   created () {

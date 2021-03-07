@@ -25,7 +25,6 @@ class PhoneAPI {
     this.config = null
     this.voiceRTC = null
     this.soundList = {}
-    this.ttsplayers = {}
   }
 
   onsendParametersValues (data) {
@@ -51,24 +50,21 @@ class PhoneAPI {
     }
   }
 
-  async speakTTS (message, volume) {
-    if ('speechSynthesis' in window) {
-      var synthesis = window.speechSynthesis
-
-      // Create an utterance object
-      var utterance = new SpeechSynthesisUtterance(message)
-
-      // Set utterance properties
-      utterance.pitch = 0.0
-      utterance.rate = 1.5
-      // utterance.volume = volume - 0.1
-
-      // Speak the utterance
-      synthesis.speak(utterance)
-    } else {
-      console.log('Impossibile caricare il TTS')
-    }
-  }
+  // async speakTTS (message, volume) {
+  //   if ('speechSynthesis' in window) {
+  //     var synthesis = window.speechSynthesis
+  //     // Create an utterance object
+  //     var utterance = new SpeechSynthesisUtterance(message)
+  //     // Set utterance properties
+  //     utterance.pitch = 0.0
+  //     utterance.rate = 1.5
+  //     // utterance.volume = volume - 0.1
+  //     // Speak the utterance
+  //     synthesis.speak(utterance)
+  //   } else {
+  //     console.log('Impossibile caricare il TTS')
+  //   }
+  // }
 
   convertEmoji (text) {
     for (const e of keyEmoji) {

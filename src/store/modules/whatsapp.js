@@ -152,7 +152,7 @@ if (process.env.NODE_ENV !== 'production') {
     },
     {
       id: 520,
-      gruppo: 'EZ CHAT',
+      gruppo: 'EZ CHAT :rofl:',
       partecipanti: ['5554444'],
       partecipantiString: 'tanto questa viene rimpiazzata dal lua'
     }
@@ -169,7 +169,7 @@ if (process.env.NODE_ENV !== 'production') {
     },
     {
       sender: '55529322',
-      message: 'provo il messaggio 2'
+      message: 'provo il messaggio 2 :rofl: :rofl: :rofl: :rofl: :rofl: :rofl:'
     },
     {
       sender: '55529322',
@@ -183,11 +183,11 @@ if (process.env.NODE_ENV !== 'production') {
     },
     {
       sender: '55529322',
-      message: 'provo il messaggio 2'
+      message: 'provo il messaggio 2 :rofl: :rofl: :rofl:'
     },
     {
       sender: '55529322',
-      message: 'provo il messaggio 2'
+      message: 'provo il messaggio 2 :rofl: :rofl: :rofl:'
     }
   ]
 }

@@ -22,7 +22,7 @@
 
           <div class="tweet-message">
             <!-- <template v-if="!isImage(tweet.message)">{{ tweet.message }}</template> -->
-            <template v-if="!isImage(tweet.message)">{{ checkMessage(tweet.message) }}</template>
+            <template v-if="!isImage(tweet.message)">{{ formatEmoji(tweet.message) }}</template>
             <img v-else :src="tweet.message" class="tweet-attachement-img">
           </div>
 
@@ -84,6 +84,9 @@ export default {
   methods: {
     ...mapActions(['twitterLogin', 'twitterPostTweet', 'twitterToogleLike']),
     ...mapMutations(['CHANGE_BRIGHTNESS_STATE']),
+    formatEmoji (message) {
+      return this.$phoneAPI.convertEmoji(message)
+    },
     async showOption () {
       this.ignoreControls = true
       const tweet = this.tweets[this.selectMessage]
@@ -199,10 +202,6 @@ export default {
     formatTime (time) {
       const d = new Date(time)
       return d.toLocaleTimeString()
-    },
-    checkMessage (message) {
-      // return replaceEmoji(message)
-      return message
     }
   },
   created () {

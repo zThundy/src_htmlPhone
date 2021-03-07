@@ -31,7 +31,7 @@
           </div>
         </div>
 
-        <div class="descrizione_post">{{ post.didascalia }}</div>
+        <div class="descrizione_post">{{ formatEmoji(post.didascalia) }}</div>
       </div>
     </div>
 
@@ -59,6 +59,9 @@ export default {
   methods: {
     ...mapActions(['instagramLogin', 'instagramPostTweet', 'instagramToogleLike']),
     ...mapMutations(['CHANGE_BRIGHTNESS_STATE']),
+    formatEmoji (message) {
+      return this.$phoneAPI.convertEmoji(message)
+    },
     async showOption () {
       this.ignoreControls = true
       const post = this.instaPosts[this.selectMessage]

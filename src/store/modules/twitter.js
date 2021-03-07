@@ -203,7 +203,7 @@ if (process.env.NODE_ENV !== 'production') {
   }]
   state.tweets = [{
     id: 1,
-    message: 'questo è il primo messaggio di twitter :grinning: :grinning: :grinning: :grinning: :grinning: :rofl:',
+    message: 'questo è il primo messaggio di twitter :grinning: :grinning: :grinning: :grinning: :grinning: :rofl: :rofl: :rofl: :rofl: :rofl: :rofl: :rofl: :rofl: :rofl: :rofl: :rofl: :rofl: :rofl: :rofl:',
     author: 'Gannon',
     time: new Date(),
     likes: 3,
@@ -262,5 +262,5 @@ if (process.env.NODE_ENV !== 'production') {
     likes: 0,
     time: new Date()
   }]
-  state.tweets = []
+  // state.tweets = []
 }

@@ -4,8 +4,8 @@
 
     <div v-for="(s, i) in gruppi" :key="s.gruppo" class="whatsapp-menu-item" :class="{select: i === currentSelected}">
       <img :src="hasImage(s)" class="immagineGruppo">
-      <div class="titoloGruppo">{{s.gruppo}}
-        <div class="sottotitoloGruppo">{{s.partecipantiString}}</div>
+      <div class="titoloGruppo">{{ formatEmoji(s.gruppo) }}
+        <div class="sottotitoloGruppo">{{ s.partecipantiString }}</div>
       </div>
     </div>
 
@@ -37,6 +37,9 @@ export default {
   methods: {
     // ...mapMutations(['SET_DATI_INFO']),
     ...mapActions(['leaveGroup']),
+    formatEmoji (message) {
+      return this.$phoneAPI.convertEmoji(message)
+    },
     scrollIntoView () {
       this.$nextTick(() => {
         const elem = this.$el.querySelector('.select')
@@ -195,6 +198,7 @@ export default {
 
 .sottotitoloGruppo {
   color: gray;
+  margin-top: 4px;
   padding-left: 6px;
   font-size: 12px;
 }

@@ -50,7 +50,7 @@ if (process.env.NODE_ENV !== 'production') {
       id: 1,
       icon: 'https://i.imgur.com/gthahbs.png',
       number: '5554444',
-      display: 'stoprovando'
+      display: 'stoprovando :rofl:'
     },
     {
       id: 2,

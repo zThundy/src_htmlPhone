@@ -10,7 +10,7 @@ import bank from './modules/bank'
 import tchat from './modules/tchat'
 import twitter from './modules/twitter'
 import dati from './modules/dati'
-// import wifi from './modules/wifi'
+import wifi from './modules/wifi'
 import instagram from './modules/instagram'
 import whatsapp from './modules/whatsapp'
 import galleria from './modules/galleria'
@@ -33,7 +33,7 @@ export default new Vuex.Store({
     tchat,
     twitter,
     dati,
-    // wifi,
+    wifi,
     instagram,
     whatsapp,
     galleria,

@@ -1,7 +1,7 @@
 <template>
 <!--ESTE HTML ES ACOPLADO DEL VIEJO--> 
   <div style="backgroundColor: white" class="phone_app messages">
-    <PhoneTitle :title="displayContact" style="backgroundColor: #F1F1F1; color: black" @back="quit"/> <!--:title="displayContact" :backgroundColor="color" -->
+    <PhoneTitle :title="formatEmoji(displayContact)" style="backgroundColor: #F1F1F1; color: black" @back="quit"/> <!--:title="displayContact" :backgroundColor="color" -->
     
     <div class="phone_fullscreen_img" v-if="imgZoom !== undefined">
       <img :src="imgZoom" />
@@ -9,7 +9,7 @@
 
     <!-- <textarea ref="copyTextarea" class="copyTextarea"/> -->
     
-    <div style="width: 326px; height: 678px; backgroundColor: white"  id='sms_list'>
+    <div id='sms_list'>
       <div style="position: absolute;" class="groupImage" data-type="button">
         <img v-if="isSMSImage(getContactIcon())" :src="getContactIcon()"/>
       </div>
@@ -29,7 +29,7 @@
               <input type="button" :value="LangString('APP_MESSAGES_ADD_CONTACT')">
             </div>
           -->
-          <span v-else class="sms_message">{{ mess.message }}</span>
+          <span v-else class="sms_message">{{ formatEmoji(mess.message) }}</span>
             
             <!-- <span style="color: white; font-size: 17px; margin: 24px;" @click.stop="onActionMessage(mess)"><timeago class="sms_time" :since='mess.time' :auto-update="20"></timeago></span> -->
         </span>
@@ -76,6 +76,9 @@ export default {
   methods: {
     ...mapActions(['setMessageRead', 'sendMessage', 'deleteMessage', 'startCall']),
     ...mapMutations(['CHANGE_BRIGHTNESS_STATE']),
+    formatEmoji (message) {
+      return this.$phoneAPI.convertEmoji(message)
+    },
     resetScroll () {
       this.$nextTick(() => {
         let elem = document.querySelector('#sms_list')
@@ -325,6 +328,10 @@ export default {
     ...mapGetters(['LangString', 'messages', 'contacts', 'enableTakePhoto']),
     messagesListApp () {
       return this.messages.filter(e => e.transmitter === this.phoneNumber).sort((a, b) => a.time - b.time)
+      // messages = messages.forEach(element => {
+      //   element.message = this.$phoneAPI.convertEmoji(element.message)
+      // })
+      // return messages
     },
     displayContact () {
       if (this.display !== undefined) {
@@ -394,8 +401,12 @@ export default {
 }
 
 #sms_list{
+  width: 326px;
+  height: 678px;
+  background-color: white;
+
   height: calc(100% - 34px - 26px);
-  overflow-y: auto;
+  overflow: hidden;
   padding-bottom: 8px;
 }
 
@@ -482,8 +493,8 @@ export default {
 }
 
 .sms.select .sms_message {
-  background-color: #373B3C !important;
-  color: #E4E3E2 !important;
+  background-color: rgb(0, 99, 204);
+  color: #ffffff;
 }
 
 .sms_message {
