@@ -96,6 +96,7 @@ AddEventHandler("gcphone:azienda_sendAziendaMessage", function(azienda, number, 
                             local jobPlayers = ESX.GetPlayersWithJob(azienda)
                             for _, v in pairs(jobPlayers) do
                                 TriggerClientEvent("gcphone:azienda_retriveMessages", v, messages)
+                                AziendaShowError(player, 'AZIENDA_INFO_TITLE', 'APP_AZIENDA_NEW_MESSAGE')
                             end
                         else
                             AziendaShowError(player, 'AZIENDA_INFO_TITLE', 'APP_AZIENDA_NOTIF_NO_CONNECTION')
