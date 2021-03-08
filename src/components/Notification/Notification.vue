@@ -9,7 +9,9 @@
           <span>{{ notif.appName }}</span>
         </div>
 
-        <div v-if="notif.title" class="message" style="font-weight: bold">{{ formatEmoji(notif.title) }}</div>
+        <div class="divider"></div>
+
+        <div v-if="notif.title" class="message-title" style="font-weight: bold">{{ formatEmoji(notif.title) }}</div>
         <div v-if="notif.message" class="message">{{ formatEmoji(notif.message) }}</div>
 
       </div>
@@ -25,6 +27,7 @@ import { Howl } from 'howler'
 import { mapGetters } from 'vuex'
 
 export default {
+  components: { },
   data () {
     return {
       currentId: 0,
@@ -58,8 +61,11 @@ export default {
       const dataNotif = { ...event, id: this.currentId++, duration: parseInt(event.duration) || 3000 }
       // dopo essermi buildato i valori li riproduco
       if (!event.hidden) {
+        // ho rimosso dataNotif.duration anche se lo prendo comunque
         this.list.push(dataNotif)
-        window.setTimeout(() => { this.destroy(dataNotif.id) }, dataNotif.duration)
+        window.setTimeout(() => {
+          this.destroy(dataNotif.id)
+        }, 3000)
       }
       if (event.sound) {
         if (this.audio != null) { this.audio = null }
@@ -108,21 +114,45 @@ export default {
   position: absolute;
   z-index: 1;
   
-  top: 12px;
   width: 100%;
+  top: 10px;
 }
 
 .notification {
-  margin-top: 3px;
+  position: relative;
+
+  margin-top: -100px;
   margin-left: auto;
   margin-right: auto;
 
   width: 95%;
+  height: 100%;
   padding: 8px;
 
+  box-shadow: 0px 2px 10px rgba(0, 0, 0, .8);
   background-color: rgb(255, 255, 255);
   color: rgb(0, 0, 0);
   border-radius: 10px;
+
+  /* transition: height 1s ease-in; */
+  animation-name: notif-anim;
+  animation-duration: 3s;
+  animation-fill-mode: forwards;
+}
+
+@keyframes notif-anim {
+  0% {
+    transform: translateY(0);
+  }
+  10% {
+    transform: translateY(100px);
+  }
+  90% {
+    transform: translateY(100px);
+  }
+  100% {
+    transform: translateY(-300px);
+  }
 }
 
 .appName {
@@ -143,8 +173,27 @@ export default {
   align-content: flex-start;
 }
 
-.message {
+.divider {
+  height: .5px;
+  width: 98%;
+
+  margin-top: 3px;
+  margin-bottom: 3px;
+  margin-left: auto;
+  margin-right: auto;
+
+  background-color: gray;
+}
+
+.message-title {
+  margin-top: 5px;
   color: rgb(0, 0, 0);
+  font-size: 14px;
+}
+
+.message {
+  margin-top: 6px;
+  color: rgb(58, 58, 58);
   font-size: 14px;
 }
 </style>

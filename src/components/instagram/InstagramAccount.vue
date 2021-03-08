@@ -525,16 +525,6 @@ input:focus {
   to { padding-left: 130px; }
 }
 
-@keyframes textOn {
-	from { opacity: 0.0; padding-left: 130px; }
-  to { opacity: 1.0; padding-left: 80px; }
-}
-
-@keyframes textOff {
-	from { opacity: 1.0; padding-left: 80px; }
-  to { opacity: 0.0; padding-left: 130px; }
-}
-
 /* ######################### */
 /* ACCOUNT LOGGATO INSTAGRAM */
 /* ######################### */

@@ -71,7 +71,6 @@ export default {
       //   message: 'messaggio messaggio messaggio messaggio messaggio messaggio messaggio messaggio messaggio messaggio messaggio messaggio ',
       //   title: 'autore' + ' : SONO FIKO',
       //   icon: 'twitter',
-      //   sound: 'Twitter_Sound_Effect.ogg',
       //   backgroundColor: 'rgb(55, 55, 255)',
       //   appName: 'Twitter'
       // })
@@ -87,7 +86,7 @@ export default {
       //   message: 'messaggio messaggio messaggio messaggio messaggio messaggio messaggio messaggio messaggio messaggio messaggio messaggio ',
       //   icon: 'instagram',
       //   backgroundColor: '#FF66FF80',
-      //   sound: 'Instagram_Notification.ogg'
+      //   appName: 'Instagram'
       // })
     },
     onRight () {
