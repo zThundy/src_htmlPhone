@@ -85,6 +85,10 @@ Citizen.CreateThread(function()
         -- end
 
         if menuIsOpen then
+            while UpdateOnscreenKeyboard() == 0 do
+                Citizen.Wait(100)
+            end
+
             for _, value in ipairs(Config.Keys) do
                 if IsControlJustPressed(1, value.code) or IsDisabledControlJustPressed(1, value.code) then
                     SendNUIMessage({keyUp = value.event})
