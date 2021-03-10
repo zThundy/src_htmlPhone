@@ -64,7 +64,7 @@ end
 Citizen.CreateThread(function()
     RegisterKeyMapping('+openPhone', 'Apri telefono', 'keyboard', 'k')
     RegisterCommand('+openPhone', function()
-        if isDead then
+        if not isDead then
             hasPhone(function(hasPhone)
                 if hasPhone then
                     TogglePhone()
