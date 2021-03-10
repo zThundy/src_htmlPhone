@@ -46,6 +46,9 @@ Citizen.CreateThread(function()
     TriggerServerEvent("gcPhone:allUpdate")
 end)
 
+AddEventHandler('tcm_player:updateDeathStatus',function(_isDead)
+	isDead = _isDead
+end)
 
 function hasPhone(cb)
     if ESX == nil then return cb(false) end
@@ -61,13 +64,17 @@ end
 Citizen.CreateThread(function()
     RegisterKeyMapping('+openPhone', 'Apri telefono', 'keyboard', 'k')
     RegisterCommand('+openPhone', function()
-        hasPhone(function(hasPhone)
-            if hasPhone then
-                TogglePhone()
-            else
-                ESX.ShowNotification("~r~Non hai un telefono con te")
-            end
-        end)
+        if isDead then
+            hasPhone(function(hasPhone)
+                if hasPhone then
+                    TogglePhone()
+                else
+                    ESX.ShowNotification("~r~Non hai un telefono con te")
+                end
+            end)
+        else
+            ESX.ShowNotification("~r~Non puoi usare il telefono da morto")
+        end
     end, false)
     RegisterCommand('-openPhone', function() end, false)
 
