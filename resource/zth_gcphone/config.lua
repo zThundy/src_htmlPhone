@@ -202,6 +202,12 @@ Config.MinAziendaGrade = {
         [1] = {"chat"},
         [0] = {"chat"}
     },
+    ["truckdealer"] = {
+        [3] = {"salary", "employes", "chat"},
+        [2] = {"salary", "chat"},
+        [1] = {"chat"},
+        [0] = {"chat"}
+    },
     ["police"] = {
         [11] = {"salary", "employes", "chat"},
         [10] = {"salary", "employes", "chat"},
