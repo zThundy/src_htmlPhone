@@ -4,8 +4,8 @@
 
     <div class='phone_content content inputText'>
 
-      <div class="group select" data-type="text" data-model='display' data-maxlength='64' data-title="Inserisci il nome del contatto">
-        <input type="text" v-model="contact.display" maxlength="64" v-autofocus>
+      <div class="group select" data-type="text" data-model='display' data-maxlength='30' data-title="Inserisci il nome del contatto">
+        <input type="text" v-model="contact.display" maxlength="30" v-autofocus>
         <span class="highlight"></span>
         <span class="bar"></span>
         <label>{{ LangString('APP_CONTACT_LABEL_NAME') }}</label>

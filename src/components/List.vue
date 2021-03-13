@@ -9,8 +9,10 @@
         <div class="elem-pic" v-bind:style="stylePuce(elem)">{{ formatEmoji(elem.letter || elem[keyDispay][0]) }}</div>
         <div v-if="elem.puce !== undefined && elem.puce !== 0" class="elem-puce">{{ elem.puce }}</div>
         <div v-if="elem.keyDesc === undefined || elem.keyDesc === ''" class="elem-title">{{ formatEmoji(elem[keyDispay]) }}</div>
-        <div v-if="elem.keyDesc !== undefined && elem.keyDesc !== ''" class="elem-title-has-desc">{{ formatEmoji(elem[keyDispay]) }}</div>
-        <div v-if="elem.keyDesc !== undefined && elem.keyDesc !== ''" class="elem-description">{{ formatEmoji(elem.keyDesc) }}</div>
+        <div v-if="elem.keyDesc !== undefined && elem.keyDesc !== ''" class="elem-title-has-desc">
+          {{ formatEmoji(elem[keyDispay]) }}
+          <div v-if="elem.keyDesc !== undefined && elem.keyDesc !== ''" class="elem-description">{{ formatEmoji(elem.keyDesc) }}</div>
+        </div>
       
       </div>
 
@@ -186,10 +188,10 @@ export default {
   width: 48px;
   text-align: center;
   line-height: 48px;
-  font-weight: 200;
+  position: absolute;
 }
 
-.elem-puce{
+.elem-puce {
   background-color: #EE3838;
   top: 0px;
   color: white;
@@ -207,14 +209,16 @@ export default {
 }
 
 .elem-title {
-  margin-left: 12px;
+  margin-left: 70px;
   font-size: 20px;
   /* font-weight: 200; */
+  line-height: 20px;
 }
 
 .elem-title-has-desc {
   margin-top: -15px;
-  margin-left: 12px;
+  margin-left: 70px;
+  line-height: 20px;
   /* font-weight: 200; */
 }
 
@@ -225,7 +229,6 @@ export default {
   display: block;
   width: 75%;
   left: 75px;
-  top: 12px;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;

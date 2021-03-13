@@ -75,11 +75,15 @@ export default {
           onend () {
             // ascolto quando l'audio termina e via
             // console.log('audio ended')
-            this.audio = null
+            // this.audio.unload()
           },
           onload () {
             // console.log('audio loaded')
           }
+        })
+        this.audio.on('end', () => {
+          // console.log('finished')
+          this.audio.unload()
         })
         // qui controllo se viene passato il volume.
         // se si lo imposto al valore, altrimenti lo metto a 0.5
