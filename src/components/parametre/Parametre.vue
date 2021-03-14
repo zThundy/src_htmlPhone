@@ -86,7 +86,8 @@ export default {
       'currentCover',
       'myCovers',
       'myImage',
-      'myData'
+      'myData',
+      'isWifiOn'
     ]),
     paramList () {
       // stringa di conferma reset
@@ -239,7 +240,8 @@ export default {
       'toggleNotifications',
       'toggleAirplane',
       'updateWifiString',
-      'updateBluetooth'
+      'updateBluetooth',
+      'toggleWifi'
     ]),
     scrollIntoView: function () {
       this.$nextTick(() => {
@@ -249,10 +251,14 @@ export default {
 
     updateWifiTable () {
       this.retiWifiRender = []
-      for (var i in this.retiWifi) {
-        this.retiWifiRender[this.retiWifi[i].label] = {id: i, icons: 'fa-wifi', label: this.retiWifi[i].label, password: this.retiWifi[i].password, value: this.retiWifi[i].password}
+      if (this.isWifiOn) {
+        for (var i in this.retiWifi) {
+          this.retiWifiRender[this.retiWifi[i].label] = {id: i, icons: 'fa-wifi', label: this.retiWifi[i].label, password: this.retiWifi[i].password, value: this.retiWifi[i].password}
+        }
+        this.retiWifiRender['Annulla'] = {icons: 'fa-undo', label: 'Annulla', value: 'cancel', color: 'red'}
+      } else {
+        this.retiWifiRender['Wifi spento'] = {icons: 'fa-ban', label: 'Wifi spento', value: 'cancel', color: 'red'}
       }
-      this.retiWifiRender['Annulla'] = {icons: 'fa-undo', label: 'Annulla', value: 'cancel', color: 'red'}
       return this.retiWifiRender
     },
 
@@ -391,6 +397,10 @@ export default {
     },
 
     async connectToWifi (param, data) {
+      if (!this.isWifiOn) {
+        this.toggleWifi(!this.isWifiOn)
+        return
+      }
       var password = data.value
       this.ignoreControls = true
       Modal.CreateTextModal({ text: '' }).then(valueText => {

@@ -1,8 +1,8 @@
 <template>
-  <div style="width: 326px; height: 743px;" class="sfondo">
+  <div class="sfondo">
     <PhoneTitle :title="this.LangString('APP_WHATSAPP_EDIT_GROUP')" :backgroundColor="'rgb(112,255,125)'" @back="onBackspace"/>
 
-    <div style="width: 324px; height: 90%;" class="phone_content elements">
+    <div class="elements">
 
       <div class="group inputText" data-type="text" data-maxlength='64' :data-defaultValue="gruppo.gruppo" :class="{select: 1 === currentSelect}" data-title="Digita il nome del gruppo">
         <input class="nomeGruppoBox" type="text" :value="gruppo.gruppo">
@@ -12,19 +12,19 @@
       </div>
 
       <div style="margin-bottom: 42px; padding-left: 30%;" class="img" data-type="button">
-        <img v-if="gruppo.icona" style="height: 128px; width: 128px; overflow: auto;  border-radius: 100px;" :src="gruppo.icona">
-        <img v-else-if="gruppo.icona === null || gruppo.icona === undefined"  style="height: 128px; width: 128px; overflow: auto; border-radius: 100px;" src="/html/static/img/app_whatsapp/defaultgroup.png">
+        <img v-if="gruppo.icona" :src="gruppo.icona">
+        <img v-else-if="gruppo.icona === null || gruppo.icona === undefined" src="/html/static/img/app_whatsapp/defaultgroup.png">
       </div>
 
-      <div style="left: 3%; top: 45%; position: absolute;" class="group" data-type="button" :class="{select: 2 === currentSelect}" @click="addNewMembers">
+      <div class="group genericButton" data-type="button" :class="{select: 2 === currentSelect}" @click="addNewMembers">
         <input type='button' class="btn btn-green" :value="LangString('APP_WHATSAPP_ADD_MEMBERS')"/>
       </div>
 
-      <div style="left: 3%; top: 55%; position: absolute;" class="group" data-type="button" :class="{select: 3 === currentSelect}" @click="snapGroupImage">
+      <div class="group genericButton" data-type="button" :class="{select: 3 === currentSelect}" @click="snapGroupImage">
         <input type='button' class="btn btn-green" :value="LangString('APP_WHATSAPP_GROUP_AVATAR')"/>
       </div>
 
-      <div style="left: 3%; top: 65%; position: absolute;" class="group" data-type="button" :class="{select: 4 === currentSelect}" @click="modificaGruppo">
+      <div class="group genericButton" data-type="button" :class="{select: 4 === currentSelect}" @click="modificaGruppo">
         <input type='button' class="btn btn-green" :value="LangString('APP_WHATSAPP_EDIT_GROUP')"/>
       </div>
 
@@ -148,10 +148,10 @@ export default {
 /* ZONA GRUPPO */
 
 .sfondo {
+  width: 350px;
+  height: 740px;
   background-image: url("/html/static/img/app_whatsapp/sfondogruppi.png");
   background-repeat: no-repeat;
-  width: auto;
-  height: auto;
   margin: 0;
   padding: 0;
 }
@@ -203,15 +203,12 @@ export default {
   align-items: center;
 }
 
-.group.img img{
-  display: flex;
-  flex-direction: row;
-  overflow: auto;
-  flex-grow: 0;
-  flex: 0 0 128px;
+.img img {
   margin-right: 24px;
   border-radius: 100px;
   object-fit: cover;
+  height: 128px;
+  width: 128px;
 }
 
 .group.inputText label {
@@ -225,18 +222,18 @@ export default {
   -webkit-transition: 0.2s ease all;
 }
 
-.group.select input ~ .bar:before, .group.select input ~ .bar:after{
+.group.select input ~ .bar:before, .group.select input ~ .bar:after {
   width: 50%;
 }
 
-.group.inputText input:focus ~ label, .group.inputText input:valid ~ label 		{
+.group.inputText input:focus ~ label, .group.inputText input:valid ~ label {
   top: -30px;
   font-size: 20px;
   color: #003b0f;
   font-weight: bold;
 }
 
-.group .btn{
+.group .btn {
   width: 100%;
   padding: 0px 0px;
   height: 48px;
@@ -249,14 +246,13 @@ export default {
   background-color: #edeeee;
 }
 
-.group.select .btn{
+.group.select .btn {
   /* border: 6px solid #C0C0C0; */
   line-height: 18px;
 }
 
-.group .btn.btn-green{
+.group .btn.btn-green {
   width: 293px;
-  margin-left: 6px;
   border: 1px solid #00c932;
   color: #00c932;
   background-color: white;
@@ -264,78 +260,55 @@ export default {
   border-radius: 10px;
   font-weight: 300;
   font-size: 19px;
+
+  margin-left: auto;
+  margin-right: auto;
 }
 
-.group.select .btn.btn-green, .group:hover .btn.btn-green{
+.group.select .btn.btn-green, .btn.btn-green {
   background-color: #00c932;
-  color: white;
-  border: none;
-}
-
-.group .btn.btn-red{
-  border: 1px solid #ee3838;
-  color: #ee3838;
-  background-color: white;
-  font-weight: 200;
-  border-radius: 10px;
-  width: 193px;
-  margin: 0 auto;
-  margin-bottom: 50px;
-}
-
-.group.select .btn.btn-red, .group:hover .btn.btn-red{
-  background-color: #ee3838;
-  color: white;
-  border: none;
-}
-
-.group .btn.btn-gray{
-  border: none;
-  color: #222;
-  background-color: #AAA;
-  font-weight: 500;
-  border-radius: 10px;
-}
-.group.select .btn.btn-gray, .group:hover .btn.btn-gray{
-  background-color: #757575;
   color: white;
   border: none;
 }
 
 /* ZONA BARRE DI SELEZIONE CSS */
 
-.bar 	{ display:block; width:60%; }
+.bar 	{
+  display: block;
+  width: 60%;
+}
+
 .bar:before, .bar:after {
   content:'';
-  top: 31px;
+  top: 26px;
   height: 2px;
   width: 0;
   bottom: 1px;
-  position:absolute;
-  background:#00c932;
-  transition:0.2s ease all;
-  -moz-transition:0.2s ease all;
-  -webkit-transition:0.2s ease all;
+  position: absolute;
+  background: #00c932;
+  transition: 0.2s ease all;
+  -moz-transition: 0.2s ease all;
+  -webkit-transition: 0.2s ease all;
 }
 
 .bar:before {
-  left:31%;
+  left: 34%;
 }
 
 .bar:after {
-  right:31%;
+  right: 34%;
 }
 
 /* ZONA HIGHLIGHT RIGA CSS */
 
 .highlight {
-  position:absolute;
-  height:60%;
-  width:100px;
-  top:25%;
-  left:0;
-  pointer-events:none;
-  opacity:0.5;
+  position: absolute;
+  height: 60%;
+  width: 100px;
+  top: 23%;
+  left: 0;
+  pointer-events: none;
+  opacity: 0.5;
 }
 
 /* ZONA ALTRO CSS */
@@ -347,6 +320,8 @@ export default {
 
 .elements {
   overflow-y: auto;
+  width: 100%;
+  height: 89%;
 }
 
 .element {
@@ -381,5 +356,12 @@ export default {
   margin-left: 12px;
   font-size: 20px;
   font-weight: 400;
+}
+
+.genericButton {
+  margin-left: auto;
+  margin-right: auto;
+  position: relative;
+  text-align: center;
 }
 </style>

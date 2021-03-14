@@ -1,9 +1,9 @@
 <template>
-  <div style="width: 326px; height: 743px;" class="sfondo">
-    <PhoneTitle :title="this.LangString('APP_WHATSAPP_CHOOSE_CONTACTS')" :backgroundColor="'rgb(112,255,125)'" @back="onBackspace"/>
+  <div class="sfondo">
+    <PhoneTitle :title="this.LangString('APP_WHATSAPP_CHOOSE_CONTACTS')" :backgroundColor="'rgb(112, 255, 125)'" @back="onBackspace"/>
 
     <template v-if="currentPage === STATES.SCELTA_PERSONE">
-      <div style="width: 324px; height: 595px;" class="phone_content elements">
+      <div class="elements">
 
         <div class="element" v-for='(elem, key) in contacts' :key="elem.id" v-bind:class="{ select: key === currentSelect }">
 
@@ -21,7 +21,7 @@
     </template>
 
     <template v-if="currentPage === STATES.INFO_GRUPPO">
-      <div style="width: 324px; height: 90%; background-color: rgba(150, 255, 150, 1);" class="phone_content elements">
+      <div class="elements">
 
         <div class="group inputText" data-type="text" data-maxlength='64' :data-defaultValue="tempGroupInfo['title']" data-title="Inserisci il titolo del gruppo">
           <input class="nomeGruppoBox" type="text" :value="tempGroupInfo['title']" @change="updateGroupVars({value: $event.target.value, key: 'title'})">
@@ -31,15 +31,15 @@
         </div>
 
         <div style="margin-bottom: 42px; padding-left: 30%;" class="img" data-type="button">
-          <img v-if="tempGroupInfo['image']" style="height: 128px; width: 128px; overflow: auto;  border-radius: 100px;" :src="tempGroupInfo['image']">
-          <img v-else-if="tempGroupInfo['image'] === null || tempGroupInfo['image'] === undefined"  style="height: 128px; width: 128px; overflow: auto; border-radius: 100px;" src="/html/static/img/app_whatsapp/defaultgroup.png">
+          <img v-if="tempGroupInfo['image']" :src="tempGroupInfo['image']">
+          <img v-else-if="tempGroupInfo['image'] === null || tempGroupInfo['image'] === undefined" src="/html/static/img/app_whatsapp/defaultgroup.png">
         </div>
 
-        <div style="left: 3%; top: 45%; position: absolute;" class="group" data-type="button" @click="snapGroupImage">
+        <div class="group genericButton" data-type="button" @click="snapGroupImage">
           <input type='button' class="btn btn-green" :value="LangString('APP_WHATSAPP_GROUP_AVATAR')"/>
         </div>
 
-        <div style="left: 3%; top: 55%; position: absolute;" class="group" data-type="button" @click="finalizzaGruppo">
+        <div class="group genericButton" data-type="button" @click="finalizzaGruppo">
           <input type='button' class="btn btn-green" :value="LangString('APP_WHATSAPP_NEW_GROUP')"/>
         </div>
 
@@ -342,10 +342,10 @@ export default {
 /* ZONA GRUPPO */
 
 .sfondo {
+  width: 350px;
+  height: 740px;
   background-image: url("/html/static/img/app_whatsapp/sfondogruppi.png");
   background-repeat: no-repeat;
-  width: auto;
-  height: auto;
   margin: 0;
   padding: 0;
 }
@@ -397,15 +397,12 @@ export default {
   align-items: center;
 }
 
-.group.img img{
-  display: flex;
-  flex-direction: row;
-  overflow: auto;
-  flex-grow: 0;
-  flex: 0 0 128px;
+.img img {
   margin-right: 24px;
   border-radius: 100px;
   object-fit: cover;
+  height: 128px;
+  width: 128px;
 }
 
 .group.inputText label {
@@ -415,9 +412,8 @@ export default {
   position: absolute;
   pointer-events: none;
   left: 26%;
+
   transition: 0.2s ease all;
-  -moz-transition: 0.2s ease all;
-  -webkit-transition: 0.2s ease all;
 }
 
 .group.select input ~ .bar:before, .group.select input ~ .bar:after{
@@ -430,7 +426,7 @@ export default {
   color: #00c932;
 }
 
-.group .btn{
+.group .btn {
   width: 100%;
   padding: 0px 0px;
   height: 48px;
@@ -443,14 +439,13 @@ export default {
   background-color: #edeeee;
 }
 
-.group.select .btn{
+.group.select .btn {
   /* border: 6px solid #C0C0C0; */
   line-height: 18px;
 }
 
-.group .btn.btn-green{
+.group .btn.btn-green {
   width: 293px;
-  margin-left: 6px;
   border: 1px solid #00c932;
   color: #00c932;
   background-color: white;
@@ -458,78 +453,53 @@ export default {
   border-radius: 10px;
   font-weight: 300;
   font-size: 19px;
+
+  margin-left: auto;
+  margin-right: auto;
 }
 
-.group.select .btn.btn-green, .group:hover .btn.btn-green{
+.group.select .btn.btn-green, .btn.btn-green {
   background-color: #00c932;
-  color: white;
-  border: none;
-}
-
-.group .btn.btn-red{
-  border: 1px solid #ee3838;
-  color: #ee3838;
-  background-color: white;
-  font-weight: 200;
-  border-radius: 10px;
-  width: 193px;
-  margin: 0 auto;
-  margin-bottom: 50px;
-}
-
-.group.select .btn.btn-red, .group:hover .btn.btn-red{
-  background-color: #ee3838;
-  color: white;
-  border: none;
-}
-
-.group .btn.btn-gray{
-  border: none;
-  color: #222;
-  background-color: #AAA;
-  font-weight: 500;
-  border-radius: 10px;
-}
-.group.select .btn.btn-gray, .group:hover .btn.btn-gray{
-  background-color: #757575;
   color: white;
   border: none;
 }
 
 /* ZONA BARRE DI SELEZIONE CSS */
 
-.bar 	{ display:block; width:60%; }
+.bar {
+  display: block;
+  width: 60%;
+}
+
 .bar:before, .bar:after {
   content:'';
-  top: 31px;
+  top: 26px;
   height: 2px;
   width: 0;
   bottom: 1px;
-  position:absolute;
-  background:#00c932;
-  transition:0.2s ease all;
-  -moz-transition:0.2s ease all;
-  -webkit-transition:0.2s ease all;
+  position: absolute;
+  background: #00c932;
+  transition: 0.2s ease all;
 }
 
 .bar:before {
-  left:31%;
+  left: 34%;
 }
 
 .bar:after {
-  right:31%;
+  right: 34%;
 }
 
 /* ZONA HIGHLIGHT RIGA CSS */
 
 .highlight {
-  position:absolute;
-  height:60%;
-  width:100px;
-  top:25%;
-  left:0;
-  pointer-events:none;
-  opacity:0.5;
+  position: absolute;
+  height: 60%;
+  width: 100px;
+  top: 25%;
+  left: 0;
+  pointer-events: none;
+  opacity: 0.5;
 }
 
 /* ZONA ALTRO CSS */
@@ -540,7 +510,11 @@ export default {
 }
 
 .elements {
-  overflow-y: auto;
+  overflow: hidden;
+  
+  width: 100%;
+  height: 88%;
+  background-color: rgb(229 255 229 / 60%);
 }
 
 .element {
@@ -550,12 +524,12 @@ export default {
   align-items: center;
   position: relative;
   font-weight: 300;
-  background-color: rgba(80, 201, 110, 0.493);
+  background-color: rgba(80, 201, 110, 0.1);
   font-size: 18px;
 }
 
 .element.select, .element:hover {
-  background-color: rgba(0, 138, 18, 0.384);
+  background-color: rgba(0, 138, 18, 0.2);
 }
 
 .elem-title.checked {
@@ -571,9 +545,16 @@ export default {
   font-weight: 200;
 }
 
-.elem-title{
+.elem-title {
   margin-left: 12px;
   font-size: 20px;
   font-weight: 400;
+}
+
+.genericButton {
+  margin-left: auto;
+  margin-right: auto;
+  position: relative;
+  text-align: center;
 }
 </style>

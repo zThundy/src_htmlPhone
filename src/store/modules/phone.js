@@ -16,8 +16,10 @@ const state = {
   // myImage: window.localStorage['gc_myImage'] || null,
   myImage: null,
   myData: JSON.parse(window.localStorage['gc_myData'] || null),
-  notification: (window.localStorage['gc_notification'] === null || window.localStorage['gc_notification'] === undefined) ? true : window.localStorage['gc_notification'],
-  airplane: (window.localStorage['gc_airplane'] === null || window.localStorage['gc_airplane'] === undefined) ? false : window.localStorage['gc_airplane'],
+  // notification: (window.localStorage['gc_notification'] === null || window.localStorage['gc_notification'] === undefined) ? true : window.localStorage['gc_notification'],
+  // airplane: (window.localStorage['gc_airplane'] === null || window.localStorage['gc_airplane'] === undefined) ? false : window.localStorage['gc_airplane'],
+  notification: true,
+  airplane: false,
   brightnessActive: true,
   config: {
     reseau: 'Code',
@@ -195,7 +197,7 @@ const actions = {
     dispatch('setLanguage', 'it_IT')
   },
   sendStartupValues ({ state }) {
-    PhoneAPI.sendStartupValues({ volume: state.volume, notification: state.notification, cover: state.currentCover })
+    PhoneAPI.sendStartupValues({ volume: state.volume, notification: state.notification, cover: state.currentCover, airplane: state.airplane })
   },
   changeBrightness ({ commit }, value) {
     commit('CHANGE_BRIGHTNESS', value)

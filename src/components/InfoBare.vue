@@ -5,11 +5,11 @@
       <current-time style="font-size: 12px; margin-right: 2px;"></current-time>
     </span>
 
-    <div v-if="hasWifi" class="wifi-image">
+    <div v-if="hasWifi && isWifiOn" class="wifi-image">
       <img src="/html/static/img/app_dati/wifion.png" style="height: 14px; width: 14px;">
     </div>
 
-    <div v-else-if="!hasWifi" class="wifi-image">
+    <div v-else-if="!hasWifi || !isWifiOn" class="wifi-image">
       <img src="/html/static/img/app_dati/wifioff.png" style="height: 14px; width: 14px;">
     </div>
     

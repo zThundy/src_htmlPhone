@@ -46,9 +46,7 @@ Citizen.CreateThread(function()
     TriggerServerEvent("gcPhone:allUpdate")
 end)
 
-AddEventHandler('tcm_player:updateDeathStatus',function(_isDead)
-	isDead = _isDead
-end)
+AddEventHandler('tcm_player:updateDeathStatus',function(_isDead) isDead = _isDead end)
 
 function hasPhone(cb)
     if ESX == nil then return cb(false) end
@@ -98,7 +96,7 @@ Citizen.CreateThread(function()
 
             for _, value in ipairs(Config.Keys) do
                 if IsControlJustPressed(1, value.code) or IsDisabledControlJustPressed(1, value.code) then
-                    SendNUIMessage({keyUp = value.event})
+                    SendNUIMessage({ keyUp = value.event })
                 end
             end
 
@@ -170,12 +168,16 @@ end)
 
 
 RegisterNUICallback("sendStartupValues", function(data, cb)
-    volume = data.volume
     enableGlobalNotification = data.notification
+
     if data.cover ~= nil then
         myCover = string.gsub(data.cover.value, ".png", "")
     end
     
+    enableGlobalAirplane = data.airplane
+    TriggerServerEvent("gcphone:updateAirplaneForUser", enableGlobalAirplane)
+
+    volume = data.volume
     UpdateGlobalVolume()
     cb("ok")
 end)

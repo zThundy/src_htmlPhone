@@ -201,12 +201,13 @@ end
 
 function GetAziendaMessages(source, azienda, cb)
     local xPlayer = ESX.GetPlayerFromId(source)
-    MySQL.Async.fetchAll("SELECT * FROM phone_azienda_messages WHERE azienda = @azienda ORDER BY id ASC LIMIT 30", {
+    MySQL.Async.fetchAll("SELECT * FROM phone_azienda_messages WHERE azienda = @azienda ORDER BY id DESC LIMIT 30", {
         ['@azienda'] = azienda
     }, function(result)
         if result and result[1] then
             local messages = {}
             local v, index = {}, 0
+            
             for i = #result, 1, -1 do
                 v = result[i]
                 index = index + 1

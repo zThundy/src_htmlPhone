@@ -22,7 +22,7 @@
 
 <script>
 import events from './events'
-import { Howl } from 'howler'
+import { Howl, Howler } from 'howler'
 
 import { mapGetters } from 'vuex'
 
@@ -84,6 +84,7 @@ export default {
         this.audio.on('end', () => {
           // console.log('finished')
           this.audio.unload()
+          Howler.unload()
         })
         // qui controllo se viene passato il volume.
         // se si lo imposto al valore, altrimenti lo metto a 0.5

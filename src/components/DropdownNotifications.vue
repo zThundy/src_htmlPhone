@@ -5,7 +5,9 @@
       <i v-if="notification" style="margin-top: 2px;" class="timeDivElements right fa fa-bell" />
       <i v-else style="margin-top: 2px;" class="timeDivElements right fa fa-bell-slash" />
       
+      <i v-if="isWifiOn" style="margin-top: 2px;" class="timeDivElements right fa fa-wifi" />
       <i v-if="airplane" style="margin-top: 2px;" class="timeDivElements right fa fa-plane" />
+      <i v-if="bluetooth" style="margin-top: 2px;" class="timeDivElements right fa fa-bluetooth" />
     </div>
 
     <div class="line"></div>
