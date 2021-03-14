@@ -32,14 +32,17 @@ export default {
   },
   methods: {
     toastHide () {
-      if (this.myEmail !== null && this.myEmail !== undefined) {
-        this.$phoneAPI.requestSentEmails(this.myEmail)
-        this.$phoneAPI.requestEmails()
-        this.$router.push({ name: 'email' })
+      if (this.myEmail) {
+        if (this.myEmail !== null && this.myEmail !== undefined) {
+          this.$phoneAPI.requestSentEmails(this.myEmail)
+          this.$phoneAPI.requestEmails()
+          this.$router.push({ name: 'email' })
+        } else {
+          this.$router.push({ name: 'email.register' })
+        }
       } else {
         this.$router.push({ name: 'email.register' })
       }
-      // this.$refs.updating.show()
     }
   },
   created: function () {

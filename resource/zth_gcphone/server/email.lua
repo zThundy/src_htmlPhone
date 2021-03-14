@@ -8,6 +8,7 @@ AddEventHandler("gcphone:email_requestMyEmail", function()
             gcPhone.usaDatiInternet(identifier, mbToRemove)
             
             GetUserEmail(identifier, function(email)
+                if not email then email = false end
                 TriggerClientEvent("gcphone:email_sendMyEmail", player, email)
             end)
         else
