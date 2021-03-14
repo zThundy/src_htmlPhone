@@ -32,7 +32,7 @@ export default {
   },
   methods: {
     toastHide () {
-      if (this.myEmail) {
+      if (this.myEmail !== null && this.myEmail !== undefined) {
         this.$phoneAPI.requestSentEmails(this.myEmail)
         this.$phoneAPI.requestEmails()
         this.$router.push({ name: 'email' })
