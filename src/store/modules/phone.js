@@ -8,7 +8,7 @@ const state = {
   background: JSON.parse(window.localStorage['gc_background'] || null),
   currentCover: JSON.parse(window.localStorage['gc_cover'] || null),
   myCovers: [],
-  sonido: JSON.parse(window.localStorage['gc_sonido'] || null),
+  suoneria: JSON.parse(window.localStorage['gc_suoneria'] || null),
   zoom: window.localStorage['gc_zoom'] || '100%',
   volume: parseFloat(window.localStorage['gc_volume']) || 0.5,
   lang: window.localStorage['gc_language'],
@@ -64,17 +64,17 @@ const getters = {
     }
     return '/html/static/img/background/' + getters.background.value
   },
-  sonido: ({ sonido, config }) => {
-    if (sonido === null) {
-      if (config && config.sonido_default !== undefined) {
-        return config.sonido_default
+  suoneria: ({ suoneria, config }) => {
+    if (suoneria === null) {
+      if (config && config.suoneria_default !== undefined) {
+        return config.suoneria_default
       }
       return {
         label: 'Panters',
         value: 'ring.ogg'
       }
     }
-    return sonido
+    return suoneria
   },
   currentCover: ({ currentCover, config }) => {
     if (currentCover === null) {
@@ -89,7 +89,7 @@ const getters = {
     return currentCover
   },
   myCovers: ({ myCovers }) => myCovers,
-  sonidoLabel: (state, getters) => getters.sonido.label,
+  suoneriaLabel: (state, getters) => getters.suoneria.label,
   zoom: ({ zoom }) => zoom,
   warningMessageCount: ({ config }) => config.warningMessageCount || 250,
   useFormatNumberFrance: ({ config }) => config.useFormatNumberFrance,
@@ -161,9 +161,9 @@ const actions = {
     window.localStorage['gc_cover'] = JSON.stringify(cover)
     commit('SET_CURRENT_COVER', cover)
   },
-  setSonido ({ commit }, sonido) {
-    window.localStorage['gc_sonido'] = JSON.stringify(sonido)
-    commit('SET_SONIDO', sonido)
+  setsuoneria ({ commit }, suoneria) {
+    window.localStorage['gc_suoneria'] = JSON.stringify(suoneria)
+    commit('SET_suoneria', suoneria)
   },
   toggleNotifications ({ commit, state }) {
     commit('TOGGLE_NOTIFICATIONS')
@@ -193,7 +193,7 @@ const actions = {
     dispatch('setVolume', 1)
     dispatch('setBackground', getters.config.background_default)
     dispatch('setCurrentCover', getters.config.cover_default)
-    dispatch('setSonido', getters.config.sonido_default)
+    dispatch('setsuoneria', getters.config.suoneria_default)
     dispatch('setLanguage', 'it_IT')
   },
   sendStartupValues ({ state }) {
@@ -234,8 +234,8 @@ const mutations = {
   UPDATE_MY_COVERS (state, data) {
     state.myCovers = data
   },
-  SET_SONIDO (state, sonido) {
-    state.sonido = sonido
+  SET_suoneria (state, suoneria) {
+    state.suoneria = suoneria
   },
   SET_ZOOM (state, zoom) {
     state.zoom = zoom

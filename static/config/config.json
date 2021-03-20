@@ -70,7 +70,7 @@
     "value": "base.png"
   },
 
-  "sonido": {
+  "suoneria": {
     "Astronomia": "ring.ogg",
     "Safaera": "safaera.ogg",
     "Bella Ciao": "bella_ciao.ogg",
@@ -80,7 +80,7 @@
     "XXXTentacion": "xtentacion.ogg"
   },
 
-  "sonido_default": {
+  "suoneria_default": {
     "label": "Iphone 11",
     "value": "iphone_11.ogg"
   },

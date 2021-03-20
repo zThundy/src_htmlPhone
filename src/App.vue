@@ -70,7 +70,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['show', 'zoom', 'currentCover', 'sonido', 'appelsInfo', 'myPhoneNumber', 'volume', 'tempoHide', 'brightness', 'brightnessActive'])
+    ...mapGetters(['show', 'zoom', 'currentCover', 'suoneria', 'appelsInfo', 'myPhoneNumber', 'volume', 'tempoHide', 'brightness', 'brightnessActive'])
   },
   watch: {
     appelsInfo (newValue, oldValue) {
@@ -83,14 +83,14 @@ export default {
           path = '/html/static/sound/Phone_Call_Sound_Effect.ogg'
           this.soundCall = new Howl({ src: path, loop: true })
         } else {
-          path = '/html/static/sound/' + this.sonido.value
+          path = '/html/static/sound/' + this.suoneria.value
           this.soundCall = new Howl({
             src: path,
             onend: function () {
               // this.$phoneAPI.endSuoneriaForOthers()
             },
             onplay: function () {
-              // this.$phoneAPI.startSuoneriaForOthers(this.sonido.value)
+              // this.$phoneAPI.startSuoneriaForOthers(this.suoneria.value)
             }
           })
         }

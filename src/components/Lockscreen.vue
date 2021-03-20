@@ -3,14 +3,12 @@
     <div class="lockscreen-brightness">
       <InfoBare />
 
-      <div>
-        <img class="immagine" src="/html/static/img/app_dati/lockscreen.png">
+      <div class="immagine">
+        <img src="/html/static/img/app_dati/lockscreen.png">
       </div>
 
-      <div v-if="hasUnredMessages">
+      <div v-if="hasUnredMessages" class="messagelist">
         <div v-for="(elem, key) in buildUnreadMessages" v-bind:key="key">
-
-          <div class="separatore"></div>
 
           <span v-if="key < 5" class="messlist">
             <div class="warningMess_icon">
@@ -156,11 +154,16 @@ export default {
 
 
 .immagine {
-  width: 210px;
-  height: 100px;
   top: 50px;
-  padding-left: 110px;
-  position: absolute;
+  position: relative;
+  margin-left: auto;
+  margin-right: auto;
+  text-align: center;
+}
+
+.immagine img {
+  width: 100px;
+  height: 100px;
 }
 
 
@@ -168,27 +171,32 @@ export default {
 /* ZONA SOPRA CON MESSAGGI */
 /* ####################### */
 
+.messagelist {
+  width: 100%;
+  height: 60%;
+  margin-top: 65px;
+}
+
 
 .messlist {
   background-color: rgb(224, 224, 224);
   position: relative;
-
   margin-left: auto;
   margin-right: auto;
-
+  margin-top: 3px;
   /* left: 15px; */
   /* right: 12px; */
-
   width: 300px;
-  top: 150px;
+  /* top: 150px; */
   min-height: 64px;
+  /* width: 300px; */
   display: flex;
   padding: 8px;
-  border-radius: 8px;
-  box-shadow: 0 2px 2px 0 rgba(0,0,0,.14), 0 3px 1px -2px rgba(0,0,0,.2), 0 1px 5px 0 rgba(0,0,0,.12);
+  border-radius: 5px;
+  box-shadow: 0 2px 2px 0 rgb(0 0 0 / 14%), 0 3px 1px -2px rgb(0 0 0 / 20%), 0 1px 5px 0 rgb(0 0 0 / 12%);
 }
 
-.messlist .warningMess_icon{
+.messlist .warningMess_icon {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -198,12 +206,7 @@ export default {
   border-radius: 50%;
 }
 
-.messlist .warningMess_icon .fa {
-  text-align: center;
-  color: #019208d2;
-}
-
-.messlist .warningMess_content{
+.messlist .warningMess_content {
   line-height: 20px;
   padding-left: 10px;
   background-color: rgb(224, 224, 224);
@@ -261,19 +264,26 @@ export default {
   background-color: rgba(0, 0, 0, 0.7);
 }
 
-.bottom-zone{
+.bottom-zone {
+  display: -ms-flexbox;
   display: flex;
-  padding: 6px; 
+  padding: 6px;
   width: 100%;
-  bottom: 25px;
-  position: absolute;
+  bottom: -15px;
+  position: relative;
+  -ms-flex-align: end;
   align-items: flex-end;
+  -ms-flex-flow: row;
   flex-flow: row;
+  -ms-flex-wrap: wrap;
   flex-wrap: wrap;
-  margin-bottom: 3px;
-  justify-content: space-between;
+  /* margin-bottom: 0px; */
+  -ms-flex-pack: justify;
+  /* justify-content: space-between; */
   transition: all 0.5s ease-in-out;
-  padding-left: 25px;
+  /* margin-left: auto; */
+  /* margin-right: auto; */
+  justify-content: center;
 }
 
 .slide {
@@ -296,15 +306,15 @@ export default {
 .rectangle {
   width: 280px;
   height: 50px;
-  background: rgba(201, 201, 201, 0.384);
-  border-style: solid;
+  background: rgba(255, 255, 255, 0.2);
+  border: 4px solid black;
   border-radius: 15px;
 }
 
 .rectangle-inside {
   width: 80px;
-  height: 97%;
-  background: rgba(223, 223, 223, 0.856);
+  height: 100%;
+  background: rgba(255, 255, 255, 0.7);
   border-radius: 10px;
 }
 

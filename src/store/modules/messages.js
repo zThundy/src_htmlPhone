@@ -96,9 +96,9 @@ if (process.env.NODE_ENV !== 'production') {
   const numRandom = '' + Math.floor(Math.random() * 10000000)
   state.messages = [
     {id: 1, transmitter: numRandom, time, message: 'questo messaggio è tipo superlunghissimissimissimo e verrà tagliato', isRead: 0, owner: 1},
-    {id: 2, transmitter: numRandom, time, message: 'GPS: -1034.5810546875, -2734.1027832031', isRead: 1, owner: 0},
-    {id: 3, transmitter: numRandom, time, message: 'https://i.imgur.com/gthahbs.png', isRead: 1, owner: 0},
-    {id: 4, transmitter: numRandom, time, message: 'Zatutto ?', isRead: 1, owner: 0},
+    {id: 2, transmitter: numRandom, time, message: 'GPS: -1034.5810546875, -2734.1027832031', isRead: 0, owner: 0},
+    {id: 3, transmitter: numRandom, time, message: 'https://i.imgur.com/gthahbs.png', isRead: 0, owner: 0},
+    {id: 4, transmitter: numRandom, time, message: 'Zatutto ?', isRead: 0, owner: 0},
     {id: 5, transmitter: numRandom, time, message: '%CONTACT%:55529322::questoenuovo::questoenuovo@code.it:', isRead: 1, owner: 0},
     {id: 6, transmitter: numRandom, time, message: '%CONTACT%:55529322::questoenuovo::questoenuovo@code.it:', isRead: 1, owner: 0},
     {id: 20, transmitter: numRandom, time, message: ':100: :100:', isRead: 1, owner: 0},

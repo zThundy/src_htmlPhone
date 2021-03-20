@@ -22,7 +22,7 @@
 
 <script>
 import events from './events'
-import { Howl, Howler } from 'howler'
+import { Howl } from 'howler'
 
 import { mapGetters } from 'vuex'
 
@@ -32,14 +32,14 @@ export default {
     return {
       currentId: 0,
       list: [],
-      audio: null
+      soundList: {}
     }
   },
   mounted () {
     events.$on('add', this.addItem)
   },
   computed: {
-    ...mapGetters(['show', 'tempoHide'])
+    ...mapGetters(['show', 'tempoHide', 'volume'])
   },
   methods: {
     formatEmoji (message) {
@@ -65,36 +65,31 @@ export default {
         this.list.push(dataNotif)
         window.setTimeout(() => {
           this.destroy(dataNotif.id)
-        }, 3000)
+        }, dataNotif.duration)
       }
       if (event.sound) {
-        if (this.audio != null) { this.audio = null }
         var path = '/html/static/sound/' + event.sound
-        this.audio = new Howl({
-          src: path,
-          onend () {
-            // ascolto quando l'audio termina e via
-            // console.log('audio ended')
-            // this.audio.unload()
-          },
-          onload () {
-            // console.log('audio loaded')
-          }
-        })
-        this.audio.on('end', () => {
-          // console.log('finished')
-          this.audio.unload()
-          Howler.unload()
-        })
-        // qui controllo se viene passato il volume.
-        // se si lo imposto al valore, altrimenti lo metto a 0.5
-        // console.log('event.volume dentro notification', event.volume)
-        if (event.volume) {
-          this.audio.volume(Number(event.volume))
+        if (event.sound === undefined || event.sound === null) return
+        if (this.soundList[event.sound] !== undefined) {
+          this.soundList[event.sound].volume = Number(this.volume)
         } else {
-          this.audio.volume(0.5)
+          this.soundList[event.sound] = new Howl({
+            src: path,
+            volume: this.volume
+            // onend: function () {
+            //   if (this.soundList[event.sound]) {
+            //     delete this.soundList[event.sound]
+            //   }
+            // }
+          })
+          this.soundList[event.sound].play()
+          this.soundList[event.sound].on('end', () => {
+            // console.log('deleted', event.sound)
+            // console.log('deleted', this.soundList[event.sound])
+            delete this.soundList[event.sound]
+            // console.log('deleted', this.soundList[event.sound])
+          })
         }
-        this.audio.play()
       }
     },
     style (notif) {

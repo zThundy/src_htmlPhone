@@ -71,7 +71,7 @@ export default {
       'LangString',
       'myPhoneNumber',
       'backgroundLabel',
-      'sonidoLabel',
+      'suoneriaLabel',
       'zoom',
       'config',
       'volume',
@@ -162,9 +162,9 @@ export default {
           meta: 'suoneria',
           icons: 'fa-bell-o',
           title: this.LangString('APP_CONFIG_SOUND'),
-          value: this.sonidoLabel,
-          onValid: 'onChangeSonido',
-          values: this.config.sonido
+          value: this.suoneriaLabel,
+          onValid: 'onChangesuoneria',
+          values: this.config.suoneria
         },
         {
           icons: 'fa-search',
@@ -234,7 +234,7 @@ export default {
       'setZoom',
       'setBackground',
       'setCurrentCover',
-      'setSonido',
+      'setsuoneria',
       'setVolume',
       'setLanguage',
       'toggleNotifications',
@@ -433,8 +433,8 @@ export default {
       this.$phoneAPI.changingCover({ label: data.title, value: data.value })
     },
 
-    onChangeSonido: function (param, data) {
-      this.setSonido({ label: data.title, value: data.value })
+    onChangesuoneria: function (param, data) {
+      this.setsuoneria({ label: data.title, value: data.value })
     },
 
     setLocalZoom: function (param, data) {

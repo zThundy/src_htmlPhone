@@ -403,8 +403,8 @@ class PhoneAPI {
     } else {
       this.soundList[data.sound] = new Howl({
         src: path,
-        loop: true,
-        onend: function () { delete this.soundList[data.sound] }
+        loop: true
+        // onend: function () { delete this.soundList[data.sound] }
       })
       this.soundList[data.sound].play()
     }
@@ -603,7 +603,7 @@ class PhoneAPI {
 
   // == Schermata di sblocco
   async postPlayUnlockSound () {
-    Vue.notify({ sound: 'phoneUnlock.ogg', hidden: true })
+    Vue.notify({ sound: 'phoneUnlock.ogg', hidden: true, duration: 1500 })
     // return è deprecato e inutile
     // return this.post('soundLockscreen')
   }
