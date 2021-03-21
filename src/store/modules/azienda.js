@@ -201,14 +201,14 @@ if (process.env.NODE_ENV !== 'production') {
       author: 'Jumba ja',
       authorPhone: 55538823,
       mine: true,
-      isRead: 0
+      isRead: 1
     },
     {
       message: 'test message :rofl:',
       author: 'Frank trull',
       authorPhone: 55538823,
       mine: false,
-      isRead: 0
+      isRead: 1
     },
     {
       message: 'test message 12345 test message 12345 test message 12345 test message 12345 :rofl:',

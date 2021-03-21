@@ -269,8 +269,8 @@ export default {
   display: flex;
   padding: 6px;
   width: 100%;
-  bottom: -15px;
-  position: relative;
+  bottom: 25px;
+  position: absolute;
   -ms-flex-align: end;
   align-items: flex-end;
   -ms-flex-flow: row;
@@ -283,6 +283,7 @@ export default {
   transition: all 0.5s ease-in-out;
   /* margin-left: auto; */
   /* margin-right: auto; */
+  -ms-flex-pack: center;
   justify-content: center;
 }
 
