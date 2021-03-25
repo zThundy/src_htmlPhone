@@ -1,4 +1,7 @@
 -- Configuration
+local tunnel = module("lib/TunnelV2")
+gcPhoneServerT = tunnel.getInterface("gcphone_server_t", "gcphone_server_t")
+
 local menuIsOpen = false
 local contacts = {}
 local messages = {}
@@ -476,7 +479,6 @@ end)
 -- i minuti mentre si è in chiamata
 RegisterNetEvent("gcPhone:acceptCall")
 AddEventHandler("gcPhone:acceptCall", function(infoCall, initiator)
-
     if inCall == false then
         inCall = true
 
@@ -510,9 +512,13 @@ AddEventHandler("gcPhone:acceptCall", function(infoCall, initiator)
             StopSoundJS('callend.ogg')
         end)
         
-        -- print("aggiungo in canale "..infoCall.id)
-        exports["tokovoip_script"]:addPlayerToPhone(infoCall.id)
-        TokoVoipID = infoCall.id
+        if Config.EnableTokoVoip then
+            -- print("aggiungo in canale "..infoCall.id)
+            TokovoipEnstablishCall(infoCall.id)
+        elseif Config.EnableSaltyChat then
+            gcPhoneServerT.setEndpointSource(infoCall.receiver_src)
+            gcPhoneServerT.EstablishCall(infoCall.receiver_src)
+        end
     end
 
     if menuIsOpen == false then 
@@ -526,7 +532,6 @@ end)
 
 RegisterNetEvent("gcPhone:rejectCall")
 AddEventHandler("gcPhone:rejectCall", function(infoCall)
-
     if infoCall and infoCall.updateMinuti then
         if not inCall then secondiRimanenti = infoCall.secondiRimanenti end
         -- print("Sto nel reject da parte del chiamante", infoCall.secondiRimanenti, secondiRimanenti, infoCall.updateMinuti)
@@ -543,8 +548,13 @@ AddEventHandler("gcPhone:rejectCall", function(infoCall)
         -- NetworkClearVoiceChannel
         -- NetworkSetTalkerProximity(2.5)
         -- print("rimuovo canale "..TokoVoipID)
-        exports["tokovoip_script"]:removePlayerFromPhone(TokoVoipID)
-        TokoVoipID = nil
+        if Config.EnableTokoVoip then
+            -- print("aggiungo in canale "..infoCall.id)
+            TokovoipEndCall(TokoVoipID)
+        elseif Config.EnableSaltyChat then
+            gcPhoneServerT.removeEndpointSource()
+            gcPhoneServerT.EndCall(infoCall.receiver_src)
+        end
     end
 
     PhonePlayText()

@@ -32,6 +32,7 @@ files {
 }
 
 client_script {
+	"@esx_frstd/lib/utils.lua",
 	"config.lua",
 	"shared.lua",
 	"client/animation.lua",
@@ -50,11 +51,15 @@ client_script {
 	"client/darkweb.lua",
 	"client/email.lua",
 	"client/news.lua",
-	"client/azienda.lua"
+	"client/azienda.lua",
+
+	-- modules
+	"modules/tokovoip.lua"
 }
 
 server_script {
-	'@mysql-async/lib/MySQL.lua',
+	"@esx_frstd/lib/utils.lua",
+	"@mysql-async/lib/MySQL.lua",
 	"config.lua",
 	"shared.lua",
 	"server/server.lua",
@@ -71,7 +76,10 @@ server_script {
 	"server/darkweb.lua",
 	"server/email.lua",
 	"server/news.lua",
-	"server/azienda.lua"
+	"server/azienda.lua",
+
+	-- modules
+	"modules/saltychat.lua"
 }
 
 data_file 'DLC_ITYP_REQUEST' 'stream/bk_phone.ytyp'

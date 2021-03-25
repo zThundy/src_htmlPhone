@@ -1,5 +1,8 @@
 Config = {}
 
+Config.EnableTokoVoip = false
+Config.EnableSaltyChat = true
+
 Config.KeyTakeCall = 46
 
 Config.Debug = false
