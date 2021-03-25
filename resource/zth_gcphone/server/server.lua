@@ -3,7 +3,7 @@ ESX = nil
 
 local tunnel = module("lib/TunnelV2")
 gcPhoneT = {}
-tunnel.getInterface("gcphone_server_t", gcPhoneT)
+tunnel.bindInterface("gcphone_server_t", gcPhoneT)
 
 segnaliTelefoniPlayers = {}
 wifiConnectedPlayers = {}
