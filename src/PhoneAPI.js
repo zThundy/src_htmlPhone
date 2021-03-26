@@ -603,9 +603,8 @@ class PhoneAPI {
 
   // == Schermata di sblocco
   async postPlayUnlockSound () {
-    Vue.notify({ sound: 'phoneUnlock.ogg', hidden: true, duration: 1500 })
-    // return è deprecato e inutile
-    // return this.post('soundLockscreen')
+    // Vue.notify({ sound: 'phoneUnlock.ogg', hidden: true, duration: 1500 })
+    return this.post('soundLockscreen')
   }
 
   // ==========================================================================
