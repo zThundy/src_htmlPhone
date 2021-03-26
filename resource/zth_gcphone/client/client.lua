@@ -516,8 +516,10 @@ AddEventHandler("gcPhone:acceptCall", function(infoCall, initiator)
             -- print("aggiungo in canale "..infoCall.id)
             TokovoipEnstablishCall(infoCall.id)
         elseif Config.EnableSaltyChat then
-            gcPhoneServerT.setEndpointSource(infoCall.receiver_src)
-            gcPhoneServerT.EstablishCall(infoCall.receiver_src)
+            if gcPhoneServerT.getEndpointSource() and infoCall then
+                gcPhoneServerT.removeEndpointSource()
+                gcPhoneServerT.EndCall(infoCall.receiver_src)
+            end
         end
     end
 

@@ -1,4 +1,4 @@
-ESX = nil
+ESX = exports["es_extended"]:getSharedObject()
 -- gcPhone = {}
 
 local tunnel = module("lib/TunnelV2")

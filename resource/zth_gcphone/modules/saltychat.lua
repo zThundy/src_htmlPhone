@@ -1,3 +1,4 @@
+SaltyChat = {}
 
 -- unused for now :P
 gcPhoneT.removeEndpointSource = function()
