@@ -42,7 +42,7 @@ AddEventHandler('esx_addons_gcphone:call', function(data)
 			code = "911",
 			street = GetStreetAndZone(),
 			id = uuid,
-			priority = 2,
+			priority = 3,
 			title = "Chiamata di emergenza",
 			position = {
 				x = coords.x,
