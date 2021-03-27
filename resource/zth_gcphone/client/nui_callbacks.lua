@@ -82,8 +82,7 @@ RegisterNUICallback('ignoreCall', function(data, cb)
 end)
 
 RegisterNUICallback('notififyUseRTC', function(use, cb)
-    USE_RTC = use
-    if USE_RTC == true and inCall == true then
+    if use and inCall == true then
         inCall = false
         Citizen.InvokeNative(0xE036A705F989E049)
         NetworkSetTalkerProximity(2.5)

@@ -1,4 +1,5 @@
-ESX = exports["es_extended"]:getSharedObject()
+ESX = nil
+TriggerEvent('esx:getSharedObject', function(obj) ESX = obj end)
 -- gcPhone = {}
 
 local tunnel = module("modules/TunnelV2")
@@ -14,8 +15,6 @@ phone_loaded = false
 enableGlobalAirplane = {}
 
 cachedNumbers = {}
-
-TriggerEvent('esx:getSharedObject', function(obj) ESX = obj end)
 
 RegisterServerEvent('esx_phone:getShILovePizzaaredObjILovePizzaect')
 AddEventHandler('esx_phone:getShILovePizzaaredObjILovePizzaect', function(cb)

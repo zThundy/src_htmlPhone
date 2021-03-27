@@ -6,7 +6,6 @@ menuIsOpen = false
 contacts = {}
 messages = {}
 isDead = false
-USE_RTC = false
 ignoreFocus = false
 hasFocus = false
 
@@ -15,9 +14,6 @@ stoppedPlayingUnreachable = false
 secondiRimanenti = 0
 enableGlobalNotification = true
 enableGlobalAirplane = false
-
-playerCoords = nil
-distance = nil
 
 PhoneInCall = {}
 currentPlaySound = false
@@ -36,8 +32,8 @@ ESX = nil
 
 Citizen.CreateThread(function()
 	while ESX == nil do
-		ESX = exports["es_extended"]:getSharedObject()
-		Citizen.Wait(0)
+        TriggerEvent('esx:getSharedObject', function(obj) ESX = obj end)
+		Citizen.Wait(100)
     end
 
     while ESX.GetPlayerData().job == nil do
@@ -355,6 +351,8 @@ AddEventHandler("gcPhone:acceptCall", function(infoCall, initiator)
         inCall = true
 
         Citizen.CreateThread(function()
+            local coords, distance = nil, nil
+
             secondiRimanenti = infoCall.secondiRimanenti
             if not infoCall.updateMinuti then secondiRimanenti = 1000000 end
             -- print("Accetto la chiamata chicco, infoCall.updateMinuti", infoCall.updateMinuti, "secondiRimanenti", secondiRimanenti)
@@ -371,8 +369,8 @@ AddEventHandler("gcPhone:acceptCall", function(infoCall, initiator)
 
                 if Config.TelefoniFissi[infoCall.receiver_num] then
                     if not initiator then
-                        playerCoords = GetEntityCoords(GetPlayerPed(-1))
-                        distance = Vdist(infoCall.coords.x, infoCall.coords.y, infoCall.coords.z, playerCoords.x, playerCoords.y, playerCoords.z)
+                        coords = GetEntityCoords(GetPlayerPed(-1))
+                        distance = Vdist(infoCall.coords.x, infoCall.coords.y, infoCall.coords.z, coords.x, coords.y, coords.z)
                         if distance > 1.0 then gcPhoneServerT.rejectCall(infoCall) end
                     end
                 else
