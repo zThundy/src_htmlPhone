@@ -29,14 +29,20 @@ files {
 	'html/static/fonts/*',
 
 	'html/static/sound/*',
+
+	"modules/Luaoop.lua",
+	"modules/TunnelV2.lua",
+	"modules/IDManager.lua",
+	"modules/Tools.lua",
 }
 
 client_script {
-	"@esx_frstd/lib/utils.lua",
+	"modules/utils.lua",
 	"config.lua",
 	"shared.lua",
 	"client/animation.lua",
 	"client/client.lua",
+	"client/nui_callbacks.lua",
 
 	"client/photo.lua",
 	"client/app_tchat.lua",
@@ -58,7 +64,7 @@ client_script {
 }
 
 server_script {
-	"@esx_frstd/lib/utils.lua",
+	"modules/utils.lua",
 	"@mysql-async/lib/MySQL.lua",
 	"config.lua",
 	"shared.lua",

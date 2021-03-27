@@ -1,7 +1,7 @@
 ESX = exports["es_extended"]:getSharedObject()
 -- gcPhone = {}
 
-local tunnel = module("lib/TunnelV2")
+local tunnel = module("modules/TunnelV2")
 gcPhoneT = {}
 tunnel.bindInterface("gcphone_server_t", gcPhoneT)
 
@@ -63,8 +63,7 @@ MySQL.ready(function()
 end)
 
 
-RegisterServerEvent('gcPhone:allUpdate')
-AddEventHandler('gcPhone:allUpdate', function()
+gcPhoneT.allUpdate = function()
     -- creo il thread per evitare di fare il wait sul main
     -- thread
     Citizen.CreateThreadNow(function()
@@ -84,25 +83,19 @@ AddEventHandler('gcPhone:allUpdate', function()
 
         sendHistoriqueCall(player, num)
     end)
-end)
-
+end
 
 --==================================================================================================================
 -------- Eventi e Funzioni del segnale radio e del WiFi
 --==================================================================================================================
 
-RegisterServerEvent("gcphone:updateAirplaneForUser")
-AddEventHandler("gcphone:updateAirplaneForUser", function(bool)
-    local player = source
-    local identifier = gcPhone.getPlayerID(player)
+gcPhoneT.updateAirplaneForUser = function(bool)
+    local identifier = gcPhone.getPlayerID(source)
     enableGlobalAirplane[identifier] = bool
-end)
+end
 
-
-RegisterServerEvent('gcPhone:updateSegnaleTelefono')
-AddEventHandler('gcPhone:updateSegnaleTelefono', function(potenza)
-    local player = tonumber(source)
-    local identifier = gcPhone.getPlayerID(player)
+gcPhoneT.updateSegnaleTelefono = function(potenza)
+    local identifier = gcPhone.getPlayerID(source)
     local iSegnalePlayer = gcPhone.getPlayerSegnaleIndex(segnaliTelefoniPlayers, identifier)
 
     if iSegnalePlayer == nil then
@@ -110,13 +103,10 @@ AddEventHandler('gcPhone:updateSegnaleTelefono', function(potenza)
     else
 		segnaliTelefoniPlayers[iSegnalePlayer].potenzaSegnale = potenza
     end
-end)
+end
 
-
-RegisterServerEvent('gcPhone:updateReteWifi')
-AddEventHandler('gcPhone:updateReteWifi', function(connected, rete)
-    local player = tonumber(source)
-    local identifier = gcPhone.getPlayerID(player)
+gcPhoneT.updateReteWifi = function(connected, rete)
+    local identifier = gcPhone.getPlayerID(source)
     local iSegnalePlayer = gcPhone.getPlayerSegnaleIndex(wifiConnectedPlayers, identifier)
     
     if iSegnalePlayer == nil then
@@ -125,7 +115,7 @@ AddEventHandler('gcPhone:updateReteWifi', function(connected, rete)
 		wifiConnectedPlayers[iSegnalePlayer].connected = connected
 		wifiConnectedPlayers[iSegnalePlayer].rete = rete
     end
-end)
+end
 
 
 function gcPhone.getAirplaneForUser(identifier)
@@ -151,7 +141,7 @@ function gcPhone.usaDatiInternet(identifier, value)
     local phone_number = gcPhone.getPhoneNumber(identifier)
     
 	ESX.GetPianoTariffarioParam(phone_number, "dati", function(dati)
-        TriggerEvent("gcPhone:updateParametroTariffa", phone_number, "dati", dati - value)
+        gcPhoneT.updateParametroTariffa(phone_number, "dati", dati - value)
     end)
 end
 
@@ -234,28 +224,25 @@ function gcPhone.isAbleToCall(identifier, cb)
 end
 
 
-RegisterServerEvent('gcPhone:updateParametroTariffa')
-AddEventHandler('gcPhone:updateParametroTariffa', function(phone_number, param, value)
+gcPhoneT.updateParametroTariffa = function(phone_number, param, value)
 	ESX.UpdatePianoTariffario(phone_number, param, value)
-end)
+end
 
 
 --==================================================================================================================
 -------- 
 --==================================================================================================================
 
-
-ESX.RegisterServerCallback('gcphone:getItemAmount', function(source, cb, item)
+gcPhoneT.getItemAmount = function(item)
     local xPlayer = ESX.GetPlayerFromId(source)
     local items = xPlayer.getInventoryItem(item)
 
     if items == nil then
-        cb(0)
+        return 0
     else
-        cb(items.count)
+        return items.count
     end
-end)
-
+end
 
 ESX.RegisterServerCallback("gcphone:getNumberFromIdentifier", function(source, cb)
     local identifier = gcPhone.getPlayerID(source)
@@ -452,31 +439,20 @@ function notifyContactChange(source, identifier)
 end
 
 
-RegisterServerEvent('gcPhone:addContact')
-AddEventHandler('gcPhone:addContact', function(display, phoneNumber, email)
-    local player = tonumber(source)
-    local identifier = gcPhone.getPlayerID(player)
+gcPhoneT.addContact = function(display, phoneNumber, email)
+    local identifier = gcPhone.getPlayerID(source)
+    addContact(source, identifier, phoneNumber, display, email)
+end
 
-    addContact(player, identifier, phoneNumber, display, email)
-end)
+gcPhoneT.updateContact = function(id, display, phoneNumber, email)
+    local identifier = gcPhone.getPlayerID(source)
+    updateContact(source, identifier, id, phoneNumber, display, email)
+end
 
-
-RegisterServerEvent('gcPhone:updateContact')
-AddEventHandler('gcPhone:updateContact', function(id, display, phoneNumber, email)
-    local player = tonumber(source)
-    local identifier = gcPhone.getPlayerID(player)
-
-    updateContact(player, identifier, id, phoneNumber, display, email)
-end)
-
-
-RegisterServerEvent('gcPhone:deleteContact')
-AddEventHandler('gcPhone:deleteContact', function(id)
-    local player = tonumber(source)
-    local identifier = gcPhone.getPlayerID(player)
-
-    deleteContact(player, identifier, id)
-end)
+gcPhoneT.deleteContact = function(id)
+    local identifier = gcPhone.getPlayerID(source)
+    deleteContact(source, identifier, id)
+end
 
 
 --==================================================================================================================
@@ -559,13 +535,10 @@ function addMessage(source, identifier, phone_number, message)
 end
 
 
-RegisterServerEvent('gcPhone:sendMessage')
-AddEventHandler('gcPhone:sendMessage', function(phoneNumber, message)
-    local player = tonumber(source)
-    local identifier = gcPhone.getPlayerID(player)
-
-    addMessage(player, identifier, phoneNumber, message)
-end)
+gcPhoneT.sendMessage = function(phoneNumber, message)
+    local identifier = gcPhone.getPlayerID(source)
+    addMessage(source, identifier, phoneNumber, message)
+end
 
 
 function _internalAddMessage(transmitter, receiver, message, owner)
@@ -587,7 +560,8 @@ AddEventHandler('gcPhone:_internalAddMessage', function(transmitter, receiver, m
 end)
 
 
-function setReadMessageNumber(identifier, num)
+gcPhoneT.setReadMessageNumber = function(num)
+    local identifier = gcPhone.getPlayerID(source)
     local mePhoneNumber = gcPhone.getPhoneNumber(identifier)
 
     MySQL.Sync.execute("UPDATE phone_messages SET phone_messages.isRead = 1 WHERE phone_messages.receiver = @receiver AND phone_messages.transmitter = @transmitter", {
@@ -612,30 +586,18 @@ function setMessagesReceived(phone_number)
 end
 
 
-RegisterServerEvent('gcPhone:setReadMessageNumber')
-AddEventHandler('gcPhone:setReadMessageNumber', function(num)
+gcPhoneT.deleteMessage = function(id)
+    MySQL.Async.execute("DELETE FROM phone_messages WHERE `id` = @id", { ['@id'] = id })
+end
+
+
+gcPhoneT.deleteMessageNumber = function(number)
     local identifier = gcPhone.getPlayerID(source)
-
-    setReadMessageNumber(identifier, num)
-end)
-
-
-RegisterServerEvent('gcPhone:deleteMessage')
-AddEventHandler('gcPhone:deleteMessage', function(msgId)
-    MySQL.Async.execute("DELETE FROM phone_messages WHERE `id` = @id", { ['@id'] = msgId })
-end)
-
-
-RegisterServerEvent('gcPhone:deleteMessageNumber')
-AddEventHandler('gcPhone:deleteMessageNumber', function(number)
-    local player = tonumber(source)
-    local identifier = gcPhone.getPlayerID(player)
-
     MySQL.Async.execute("DELETE FROM phone_messages WHERE `receiver` = @receiver and `transmitter` = @transmitter", { 
         ['@receiver'] = gcPhone.getPhoneNumber(identifier), 
         ['@transmitter'] = number 
     })
-end)
+end
 
 
 function gcPhone.deleteReceivedMessages(identifier)
@@ -643,28 +605,23 @@ function gcPhone.deleteReceivedMessages(identifier)
 end
 
 
-RegisterServerEvent('gcPhone:deleteAllMessage')
-AddEventHandler('gcPhone:deleteAllMessage', function()
-    local player = tonumber(source)
-    local identifier = gcPhone.getPlayerID(player)
-
+gcPhoneT.deleteAllMessage = function()
+    local identifier = gcPhone.getPlayerID(source)
     gcPhone.deleteReceivedMessages(identifier)
-end)
+end
 
 
-RegisterServerEvent('gcPhone:deleteALL')
-AddEventHandler('gcPhone:deleteALL', function()
-    local player = tonumber(source)
-    local identifier = gcPhone.getPlayerID(player)
+gcPhoneT.deleteAll = function()
+    local identifier = gcPhone.getPlayerID(source)
 
     gcPhone.deleteReceivedMessages(identifier)
     MySQL.Sync.execute("DELETE FROM phone_users_contacts WHERE `identifier` = @identifier", { ['@identifier'] = identifier })
-    appelsDeleteAllHistorique(identifier)
+    gcPhoneT.appelsDeleteAllHistorique(identifier)
 
-    TriggerClientEvent("gcPhone:contactList", player, {})
-    TriggerClientEvent("gcPhone:allMessage", player, {})
-    TriggerClientEvent("appelsDeleteAllHistorique", player, {})
-end)
+    TriggerClientEvent("gcPhone:contactList", source, {})
+    TriggerClientEvent("gcPhone:allMessage", source, {})
+    TriggerClientEvent("appelsDeleteAllHistorique", source, {})
+end
 
 
 --==================================================================================================================
@@ -719,21 +676,21 @@ function salvaChiamata(appelInfo)
     end
 end
 
+--[[
+    USELESS
 
-RegisterServerEvent('gcPhone:getHistoriqueCall')
-AddEventHandler('gcPhone:getHistoriqueCall', function()
-    local player = tonumber(source)
-    local identifier = gcPhone.getPlayerID(player)
-    local num = gcPhone.getPhoneNumber(identifier)
+    RegisterServerEvent('gcPhone:getHistoriqueCall')
+    AddEventHandler('gcPhone:getHistoriqueCall', function()
+        local player = tonumber(source)
+        local identifier = gcPhone.getPlayerID(player)
+        local num = gcPhone.getPhoneNumber(identifier)
 
-    sendHistoriqueCall(player, num)
-end)
+        sendHistoriqueCall(player, num)
+    end)
+]]
 
-
-RegisterServerEvent("gcPhone:requestOffertaFromDatabase")
-AddEventHandler("gcPhone:requestOffertaFromDatabase", function()
-    local player = source
-    local xPlayer = ESX.GetPlayerFromId(player)
+gcPhoneT.requestOffertaFromDatabase = function()
+    local xPlayer = ESX.GetPlayerFromId(source)
 
     MySQL.Async.fetchAll("SELECT phone_number FROM users WHERE identifier = @identifier", {['@identifier'] = xPlayer.identifier}, function(user)
         if #user > 0 then
@@ -752,16 +709,11 @@ AddEventHandler("gcPhone:requestOffertaFromDatabase", function()
             end
         end
     end)
+end
 
-    -- TriggerClientEvent('gcPhone:getBourse', player, getInfoBorsa())
-end)
-
-
-RegisterServerEvent('gcPhone:startCall')
-AddEventHandler('gcPhone:startCall', function(phone_number, rtcOffer, extraData)
-    local player = source
-    TriggerEvent('gcPhone:internal_startCall', player, phone_number, rtcOffer, extraData)
-end)
+gcPhoneT.startCall = function(phone_number, rtcOffer, extraData)
+    TriggerEvent('gcPhone:internal_startCall', source, phone_number, rtcOffer, extraData)
+end
 
 
 RegisterServerEvent('gcPhone:register_FixePhone')
@@ -902,28 +854,23 @@ function playNoSignal(player, infoCall)
 end
 
 
-RegisterServerEvent('gcPhone:candidates')
-AddEventHandler('gcPhone:candidates', function(callId, candidates)
+gcPhoneT.candidates = function(callId, candidates)
     if Chiamate[callId] ~= nil then
-        local player = source
-
         local to = Chiamate[callId].transmitter_src
-        if player == to then  to = Chiamate[callId].receiver_src end
+        if source == to then  to = Chiamate[callId].receiver_src end
 
         if to == nil then return end
         TriggerClientEvent('gcPhone:candidates', to, candidates)
     end
-end)
+end
 
 
-RegisterServerEvent('gcPhone:acceptCall')
-AddEventHandler('gcPhone:acceptCall', function(infoCall, rtcAnswer)
-    local player = source
+gcPhoneT.acceptCall = function(infoCall, rtcAnswer)
     local id = infoCall.id
 
     if Chiamate[id] ~= nil then
         if PhoneFixeInfo[id] ~= nil then
-            onAcceptFixePhone(player, infoCall, rtcAnswer)
+            onAcceptFixePhone(source, infoCall, rtcAnswer)
             return
         end
 
@@ -944,30 +891,28 @@ AddEventHandler('gcPhone:acceptCall', function(infoCall, rtcAnswer)
             salvaChiamata(Chiamate[id])
         end
     end
-end)
+end
 
 
-RegisterServerEvent('gcPhone:ignoreCall')
-AddEventHandler('gcPhone:ignoreCall', function(infoCall)
-    local id = infoCall.id
-end)
+-- useless for now
+gcPhoneT.ignoreCall = function(infoCall)
+
+end
 
 
 -- evento che toglie i minuti a chi ha
 -- fatto la telefonata
-RegisterServerEvent('gcPhone:rejectCall')
-AddEventHandler('gcPhone:rejectCall', function(infoCall)
-    local player = source
+gcPhoneT.rejectCall = function(infoCall)
     local id = infoCall.id
-    if Chiamate[id] ~= nil then
 
+    if Chiamate[id] ~= nil then
         playersInCall[Chiamate[id].transmitter_src] = nil
         if Chiamate[id].receiver_src ~= nil then
             playersInCall[Chiamate[id].receiver_src] = nil
         end
 
         if PhoneFixeInfo[id] ~= nil then
-            onRejectFixePhone(player, infoCall)
+            onRejectFixePhone(source, infoCall)
             return
         end
 
@@ -986,36 +931,26 @@ AddEventHandler('gcPhone:rejectCall', function(infoCall)
         -- TriggerEvent('gcPhone:removeCall', Chiamate)
         Chiamate[id] = nil
     end
-end)
+end
 
 
-RegisterServerEvent('gcPhone:appelsDeleteHistorique')
-AddEventHandler('gcPhone:appelsDeleteHistorique', function(numero)
-    local player = source
-    local identifier = gcPhone.getPlayerID(player)
+gcPhoneT.appelsDeleteHistorique = function(number)
+    local identifier = gcPhone.getPlayerID(source)
     local num = gcPhone.getPhoneNumber(identifier)
 
     MySQL.Sync.execute("DELETE FROM phone_calls WHERE `owner` = @owner AND `num` = @num", {
         ['@owner'] = num,
-        ['@num'] = numero
+        ['@num'] = number
     })
-end)
-
-
-function appelsDeleteAllHistorique(identifier)
-    local num = gcPhone.getPhoneNumber(identifier)
-
-    MySQL.Sync.execute("DELETE FROM phone_calls WHERE `owner` = @owner", { ['@owner'] = num })
 end
 
 
-RegisterServerEvent('gcPhone:appelsDeleteAllHistorique')
-AddEventHandler('gcPhone:appelsDeleteAllHistorique', function()
-    local player = source
-    local identifier = gcPhone.getPlayerID(player)
+gcPhoneT.appelsDeleteAllHistorique = function()
+    local identifier = gcPhone.getPlayerID(source)
+    local num = gcPhone.getPhoneNumber(identifier)
 
-    appelsDeleteAllHistorique(identifier)
-end)
+    MySQL.Async.execute("DELETE FROM phone_calls WHERE `owner` = @owner", { ['@owner'] = num })
+end
 
 
 --==================================================================================================================
@@ -1050,16 +985,14 @@ AddEventHandler('esx:playerLoaded', function(source, xPlayer)
 end)
 
 
-RegisterServerEvent("gcPhone:updateAvatarContatto")
-AddEventHandler("gcPhone:updateAvatarContatto", function(data)
-    local player = source
-    local xPlayer = ESX.GetPlayerFromId(player)
+gcPhoneT.updateAvatarContatto = function(data)
+    local identifier = gcPhone.getPlayerID(source)
 
-    MySQL.Async.execute("UPDATE phone_users_contacts SET icon = '"..data.icon.."' WHERE id = '"..data.id.."'")
+    MySQL.Async.execute("UPDATE phone_users_contacts SET icon = '"..data.icon.."' WHERE id = '"..data.id.."'", {})
     SetTimeout(2000, function()
-        TriggerClientEvent("gcPhone:contactList", player, getContacts(xPlayer.identifier))
+        TriggerClientEvent("gcPhone:contactList", source, getContacts(identifier))
     end)
-end)
+end
 
 
 function getUnreceivedMessages(identifier)

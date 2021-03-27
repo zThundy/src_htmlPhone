@@ -1,17 +1,17 @@
 -- Configuration
-local tunnel = module("lib/TunnelV2")
+local tunnel = module("modules/TunnelV2")
 gcPhoneServerT = tunnel.getInterface("gcphone_server_t", "gcphone_server_t")
 
-local menuIsOpen = false
-local contacts = {}
-local messages = {}
-local isDead = false
-local USE_RTC = false
-local ignoreFocus = false
+menuIsOpen = false
+contacts = {}
+messages = {}
+isDead = false
+USE_RTC = false
+ignoreFocus = false
 hasFocus = false
 
 inCall = false
-local stoppedPlayingUnreachable = false
+stoppedPlayingUnreachable = false
 secondiRimanenti = 0
 enableGlobalNotification = true
 enableGlobalAirplane = false
@@ -19,9 +19,9 @@ enableGlobalAirplane = false
 playerCoords = nil
 distance = nil
 
-local PhoneInCall = {}
-local currentPlaySound = false
-local soundDistanceMax = 8.0
+PhoneInCall = {}
+currentPlaySound = false
+soundDistanceMax = 8.0
 
 volume = 0.5
 
@@ -33,7 +33,7 @@ isConnected = false
 myPhoneNumber = ''
 
 ESX = nil
-PlayerData = nil
+
 Citizen.CreateThread(function()
 	while ESX == nil do
 		ESX = exports["es_extended"]:getSharedObject()
@@ -44,20 +44,12 @@ Citizen.CreateThread(function()
         Citizen.Wait(500)
     end
 
-    PlayerData = ESX.GetPlayerData()
+    ESX.PlayerData = ESX.GetPlayerData()
 
-    TriggerServerEvent("gcPhone:allUpdate")
+    gcPhoneServerT.allUpdate()
 end)
 
 AddEventHandler('tcm_player:updateDeathStatus',function(_isDead) isDead = _isDead end)
-
-function hasPhone(cb)
-    if ESX == nil then return cb(false) end
-
-    ESX.TriggerServerCallback('gcphone:getItemAmount', function(amount)
-        cb(amount > 0)
-    end, 'tel')
-end
 
 --====================================================================================
 --  
@@ -66,13 +58,11 @@ Citizen.CreateThread(function()
     RegisterKeyMapping('+openPhone', 'Apri telefono', 'keyboard', 'k')
     RegisterCommand('+openPhone', function()
         if not isDead then
-            hasPhone(function(hasPhone)
-                if hasPhone then
-                    TogglePhone()
-                else
-                    ESX.ShowNotification("~r~Non hai un telefono con te")
-                end
-            end)
+            if gcPhoneServerT.getItemAmount("tel") > 0 then
+                TogglePhone()
+            else
+                ESX.ShowNotification("~r~Non hai un telefono con te")
+            end
         else
             ESX.ShowNotification("~r~Non puoi usare il telefono da morto")
         end
@@ -81,16 +71,6 @@ Citizen.CreateThread(function()
 
     while true do
         Citizen.Wait(0)
-
-        -- if IsControlJustPressed(1, 311) then -- K
-        --     hasPhone(function(hasPhone)
-        --         if hasPhone then
-        --             TogglePhone()
-        --         else
-        --             ESX.ShowNotification("~r~Non hai un telefono con te")
-        --         end
-        --     end)
-        -- end
 
         if menuIsOpen then
             while UpdateOnscreenKeyboard() == 0 do
@@ -138,52 +118,19 @@ end)
 
 
 -- utile dal js per l'appstore, non qui :/
-RegisterNetEvent('gcPhone:setEnableApp')
-AddEventHandler('gcPhone:setEnableApp', function(appName, enable)
-    SendNUIMessage({ event = 'setEnableApp', appName = appName, enable = enable })
-end)
+--[[
+    RegisterNetEvent('gcPhone:setEnableApp')
+    AddEventHandler('gcPhone:setEnableApp', function(appName, enable)
+        SendNUIMessage({ event = 'setEnableApp', appName = appName, enable = enable })
+    end)
 
-
-RegisterNUICallback("updateNotifications", function(data, cb)
-    enableGlobalNotification = data
-    cb("ok")
-end)
-
-
-RegisterNUICallback("updateAirplane", function(data, cb)
-    enableGlobalAirplane = data
-    TriggerServerEvent("gcphone:updateAirplaneForUser", data)
-    cb("ok")
-end)
-
-
-RegisterNUICallback("sendErrorMessage", function(data, cb)
-    ESX.ShowNotification("~r~"..data.message)
-    cb("ok")
-end)
-
-
-RegisterNUICallback("updateVolume", function(data, cb)
-    volume = data.volume
-    UpdateGlobalVolume()
-    cb("ok")
-end)
-
-
-RegisterNUICallback("sendStartupValues", function(data, cb)
-    enableGlobalNotification = data.notification
-
-    if data.cover ~= nil then
-        myCover = string.gsub(data.cover.value, ".png", "")
-    end
-    
-    enableGlobalAirplane = data.airplane
-    TriggerServerEvent("gcphone:updateAirplaneForUser", enableGlobalAirplane)
-
-    volume = data.volume
-    UpdateGlobalVolume()
-    cb("ok")
-end)
+    RegisterNetEvent("gcPhone:forceOpenPhone")
+    AddEventHandler("gcPhone:forceOpenPhone", function(_myPhoneNumber)
+        if menuIsOpen == false then
+            TogglePhone()
+        end
+    end)
+]]
 
 --==================================================================================================================
 --------  Funzioni per i suoni
@@ -208,14 +155,6 @@ end
 function StopSoundJS(sound)
     SendNUIMessage({ event = 'stopSound', sound = sound })
 end
-
-
-RegisterNetEvent("gcPhone:forceOpenPhone")
-AddEventHandler("gcPhone:forceOpenPhone", function(_myPhoneNumber)
-    if menuIsOpen == false then
-        TogglePhone()
-    end
-end)
  
 --====================================================================================
 --  Events
@@ -277,13 +216,14 @@ end)
 RegisterNetEvent("gcphone:aggiornameAConnessione")
 AddEventHandler("gcphone:aggiornameAConnessione", function(potenzaSegnale)
     if segnaleRadio == 0 and segnaleRadio ~= potenzaSegnale then
-        TriggerServerEvent("gcPhone:allUpdate")
+        gcPhoneServerT.allUpdate()
     end
 
     segnaleRadio = potenzaSegnale
     local data = { potenza = potenzaSegnale }
     SendNUIMessage({ event = "updateSegnale", data = data })
-    TriggerServerEvent('gcPhone:updateSegnaleTelefono', potenzaSegnale)
+    
+    gcPhoneServerT.updateSegnaleTelefono(potenzaSegnale)
 end)
 
 
@@ -317,74 +257,6 @@ AddEventHandler("gcPhone:receiveMessage", function(message)
         end
     end
 end)
-
-
---====================================================================================
---  Function client | Contacts
---====================================================================================
-
-function addContact(display, num) 
-    TriggerServerEvent('gcPhone:addContact', display, num)
-end
-
-
-function deleteContact(num) 
-    TriggerServerEvent('gcPhone:deleteContact', num)
-end
-
-
---====================================================================================
---  Function client | Messages
---====================================================================================
-
---[[
-    function sendMessage(num, message)
-        TriggerServerEvent('gcPhone:sendMessage', num, message)
-    end
-]]
-
-function deleteMessage(msgId)
-    TriggerServerEvent('gcPhone:deleteMessage', msgId)
-
-    for k, v in ipairs(messages) do
-        if v.id == msgId then
-            table.remove(messages, k)
-            SendNUIMessage({event = 'updateMessages', messages = messages})
-            return
-        end
-    end
-end
-
-
-function deleteMessageContact(num)
-    TriggerServerEvent('gcPhone:deleteMessageNumber', num)
-end
-
-
-function deleteAllMessage()
-    TriggerServerEvent('gcPhone:deleteAllMessage')
-end
-
-
-function setReadMessageNumber(num)
-    TriggerServerEvent('gcPhone:setReadMessageNumber', num)
-
-    for k, v in ipairs(messages) do 
-        if v.transmitter == num then
-            v.isRead = 1
-        end
-    end
-end
-
-
-function requestAllMessages()
-    TriggerServerEvent('gcPhone:requestAllMessages')
-end
-
-
-function requestAllContact()
-    TriggerServerEvent('gcPhone:requestAllContact')
-end
 
 --====================================================================================
 --  Function client | Appels
@@ -455,7 +327,7 @@ AddEventHandler("gcPhone:phoneNoSignal", function(infoCall, initiator)
             
             while true do
                 if count == 1 then
-                    rejectCall(infoCall)
+                    gcPhoneServerT.rejectCall(infoCall)
                 end
 
                 if stoppedPlayingUnreachable == true then
@@ -491,18 +363,21 @@ AddEventHandler("gcPhone:acceptCall", function(infoCall, initiator)
                 Citizen.Wait(1000)
                 if initiator then
                     secondiRimanenti = secondiRimanenti - 1
-                    if secondiRimanenti == 0 then rejectCall(infoCall) end
+
+                    if secondiRimanenti == 0 then 
+                        gcPhoneServerT.rejectCall(infoCall)
+                    end
                 end
 
                 if Config.TelefoniFissi[infoCall.receiver_num] then
                     if not initiator then
                         playerCoords = GetEntityCoords(GetPlayerPed(-1))
                         distance = Vdist(infoCall.coords.x, infoCall.coords.y, infoCall.coords.z, playerCoords.x, playerCoords.y, playerCoords.z)
-                        if distance > 1.0 then rejectCall(infoCall) end
+                        if distance > 1.0 then gcPhoneServerT.rejectCall(infoCall) end
                     end
                 else
                     if segnaleRadio == 0 then
-                        rejectCall(infoCall)
+                        gcPhoneServerT.rejectCall(infoCall)
                     end
                 end
             end
@@ -537,7 +412,7 @@ AddEventHandler("gcPhone:rejectCall", function(infoCall)
     if infoCall and infoCall.updateMinuti then
         if not inCall then secondiRimanenti = infoCall.secondiRimanenti end
         -- print("Sto nel reject da parte del chiamante", infoCall.secondiRimanenti, secondiRimanenti, infoCall.updateMinuti)
-        TriggerServerEvent("gcPhone:updateParametroTariffa", infoCall.transmitter_num, "minuti", secondiRimanenti)
+        gcPhoneServerT.updateParametroTariffa(infoCall.transmitter_num, "minuti", secondiRimanenti)
     end
 
     if stoppedPlayingUnreachable == false then
@@ -569,90 +444,9 @@ AddEventHandler("gcPhone:historiqueCall", function(historique)
     SendNUIMessage({event = 'historiqueCall', historique = historique})
 end)
 
-
-function acceptCall(infoCall, rtcAnswer)
-    TriggerServerEvent('gcPhone:acceptCall', infoCall, rtcAnswer)
-end
-
-
-function rejectCall(infoCall)
-    TriggerServerEvent('gcPhone:rejectCall', infoCall)
-end
-
-
-function ignoreCall(infoCall)
-    TriggerServerEvent('gcPhone:ignoreCall', infoCall)
-end
-
-
-function requestHistoriqueCall() 
-    TriggerServerEvent('gcPhone:getHistoriqueCall')
-end
-
-
-function appelsDeleteHistorique(num)
-    TriggerServerEvent('gcPhone:appelsDeleteHistorique', num)
-end
-
-
-function appelsDeleteAllHistorique ()
-    TriggerServerEvent('gcPhone:appelsDeleteAllHistorique')
-end
-
 --====================================================================================
 --  Event NUI - Appels
 --====================================================================================
-
-RegisterNUICallback('startCall', function(data, cb)
-    if not enableGlobalAirplane then
-        if data.rtcOffer == nil then data.rtcOffer = '' end
-        TriggerServerEvent('gcPhone:startCall', data.numero, data.rtcOffer, data.extraData)
-    else
-        ESX.ShowNotification("~r~Non puoi effetturare chiamate con la modalità aereo")
-    end
-    cb("ok")
-end)
-
-
-RegisterNUICallback('acceptCall', function(data, cb)
-    acceptCall(data.infoCall, data.rtcAnswer)
-    cb("ok")
-end)
-
-
-RegisterNUICallback('rejectCall', function(data, cb)
-    rejectCall(data.infoCall)
-    cb("ok")
-end)
-
-
-RegisterNUICallback('ignoreCall', function(data, cb)
-    ignoreCall(data.infoCall)
-    cb("ok")
-end)
-
-
-RegisterNUICallback('notififyUseRTC', function(use, cb)
-    USE_RTC = use
-    if USE_RTC == true and inCall == true then
-        inCall = false
-        Citizen.InvokeNative(0xE036A705F989E049)
-        NetworkSetTalkerProximity(2.5)
-    end
-    cb("ok")
-end)
-
-
-RegisterNUICallback('onCandidates', function (data, cb)
-    TriggerServerEvent('gcPhone:candidates', data.id, data.candidates)
-    cb("ok")
-end)
-
-
-RegisterNUICallback("requestOfferta", function(data, cb)
-    TriggerServerEvent("gcPhone:requestOffertaFromDatabase")
-    cb("ok")
-end)
 
 
 RegisterNetEvent("gcPhone:sendRequestedOfferta")
@@ -695,27 +489,6 @@ end)
 --====================================================================================
 --  Gestion des evenements NUI
 --==================================================================================== 
-RegisterNUICallback('log', function(data, cb)
-    print(data)
-    cb("ok")
-end)
-
-
-RegisterNUICallback('focus', function(data, cb)
-    cb("ok")
-end)
-
-
-RegisterNUICallback('blur', function(data, cb)
-    cb("ok")
-end)
-
-
-RegisterNUICallback('reponseText', function(data, cb)
-    local resp = GetResponseText(data)
-
-    cb(json.encode({ text = resp }))
-end)
 
 function GetResponseText(d)
     local limit = d.limit or 255
@@ -744,141 +517,22 @@ end
 --====================================================================================
 
 
-RegisterNUICallback('getMessages', function(data, cb)
-    cb(json.encode(messages))
-end)
-
-
-RegisterNUICallback('sendMessage', function(data, cb)
-    if not enableGlobalAirplane then
-        if data.message == '%pos%' then
-            local myPos = GetEntityCoords(PlayerPedId())
-            data.message = 'GPS: ' .. myPos.x .. ', ' .. myPos.y
-        end
-
-        TriggerServerEvent('gcPhone:sendMessage', data.phoneNumber, data.message)
-    else
-        ESX.ShowNotification("~r~Non puoi inviare messaggi con la modalità aereo")
-    end
-    cb("ok")
-end)
-
-
-RegisterNUICallback('deleteMessage', function(data, cb)
-    deleteMessage(data.id)
-    cb("ok")
-end)
-
-
-RegisterNUICallback('deleteMessageNumber', function (data, cb)
-    deleteMessageContact(data.number)
-    cb("ok")
-end)
-
-
-RegisterNUICallback('deleteAllMessage', function (data, cb)
-    deleteAllMessage()
-    cb("ok")
-end)
-
-
-RegisterNUICallback('setReadMessageNumber', function (data, cb)
-    setReadMessageNumber(data.number)
-    cb("ok")
-end)
-
-
 --====================================================================================
 --  Contatti
 --====================================================================================
 
 
-RegisterNUICallback('addContact', function(data, cb) 
-    TriggerServerEvent('gcPhone:addContact', data.display, data.phoneNumber, data.email)
-    cb("ok")
-end)
-
-
-RegisterNUICallback('updateContact', function(data, cb)
-    TriggerServerEvent('gcPhone:updateContact', data.id, data.display, data.phoneNumber, data.email)
-    cb("ok")
-end)
-
-
-RegisterNUICallback('deleteContact', function(data, cb)
-    TriggerServerEvent('gcPhone:deleteContact', data.id)
-    cb("ok")
-end)
-
-
-RegisterNUICallback('aggiornaAvatarContatto', function(data, cb)
-    -- data.id
-    -- data.number
-    -- data.display
-    -- data.icon
-    TriggerServerEvent("gcPhone:updateAvatarContatto", data)
-    cb("ok")
-end)
-
-
-RegisterNUICallback('getContacts', function(data, cb)
-    cb(json.encode(contacts))
-end)
-
-
-RegisterNUICallback('setGPS', function(data, cb)
-    SetNewWaypoint(tonumber(data.x), tonumber(data.y))
-    cb("ok")
-end)
-
-
-RegisterNUICallback('callEvent', function(data, cb)
-    local eventName = data.eventName or ''
-
-    if string.match(eventName, 'gcphone') then
-        if data.data ~= nil then 
-            TriggerEvent(data.eventName, data.data)
-        else
-            TriggerEvent(data.eventName)
-        end
-    end
-
-    cb("ok")
-end)
-
-
-RegisterNUICallback('chiamataEmergenza', function(data, cb)
-    local eventName = data.eventName or ''
-
-    if string.match(eventName, 'gcphone') then
-        if data.type ~= nil then 
-            TriggerEvent(data.eventName, data)
-        else
-            TriggerEvent(data.eventName)
-        end
-    end
-
-    cb("ok")
-end)
-
-
-RegisterNUICallback('deleteALL', function(data, cb)
-    TriggerServerEvent('gcPhone:deleteALL')
-    cb("ok")
-end)
-
-
 function TogglePhone()
-    PlayerData = ESX.GetPlayerData()
+    ESX.PlayerData = ESX.GetPlayerData()
 
     menuIsOpen = not menuIsOpen
     SendNUIMessage({ show = menuIsOpen })
     SendNUIMessage({
         event = "sendParametersValues",
-        job = PlayerData.job.label,
-        job2 = PlayerData.job2.label,
-        firstname = PlayerData.firstname,
-        lastname = PlayerData.lastname
+        job = ESX.PlayerData.job.label,
+        job2 = ESX.PlayerData.job2.label,
+        firstname = ESX.PlayerData.firstname,
+        lastname = ESX.PlayerData.lastname
     })
 
     if menuIsOpen == true then 
@@ -887,49 +541,6 @@ function TogglePhone()
         PhonePlayOut()
     end
 end
-
-
-RegisterNUICallback('faketakePhoto', function(data, cb)
-    menuIsOpen = false
-    SendNUIMessage({ show = false })
-    TriggerEvent('camera:open')
-
-    cb("ok")
-end)
-
-
-RegisterNUICallback('closePhone', function(data, cb)
-    menuIsOpen = false
-    SendNUIMessage({ show = false })
-    PhonePlayOut()
-
-    if Config.SurePropCleanup then
-        doCleanup()
-    end
-
-    cb("ok")
-end)
-
-----------------------------------
----------- GESTION APPEL ---------
-----------------------------------
-RegisterNUICallback('appelsDeleteHistorique', function (data, cb)
-    appelsDeleteHistorique(data.numero)
-    cb("ok")
-end)
-
-
-
-RegisterNUICallback('appelsDeleteAllHistorique', function (data, cb)
-    appelsDeleteAllHistorique(data.infoCall)
-    cb("ok")
-end)
-
-
-RegisterNUICallback('setIgnoreFocus', function(data, cb)
-    ignoreFocus = data.ignoreFocus
-    cb("ok")
-end)
 
 
 ---------------------------------------------------------------------------------
@@ -950,36 +561,13 @@ AddEventHandler("gcphone:aggiornaRetiWifi", function(retiWifiServer)
 end)
 
 
-RegisterNUICallback('connettiAllaRete', function(data, cb)
-    if data == false then
-        ESX.ShowNotification("Password errata!", "error")
-        return
-    end
-
-    tempDataWifi = {label = data.label, password = data.password}
-    ESX.ShowNotification("Password corretta!", "success")
-
-    TriggerEvent("gcphone:updateWifi", true, tempDataWifi)
-    startCheck()
-    cb("ok")
-end)
-
-
-RegisterNUICallback('soundLockscreen', function(data, cb)
-	PlaySoundJS('phoneUnlock.ogg')
-    Wait(1000)
-    StopSoundJS('phoneUnlock.ogg')
-    cb("ok")
-end)
-
-
 RegisterNetEvent("gcphone:updateWifi")
 AddEventHandler("gcphone:updateWifi", function(connected, rete)
     -- print("updating isConnected")
 
     isConnected = connected
     SendNUIMessage({event = "updateWifi", data = {hasWifi = isConnected}})
-    TriggerServerEvent('gcPhone:updateReteWifi', isConnected, rete)
+    gcPhoneServerT.updateReteWifi(isConnected, rete)
 end)
 
 
@@ -1010,7 +598,7 @@ function startCheck()
                 if not found then
                     isConnected = false
                     tempDataWifi = {}
-                    TriggerServerEvent('gcPhone:updateReteWifi', isConnected, nil)
+                    gcPhoneServerT.updateReteWifi(isConnected, nil)
                 end
             else
                 return
@@ -1047,7 +635,7 @@ end
 function TakeAppel(infoCall)
     TogglePhone()
     SendNUIMessage({ event = 'waitingCall', infoCall = infoCall, initiator = initiator })
-    acceptCall(infoCall, nil)
+    gcPhoneT.acceptCall(infoCall, nil)
 end
 
 

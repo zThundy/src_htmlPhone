@@ -1,4 +1,8 @@
 ESX = nil
+
+local tunnel = module("zth_gcphone", "modules/TunnelV2")
+gcPhoneServerT = tunnel.getInterface("gcphone_server_t", "gcphone_server_t")
+
 Citizen.CreateThread(function() --ok
 	while ESX == nil do
 		ESX = exports["es_extended"]:getSharedObject()
@@ -70,7 +74,7 @@ function OpenSimMenu()
 					TriggerServerEvent('esx_cartesim:sim_use', {number = data.current.value.number, piano_tariffario = data.current.piano_tariffario})
 					ESX.ShowNotification("Hai usato la carta SIM "..data.current.value.number)
 					Citizen.Wait(2000)
-					TriggerServerEvent('gcPhone:allUpdate')
+					gcPhoneServerT.allUpdate()
 				end
 
 				if data2.current.value == 'sim_give' then
@@ -82,7 +86,7 @@ function OpenSimMenu()
 						TriggerServerEvent('esx_cartesim:sim_give', data.current.value.number, GetPlayerServerId(closestPlayer))
 					end
 					Citizen.Wait(2000)
-					TriggerServerEvent('gcPhone:allUpdate')
+					gcPhoneServerT.allUpdate()
 				end
 
                 if data2.current.value == 'sim_rename' then
@@ -119,7 +123,7 @@ function OpenSimMenu()
 					TriggerServerEvent('esx_cartesim:sim_delete', data.current.value.number)
 					ESX.ShowNotification("Hai distrutto la SIM "..data.current.value.number)
 					Citizen.Wait(2000)
-					TriggerServerEvent('gcPhone:allUpdate')
+					gcPhoneServerT.allUpdate()
 				end
 
 				menu2.close()
