@@ -99,14 +99,16 @@ ESX.RegisterServerCallback("gcPhone:getMessaggiFromGroupId", function(source, cb
 end)
 
 gcPhoneT.getAllGroups = function()
-    local xPlayer = ESX.GetPlayerFromId(source)
+    local player = source
+    local xPlayer = ESX.GetPlayerFromId(player)
     local number = gcPhone.getPhoneNumber(xPlayer.identifier)
 
-    TriggerClientEvent("gcphone:whatsapp_updateGruppi", source, updateCachedGroups(), number)
+    TriggerClientEvent("gcphone:whatsapp_updateGruppi", player, updateCachedGroups(), number)
 end
 
 gcPhoneT.whatsapp_sendMessage = function(data)
-    local xPlayer = ESX.GetPlayerFromId(source)
+    local player = source
+    local xPlayer = ESX.GetPlayerFromId(player)
 
     gcPhone.isAbleToSurfInternet(xPlayer.identifier, 1.5, function(isAble, mbToRemove)
 		if isAble then
@@ -163,7 +165,8 @@ end
 -- usi la funzione che ho fatto su getSourceFromPhoneNumber loopando i numeri sul
 -- loop sotto. Non ho intenzione di farlo ora.
 gcPhoneT.whatsapp_addGroupMembers = function(data)
-    local xPlayer = ESX.GetPlayerFromId(source)
+    local player = source
+    local xPlayer = ESX.GetPlayerFromId(player)
     local myNumber = gcPhone.getPhoneNumber(xPlayer.identifier)
 
     gcPhone.isAbleToSurfInternet(xPlayer.identifier, 1, function(isAble, mbToRemove)
@@ -204,22 +207,23 @@ gcPhoneT.whatsapp_addGroupMembers = function(data)
                         ['@id'] = data.gruppo.id,
                         ['@partecipanti'] = json.encode(partecipanti)
                     }, function(rowsChanged)
-                        if rowsChanged > 0 then TriggerClientEvent("gcphone:whatsapp_updateGruppi", source, updateCachedGroups(), myNumber) end
+                        if rowsChanged > 0 then TriggerClientEvent("gcphone:whatsapp_updateGruppi", player, updateCachedGroups(), myNumber) end
                     end)
                 else
-                    WhatsappShowNotificationError(source, "WHATSAPP_INFO_TITLE", "WHATSAPP_NOT_ENOUGH_GIGA")
+                    WhatsappShowNotificationError(player, "WHATSAPP_INFO_TITLE", "WHATSAPP_NOT_ENOUGH_GIGA")
                     -- TriggerClientEvent("gcphone:whatsapp_showError", "WHATSAPP_INFO_TITLE", "WHATSAPP_NOT_ENOUGH_GIGA")
                 end
             end)
         else
-            WhatsappShowNotificationError(source, "WHATSAPP_INFO_TITLE", "WHATSAPP_NOT_ENOUGH_GIGA")
+            WhatsappShowNotificationError(player, "WHATSAPP_INFO_TITLE", "WHATSAPP_NOT_ENOUGH_GIGA")
             -- TriggerClientEvent("gcphone:whatsapp_showError", "WHATSAPP_INFO_TITLE", "WHATSAPP_NOT_ENOUGH_GIGA")
         end
     end)
 end
 
 gcPhoneT.whatsapp_leaveGroup = function(group)
-    local xPlayer = ESX.GetPlayerFromId(source)
+    local player = source
+    local xPlayer = ESX.GetPlayerFromId(player)
     local number = gcPhone.getPhoneNumber(xPlayer.identifier)
 
     -- print(number, group.id)
@@ -256,7 +260,7 @@ gcPhoneT.whatsapp_leaveGroup = function(group)
                 }, function() updateCachedGroups() end)
             end)
         else
-            WhatsappShowNotificationError(source, "WHATSAPP_INFO_TITLE", "WHATSAPP_NOT_ENOUGH_GIGA")
+            WhatsappShowNotificationError(player, "WHATSAPP_INFO_TITLE", "WHATSAPP_NOT_ENOUGH_GIGA")
             -- TriggerClientEvent("gcphone:whatsapp_showError", "WHATSAPP_INFO_TITLE", "WHATSAPP_NOT_ENOUGH_GIGA")
         end
     end)
@@ -282,7 +286,8 @@ end
 ]]
 
 gcPhoneT.whatsapp_creaNuovoGruppo = function(data)
-    local xPlayer = ESX.GetPlayerFromId(source)
+    local player = source
+    local xPlayer = ESX.GetPlayerFromId(player)
     local phone_number = gcPhone.getPhoneNumber(xPlayer.identifier)
     local partecipanti = {}
 
@@ -320,10 +325,10 @@ gcPhoneT.whatsapp_creaNuovoGruppo = function(data)
                 ['@gruppo'] = data.groupTitle,
                 ['@partecipanti'] = json.encode(partecipanti)
             }, function(id)
-                TriggerClientEvent("gcphone:whatsapp_updateGruppi", source, updateCachedGroups(), phone_number)
+                TriggerClientEvent("gcphone:whatsapp_updateGruppi", player, updateCachedGroups(), phone_number)
             end)
         else
-            WhatsappShowNotificationError(source, "WHATSAPP_INFO_TITLE", "WHATSAPP_NOT_ENOUGH_GIGA")
+            WhatsappShowNotificationError(player, "WHATSAPP_INFO_TITLE", "WHATSAPP_NOT_ENOUGH_GIGA")
             -- TriggerClientEvent("gcphone:whatsapp_showError", "WHATSAPP_INFO_TITLE", "WHATSAPP_NOT_ENOUGH_GIGA")
         end
     end)

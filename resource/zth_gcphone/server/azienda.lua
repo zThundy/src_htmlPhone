@@ -1,4 +1,5 @@
 gcPhoneT.azienda_requestJobInfo = function()
+    local player = source
     local xPlayer = ESX.GetPlayerFromId(source)
     local jobPlayers = ESX.GetPlayersWithJob(xPlayer.job.name)
     local myJobInfo, myAziendaInfo = {}, {}
@@ -52,26 +53,27 @@ gcPhoneT.azienda_requestJobInfo = function()
                         return a.grade > b.grade
                     end)
 
-                    GetAziendaMessages(source, xPlayer.job.name, function(messages)
+                    GetAziendaMessages(player, xPlayer.job.name, function(messages)
                         for _, v in pairs(jobPlayers) do
                             TriggerClientEvent("gcphone:azienda_retriveMessages", v, messages)
                         end
                     end)
 
-                    TriggerClientEvent("gcphone:azienda_sendJobInfo", source, myJobInfo, myAziendaInfo)
+                    TriggerClientEvent("gcphone:azienda_sendJobInfo", player, myJobInfo, myAziendaInfo)
                 end)
             else
                 -- cause addonaccount is shit
-                TriggerClientEvent("gcphone:azienda_sendJobInfo", source, myJobInfo, myAziendaInfo)
+                TriggerClientEvent("gcphone:azienda_sendJobInfo", player, myJobInfo, myAziendaInfo)
             end
         else
-			AziendaShowError(source, 'AZIENDA_INFO_TITLE', 'APP_AZIENDA_NOTIF_NO_CONNECTION')
+			AziendaShowError(player, 'AZIENDA_INFO_TITLE', 'APP_AZIENDA_NOTIF_NO_CONNECTION')
         end
     end)
 end
 
 gcPhoneT.azienda_sendAziendaMessage = function(azienda, number, message)
-    local xPlayer = ESX.GetPlayerFromId(source)
+    local player = source
+    local xPlayer = ESX.GetPlayerFromId(player)
 
     gcPhone.isAbleToSurfInternet(xPlayer.identifier, 0.1, function(isAble, mbToRemove)
         if isAble then
@@ -84,7 +86,7 @@ gcPhoneT.azienda_sendAziendaMessage = function(azienda, number, message)
                 ['@name'] = xPlayer.firstname.." "..xPlayer.lastname,
                 ['@message'] = message
             }, function()
-                GetAziendaMessages(source, azienda, function(messages)
+                GetAziendaMessages(player, azienda, function(messages)
                     gcPhone.isAbleToSurfInternet(xPlayer.identifier, #messages * 0.01, function(isAble, mbToRemove)
                         if isAble then
                             gcPhone.usaDatiInternet(xPlayer.identifier, mbToRemove)
@@ -95,13 +97,13 @@ gcPhoneT.azienda_sendAziendaMessage = function(azienda, number, message)
                                 AziendaShowError(v, 'AZIENDA_INFO_TITLE', 'APP_AZIENDA_NEW_MESSAGE')
                             end
                         else
-                            AziendaShowError(source, 'AZIENDA_INFO_TITLE', 'APP_AZIENDA_NOTIF_NO_CONNECTION')
+                            AziendaShowError(player, 'AZIENDA_INFO_TITLE', 'APP_AZIENDA_NOTIF_NO_CONNECTION')
                         end
                     end)
                 end)
             end)
         else
-            AziendaShowError(source, 'AZIENDA_INFO_TITLE', 'APP_AZIENDA_NOTIF_NO_CONNECTION')
+            AziendaShowError(player, 'AZIENDA_INFO_TITLE', 'APP_AZIENDA_NOTIF_NO_CONNECTION')
         end
     end)
 end
@@ -117,8 +119,9 @@ gcPhoneT.azienda_employeAction = function(action, employe)
     --     isOnline: false
     -- },
 
+    local player = source
     local c_xPlayer = ESX.GetPlayerFromIdentifier(employe.steamid)
-	local xPlayer = ESX.GetPlayerFromId(source)
+	local xPlayer = ESX.GetPlayerFromId(player)
     local maxGrade = GetMaxGradeForJob(xPlayer.job.name)
     c_xPlayer.job.grade = tonumber(c_xPlayer.job.grade)
     xPlayer.job.grade = tonumber(xPlayer.job.grade)
@@ -148,7 +151,7 @@ gcPhoneT.azienda_employeAction = function(action, employe)
                 end
             end
         else
-            AziendaShowError(source, 'AZIENDA_INFO_TITLE', 'APP_AZIENDA_NOTIF_NO_CONNECTION')
+            AziendaShowError(player, 'AZIENDA_INFO_TITLE', 'APP_AZIENDA_NOTIF_NO_CONNECTION')
         end
     end)
 
@@ -156,16 +159,17 @@ gcPhoneT.azienda_employeAction = function(action, employe)
 end
 
 gcPhoneT.azienda_requestAziendaMessages = function()
-    local xPlayer = ESX.GetPlayerFromId(source)
+    local player = source
+    local xPlayer = ESX.GetPlayerFromId(player)
 
-    GetAziendaMessages(source, xPlayer.job.name, function(messages)
+    GetAziendaMessages(player, xPlayer.job.name, function(messages)
         gcPhone.isAbleToSurfInternet(xPlayer.identifier, #messages * 0.01, function(isAble, mbToRemove)
             if isAble then
                 gcPhone.usaDatiInternet(xPlayer.identifier, mbToRemove)
                 
-                TriggerClientEvent("gcphone:azienda_retriveMessages", source, messages)
+                TriggerClientEvent("gcphone:azienda_retriveMessages", player, messages)
             else
-                AziendaShowError(source, 'AZIENDA_INFO_TITLE', 'APP_AZIENDA_NOTIF_NO_CONNECTION')
+                AziendaShowError(player, 'AZIENDA_INFO_TITLE', 'APP_AZIENDA_NOTIF_NO_CONNECTION')
             end
         end)
     end)

@@ -1,7 +1,6 @@
 gcPhoneT.sendMoneyToUser = function(data)
-    local iban = data.iban
-
     local player = source
+    local iban = data.iban
     local xPlayer = ESX.GetPlayerFromId(player)
 
     if iban:find("INSERISCI") or iban:find("IBAN") or iban:find("DESTINATARIO") then

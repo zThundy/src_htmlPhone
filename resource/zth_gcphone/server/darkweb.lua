@@ -1,6 +1,6 @@
 gcPhoneT.darkweb_fetchDarkmessages = function()
-    local identifier = gcPhone.getPlayerID(source)
-
+    local player = source
+    local identifier = gcPhone.getPlayerID(player)
     local messages = {}
 
     MySQL.Async.fetchAll("SELECT * FROM phone_darkweb_messages ORDER BY id DESC LIMIT 130", {}, function(r)
@@ -20,16 +20,17 @@ gcPhoneT.darkweb_fetchDarkmessages = function()
                     end
                 end
 
-                TriggerClientEvent("gcphone:darkweb_sendMessages", source, messages)
+                TriggerClientEvent("gcphone:darkweb_sendMessages", player, messages)
             else
-                TriggerClientEvent("esx:showNotification", source, "~r~Non hai abbastanza giga per poter inviare un messaggio o non c'è linea")
+                TriggerClientEvent("esx:showNotification", player, "~r~Non hai abbastanza giga per poter inviare un messaggio o non c'è linea")
             end
         end)
     end)
 end
 
 gcPhoneT.darkweb_sendDarkMessage = function(data)
-    local identifier = gcPhone.getPlayerID(source)
+    local player = source
+    local identifier = gcPhone.getPlayerID(player)
 	
 	gcPhone.isAbleToSurfInternet(identifier, 0.5, function(isAble, mbToRemove)
 		if isAble then
@@ -40,7 +41,7 @@ gcPhoneT.darkweb_sendDarkMessage = function(data)
                 ['@message'] = data.message
             })
         else
-            TriggerClientEvent("esx:showNotification", source, "~r~Non hai abbastanza giga per poter inviare un messaggio o non c'è linea")
+            TriggerClientEvent("esx:showNotification", player, "~r~Non hai abbastanza giga per poter inviare un messaggio o non c'è linea")
         end
     end)
 end

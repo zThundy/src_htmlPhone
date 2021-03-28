@@ -1,5 +1,6 @@
 gcPhoneT.email_requestMyEmail = function()
-    local identifier = gcPhone.getPlayerID(source)
+    local player = source
+    local identifier = gcPhone.getPlayerID(player)
 
     gcPhone.isAbleToSurfInternet(identifier, 0.5, function(isAble, mbToRemove)
 		if isAble then
@@ -7,16 +8,17 @@ gcPhoneT.email_requestMyEmail = function()
             
             GetUserEmail(identifier, function(email)
                 if not email then email = false end
-                TriggerClientEvent("gcphone:email_sendMyEmail", source, email)
+                TriggerClientEvent("gcphone:email_sendMyEmail", player, email)
             end)
         else
-            TriggerClientEvent("esx:showNotification", source, "~r~Non hai abbastanza giga per poter richiedere la tua email")
+            TriggerClientEvent("esx:showNotification", player, "~r~Non hai abbastanza giga per poter richiedere la tua email")
         end
     end)
 end
 
 gcPhoneT.email_sendEmail = function(data)
-    local identifier = gcPhone.getPlayerID(source)
+    local player = source
+    local identifier = gcPhone.getPlayerID(player)
 
     GetUserEmail(identifier, function(myEmail)
         gcPhone.isAbleToSurfInternet(identifier, 1.0, function(isAble, mbToRemove)
@@ -39,14 +41,15 @@ gcPhoneT.email_sendEmail = function(data)
                     ['@pic'] = data.pic,
                 })
             else
-                TriggerClientEvent("esx:showNotification", source, "~r~Non hai abbastanza giga per poter inviare questa email")
+                TriggerClientEvent("esx:showNotification", player, "~r~Non hai abbastanza giga per poter inviare questa email")
             end
         end)
     end)
 end
 
 gcPhoneT.email_requestEmails = function()
-    local identifier = gcPhone.getPlayerID(source)
+    local player = source
+    local identifier = gcPhone.getPlayerID(player)
 
     GetUserEmail(identifier, function(email)
         FetchAllEmails(email, function(emails)
@@ -54,9 +57,9 @@ gcPhoneT.email_requestEmails = function()
                 if isAble then
                     gcPhone.usaDatiInternet(identifier, mbToRemove)
 
-                    TriggerClientEvent("gcphone:email_sendRequestedEmails", source, emails)
+                    TriggerClientEvent("gcphone:email_sendRequestedEmails", player, emails)
                 else
-                    TriggerClientEvent("esx:showNotification", source, "~r~Non hai abbastanza giga per poter scaricare le tue email")
+                    TriggerClientEvent("esx:showNotification", player, "~r~Non hai abbastanza giga per poter scaricare le tue email")
                 end
             end)
         end)
@@ -65,7 +68,8 @@ end
 
 gcPhoneT.email_deleteEmail = function(emailID)
     MySQL.Async.execute("DELETE FROM phone_emails WHERE id = @id", {['@id'] = emailID}, function()
-        local identifier = gcPhone.getPlayerID(source)
+        local player = source
+        local identifier = gcPhone.getPlayerID(player)
 
         GetUserEmail(identifier, function(email)
             FetchAllEmails(email, function(emails)
@@ -73,9 +77,9 @@ gcPhoneT.email_deleteEmail = function(emailID)
                     if isAble then
                         gcPhone.usaDatiInternet(identifier, mbToRemove)
 
-                        TriggerClientEvent("gcphone:email_sendRequestedEmails", source, emails)
+                        TriggerClientEvent("gcphone:email_sendRequestedEmails", player, emails)
                     else
-                        TriggerClientEvent("esx:showNotification", source, "~r~Non hai abbastanza giga per poter scaricare le tue email")
+                        TriggerClientEvent("esx:showNotification", player, "~r~Non hai abbastanza giga per poter scaricare le tue email")
                     end
                 end)
             end)
@@ -84,7 +88,8 @@ gcPhoneT.email_deleteEmail = function(emailID)
 end
 
 gcPhoneT.email_registerEmail = function(email)
-    local identifier = gcPhone.getPlayerID(source)
+    local player = source
+    local identifier = gcPhone.getPlayerID(player)
 
     gcPhone.isAbleToSurfInternet(identifier, 0.5, function(isAble, mbToRemove)
 		if isAble then
@@ -95,13 +100,14 @@ gcPhoneT.email_registerEmail = function(email)
                 ['@email'] = email
             })
         else
-            TriggerClientEvent("esx:showNotification", source, "~r~Non hai abbastanza giga per poter registrare la tua email")
+            TriggerClientEvent("esx:showNotification", player, "~r~Non hai abbastanza giga per poter registrare la tua email")
         end
     end)
 end
 
 gcPhoneT.email_requestSentEmails = function(myEmail)
-    local identifier = gcPhone.getPlayerID(source)
+    local player = source
+    local identifier = gcPhone.getPlayerID(player)
 
     GetUserEmail(identifier, function(email)
         MySQL.Async.fetchAll("SELECT * FROM phone_emails WHERE sender = @sender ORDER BY id DESC LIMIT 50", {
@@ -110,7 +116,7 @@ gcPhoneT.email_requestSentEmails = function(myEmail)
             local temp = {}
             for k, v in pairs(r) do table.insert(temp, v) end
 
-            TriggerClientEvent("gcphone:email_sendRequestedSentEmails", source, temp)
+            TriggerClientEvent("gcphone:email_sendRequestedSentEmails", player, temp)
         end)
     end)
 end

@@ -389,9 +389,9 @@ AddEventHandler("gcPhone:acceptCall", function(infoCall, initiator)
             -- print("aggiungo in canale "..infoCall.id)
             TokovoipEnstablishCall(infoCall.id)
         elseif Config.EnableSaltyChat then
-            if gcPhoneServerT.getEndpointSource() and infoCall then
-                gcPhoneServerT.removeEndpointSource()
-                gcPhoneServerT.EndCall(infoCall.receiver_src)
+            if infoCall then
+                gcPhoneServerT.setEndpointSource(infoCall.receiver_src)
+                gcPhoneServerT.EstablishCall(infoCall.receiver_src)
             end
         end
     end
@@ -407,6 +407,9 @@ end)
 
 RegisterNetEvent("gcPhone:rejectCall")
 AddEventHandler("gcPhone:rejectCall", function(infoCall)
+    -- print("--------------- call ended")
+    -- print(ESX.DumpTable(infoCall))
+
     if infoCall and infoCall.updateMinuti then
         if not inCall then secondiRimanenti = infoCall.secondiRimanenti end
         -- print("Sto nel reject da parte del chiamante", infoCall.secondiRimanenti, secondiRimanenti, infoCall.updateMinuti)
@@ -427,8 +430,12 @@ AddEventHandler("gcPhone:rejectCall", function(infoCall)
             -- print("aggiungo in canale "..infoCall.id)
             TokovoipEndCall(TokoVoipID)
         elseif Config.EnableSaltyChat then
-            gcPhoneServerT.removeEndpointSource()
-            gcPhoneServerT.EndCall(infoCall.receiver_src)
+            local endPoint = gcPhoneServerT.getEndpointSource()
+            -- print(endPoint, GetPlayerServerId(PlayerId()))
+            if endPoint then
+                gcPhoneServerT.EndCall(endPoint)
+                gcPhoneServerT.removeEndpointSource()
+            end
         end
     end
 

@@ -1,22 +1,24 @@
 gcPhoneT.news_requestMyJob = function()
-    local xPlayer = ESX.GetPlayerFromId(source)
+    local player = source
+    local xPlayer = ESX.GetPlayerFromId(player)
     return xPlayer.job.name
 end
 
 gcPhoneT.news_requestEmails = function()
+    local player = source
     GetFetchedNews(function(news)
-        TriggerClientEvent("gcphone:news_sendRequestedNews", source, news)
+        TriggerClientEvent("gcphone:news_sendRequestedNews", player, news)
     end)
 end
 
-gcPhoneT.news_requestEmails = function(data)
+gcPhoneT.news_sendNewPost = function(data)
     MySQL.Async.execute("INSERT INTO phone_news(message, pics) VALUES(@message, @pics)", {
         ['@message'] = data.message,
         ['@pics'] = json.encode(data.pics)
     }, function()
-        
+	    local player = source
         GetFetchedNews(function(news)
-            TriggerClientEvent("gcphone:news_sendRequestedNews", source, news)
+            TriggerClientEvent("gcphone:news_sendRequestedNews", player, news)
         end)
     end)
 end

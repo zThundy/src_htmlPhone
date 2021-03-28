@@ -220,7 +220,8 @@ end
 -- ALTER TABLE `twitter_accounts`	CHANGE COLUMN `username` `username` VARCHAR(50) NOT NULL DEFAULT '0' COLLATE 'utf8_general_ci';
 
 gcPhoneT.twitter_login = function(username, password)
-	local identifier = gcPhone.getPlayerID(source)
+	local player = source
+	local identifier = gcPhone.getPlayerID(player)
 	
 	gcPhone.isAbleToSurfInternet(identifier, 0.5, function(isAble, mbToRemove)
 		if isAble then
@@ -228,25 +229,26 @@ gcPhoneT.twitter_login = function(username, password)
 
   			getTwiterUserAccount(username, password, function (user)
 				if user == false then
-					TwitterShowError(source, 'TWITTER_INFO_TITLE', 'APP_TWITTER_NO_ACCOUNT')
+					TwitterShowError(player, 'TWITTER_INFO_TITLE', 'APP_TWITTER_NO_ACCOUNT')
       				return
 				end
 				
 				if user == nil then
-      				TwitterShowError(source, 'TWITTER_INFO_TITLE', 'APP_TWITTER_NOTIF_LOGIN_ERROR')
+      				TwitterShowError(player, 'TWITTER_INFO_TITLE', 'APP_TWITTER_NOTIF_LOGIN_ERROR')
     			else
-      				TwitterShowSuccess(source, 'TWITTER_INFO_TITLE', 'APP_TWITTER_NOTIF_LOGIN_SUCCESS')
-      				TriggerClientEvent('gcPhone:twitter_setAccount', source, username, password, user.authorIcon)
+      				TwitterShowSuccess(player, 'TWITTER_INFO_TITLE', 'APP_TWITTER_NOTIF_LOGIN_SUCCESS')
+      				TriggerClientEvent('gcPhone:twitter_setAccount', player, username, password, user.authorIcon)
     			end
   			end)
   		else
-  			TwitterShowError(source, 'TWITTER_INFO_TITLE', 'APP_TWITTER_NOTIF_NO_CONNECTION')
+  			TwitterShowError(player, 'TWITTER_INFO_TITLE', 'APP_TWITTER_NOTIF_NO_CONNECTION')
   		end
   	end)
 end
 
 gcPhoneT.twitter_changePassword = function(username, password, newPassword)
-	local identifier = gcPhone.getPlayerID(source)
+	local player = source
+	local identifier = gcPhone.getPlayerID(player)
 	
 	gcPhone.isAbleToSurfInternet(identifier, 0.5, function(isAble, mbToRemove)
 		if isAble then
@@ -254,12 +256,12 @@ gcPhoneT.twitter_changePassword = function(username, password, newPassword)
 			  
 			getTwiterUserAccount(username, password, function (user)
 				if user == false then
-					TwitterShowError(source, 'TWITTER_INFO_TITLE', 'APP_TWITTER_NO_ACCOUNT')
+					TwitterShowError(player, 'TWITTER_INFO_TITLE', 'APP_TWITTER_NO_ACCOUNT')
       				return
 				end
 
     			if user == nil then
-      				TwitterShowError(source, 'TWITTER_INFO_TITLE', 'APP_TWITTER_NOTIF_NEW_PASSWORD_ERROR')
+      				TwitterShowError(player, 'TWITTER_INFO_TITLE', 'APP_TWITTER_NOTIF_NEW_PASSWORD_ERROR')
     			else
       				MySQL.Async.execute("UPDATE `twitter_accounts` SET `password`= @newPassword WHERE twitter_accounts.username = @username AND twitter_accounts.password = @password", {
         				['@username'] = username,
@@ -267,51 +269,54 @@ gcPhoneT.twitter_changePassword = function(username, password, newPassword)
         				['@newPassword'] = newPassword
       				}, function (result)
         				if (result == 1) then
-          					TriggerClientEvent('gcPhone:twitter_setAccount', source, username, newPassword, user.authorIcon)
-          					TwitterShowSuccess(source, 'TWITTER_INFO_TITLE', 'APP_TWITTER_NOTIF_NEW_PASSWORD_SUCCESS')
+          					TriggerClientEvent('gcPhone:twitter_setAccount', player, username, newPassword, user.authorIcon)
+          					TwitterShowSuccess(player, 'TWITTER_INFO_TITLE', 'APP_TWITTER_NOTIF_NEW_PASSWORD_SUCCESS')
         				else
-          					TwitterShowError(source, 'TWITTER_INFO_TITLE', 'APP_TWITTER_NOTIF_NEW_PASSWORD_ERROR')
+          					TwitterShowError(player, 'TWITTER_INFO_TITLE', 'APP_TWITTER_NOTIF_NEW_PASSWORD_ERROR')
         				end
       				end)
     			end
   			end)
   		else
-  			TwitterShowError(source, 'TWITTER_INFO_TITLE', 'APP_TWITTER_NOTIF_NO_CONNECTION')
+  			TwitterShowError(player, 'TWITTER_INFO_TITLE', 'APP_TWITTER_NOTIF_NO_CONNECTION')
   		end
   	end)
 end
 
 gcPhoneT.twitter_createAccount = function(username, password, avatarUrl)
-  	local identifier = gcPhone.getPlayerID(source)
-  	
+	local player = source
+  	local identifier = gcPhone.getPlayerID(player)
+
 	gcPhone.isAbleToSurfInternet(identifier, 0.5, function(isAble, mbToRemove)
 		if isAble then
   			gcPhone.usaDatiInternet(identifier, mbToRemove)
-			TwitterCreateAccount(username, password, avatarUrl, function (id)
-    			if (id ~= 0) then
-      				TriggerClientEvent('gcPhone:twitter_setAccount', source, username, password, avatarUrl)
-      				TwitterShowSuccess(source, 'TWITTER_INFO_TITLE', 'APP_TWITTER_NOTIF_ACCOUNT_CREATE_SUCCESS')
+
+			TwitterCreateAccount(username, password, avatarUrl, function(id)
+    			if id ~= 0 then
+      				TriggerClientEvent('gcPhone:twitter_setAccount', player, username, password, avatarUrl)
+      				TwitterShowSuccess(player, 'TWITTER_INFO_TITLE', 'APP_TWITTER_NOTIF_ACCOUNT_CREATE_SUCCESS')
     			else
-      				TwitterShowError(source, 'TWITTER_INFO_TITLE', 'APP_TWITTER_NOTIF_ACCOUNT_CREATE_ERROR')
+      				TwitterShowError(player, 'TWITTER_INFO_TITLE', 'APP_TWITTER_NOTIF_ACCOUNT_CREATE_ERROR')
     			end
   			end)
   		else
-  			TwitterShowError(source, 'TWITTER_INFO_TITLE', 'APP_TWITTER_NOTIF_NO_CONNECTION')
+  			TwitterShowError(player, 'TWITTER_INFO_TITLE', 'APP_TWITTER_NOTIF_NO_CONNECTION')
   		end
   	end)
 end
 
 gcPhoneT.twitter_getTweets = function(username, password)
-	local identifier = gcPhone.getPlayerID(source)
+	local player = source
+	local identifier = gcPhone.getPlayerID(player)
 	
 	if username ~= nil and username ~= "" and password ~= nil and password ~= "" then
   		gcPhone.isAbleToSurfInternet(identifier, 1, function(isAble, mbToRemove)
 			if isAble then
 				gcPhone.usaDatiInternet(identifier, mbToRemove)
 				  
-				getTwiterUserAccount(username, password, function (user)
+				getTwiterUserAccount(username, password, function(user)
 					if user == false then
-						TwitterShowError(source, 'TWITTER_INFO_TITLE', 'APP_TWITTER_NO_ACCOUNT')
+						TwitterShowError(player, 'TWITTER_INFO_TITLE', 'APP_TWITTER_NO_ACCOUNT')
 						return
 					end
 
@@ -320,15 +325,15 @@ gcPhoneT.twitter_getTweets = function(username, password)
       					gcPhone.isAbleToSurfInternet(identifier, 0.04 * #tweets, function(isAble, mbToRemove)
 							if isAble then
   								gcPhone.usaDatiInternet(identifier, mbToRemove)
-        						TriggerClientEvent('gcPhone:twitter_getTweets', source, tweets)
+        						TriggerClientEvent('gcPhone:twitter_getTweets', player, tweets)
         					else
-  								TwitterShowError(source, 'TWITTER_INFO_TITLE', 'APP_TWITTER_NOTIF_NO_CONNECTION')
+  								TwitterShowError(player, 'TWITTER_INFO_TITLE', 'APP_TWITTER_NOTIF_NO_CONNECTION')
   							end
   						end)
       				end)
     			end)
   			else
-  				TwitterShowError(source, 'TWITTER_INFO_TITLE', 'APP_TWITTER_NOTIF_NO_CONNECTION')
+  				TwitterShowError(player, 'TWITTER_INFO_TITLE', 'APP_TWITTER_NOTIF_NO_CONNECTION')
   			end
   		end)
   	else
@@ -339,21 +344,22 @@ gcPhoneT.twitter_getTweets = function(username, password)
     				gcPhone.isAbleToSurfInternet(identifier, 0.04 * #tweets, function(isAble, mbToRemove)
 						if isAble then
   							gcPhone.usaDatiInternet(identifier, mbToRemove)
-      						TriggerClientEvent('gcPhone:twitter_getTweets', source, tweets)
+      						TriggerClientEvent('gcPhone:twitter_getTweets', player, tweets)
       					else
-  							TwitterShowError(source, 'TWITTER_INFO_TITLE', 'APP_TWITTER_NOTIF_NO_CONNECTION')
+  							TwitterShowError(player, 'TWITTER_INFO_TITLE', 'APP_TWITTER_NOTIF_NO_CONNECTION')
   						end
   					end)
     			end)
   			else
-  				TwitterShowError(source, 'TWITTER_INFO_TITLE', 'APP_TWITTER_NOTIF_NO_CONNECTION')
+  				TwitterShowError(player, 'TWITTER_INFO_TITLE', 'APP_TWITTER_NOTIF_NO_CONNECTION')
   			end
   		end)
   	end
 end
 
 gcPhoneT.twitter_getFavoriteTweets = function(username, password)
-	local identifier = gcPhone.getPlayerID(source)
+	local player = source
+	local identifier = gcPhone.getPlayerID(player)
 	
 	if username ~= nil and username ~= "" and password ~= nil and password ~= "" then
   		gcPhone.isAbleToSurfInternet(identifier, 1, function(isAble, mbToRemove)
@@ -362,7 +368,7 @@ gcPhoneT.twitter_getFavoriteTweets = function(username, password)
 				
 				getTwiterUserAccount(username, password, function(user)
 					if user == false then
-						TwitterShowError(source, 'TWITTER_INFO_TITLE', 'APP_TWITTER_NO_ACCOUNT')
+						TwitterShowError(player, 'TWITTER_INFO_TITLE', 'APP_TWITTER_NO_ACCOUNT')
 						return
 					end
 
@@ -371,15 +377,15 @@ gcPhoneT.twitter_getFavoriteTweets = function(username, password)
       					gcPhone.isAbleToSurfInternet(identifier, 0.04 * #tweets, function(isAble, mbToRemove)
 							if isAble then
   								gcPhone.usaDatiInternet(identifier, mbToRemove)
-        						TriggerClientEvent('gcPhone:twitter_getFavoriteTweets', source, tweets)
+        						TriggerClientEvent('gcPhone:twitter_getFavoriteTweets', player, tweets)
         					else
-  								TwitterShowError(source, 'TWITTER_INFO_TITLE', 'APP_TWITTER_NOTIF_NO_CONNECTION')
+  								TwitterShowError(player, 'TWITTER_INFO_TITLE', 'APP_TWITTER_NOTIF_NO_CONNECTION')
   							end
   						end)
       				end)
     			end)
     		else
-  				TwitterShowError(source, 'TWITTER_INFO_TITLE', 'APP_TWITTER_NOTIF_NO_CONNECTION')
+  				TwitterShowError(player, 'TWITTER_INFO_TITLE', 'APP_TWITTER_NOTIF_NO_CONNECTION')
   			end
   		end)
   	else
@@ -387,9 +393,9 @@ gcPhoneT.twitter_getFavoriteTweets = function(username, password)
       		gcPhone.isAbleToSurfInternet(identifier, 0.04 * #tweets, function(isAble, mbToRemove)
 				if isAble then
   					gcPhone.usaDatiInternet(identifier, mbToRemove)
-        			TriggerClientEvent('gcPhone:twitter_getFavoriteTweets', source, tweets)
+        			TriggerClientEvent('gcPhone:twitter_getFavoriteTweets', player, tweets)
         		else
-  					TwitterShowError(source, 'TWITTER_INFO_TITLE', 'APP_TWITTER_NOTIF_NO_CONNECTION')
+  					TwitterShowError(player, 'TWITTER_INFO_TITLE', 'APP_TWITTER_NOTIF_NO_CONNECTION')
   				end
     		end)
     	end)
@@ -397,30 +403,34 @@ gcPhoneT.twitter_getFavoriteTweets = function(username, password)
 end
 
 gcPhoneT.twitter_postTweets = function(username, password, message)
-	local srcIdentifier = gcPhone.getPlayerID(source)
-	TwitterPostTweet(username, password, message, source, srcIdentifier)
+	local player = source
+	local srcIdentifier = gcPhone.getPlayerID(player)
+	TwitterPostTweet(username, password, message, player, srcIdentifier)
 end
 
 gcPhoneT.twitter_postImmagine = function(username, password, message)
-	local srcIdentifier = gcPhone.getPlayerID(source)
-	TwitterPostTweet(username, password, message, source, srcIdentifier)
+	local player = source
+	local srcIdentifier = gcPhone.getPlayerID(player)
+	TwitterPostTweet(username, password, message, player, srcIdentifier)
 end
 
 gcPhoneT.twitter_toogleLikeTweet = function(username, password, tweetId)
-	TwitterToogleLike(username, password, tweetId, source)
+	local player = source
+	TwitterToogleLike(username, password, tweetId, player)
 end
 
 gcPhoneT.twitter_setAvatarUrl = function(username, password, avatarUrl)
+	local player = source
 	MySQL.Async.execute("UPDATE `twitter_accounts` SET `avatar_url`= @avatarUrl WHERE twitter_accounts.username = @username AND twitter_accounts.password = @password", {
 		['@username'] = username,
 		['@password'] = password,
 		['@avatarUrl'] = avatarUrl
 	}, function (result)
 		if (result == 1) then
-			TriggerClientEvent('gcPhone:twitter_setAccount', source, username, password, avatarUrl)
-			TwitterShowSuccess(source, 'TWITTER_INFO_TITLE', 'APP_TWITTER_NOTIF_AVATAR_SUCCESS')
+			TriggerClientEvent('gcPhone:twitter_setAccount', player, username, password, avatarUrl)
+			TwitterShowSuccess(player, 'TWITTER_INFO_TITLE', 'APP_TWITTER_NOTIF_AVATAR_SUCCESS')
 		else
-			TwitterShowError(source, 'TWITTER_INFO_TITLE', 'APP_TWITTER_NOTIF_LOGIN_ERROR')
+			TwitterShowError(player, 'TWITTER_INFO_TITLE', 'APP_TWITTER_NOTIF_LOGIN_ERROR')
 		end
 	end)
 end

@@ -43,7 +43,7 @@ end)
 RegisterNUICallback("pagaFattura", function(data, cb)
     ESX.TriggerServerCallback("esx_billing:payBill", function(ok)
         if ok then
-            print("^1[ZTH_Phone] ^0Bill payed")
+            -- print("^1[ZTH_Phone] ^0Bill payed")
             ESX.TriggerServerCallback("esx_billing:getBills", function(fatture) SendNUIMessage({ event = "receivePlayerFatture", fatture = fatture }) end)
         end
     end, data.id)

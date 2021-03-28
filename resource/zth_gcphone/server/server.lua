@@ -61,14 +61,32 @@ MySQL.ready(function()
     end)
 end)
 
+function GetPianoTariffarioParam(phone_number, param, cb)
+    MySQL.Async.fetchAll("SELECT * FROM sim WHERE phone_number = @phone_number", {['@phone_number'] = phone_number}, function(result)
+		if #result > 0 then
+			if result[1][param] ~= nil then
+				cb(result[1][param])
+			end
+		end
+	end)
+end
+
+function UpdatePianoTariffario(phone_number, param, value)
+    if phone_number ~= nil and param ~= nil and value ~= nil then
+		MySQL.Async.execute('UPDATE sim SET '..param..' = @'..param..' WHERE phone_number = @phone_number', {
+			['@phone_number'] = phone_number,
+			['@'..param] = value
+		})
+	end
+end
 
 gcPhoneT.allUpdate = function()
+    local player = source
     -- creo il thread per evitare di fare il wait sul main
     -- thread
     Citizen.CreateThreadNow(function()
         while not phone_loaded do Citizen.Wait(100) end
 
-        local player = source
         local identifier = gcPhone.getPlayerID(player)
         local num = gcPhone.getPhoneNumber(identifier)
 
@@ -89,12 +107,14 @@ end
 --==================================================================================================================
 
 gcPhoneT.updateAirplaneForUser = function(bool)
-    local identifier = gcPhone.getPlayerID(source)
+    local player = source
+    local identifier = gcPhone.getPlayerID(player)
     enableGlobalAirplane[identifier] = bool
 end
 
 gcPhoneT.updateSegnaleTelefono = function(potenza)
-    local identifier = gcPhone.getPlayerID(source)
+    local player = source
+    local identifier = gcPhone.getPlayerID(player)
     local iSegnalePlayer = gcPhone.getPlayerSegnaleIndex(segnaliTelefoniPlayers, identifier)
 
     if iSegnalePlayer == nil then
@@ -105,7 +125,8 @@ gcPhoneT.updateSegnaleTelefono = function(potenza)
 end
 
 gcPhoneT.updateReteWifi = function(connected, rete)
-    local identifier = gcPhone.getPlayerID(source)
+    local player = source
+    local identifier = gcPhone.getPlayerID(player)
     local iSegnalePlayer = gcPhone.getPlayerSegnaleIndex(wifiConnectedPlayers, identifier)
     
     if iSegnalePlayer == nil then
@@ -139,7 +160,7 @@ end
 function gcPhone.usaDatiInternet(identifier, value)
     local phone_number = gcPhone.getPhoneNumber(identifier)
     
-	ESX.GetPianoTariffarioParam(phone_number, "dati", function(dati)
+	GetPianoTariffarioParam(phone_number, "dati", function(dati)
         gcPhoneT.updateParametroTariffa(phone_number, "dati", dati - value)
     end)
 end
@@ -157,7 +178,7 @@ function gcPhone.isAbleToSurfInternet(identifier, neededMB, cb)
     else
         if not hasAirplane then
             if iSegnalePlayer ~= nil and segnaliTelefoniPlayers[iSegnalePlayer].potenzaSegnale ~= 0 then
-                ESX.GetPianoTariffarioParam(phone_number, "dati", function(dati)
+                GetPianoTariffarioParam(phone_number, "dati", function(dati)
                     if dati > 0 and dati >= neededMB then
                         cb(true, neededMB)
                     else
@@ -182,7 +203,7 @@ function gcPhone.isAbleToSendMessage(identifier, cb)
     
     if not hasAirplane then
         if segnaliTelefoniPlayers[iSegnalePlayer] ~= nil and segnaliTelefoniPlayers[iSegnalePlayer].potenzaSegnale > 0 then
-            ESX.GetPianoTariffarioParam(phone_number, "messaggi", function(messaggi)
+            GetPianoTariffarioParam(phone_number, "messaggi", function(messaggi)
                 if messaggi > 0 then
                     cb(true)
                 else
@@ -204,7 +225,7 @@ function gcPhone.isAbleToCall(identifier, cb)
     local hasAirplane = gcPhone.getAirplaneForUser(identifier)
     
     if not hasAirplane then
-        ESX.GetPianoTariffarioParam(phone_number, "minuti", function(min)
+        GetPianoTariffarioParam(phone_number, "minuti", function(min)
             if xPlayer.hasJob("police", 0).check or xPlayer.hasJob("ambulance", 0).check then return cb(true, false, min) end
 
             if min == nil then
@@ -224,7 +245,7 @@ end
 
 
 gcPhoneT.updateParametroTariffa = function(phone_number, param, value)
-	ESX.UpdatePianoTariffario(phone_number, param, value)
+	UpdatePianoTariffario(phone_number, param, value)
 end
 
 
@@ -233,7 +254,8 @@ end
 --==================================================================================================================
 
 gcPhoneT.getItemAmount = function(item)
-    local xPlayer = ESX.GetPlayerFromId(source)
+    local player = source
+    local xPlayer = ESX.GetPlayerFromId(player)
     local items = xPlayer.getInventoryItem(item)
 
     if items == nil then
@@ -252,7 +274,7 @@ end)
 
 
 ESX.RegisterServerCallback("gcphone:getPianoTariffarioLabel", function(source, cb, phone_number, label)
-    ESX.GetPianoTariffarioParam(phone_number, label, function(piano_tariffario)
+    GetPianoTariffarioParam(phone_number, label, function(piano_tariffario)
         cb(piano_tariffario)
     end)
 end)
@@ -441,18 +463,21 @@ end
 
 
 gcPhoneT.addContact = function(display, phoneNumber, email)
-    local identifier = gcPhone.getPlayerID(source)
-    addContact(source, identifier, phoneNumber, display, email)
+    local player = source
+    local identifier = gcPhone.getPlayerID(player)
+    addContact(player, identifier, phoneNumber, display, email)
 end
 
 gcPhoneT.updateContact = function(id, display, phoneNumber, email)
-    local identifier = gcPhone.getPlayerID(source)
-    updateContact(source, identifier, id, phoneNumber, display, email)
+    local player = source
+    local identifier = gcPhone.getPlayerID(player)
+    updateContact(player, identifier, id, phoneNumber, display, email)
 end
 
 gcPhoneT.deleteContact = function(id)
-    local identifier = gcPhone.getPlayerID(source)
-    deleteContact(source, identifier, id)
+    local player = source
+    local identifier = gcPhone.getPlayerID(player)
+    deleteContact(player, identifier, id)
 end
 
 
@@ -468,7 +493,6 @@ end
 
 function addMessage(source, identifier, phone_number, message)
     -- print(source, identifier, phone_number, message)
-
     local player = tonumber(source)
     -- local xPlayer = ESX.GetPlayerFromId(player)
 
@@ -482,10 +506,10 @@ function addMessage(source, identifier, phone_number, message)
         segnaleTransmitter = segnaliTelefoniPlayers[gcPhone.getPlayerSegnaleIndex(segnaliTelefoniPlayers, identifier)]
 
     	if segnaleTransmitter ~= nil and segnaleTransmitter.potenzaSegnale > 0 then
-            ESX.GetPianoTariffarioParam(myPhone, "messaggi", function(messaggi)
+            GetPianoTariffarioParam(myPhone, "messaggi", function(messaggi)
                 if messaggi > 0 then
 
-                    ESX.UpdatePianoTariffario(myPhone, "messaggi", messaggi - 1)
+                    UpdatePianoTariffario(myPhone, "messaggi", messaggi - 1)
 
                     local memess = _internalAddMessage(phone_number, myPhone, message, 1)
                     TriggerClientEvent("gcPhone:receiveMessage", player, memess)
@@ -537,8 +561,9 @@ end
 
 
 gcPhoneT.sendMessage = function(phoneNumber, message)
-    local identifier = gcPhone.getPlayerID(source)
-    addMessage(source, identifier, phoneNumber, message)
+    local player = source
+    local identifier = gcPhone.getPlayerID(player)
+    addMessage(player, identifier, phoneNumber, message)
 end
 
 gcPhone.internalAddMessage = function(transmitter, receiver, message, owner)
@@ -566,7 +591,8 @@ end)
 
 
 gcPhoneT.setReadMessageNumber = function(num)
-    local identifier = gcPhone.getPlayerID(source)
+    local player = source
+    local identifier = gcPhone.getPlayerID(player)
     local mePhoneNumber = gcPhone.getPhoneNumber(identifier)
 
     MySQL.Sync.execute("UPDATE phone_messages SET phone_messages.isRead = 1 WHERE phone_messages.receiver = @receiver AND phone_messages.transmitter = @transmitter", {
@@ -597,7 +623,8 @@ end
 
 
 gcPhoneT.deleteMessageNumber = function(number)
-    local identifier = gcPhone.getPlayerID(source)
+    local player = source
+    local identifier = gcPhone.getPlayerID(player)
     MySQL.Async.execute("DELETE FROM phone_messages WHERE `receiver` = @receiver and `transmitter` = @transmitter", { 
         ['@receiver'] = gcPhone.getPhoneNumber(identifier), 
         ['@transmitter'] = number 
@@ -611,21 +638,23 @@ end
 
 
 gcPhoneT.deleteAllMessage = function()
-    local identifier = gcPhone.getPlayerID(source)
+    local player = source
+    local identifier = gcPhone.getPlayerID(player)
     gcPhone.deleteReceivedMessages(identifier)
 end
 
 
 gcPhoneT.deleteAll = function()
-    local identifier = gcPhone.getPlayerID(source)
+    local player = source
+    local identifier = gcPhone.getPlayerID(player)
 
     gcPhone.deleteReceivedMessages(identifier)
     MySQL.Sync.execute("DELETE FROM phone_users_contacts WHERE `identifier` = @identifier", { ['@identifier'] = identifier })
     gcPhoneT.appelsDeleteAllHistorique(identifier)
 
-    TriggerClientEvent("gcPhone:contactList", source, {})
-    TriggerClientEvent("gcPhone:allMessage", source, {})
-    TriggerClientEvent("appelsDeleteAllHistorique", source, {})
+    TriggerClientEvent("gcPhone:contactList", player, {})
+    TriggerClientEvent("gcPhone:allMessage", player, {})
+    TriggerClientEvent("appelsDeleteAllHistorique", player, {})
 end
 
 
@@ -695,7 +724,8 @@ end
 ]]
 
 gcPhoneT.requestOffertaFromDatabase = function()
-    local xPlayer = ESX.GetPlayerFromId(source)
+    local player = source
+    local xPlayer = ESX.GetPlayerFromId(player)
 
     MySQL.Async.fetchAll("SELECT phone_number FROM users WHERE identifier = @identifier", {['@identifier'] = xPlayer.identifier}, function(user)
         if #user > 0 then
@@ -704,7 +734,7 @@ gcPhoneT.requestOffertaFromDatabase = function()
                     if #sim > 0 then
                         minuti = math.floor(sim[1].minuti / 60)
                         
-                        TriggerClientEvent("gcPhone:sendRequestedOfferta", xPlayer.source, {
+                        TriggerClientEvent("gcPhone:sendRequestedOfferta", player, {
                             tonumber(minuti),
                             tonumber(sim[1].messaggi),
                             tonumber(sim[1].dati)
@@ -717,7 +747,9 @@ gcPhoneT.requestOffertaFromDatabase = function()
 end
 
 gcPhoneT.startCall = function(phone_number, rtcOffer, extraData)
-    TriggerEvent('gcPhone:internal_startCall', source, phone_number, rtcOffer, extraData)
+    local player = source
+    -- print(player, phone_number, rtcOffer, extraData)
+    internal_startCall(player, phone_number, rtcOffer, extraData)
 end
 
 
@@ -731,8 +763,7 @@ end)
 
 -- evento che controlla le chiamate tra giocatori
 -- e giocatori e telefoni fissi
-RegisterServerEvent('gcPhone:internal_startCall')
-AddEventHandler('gcPhone:internal_startCall', function(player, phone_number, rtcOffer, extraData)
+function internal_startCall(player, phone_number, rtcOffer, extraData)
     if Config.TelefoniFissi[phone_number] ~= nil then
         onCallFixePhone(player, phone_number, rtcOffer, extraData)
         return
@@ -838,7 +869,7 @@ AddEventHandler('gcPhone:internal_startCall', function(player, phone_number, rtc
             end
         end
     end)
-end)
+end
 
 
 function playUnreachable(player, infoCall)
@@ -860,9 +891,10 @@ end
 
 
 gcPhoneT.candidates = function(callId, candidates)
+    local player = source
     if Chiamate[callId] ~= nil then
         local to = Chiamate[callId].transmitter_src
-        if source == to then  to = Chiamate[callId].receiver_src end
+        if player == to then  to = Chiamate[callId].receiver_src end
 
         if to == nil then return end
         TriggerClientEvent('gcPhone:candidates', to, candidates)
@@ -871,11 +903,16 @@ end
 
 
 gcPhoneT.acceptCall = function(infoCall, rtcAnswer)
+    local player = source
     local id = infoCall.id
 
+    -- print("call accepted", player)
+    -- print(ESX.DumpTable(infoCall))
+
     if Chiamate[id] ~= nil then
+        -- print(ESX.DumpTable(Chiamate[id]))
         if PhoneFixeInfo[id] ~= nil then
-            onAcceptFixePhone(source, infoCall, rtcAnswer)
+            onAcceptFixePhone(player, infoCall, rtcAnswer)
             return
         end
 
@@ -908,6 +945,7 @@ end
 -- evento che toglie i minuti a chi ha
 -- fatto la telefonata
 gcPhoneT.rejectCall = function(infoCall)
+    local player = source
     local id = infoCall.id
 
     if Chiamate[id] ~= nil then
@@ -917,7 +955,7 @@ gcPhoneT.rejectCall = function(infoCall)
         end
 
         if PhoneFixeInfo[id] ~= nil then
-            onRejectFixePhone(source, infoCall)
+            onRejectFixePhone(player, infoCall)
             return
         end
 
@@ -940,7 +978,8 @@ end
 
 
 gcPhoneT.appelsDeleteHistorique = function(number)
-    local identifier = gcPhone.getPlayerID(source)
+    local player = source
+    local identifier = gcPhone.getPlayerID(player)
     local num = gcPhone.getPhoneNumber(identifier)
 
     MySQL.Sync.execute("DELETE FROM phone_calls WHERE `owner` = @owner AND `num` = @num", {
@@ -951,7 +990,8 @@ end
 
 
 gcPhoneT.appelsDeleteAllHistorique = function()
-    local identifier = gcPhone.getPlayerID(source)
+    local player = source
+    local identifier = gcPhone.getPlayerID(player)
     local num = gcPhone.getPhoneNumber(identifier)
 
     MySQL.Async.execute("DELETE FROM phone_calls WHERE `owner` = @owner", { ['@owner'] = num })
@@ -991,11 +1031,12 @@ end)
 
 
 gcPhoneT.updateAvatarContatto = function(data)
-    local identifier = gcPhone.getPlayerID(source)
+    local player = source
+    local identifier = gcPhone.getPlayerID(player)
 
     MySQL.Async.execute("UPDATE phone_users_contacts SET icon = '"..data.icon.."' WHERE id = '"..data.id.."'", {})
     SetTimeout(2000, function()
-        TriggerClientEvent("gcPhone:contactList", source, getContacts(identifier))
+        TriggerClientEvent("gcPhone:contactList", player, getContacts(identifier))
     end)
 end
 
@@ -1112,7 +1153,6 @@ end
 function onAcceptFixePhone(player, infoCall, rtcAnswer)
     local id = infoCall.id
     if Chiamate[id] ~= nil then
-
         Chiamate[id].receiver_src = player
 
         playersInCall[Chiamate[id].transmitter_src] = true
@@ -1147,16 +1187,3 @@ function onRejectFixePhone(player, infoCall, rtcAnswer)
 
     Chiamate[id] = nil 
 end
-
-
---[[
-    Citizen.CreateThread(function()
-        while ESX == nil do Citizen.Wait(100) end
-        
-        while true do
-            Citizen.Wait(5000)
-
-            print(ESX.DumpTable(cachedNumbers))
-        end
-    end)
-]]
