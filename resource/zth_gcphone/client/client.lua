@@ -633,7 +633,7 @@ end
 function TakeAppel(infoCall)
     TogglePhone()
     SendNUIMessage({ event = 'waitingCall', infoCall = infoCall, initiator = initiator })
-    gcPhoneT.acceptCall(infoCall, nil)
+    gcPhoneServerT.acceptCall(infoCall, nil)
 end
 
 
