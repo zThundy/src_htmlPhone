@@ -22,6 +22,8 @@ services_names = {
 
 
 function notifyAlertSMS(number, alert, listSrc)
+	while gcPhone == nil do TriggerEvent('esx_phone:getShILovePizzaaredObjILovePizzaect', function(obj) gcPhone = obj end) Citizen.Wait(100) end
+	
 	local mess = 'Chiamata da #' ..alert.numero.. ': ' ..alert.message
 	if alert.coords ~= nil then mess = mess .. '\n GPS: ' .. alert.coords.x .. ', ' .. alert.coords.y end
 

@@ -381,6 +381,8 @@ function gcPhone.getPlayerID(source)
 end
 
 
+
+
 --==================================================================================================================
 -------- Funzioni Contatti
 --==================================================================================================================
@@ -537,6 +539,10 @@ end
 gcPhoneT.sendMessage = function(phoneNumber, message)
     local identifier = gcPhone.getPlayerID(source)
     addMessage(source, identifier, phoneNumber, message)
+end
+
+gcPhone.internalAddMessage = function(transmitter, receiver, message, owner)
+    return _internalAddMessage(transmitter, receiver, message, owner)
 end
 
 
