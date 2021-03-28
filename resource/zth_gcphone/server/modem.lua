@@ -2,20 +2,18 @@ Reti = nil
 TriggerEvent("esx_wifi:getSharedObject", function(obj) Reti = obj end)
 
 local creationTimeout = {}
-RegisterServerEvent("gcphone:modem_createModem")
-AddEventHandler("gcphone:modem_createModem", function(label, password, coords)
+gcPhoneT.modem_createModem = function(label, password, coords)
     -- lo refresho ogni volta che chiamo sto evento perché porcoddio
     TriggerEvent("esx_wifi:getSharedObject", function(obj) Reti = obj end)
 
-    local player = source
-    local xPlayer = ESX.GetPlayerFromId(player)
+    local xPlayer = ESX.GetPlayerFromId(source)
 
-    if creationTimeout[player] == nil or not creationTimeout[player] then
+    if creationTimeout[source] == nil or not creationTimeout[source] then
         local day = 86400
         local days = day * Config.AddDaysOnRenewal
         local currentTime = os.time(os.date("!*t"))
 
-        Reti.AddReteWifi(player, {
+        Reti.AddReteWifi(source, {
             label = label,
             password = password, 
             coords = coords,
@@ -24,10 +22,10 @@ AddEventHandler("gcphone:modem_createModem", function(label, password, coords)
             if ok then xPlayer.removeInventoryItem("modem", 1) end
         end)
 
-        creationTimeout[player] = true
+        creationTimeout[source] = true
 
         Citizen.CreateThreadNow(function()
-            local cachedPlayer = player
+            local cachedPlayer = source
     
             SetTimeout(Config.WaitBeforeCreatingAgaing * 1000, function()
                 creationTimeout[cachedPlayer] = nil
@@ -36,14 +34,11 @@ AddEventHandler("gcphone:modem_createModem", function(label, password, coords)
     else
         xPlayer.showNotification("~r~Devi aspettare almeno "..Config.WaitBeforeCreatingAgaing.." secondi prima di creare una rete")
     end
-end)
+end
 
-
-RegisterServerEvent("gcphone:modem_rinnovaModem")
-AddEventHandler("gcphone:modem_rinnovaModem", function()
-    local player = source
+gcPhoneT.modem_rinnovaModem = function()
     local points = exports["vip_points"]:getPoints(source)
-    local xPlayer = ESX.GetPlayerFromId(player)
+    local xPlayer = ESX.GetPlayerFromId(source)
 
     if points >= Config.RinnovaModemPoints then
 
@@ -55,8 +50,8 @@ AddEventHandler("gcphone:modem_rinnovaModem", function()
                 local days = day * Config.AddDaysOnRenewal
                 local new_date = os.time(os.date('*t', math.floor(result[1].due_date / 1000))) + days
 
-                Reti.UpdateReteWifi(player, { due_date = os.date("%Y-%m-%d %H:%m:%S", new_date) }, "due_date")
-                TriggerClientEvent("gcphone:modem_updateMenu", player)
+                Reti.UpdateReteWifi(source, { due_date = os.date("%Y-%m-%d %H:%m:%S", new_date) }, "due_date")
+                TriggerClientEvent("gcphone:modem_updateMenu", source)
 
                 exports["vip_points"]:removePoints(source, Config.RinnovaModemPoints)
             end
@@ -64,25 +59,21 @@ AddEventHandler("gcphone:modem_rinnovaModem", function()
     else
         xPlayer.showNotification("~r~Non hai abbastanza punti")
     end
-end)
+end
 
-
-RegisterServerEvent("gcphone:modem_cambiaPassword")
-AddEventHandler("gcphone:modem_cambiaPassword", function(password)
-    local player = source
+gcPhoneT.modem_cambiaPassword = function(password)
     local points = exports["vip_points"]:getPoints(source)
-    local xPlayer = ESX.GetPlayerFromId(player)
+    local xPlayer = ESX.GetPlayerFromId(source)
 
     if points >= Config.ChangePasswordPoints then
         exports["vip_points"]:removePoints(source, Config.ChangePasswordPoints)
 
-        Reti.UpdateReteWifi(player, { password = password }, "password")
-        TriggerClientEvent("gcphone:modem_updateMenu", player)
+        Reti.UpdateReteWifi(source, { password = password }, "password")
+        TriggerClientEvent("gcphone:modem_updateMenu", source)
     else
         xPlayer.showNotification("~r~Non hai abbastanza punti")
     end
-end)
-
+end
 
 RegisterServerEvent("gcphone:modem_compraModem")
 AddEventHandler("gcphone:modem_compraModem", function()

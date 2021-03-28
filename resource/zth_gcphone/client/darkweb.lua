@@ -1,11 +1,11 @@
 RegisterNUICallback("fetchDarkmessages", function(data, cb)
-    TriggerServerEvent("gcphone:darkweb_fetchDarkmessages")
+    gcPhoneServerT.darkweb_fetchDarkmessages()
     cb("ok")
 end)
 
 
 RegisterNUICallback("sendDarkMessage", function(data, cb)
-    TriggerServerEvent("gcphone:darkweb_sendDarkMessage", data.message)
+    gcPhoneServerT.darkweb_sendDarkMessage(data.message)
     cb("ok")
 end)
 

@@ -1,5 +1,4 @@
-RegisterServerEvent("gcPhone:sendMoneyToUser")
-AddEventHandler("gcPhone:sendMoneyToUser", function(data)
+gcPhoneT.sendMoneyToUser = function(data)
     local iban = data.iban
 
     local player = source
@@ -57,7 +56,7 @@ AddEventHandler("gcPhone:sendMoneyToUser", function(data)
             xPlayer.showNotification("~r~Iban non trovato o non valido")
         end
     end)
-end)
+end
 
 
 function getUserFromIban(iban, cb)

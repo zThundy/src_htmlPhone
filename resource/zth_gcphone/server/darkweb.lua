@@ -1,7 +1,5 @@
-RegisterServerEvent("gcphone:darkweb_fetchDarkmessages")
-AddEventHandler("gcphone:darkweb_fetchDarkmessages", function()
-    local player = source
-    local identifier = gcPhone.getPlayerID(player)
+gcPhoneT.darkweb_fetchDarkmessages = function()
+    local identifier = gcPhone.getPlayerID(source)
 
     local messages = {}
 
@@ -22,19 +20,16 @@ AddEventHandler("gcphone:darkweb_fetchDarkmessages", function()
                     end
                 end
 
-                TriggerClientEvent("gcphone:darkweb_sendMessages", player, messages)
+                TriggerClientEvent("gcphone:darkweb_sendMessages", source, messages)
             else
-                TriggerClientEvent("esx:showNotification", player, "~r~Non hai abbastanza giga per poter inviare un messaggio o non c'è linea")
+                TriggerClientEvent("esx:showNotification", source, "~r~Non hai abbastanza giga per poter inviare un messaggio o non c'è linea")
             end
         end)
     end)
-end)
+end
 
-
-RegisterServerEvent("gcphone:darkweb_sendDarkMessage")
-AddEventHandler("gcphone:darkweb_sendDarkMessage", function(data)
-    local player = source
-    local identifier = gcPhone.getPlayerID(player)
+gcPhoneT.darkweb_sendDarkMessage = function(data)
+    local identifier = gcPhone.getPlayerID(source)
 	
 	gcPhone.isAbleToSurfInternet(identifier, 0.5, function(isAble, mbToRemove)
 		if isAble then
@@ -45,7 +40,7 @@ AddEventHandler("gcphone:darkweb_sendDarkMessage", function(data)
                 ['@message'] = data.message
             })
         else
-            TriggerClientEvent("esx:showNotification", player, "~r~Non hai abbastanza giga per poter inviare un messaggio o non c'è linea")
+            TriggerClientEvent("esx:showNotification", source, "~r~Non hai abbastanza giga per poter inviare un messaggio o non c'è linea")
         end
     end)
-end)
+end

@@ -19,12 +19,12 @@
 -- nuovi post e request dei post
 
 RegisterNUICallback('nuovoPost', function(data, cb)
-    TriggerServerEvent("gcPhone:instagram_nuovoPost", data.username, data.password, data.imgTable)
+    gcPhoneServerT.instagram_nuovoPost(data.username, data.password, data.imgTable)
     cb("ok")
 end)
 
 RegisterNUICallback("requestPosts", function(data, cb)
-    TriggerServerEvent("gcPhone:instagram_getPosts", data.username, data.password)
+    gcPhoneServerT.instagram_getPosts(data.username, data.password)
     cb("ok")
 end)
 
@@ -43,7 +43,7 @@ end)
 -- gestione like dei post
 
 RegisterNUICallback('togglePostLike', function(data, cb)
-    TriggerServerEvent("gcPhone:instagram_toggleLikePost", data.username, data.password, data.postId)
+    gcPhoneServerT.instagram_toggleLikePost(data.username, data.password, data.postId)
     cb("ok")
 end)
 
@@ -60,23 +60,23 @@ end)
 
 RegisterNUICallback("createNewAccount", function(data, cb)
     -- print(data.username, data.password, data.avatarUrl)
-    TriggerServerEvent("gcPhone:instagram_createAccount", data.username, data.password, data.avatarUrl)
+    gcPhoneServerT.instagram_createAccount(data.username, data.password, data.avatarUrl)
     cb("ok")
 end)
 
 RegisterNUICallback("loginInstagram", function(data, cb)
     -- print(data.username, data.password)
-    TriggerServerEvent("gcPhone:instagram_loginAccount", data.username, data.password)
+    gcPhoneServerT.instagram_loginAccount(data.username, data.password)
     cb("ok")
 end)
 
 RegisterNUICallback('changePassword', function(data, cb)
-    TriggerServerEvent("gcPhone:instagram_changePassword", data.username, data.password, data.newPassword)
+    gcPhoneServerT.instagram_changePassword(data.username, data.password, data.newPassword)
     cb("ok")
 end)
 
 RegisterNUICallback('instagram_changeAvatar', function(data, cb)
-    TriggerServerEvent("gcPhone:instagram_setAvatarurl", data.username, data.password, data.avatarUrl)
+    gcPhoneServerT.instagram_setAvatarurl(data.username, data.password, data.avatarUrl)
     cb("ok")
 end)
 

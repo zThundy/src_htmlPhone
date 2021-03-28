@@ -1,17 +1,17 @@
 RegisterNUICallback("requestMyEmail", function(data, cb)
-    TriggerServerEvent("gcphone:email_requestMyEmail")
+    gcPhoneServerT.email_requestMyEmail()
     cb("ok")
 end)
 
 
 RegisterNUICallback("requestSentEmails", function(data, cb)
-    TriggerServerEvent("gcphone:email_requestSentEmails", data)
+    gcPhoneServerT.email_requestSentEmails(data)
     cb("ok")
 end)
 
 
 RegisterNUICallback("requestEmails", function(data, cb)
-    TriggerServerEvent("gcphone:email_requestEmails", data.email)
+    gcPhoneServerT.email_requestEmails(data.email)
     cb("ok")
 end)
 
@@ -35,18 +35,18 @@ end)
 
 
 RegisterNUICallback("sendEmail", function(data, cb)
-    TriggerServerEvent("gcphone:email_sendEmail", data)
+    gcPhoneServerT.email_sendEmail(data)
     cb("ok")
 end)
 
 
 RegisterNUICallback("deleteEmail", function(data, cb)
-    TriggerServerEvent("gcphone:email_deleteEmail", data.emailID)
+    gcPhoneServerT.email_deleteEmail(data.emailID)
     cb("ok")
 end)
 
 
 RegisterNUICallback("registerEmail", function(data, cb)
-    TriggerServerEvent("gcphone:email_registerEmail", data)
+    gcPhoneServerT.email_registerEmail(data)
     cb("ok")
 end)

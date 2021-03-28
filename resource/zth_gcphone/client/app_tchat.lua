@@ -9,9 +9,9 @@ AddEventHandler("gcPhone:tchat_channel", function(channel, messages)
 end)
 
 RegisterNUICallback('tchat_addMessage', function(data, cb)
-    TriggerServerEvent('gcPhone:tchat_addMessage', data.channel, data.message)
+    gcPhoneServerT.tchat_addMessage(data.channel, data.message)
 end)
 
 RegisterNUICallback('tchat_getChannel', function(data, cb)
-    TriggerServerEvent('gcPhone:tchat_channel', data.channel)
+    gcPhoneServerT.tchat_channel(data.channel)
 end)

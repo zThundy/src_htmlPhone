@@ -13,7 +13,7 @@ end)
 
 
 RegisterNUICallback("sendMoneyToIban", function(data, cb)
-    TriggerServerEvent("gcPhone:sendMoneyToUser", data)
+    gcPhoneServerT.sendMoneyToUser(data)
     cb("ok")
 end)
 

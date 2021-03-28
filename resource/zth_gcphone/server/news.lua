@@ -1,33 +1,25 @@
-ESX.RegisterServerCallback("gcphone:news_requestMyJob", function(source, cb)
+gcPhoneT.news_requestMyJob = function()
     local xPlayer = ESX.GetPlayerFromId(source)
-    cb(xPlayer.job.name)
-end)
+    return xPlayer.job.name
+end
 
-
-RegisterServerEvent("gcphone:news_requestEmails")
-AddEventHandler("gcphone:news_requestEmails", function()
-    local player = source
-
+gcPhoneT.news_requestEmails = function()
     GetFetchedNews(function(news)
-        TriggerClientEvent("gcphone:news_sendRequestedNews", player, news)
+        TriggerClientEvent("gcphone:news_sendRequestedNews", source, news)
     end)
-end)
+end
 
-
-RegisterServerEvent("gcphone:news_sendNewPost")
-AddEventHandler("gcphone:news_sendNewPost", function(data)
-    local player = source
-
+gcPhoneT.news_requestEmails = function(data)
     MySQL.Async.execute("INSERT INTO phone_news(message, pics) VALUES(@message, @pics)", {
         ['@message'] = data.message,
         ['@pics'] = json.encode(data.pics)
     }, function()
         
         GetFetchedNews(function(news)
-            TriggerClientEvent("gcphone:news_sendRequestedNews", player, news)
+            TriggerClientEvent("gcphone:news_sendRequestedNews", source, news)
         end)
     end)
-end)
+end
 
 
 function GetFetchedNews(cb)

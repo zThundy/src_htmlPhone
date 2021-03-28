@@ -1,5 +1,5 @@
 RegisterNUICallback("requestJobInfo", function(data, cb)
-    TriggerServerEvent("gcphone:azienda_requestJobInfo")
+    gcPhoneServerT.azienda_requestJobInfo()
     cb("ok")
 end)
 
@@ -10,18 +10,18 @@ RegisterNUICallback("sendAziendaMessage", function(data, cb)
         data.message = 'GPS: ' .. myPos.x .. ', ' .. myPos.y
     end
 
-    TriggerServerEvent("gcphone:azienda_sendAziendaMessage", data.azienda, data.number, data.message)
+    gcPhoneServerT.azienda_sendAziendaMessage(data.azienda, data.number, data.message)
     cb("ok")
 end)
 
 RegisterNUICallback("aziendaEmployesAction", function(data, cb)
     -- data.azienda, data.number, data.message
-    TriggerServerEvent("gcphone:azienda_employeAction", data.action, data.employe)
+    gcPhoneServerT.azienda_employeAction(data.action, data.employe)
     cb("ok")
 end)
 
 RegisterNUICallback("requestAziendaMessages", function(data, cb)
-    TriggerServerEvent("gcphone:azienda_requestAziendaMessages")
+    gcPhoneServerT.azienda_requestAziendaMessages()
     cb("ok")
 end)
 

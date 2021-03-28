@@ -98,27 +98,15 @@ ESX.RegisterServerCallback("gcPhone:getMessaggiFromGroupId", function(source, cb
     end)
 end)
 
-
-ESX.RegisterServerCallback("gcPhone:getPhoneNumber", function(source, cb)
+gcPhoneT.getAllGroups = function()
     local xPlayer = ESX.GetPlayerFromId(source)
-    cb(gcPhone.getPhoneNumber(xPlayer.identifier))
-end)
-
-
-RegisterServerEvent("gcPhone:getAllGroups")
-AddEventHandler("gcPhone:getAllGroups", function()
-    local player = source
-    local xPlayer = ESX.GetPlayerFromId(player)
     local number = gcPhone.getPhoneNumber(xPlayer.identifier)
 
-    TriggerClientEvent("gcphone:whatsapp_updateGruppi", player, updateCachedGroups(), number)
-end)
+    TriggerClientEvent("gcphone:whatsapp_updateGruppi", source, updateCachedGroups(), number)
+end
 
-
-RegisterServerEvent("gcphone:whatsapp_sendMessage")
-AddEventHandler("gcphone:whatsapp_sendMessage", function(data)
-    local player = source
-    local xPlayer = ESX.GetPlayerFromId(player)
+gcPhoneT.whatsapp_sendMessage = function(data)
+    local xPlayer = ESX.GetPlayerFromId(source)
 
     gcPhone.isAbleToSurfInternet(xPlayer.identifier, 1.5, function(isAble, mbToRemove)
 		if isAble then
@@ -150,8 +138,7 @@ AddEventHandler("gcphone:whatsapp_sendMessage", function(data)
             -- TriggerClientEvent("gcphone:whatsapp_showError", "WHATSAPP_INFO_TITLE", "WHATSAPP_NOT_ENOUGH_GIGA")
         end
     end)
-end)
-
+end
 
 function isUserInGroup(number, partecipanti)
     for k, v in pairs(partecipanti) do
@@ -163,13 +150,11 @@ function isUserInGroup(number, partecipanti)
     return false
 end
 
-
 function getPartecipanti(groupid)
     local result = MySQL.Sync.fetchAll("SELECT * FROM phone_whatsapp_groups WHERE id = @id", {['@id'] = groupid})
     if result[1] == nil then return nil end
     return json.decode(result[1].partecipanti)
 end
-
 
 -- ATTENZIONE
 -- l'aggiornamento istantaneo dei partecipanti al gruppo, è solo per chi lo fa in quell'istante,
@@ -177,10 +162,8 @@ end
 -- FIX
 -- usi la funzione che ho fatto su getSourceFromPhoneNumber loopando i numeri sul
 -- loop sotto. Non ho intenzione di farlo ora.
-RegisterServerEvent("gcphone:whatsapp_addGroupMembers")
-AddEventHandler("gcphone:whatsapp_addGroupMembers", function(data)
-    local player = source
-    local xPlayer = ESX.GetPlayerFromId(player)
+gcPhoneT.whatsapp_addGroupMembers = function(data)
+    local xPlayer = ESX.GetPlayerFromId(source)
     local myNumber = gcPhone.getPhoneNumber(xPlayer.identifier)
 
     gcPhone.isAbleToSurfInternet(xPlayer.identifier, 1, function(isAble, mbToRemove)
@@ -221,7 +204,7 @@ AddEventHandler("gcphone:whatsapp_addGroupMembers", function(data)
                         ['@id'] = data.gruppo.id,
                         ['@partecipanti'] = json.encode(partecipanti)
                     }, function(rowsChanged)
-                        if rowsChanged > 0 then TriggerClientEvent("gcphone:whatsapp_updateGruppi", player, updateCachedGroups(), myNumber) end
+                        if rowsChanged > 0 then TriggerClientEvent("gcphone:whatsapp_updateGruppi", source, updateCachedGroups(), myNumber) end
                     end)
                 else
                     WhatsappShowNotificationError(source, "WHATSAPP_INFO_TITLE", "WHATSAPP_NOT_ENOUGH_GIGA")
@@ -233,13 +216,10 @@ AddEventHandler("gcphone:whatsapp_addGroupMembers", function(data)
             -- TriggerClientEvent("gcphone:whatsapp_showError", "WHATSAPP_INFO_TITLE", "WHATSAPP_NOT_ENOUGH_GIGA")
         end
     end)
-end)
+end
 
-
-RegisterServerEvent("gcphone:whatsapp_leaveGroup")
-AddEventHandler("gcphone:whatsapp_leaveGroup", function(group)
-    local player = source
-    local xPlayer = ESX.GetPlayerFromId(player)
+gcPhoneT.whatsapp_leaveGroup = function(group)
+    local xPlayer = ESX.GetPlayerFromId(source)
     local number = gcPhone.getPhoneNumber(xPlayer.identifier)
 
     -- print(number, group.id)
@@ -280,10 +260,7 @@ AddEventHandler("gcphone:whatsapp_leaveGroup", function(group)
             -- TriggerClientEvent("gcphone:whatsapp_showError", "WHATSAPP_INFO_TITLE", "WHATSAPP_NOT_ENOUGH_GIGA")
         end
     end)
-end)
-
-
-
+end
 
 
 --[[
@@ -304,10 +281,8 @@ end)
         image: null
 ]]
 
-RegisterServerEvent("gcphone:whatsapp_creaNuovoGruppo")
-AddEventHandler("gcphone:whatsapp_creaNuovoGruppo", function(data)
-    local player = source
-    local xPlayer = ESX.GetPlayerFromId(player)
+gcPhoneT.whatsapp_creaNuovoGruppo = function(data)
+    local xPlayer = ESX.GetPlayerFromId(source)
     local phone_number = gcPhone.getPhoneNumber(xPlayer.identifier)
     local partecipanti = {}
 
@@ -345,14 +320,14 @@ AddEventHandler("gcphone:whatsapp_creaNuovoGruppo", function(data)
                 ['@gruppo'] = data.groupTitle,
                 ['@partecipanti'] = json.encode(partecipanti)
             }, function(id)
-                TriggerClientEvent("gcphone:whatsapp_updateGruppi", player, updateCachedGroups(), phone_number)
+                TriggerClientEvent("gcphone:whatsapp_updateGruppi", source, updateCachedGroups(), phone_number)
             end)
         else
             WhatsappShowNotificationError(source, "WHATSAPP_INFO_TITLE", "WHATSAPP_NOT_ENOUGH_GIGA")
             -- TriggerClientEvent("gcphone:whatsapp_showError", "WHATSAPP_INFO_TITLE", "WHATSAPP_NOT_ENOUGH_GIGA")
         end
     end)
-end)
+end
 
 ESX.RegisterServerCallback("gcphone:whatsapp_editGroup", function(source, cb, group)
     local xPlayer = ESX.GetPlayerFromId(source)

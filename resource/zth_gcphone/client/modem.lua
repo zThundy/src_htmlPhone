@@ -22,7 +22,7 @@ AddEventHandler("gcphone:modem_chooseCredentials", function()
 	data.title = "Scegli la password della rete"
     local password = GetResponseText(data)
 
-    TriggerServerEvent("gcphone:modem_createModem", label, password, GetEntityCoords(GetPlayerPed(-1)))
+	gcPhoneServerT.modem_createModem(label, password, GetEntityCoords(GetPlayerPed(-1)))
 end)
 
 
@@ -40,11 +40,11 @@ function OpenModemManagement()
 			if data.current.value == "aggiorna_password" then
 				local password = GetResponseText({limit = 255, title = "Cambia la password della rete in:"})
 				
-				TriggerServerEvent("gcphone:modem_cambiaPassword", password)
+				gcPhoneServerT.modem_cambiaPassword(password)
 			end
 
 			if data.current.value == "rinnova_modem" then
-				TriggerServerEvent("gcphone:modem_rinnovaModem")
+				gcPhoneServerT.modem_rinnovaModem()
 			end
 
 			if data.current.value == "buy_modem" then

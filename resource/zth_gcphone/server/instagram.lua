@@ -124,11 +124,8 @@ end
 	}
 ]]
 
-
-RegisterServerEvent("gcPhone:instagram_nuovoPost")
-AddEventHandler("gcPhone:instagram_nuovoPost", function(username, password, data)
-	local player = source
-	local identifier = gcPhone.getPlayerID(player)
+gcPhoneT.instagram_nuovoPost = function(username, password, data)
+	local identifier = gcPhone.getPlayerID(source)
 
 	gcPhone.isAbleToSurfInternet(identifier, 0.5, function(isAble, mbToRemove)
 		if isAble then
@@ -136,7 +133,7 @@ AddEventHandler("gcPhone:instagram_nuovoPost", function(username, password, data
 
 			getInstagramUser(username, password, function(user)
 				if user == false then
-					InstagramShowError(player, 'INSTAGRAM_INFO_TITLE', 'APP_INSTAGRAM_NO_ACCOUNT')
+					InstagramShowError(source, 'INSTAGRAM_INFO_TITLE', 'APP_INSTAGRAM_NO_ACCOUNT')
 					return
 				end
 
@@ -158,19 +155,15 @@ AddEventHandler("gcPhone:instagram_nuovoPost", function(username, password, data
 				end)
 			end)
 		else
-			InstagramShowError(player, 'INSTAGRAM_INFO_TITLE', 'APP_INSTAGRAM_NOTIF_NO_CONNECTION')
+			InstagramShowError(source, 'INSTAGRAM_INFO_TITLE', 'APP_INSTAGRAM_NOTIF_NO_CONNECTION')
 		end
 	end)
-end)
+end
 
-
-RegisterServerEvent('gcPhone:instagram_getPosts')
-AddEventHandler('gcPhone:instagram_getPosts', function(username, password)
-	local player = source
-	local identifier = gcPhone.getPlayerID(player)
+gcPhoneT.instagram_getPosts = function(username, password)
+	local identifier = gcPhone.getPlayerID(source)
 	
 	if username ~= nil and username ~= "" and password ~= nil and password ~= "" then
-
   		gcPhone.isAbleToSurfInternet(identifier, 1, function(isAble, mbToRemove)
 			if isAble then
 				gcPhone.usaDatiInternet(identifier, mbToRemove)
@@ -178,7 +171,7 @@ AddEventHandler('gcPhone:instagram_getPosts', function(username, password)
 				-- funzione che controlla se l'utente esista effettivamente
 				getInstagramUser(username, password, function(user)
 					if user == false then
-						InstagramShowError(player, 'INSTAGRAM_INFO_TITLE', 'APP_INSTAGRAM_NO_ACCOUNT')
+						InstagramShowError(source, 'INSTAGRAM_INFO_TITLE', 'APP_INSTAGRAM_NO_ACCOUNT')
 						return
 					end
 
@@ -191,15 +184,15 @@ AddEventHandler('gcPhone:instagram_getPosts', function(username, password)
 							if isAble then
 								gcPhone.usaDatiInternet(identifier, mbToRemove)
 								
-        						TriggerClientEvent('gcPhone:instagram_updatePosts', player, posts)
+        						TriggerClientEvent('gcPhone:instagram_updatePosts', source, posts)
         					else
-  								InstagramShowError(player, 'INSTAGRAM_INFO_TITLE', 'APP_INSTAGRAM_NOTIF_NO_CONNECTION')
+  								InstagramShowError(source, 'INSTAGRAM_INFO_TITLE', 'APP_INSTAGRAM_NOTIF_NO_CONNECTION')
   							end
   						end)
       				end)
     			end)
   			else
-  				InstagramShowError(player, 'INSTAGRAM_INFO_TITLE', 'APP_INSTAGRAM_NOTIF_NO_CONNECTION')
+  				InstagramShowError(source, 'INSTAGRAM_INFO_TITLE', 'APP_INSTAGRAM_NOTIF_NO_CONNECTION')
   			end
   		end)
   	else
@@ -213,24 +206,21 @@ AddEventHandler('gcPhone:instagram_getPosts', function(username, password)
 						if isAble then
 							gcPhone.usaDatiInternet(identifier, mbToRemove)
 							
-      						TriggerClientEvent('gcPhone:instagram_updatePosts', player, posts)
+      						TriggerClientEvent('gcPhone:instagram_updatePosts', source, posts)
       					else
-  							InstagramShowError(player, 'INSTAGRAM_INFO_TITLE', 'APP_INSTAGRAM_NOTIF_NO_CONNECTION')
+  							InstagramShowError(source, 'INSTAGRAM_INFO_TITLE', 'APP_INSTAGRAM_NOTIF_NO_CONNECTION')
   						end
   					end)
     			end)
   			else
-  				InstagramShowError(player, 'INSTAGRAM_INFO_TITLE', 'APP_INSTAGRAM_NOTIF_NO_CONNECTION')
+  				InstagramShowError(source, 'INSTAGRAM_INFO_TITLE', 'APP_INSTAGRAM_NOTIF_NO_CONNECTION')
   			end
   		end)
   	end
-end)
+end
 
-
-RegisterServerEvent('gcPhone:instagram_createAccount')
-AddEventHandler('gcPhone:instagram_createAccount', function(username, password, avatarUrl)
-	local player = source
-	local identifier = gcPhone.getPlayerID(player)
+gcPhoneT.instagram_createAccount = function(username, password, avatarUrl)
+	local identifier = gcPhone.getPlayerID(source)
   	
 	gcPhone.isAbleToSurfInternet(identifier, 0.5, function(isAble, mbToRemove)
 		if isAble then
@@ -239,24 +229,21 @@ AddEventHandler('gcPhone:instagram_createAccount', function(username, password, 
 			createNewInstagramAccount(username, password, avatarUrl, function(id)
 
     			if id ~= 0 then
-					TriggerClientEvent('gcPhone:instagram_setAccount', player, username, password, avatarUrl)
+					TriggerClientEvent('gcPhone:instagram_setAccount', source, username, password, avatarUrl)
 					  
-      				InstagramShowSuccess(player, 'INSTAGRAM_INFO_TITLE', 'APP_INSTAGRAM_ACCOUNT_CREATED')
+      				InstagramShowSuccess(source, 'INSTAGRAM_INFO_TITLE', 'APP_INSTAGRAM_ACCOUNT_CREATED')
     			else
-					InstagramShowError(player, 'INSTAGRAM_INFO_TITLE', 'APP_INSTAGRAM_NOTIF_ACCOUNT_CREATE_ERROR')
+					InstagramShowError(source, 'INSTAGRAM_INFO_TITLE', 'APP_INSTAGRAM_NOTIF_ACCOUNT_CREATE_ERROR')
     			end
   			end)
   		else
-			InstagramShowError(player, 'INSTAGRAM_INFO_TITLE', 'APP_INSTAGRAM_NOTIF_NO_CONNECTION')
+			InstagramShowError(source, 'INSTAGRAM_INFO_TITLE', 'APP_INSTAGRAM_NOTIF_NO_CONNECTION')
   		end
   	end)
-end)
+end
 
-
-RegisterServerEvent("gcPhone:instagram_loginAccount")
-AddEventHandler("gcPhone:instagram_loginAccount", function(username, password)
-	local player = source
-	local identifier = gcPhone.getPlayerID(player)
+gcPhoneT.instagram_loginAccount = function(username, password)
+	local identifier = gcPhone.getPlayerID(source)
 	
 	gcPhone.isAbleToSurfInternet(identifier, 0.5, function(isAble, mbToRemove)
 		if isAble then
@@ -264,29 +251,26 @@ AddEventHandler("gcPhone:instagram_loginAccount", function(username, password)
 
 			getInstagramUser(username, password, function(user)
 				if user == false then
-					InstagramShowError(player, 'INSTAGRAM_INFO_TITLE', 'APP_INSTAGRAM_NO_ACCOUNT')
+					InstagramShowError(source, 'INSTAGRAM_INFO_TITLE', 'APP_INSTAGRAM_NO_ACCOUNT')
       				return
 				end
 				
 				if user == nil then
-      				InstagramShowError(player, 'INSTAGRAM_INFO_TITLE', 'APP_INSTAGRAM_NOTIF_LOGIN_ERROR')
+      				InstagramShowError(source, 'INSTAGRAM_INFO_TITLE', 'APP_INSTAGRAM_NOTIF_LOGIN_ERROR')
     			else
-					InstagramShowSuccess(player, 'INSTAGRAM_INFO_TITLE', 'APP_INSTAGRAM_NOTIF_LOGIN_SUCCESS')
+					InstagramShowSuccess(source, 'INSTAGRAM_INFO_TITLE', 'APP_INSTAGRAM_NOTIF_LOGIN_SUCCESS')
 
-      				TriggerClientEvent('gcPhone:instagram_setAccount', player, username, password, user.avatar_url)
+      				TriggerClientEvent('gcPhone:instagram_setAccount', source, username, password, user.avatar_url)
     			end
   			end)
   		else
-  			InstagramShowError(player, 'INSTAGRAM_INFO_TITLE', 'APP_INSTAGRAM_NOTIF_NO_CONNECTION')
+  			InstagramShowError(source, 'INSTAGRAM_INFO_TITLE', 'APP_INSTAGRAM_NOTIF_NO_CONNECTION')
   		end
   	end)
-end)
+end
 
-
-RegisterServerEvent("gcPhone:instagram_changePassword")
-AddEventHandler("gcPhone:instagram_changePassword", function(username, password, newPassword)
-	local player = source
-	local identifier = gcPhone.getPlayerID(player)
+gcPhoneT.instagram_changePassword = function(username, password, newPassword)
+	local identifier = gcPhone.getPlayerID(source)
 	
 	gcPhone.isAbleToSurfInternet(identifier, 0.5, function(isAble, mbToRemove)
 		if isAble then
@@ -294,12 +278,12 @@ AddEventHandler("gcPhone:instagram_changePassword", function(username, password,
 
 			getInstagramUser(username, password, function(user)
 				if user == false then
-					InstagramShowError(player, 'INSTAGRAM_INFO_TITLE', 'APP_INSTAGRAM_NO_ACCOUNT')
+					InstagramShowError(source, 'INSTAGRAM_INFO_TITLE', 'APP_INSTAGRAM_NO_ACCOUNT')
       				return
 				end
 				
 				if user == nil then
-      				InstagramShowError(player, 'INSTAGRAM_INFO_TITLE', 'APP_INSTAGRAM_NOTIF_LOGIN_ERROR')
+      				InstagramShowError(source, 'INSTAGRAM_INFO_TITLE', 'APP_INSTAGRAM_NOTIF_LOGIN_ERROR')
     			else
       				MySQL.Async.execute("UPDATE phone_instagram_accounts SET password = @newpassword WHERE username = @username AND password = @password", {
 						['@username'] = username,
@@ -307,21 +291,18 @@ AddEventHandler("gcPhone:instagram_changePassword", function(username, password,
 						['@newpassword'] = newPassword
 					}, function()
 
-						InstagramShowSuccess(player, 'INSTAGRAM_INFO_TITLE', 'APP_INSTAGRAM_NOTIF_PASSCHANGE_SUCCESS')
+						InstagramShowSuccess(source, 'INSTAGRAM_INFO_TITLE', 'APP_INSTAGRAM_NOTIF_PASSCHANGE_SUCCESS')
 					end)
     			end
   			end)
   		else
-  			InstagramShowError(player, 'INSTAGRAM_INFO_TITLE', 'APP_INSTAGRAM_NOTIF_NO_CONNECTION')
+  			InstagramShowError(source, 'INSTAGRAM_INFO_TITLE', 'APP_INSTAGRAM_NOTIF_NO_CONNECTION')
   		end
   	end)
-end)
+end
 
-
-RegisterServerEvent('gcPhone:instagram_toggleLikePost')
-AddEventHandler('gcPhone:instagram_toggleLikePost', function(username, password, postId)
-	local player = source
-	local identifier = gcPhone.getPlayerID(player)
+gcPhoneT.instagram_toggleLikePost = function(username, password, postId)
+	local identifier = gcPhone.getPlayerID(source)
 	
 	gcPhone.isAbleToSurfInternet(identifier, 0.02, function(isAble, mbToRemove)
 		if isAble then
@@ -329,21 +310,19 @@ AddEventHandler('gcPhone:instagram_toggleLikePost', function(username, password,
 			
 			getInstagramUser(username, password, function(user)
     			if user == nil then
-      				if player ~= nil then
-        				InstagramShowError(player, 'INSTAGRAM_INFO_TITLE', 'APP_INSTAGRAM_NOTIF_LOGIN_ERROR')
-      				end
+        			InstagramShowError(source, 'INSTAGRAM_INFO_TITLE', 'APP_INSTAGRAM_NOTIF_LOGIN_ERROR')
       				return
 				end
 				
 				if user == false then
-					InstagramShowError(player, 'INSTAGRAM_INFO_TITLE', 'APP_INSTAGRAM_NO_ACCOUNT')
+					InstagramShowError(source, 'INSTAGRAM_INFO_TITLE', 'APP_INSTAGRAM_NO_ACCOUNT')
       				return
 				end
 
     			MySQL.Async.fetchAll('SELECT * FROM phone_instagram_posts WHERE id = @id', {['@id'] = postId}, function(posts)
 					local post = posts[1]
 					if post == nil then
-						InstagramShowError(player, 'INSTAGRAM_INFO_TITLE', 'APP_INSTAGRAM_NOTIF_POST_NOT_FOUND')
+						InstagramShowError(source, 'INSTAGRAM_INFO_TITLE', 'APP_INSTAGRAM_NOTIF_POST_NOT_FOUND')
 						return
 					end
 					
@@ -364,7 +343,7 @@ AddEventHandler('gcPhone:instagram_toggleLikePost', function(username, password,
 									-- questo evento aggiorna i like per tutti i giocatori
 									TriggerClientEvent('gcPhone:instagram_updatePostLikes', -1, post.id, post.likes + 1)
 									-- questo evento aggiorna il colore del cuore per chi lo mette
-									TriggerClientEvent('gcPhone:instagram_updateLikeForUser', player, post.id, true)
+									TriggerClientEvent('gcPhone:instagram_updateLikeForUser', source, post.id, true)
 									  
             					end)    
           					end)
@@ -376,7 +355,7 @@ AddEventHandler('gcPhone:instagram_toggleLikePost', function(username, password,
 									-- questo evento aggiorna i like per tutti i giocatori
 									TriggerClientEvent('gcPhone:instagram_updatePostLikes', -1, post.id, post.likes - 1)
 									-- questo evento aggiorna il colore del cuore per chi lo mette
-									TriggerClientEvent('gcPhone:instagram_updateLikeForUser', player, post.id, false)
+									TriggerClientEvent('gcPhone:instagram_updateLikeForUser', source, post.id, false)
 									  
             					end)
           					end)
@@ -385,16 +364,13 @@ AddEventHandler('gcPhone:instagram_toggleLikePost', function(username, password,
     			end)
 			end)
 		else
-  			InstagramShowError(player, 'INSTAGRAM_INFO_TITLE', 'APP_INSTAGRAM_NOTIF_NO_CONNECTION')
+  			InstagramShowError(source, 'INSTAGRAM_INFO_TITLE', 'APP_INSTAGRAM_NOTIF_NO_CONNECTION')
   		end
   	end)
-end)
+end
 
-
-RegisterServerEvent('gcPhone:instagram_setAvatarurl')
-AddEventHandler('gcPhone:instagram_setAvatarurl', function(username, password, avatarUrl)
-	local player = source
-	local identifier = gcPhone.getPlayerID(player)
+gcPhoneT.instagram_setAvatarurl = function(username, password, avatarUrl)
+	local identifier = gcPhone.getPlayerID(source)
 
 	gcPhone.isAbleToSurfInternet(identifier, 0.5, function(isAble, mbToRemove)
 		if isAble then
@@ -408,16 +384,16 @@ AddEventHandler('gcPhone:instagram_setAvatarurl', function(username, password, a
 					['@avatarUrl'] = avatarUrl
 				}, function(result)
 					if result == 1 then
-						TriggerClientEvent('gcPhone:instagram_setAccount', player, username, password, avatarUrl)
+						TriggerClientEvent('gcPhone:instagram_setAccount', source, username, password, avatarUrl)
 						
-						TwitterShowSuccess(player, 'Twitter Info', 'APP_INSTAGRAM_NOTIF_AVATAR_SUCCESS')
+						TwitterShowSuccess(source, 'Twitter Info', 'APP_INSTAGRAM_NOTIF_AVATAR_SUCCESS')
 					else
-						InstagramShowError(player, 'INSTAGRAM_INFO_TITLE', 'APP_INSTAGRAM_NOTIF_LOGIN_ERROR')
+						InstagramShowError(source, 'INSTAGRAM_INFO_TITLE', 'APP_INSTAGRAM_NOTIF_LOGIN_ERROR')
 					end
 				end)
 			end)
 		else
-			InstagramShowError(player, 'INSTAGRAM_INFO_TITLE', 'APP_INSTAGRAM_NOTIF_NO_CONNECTION')
+			InstagramShowError(source, 'INSTAGRAM_INFO_TITLE', 'APP_INSTAGRAM_NOTIF_NO_CONNECTION')
 		end
 	end)
-end)
+end
