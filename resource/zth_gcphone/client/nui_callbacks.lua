@@ -77,7 +77,9 @@ RegisterNUICallback('rejectCall', function(data, cb)
 end)
 
 RegisterNUICallback('ignoreCall', function(data, cb)
-    gcPhoneServerT.ignoreCall(data.infoCall)
+    if data and data.infoCall then
+        gcPhoneServerT.ignoreCall(data.infoCall)
+    end
     cb("ok")
 end)
 
