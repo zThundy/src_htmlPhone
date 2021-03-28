@@ -67,7 +67,7 @@ RegisterNUICallback('startCall', function(data, cb)
 end)
 
 RegisterNUICallback('acceptCall', function(data, cb)
-    gcPhoneT.acceptCall(data.infoCall, data.rtcAnswer)
+    gcPhoneServerT.acceptCall(data.infoCall, data.rtcAnswer)
     cb("ok")
 end)
 
