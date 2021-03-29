@@ -1,25 +1,7 @@
-ESX = nil
 ESX = exports["es_extended"]:getSharedObject()
 
 gcPhone = nil
 TriggerEvent('esx_phone:getShILovePizzaaredObjILovePizzaect', function(obj) gcPhone = obj end)
-
-services_names = {
-	["police"] = "Polizia",
-	["ambulance"] = "Ambulanza",
-	["taxi"] = "Taxi",
-	["cardealer"] = "Concessionario Auto",
-	["motorcycle"] = "Concessionario Aerei",
-	["reporter"] = "Weazel News",
-	["lolly"] = "LS Customs",
-	["realestateagent"] = "Immobiliare",
-	["armeria"] = "Armeria",
-	["truckdealer"] = "Concessionario Camion",
-	["autousate"] = "Concessionario Usate",
-	["burgershot"] = "Burger Shot",
-	["import"] = "Import",
-	["99district"] = "99° Distretto"
-}
 
 
 function notifyAlertSMS(number, alert, listSrc)
@@ -35,8 +17,12 @@ function notifyAlertSMS(number, alert, listSrc)
 			local phone_number = gcPhone.getPhoneNumber(xPlayer.identifier)
 
 			if phone_number ~= nil then
-				local message = gcPhone.internalAddMessage(services_names[number], phone_number, mess, 0)
-				TriggerClientEvent("gcPhone:receiveMessage", source, message)
+				if Config.ServicesNames[number] then
+					local message = gcPhone.internalAddMessage(Config.ServicesNames[number], phone_number, mess, 0)
+					TriggerClientEvent("gcPhone:receiveMessage", source, message)
+				else
+					xPlayer.showNotification("~r~Il numero non è presente nel database del centralino")
+				end
 			end
 		end
 	end

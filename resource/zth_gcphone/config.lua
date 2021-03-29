@@ -253,4 +253,18 @@ Config.MinAziendaGrade = {
         [1] = {"salary", "employes", "chat"},
         [0] = {"salary", "chat"}
     },
+    ["99district"] = {
+        [11] = {"salary", "employes", "chat"},
+        [10] = {"salary", "employes", "chat"},
+        [9] = {"salary", "chat"},
+        [8] = {"salary", "chat"},
+        [7] = {"salary", "chat"},
+        [6] = {"chat"},
+        [5] = {"chat"},
+        [4] = {"chat"},
+        [3] = {"chat"},
+        [2] = {"chat"},
+        [1] = {"chat"},
+        [0] = {"chat"}
+    },
 }
