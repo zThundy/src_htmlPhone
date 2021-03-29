@@ -225,6 +225,8 @@ end)
 
 RegisterNetEvent("gcPhone:receiveMessage")
 AddEventHandler("gcPhone:receiveMessage", function(message)
+    if not message then return end
+    
     if not enableGlobalAirplane then
         SendNUIMessage({ event = 'newMessage', message = message })
         table.insert(messages, message)
