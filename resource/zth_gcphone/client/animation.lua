@@ -118,7 +118,7 @@ function PhonePlayAnim(status)
 
 	if status ~= 'out' and currentStatus == 'out' then
 		Citizen.Wait(380)
-		-- newPhoneProp()
+		newPhoneProp()
 	end
 
 	lastDict = dict
@@ -127,7 +127,7 @@ function PhonePlayAnim(status)
 
 	if status == 'out' then
 		Citizen.Wait(180)
-		-- deletePhone()
+		deletePhone()
 		StopAnimTask(ped, lastDict, lastAnim, 1.0)
 	end
 end
