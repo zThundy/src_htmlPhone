@@ -373,8 +373,8 @@
       "name": "Borsa",
       "it_IT__name": "Borsa",
       "icons": "/html/static/img/icons_app/borsa.png",
-      "routeName": "bourse",
-      "enabled": false
+      "routeName": "borsa.splash",
+      "enabled": true
     },
     {
       "name": "Dark Chat",
