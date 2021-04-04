@@ -1,4 +1,4 @@
-fx_version "cerulean"
+fx_version "bodacius"
 
 game "gta5"
 
@@ -60,7 +60,9 @@ client_script {
 	"client/azienda.lua",
 
 	-- modules
-	"modules/tokovoip.lua"
+	"modules/tokovoip.lua",
+	
+	"@cs-video-call/client/hooks/core.lua"
 }
 
 server_script {
@@ -85,7 +87,9 @@ server_script {
 	"server/azienda.lua",
 
 	-- modules
-	"modules/saltychat.lua"
+	"modules/saltychat.lua",
+
+	"@cs-video-call/server/hooks/core.lua"
 }
 
 data_file 'DLC_ITYP_REQUEST' 'stream/bk_phone.ytyp'

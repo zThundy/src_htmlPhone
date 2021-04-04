@@ -31,8 +31,8 @@ import InstaScreen from '@/components/instagram/InstagramScreen'
 import Parametre from '@/components/parametre/Parametre'
 import Photo from '@/components/Photo/Photo'
 
-import Borsa from '@/components/Borsa/Borsa'
-import BorsaSplash from '@/components/Borsa/BorsaSplash'
+// import Borsa from '@/components/Borsa/Borsa'
+// import BorsaSplash from '@/components/Borsa/BorsaSplash'
 
 import Bank from '@/components/Bank/Bank'
 import BankSplash from '@/components/Bank/BankSplash'
@@ -133,16 +133,16 @@ export default new Router({
       name: 'messages.view',
       component: Messages
     },
-    {
-      path: '/borsa',
-      name: 'borsa',
-      component: Borsa
-    },
-    {
-      path: '/borsasplash',
-      name: 'borsa.splash',
-      component: BorsaSplash
-    },
+    // {
+    //   path: '/borsa',
+    //   name: 'borsa',
+    //   component: Borsa
+    // },
+    // {
+    //   path: '/borsasplash',
+    //   name: 'borsa.splash',
+    //   component: BorsaSplash
+    // },
     {
       path: '/dati',
       name: 'dati',
