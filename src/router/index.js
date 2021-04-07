@@ -68,6 +68,9 @@ import AziendaSplash from '@/components/azienda/aziendasplash'
 import Emoji from '@/components/emoji/emoji'
 import EmojiSplash from '@/components/emoji/emojisplash'
 
+import Facebook from '@/components/facebook/facebook'
+import FacebookSplash from '@/components/facebook/facebooksplash'
+
 // import AppStore from '@/components/appstore/appstore'
 // import AppStoreSplash from '@/components/appstore/appstoresplash'
 
@@ -152,6 +155,16 @@ export default new Router({
       path: '/dati/splash',
       name: 'dati.splash',
       component: datisplash
+    },
+    {
+      path: '/facebook',
+      name: 'facebook',
+      component: Facebook
+    },
+    {
+      path: '/facebook/splash',
+      name: 'facebook.splash',
+      component: FacebookSplash
     },
     {
       path: '/bank',

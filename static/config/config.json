@@ -363,6 +363,13 @@
       "enabled": true
     },
     {
+      "name": "Facebook",
+      "it_IT__name": "Facebook",
+      "icons": "/html/static/img/icons_app/facebook.png",
+      "routeName": "facebook.splash",
+      "enabled": false
+    },
+    {
       "name": "Banca",
       "it_IT__name": "Banca",
       "icons": "/html/static/img/icons_app/banca.png",
@@ -691,6 +698,7 @@
       "APP_AZIENDA_PROMOTE_EMPLOYE": "Promuovi",
       "APP_AZIENDA_DEMOTE_EMPLOYE": "Degrada / Licenzia",
       "APP_EMOJI_TITLE": "Lista emoji",
+      "APP_FACEBOOK_TITLE": "Facebook",
 
       "TIMEAGO": [
         "Proprio adesso",

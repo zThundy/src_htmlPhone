@@ -19,6 +19,7 @@ import darkweb from './modules/darkweb'
 import email from './modules/email'
 import news from './modules/news'
 import azienda from './modules/azienda'
+import facebook from './modules/facebook'
 
 Vue.use(Vuex)
 
@@ -41,7 +42,8 @@ export default new Vuex.Store({
     darkweb,
     email,
     news,
-    azienda
+    azienda,
+    facebook
   },
   strict: true
 })
