@@ -367,7 +367,7 @@
       "it_IT__name": "Facebook",
       "icons": "/html/static/img/icons_app/facebook.png",
       "routeName": "facebook.splash",
-      "enabled": false
+      "enabled": true
     },
     {
       "name": "Banca",
