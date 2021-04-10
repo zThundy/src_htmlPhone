@@ -927,8 +927,12 @@ gcPhoneT.acceptCall = function(infoCall, rtcAnswer)
             Chiamate[id].rtcAnswer = rtcAnswer
             TriggerClientEvent('gcPhone:acceptCall', Chiamate[id].transmitter_src, Chiamate[id], true)
 
-            if Chiamate[id] ~= nil then
-                SetTimeout(0, function() TriggerClientEvent('gcPhone:acceptCall', Chiamate[id].receiver_src, Chiamate[id], false) end)
+            if id and Chiamate[id] ~= nil then
+                SetTimeout(0, function()
+                    if id then
+                        TriggerClientEvent('gcPhone:acceptCall', Chiamate[id].receiver_src, Chiamate[id], false)
+                    end
+                end)
             end
             salvaChiamata(Chiamate[id])
         end
