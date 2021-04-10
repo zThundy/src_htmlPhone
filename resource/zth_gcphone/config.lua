@@ -161,7 +161,19 @@ Config.MinAziendaGrade = {
         [1] = {"chat"},
         [0] = {"chat"}
     },
+    ["pearl"] = {
+        [3] = {"salary", "employes", "chat"},
+        [2] = {"salary", "chat"},
+        [1] = {"chat"},
+        [0] = {"chat"}
+    },
     ["crucialfix"] = {
+        [3] = {"salary", "employes", "chat"},
+        [2] = {"salary", "chat"},
+        [1] = {"chat"},
+        [0] = {"chat"}
+    },
+    ["lostbar"] = {
         [3] = {"salary", "employes", "chat"},
         [2] = {"salary", "chat"},
         [1] = {"chat"},
@@ -200,12 +212,6 @@ Config.MinAziendaGrade = {
         [0] = {"chat"}
     },
     ["motorcycle"] = {
-        [3] = {"salary", "employes", "chat"},
-        [2] = {"salary", "chat"},
-        [1] = {"chat"},
-        [0] = {"chat"}
-    },
-    ["lostbar"] = {
         [3] = {"salary", "employes", "chat"},
         [2] = {"salary", "chat"},
         [1] = {"chat"},
