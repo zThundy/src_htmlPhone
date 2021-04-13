@@ -106,6 +106,11 @@ end
 function TwitterPostTweet(username, password, message, player, realUser)
 	local identifier = gcPhone.getPlayerID(player)
 
+	if not message then
+		TwitterShowError(player, 'TWITTER_INFO_TITLE', 'APP_TWITTER_MESSAGE_NEEDED')
+		return
+	end
+
 	gcPhone.isAbleToSurfInternet(identifier, 0.5, function(isAble, mbToRemove)
 		if isAble then
 			gcPhone.usaDatiInternet(identifier, mbToRemove)
@@ -131,10 +136,12 @@ function TwitterPostTweet(username, password, message, player, realUser)
       				MySQL.Async.fetchAll('SELECT * from twitter_tweets WHERE id = @id', {
         				['@id'] = id
       				}, function (tweets)
-        				tweet = tweets[1]
-        				tweet['author'] = user.author
-        				tweet['authorIcon'] = user.authorIcon
-        				TriggerClientEvent('gcPhone:twitter_newTweets', -1, tweet)
+						tweet = tweets[1]
+						if tweet then
+							tweet['author'] = user.author
+							tweet['authorIcon'] = user.authorIcon
+							TriggerClientEvent('gcPhone:twitter_newTweets', -1, tweet)
+						end
       				end)
     			end)
   			end)
