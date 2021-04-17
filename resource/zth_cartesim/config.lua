@@ -5,9 +5,9 @@ Config.BlipOfferte = {
 	x = -1059.33,
 	y = -238.72,
 	name = "Life invader",
-	sprite = 521,
+	sprite = 606,
 	color = 1,
-	size = 0.8
+	scale = 0.8
 }
 
 Config.PianiTariffari = {

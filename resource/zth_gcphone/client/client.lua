@@ -53,14 +53,18 @@ AddEventHandler('tcm_player:updateDeathStatus',function(_isDead) isDead = _isDea
 Citizen.CreateThread(function()
     RegisterKeyMapping('+openPhone', 'Apri telefono', 'keyboard', 'k')
     RegisterCommand('+openPhone', function()
-        if not isDead then
-            if gcPhoneServerT.getItemAmount("tel") > 0 then
-                TogglePhone()
+        if not IsEntityPlayingAnim(GetPlayerPed(-1), 'mp_arresting', 'idle', 3) then
+            if not isDead then
+                if gcPhoneServerT.getItemAmount("tel") > 0 then
+                    TogglePhone()
+                else
+                    ESX.ShowNotification("~r~Non hai un telefono con te")
+                end
             else
-                ESX.ShowNotification("~r~Non hai un telefono con te")
+                ESX.ShowNotification("~r~Non puoi usare il telefono da morto")
             end
         else
-            ESX.ShowNotification("~r~Non puoi usare il telefono da morto")
+            ESX.ShowNotification("~r~Non puoi usare il telefono da ammanettato")
         end
     end, false)
     RegisterCommand('-openPhone', function() end, false)

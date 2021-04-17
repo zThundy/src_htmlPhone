@@ -22,12 +22,13 @@ Citizen.CreateThread(function() --ok
 	})
 
 	local info = Config.BlipOfferte
-	local blip = AddBlipForCoord(info.x, info.y, info.z)
+	local blip = AddBlipForCoord(info.x, info.y, 5.0)
 	SetBlipHighDetail(blip, true)
 	SetBlipSprite(blip, info.sprite)
 	SetBlipColour(blip, info.color)
 	SetBlipScale(blip, info.scale)
 	SetBlipAsShortRange(blip, true)
+	-- SetBlipAlpha(blip, 255)
 
 	BeginTextCommandSetBlipName("STRING")
 	AddTextComponentString(info.name)
