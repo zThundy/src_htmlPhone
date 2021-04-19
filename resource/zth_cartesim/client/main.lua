@@ -2,6 +2,7 @@ ESX = nil
 
 local tunnel = module("zth_gcphone", "modules/TunnelV2")
 gcPhoneServerT = tunnel.getInterface("gcphone_server_t", "gcphone_server_t")
+cartesimServerT = tunnel.getInterface("cartesim_server_t", "cartesim_server_t")
 
 Citizen.CreateThread(function() --ok
 	while ESX == nil do
@@ -72,7 +73,8 @@ function OpenSimMenu()
 
 				if data2.current.value == 'sim_use' then
 					ESX.UI.Menu.CloseAll()
-					TriggerServerEvent('esx_cartesim:sim_use', {number = data.current.value.number, piano_tariffario = data.current.piano_tariffario})
+					cartesimServerT.usaSim({ number = data.current.value.number, piano_tariffario = data.current.piano_tariffario })
+					-- TriggerServerEvent('esx_cartesim:sim_use', {number = data.current.value.number, piano_tariffario = data.current.piano_tariffario})
 					ESX.ShowNotification("Hai usato la carta SIM "..data.current.value.number)
 					Citizen.Wait(2000)
 					gcPhoneServerT.allUpdate()
@@ -84,7 +86,8 @@ function OpenSimMenu()
 					if closestPlayer == -1 or closestDistance > 3.0 then
 						ESX.ShowNotification('Nessun giocatore nelle vicinanze')
 					else
-						TriggerServerEvent('esx_cartesim:sim_give', data.current.value.number, GetPlayerServerId(closestPlayer))
+						cartesimServerT.daiSim(data.current.value.number, GetPlayerServerId(closestPlayer))
+						-- TriggerServerEvent('esx_cartesim:sim_give', data.current.value.number, GetPlayerServerId(closestPlayer))
 					end
 					Citizen.Wait(2000)
 					gcPhoneServerT.allUpdate()
@@ -107,8 +110,8 @@ function OpenSimMenu()
                             return
                         end
 
-                        TriggerServerEvent('esx_cartesim:sim_rename', numero, sim_name)
-
+						cartesimServerT.rinominaSim(numero, sim_name)
+                        -- TriggerServerEvent('esx_cartesim:sim_rename', numero, sim_name)
 						ESX.ShowNotification("Sim Rinominata", "success")
 
 						ESX.UI.Menu.CloseAll()
@@ -121,7 +124,8 @@ function OpenSimMenu()
 
 				if data2.current.value == 'sim_delete' then
 					ESX.UI.Menu.CloseAll()
-					TriggerServerEvent('esx_cartesim:sim_delete', data.current.value.number)
+					cartesimServerT.eliminaSim(data.current.value.number)
+					-- TriggerServerEvent('esx_cartesim:sim_delete', data.current.value.number)
 					ESX.ShowNotification("Hai distrutto la SIM "..data.current.value.number)
 					Citizen.Wait(2000)
 					gcPhoneServerT.allUpdate()

@@ -1,33 +1,30 @@
 ESX = nil
 TriggerEvent('esx:getSharedObject', function(obj) ESX = obj end)
 
+cartesimT = {}
+local tunnel = module("zth_gcphone", "modules/TunnelV2")
+tunnel.bindInterface("cartesim_server_t", cartesimT)
+
 function GenerateUniquePhoneNumber()
     local query = false
 	local numbers = {}
 	
-	MySQL.Async.fetchAll("SELECT * FROM sim", {}, function(result)
-		for index, value in pairs(result) do
-			numbers[tostring(value.phone_number)] = true
-		end
-
-		query = true
-	end)
-
-	while not query do Citizen.Wait(500) end
+	local result = MySQL.Sync.fetchAll("SELECT * FROM sim", {})
+	for index, value in pairs(result) do
+		numbers[tostring(value.phone_number)] = true
+	end
 	
 	local rand_number = string.format("555%04d", math.random(0, 99999))
 	if numbers[tostring(rand_number)] == nil then
 		return rand_number
 	end
 
-	GenerateUniquePhoneNumber()
-	Citizen.Wait(1)
+	return GenerateUniquePhoneNumber()
 end
 
 
 RegisterServerEvent("esx:playerLoaded")
 AddEventHandler('esx:playerLoaded', function(source, xPlayer)
-
 	MySQL.Async.fetchAll("SELECT phone_number FROM users WHERE identifier = @identifier", {['@identifier'] = xPlayer.identifier}, function(result)
 		TriggerEvent("gcphone:updateCachedNumber", result[1].phone_number, xPlayer.identifier, false)
 
@@ -38,7 +35,7 @@ AddEventHandler('esx:playerLoaded', function(source, xPlayer)
 
 						for _, v in pairs(Config.PianiTariffari["standard"]) do
 							if v.label == sim[1].piano_tariffario then
-								local data = {
+								TriggerClientEvent("gcphone:updateValoriDati", xPlayer.source, {
 									{
 										current = tonumber(math.floor(sim[1].minuti / 60)),
 										max = tonumber(v.minuti),
@@ -57,15 +54,14 @@ AddEventHandler('esx:playerLoaded', function(source, xPlayer)
 										icon = "discovery",
 										suffix = "Gigabyte"
 									}
-								}
-								TriggerClientEvent("gcphone:updateValoriDati", xPlayer.source, data)
+								})
 								return
 							end
 						end
 
 						for _, v in pairs(Config.PianiTariffari["premium"]) do
 							if v.label == sim[1].piano_tariffario then
-								local data = {
+								TriggerClientEvent("gcphone:updateValoriDati", xPlayer.source, {
 									{
 										current = tonumber(math.floor(sim[1].minuti / 60)),
 										max = tonumber(v.minuti),
@@ -84,9 +80,7 @@ AddEventHandler('esx:playerLoaded', function(source, xPlayer)
 										icon = "discovery",
 										suffix = "Gigabyte"
 									}
-								}
-
-								TriggerClientEvent("gcphone:updateValoriDati", xPlayer.source, data)
+								})
 								return
 							end
 						end
@@ -116,31 +110,40 @@ function NewSim(source)
 	MySQL.Async.fetchAll('SELECT * FROM users WHERE identifier = @identifier', {['@identifier'] = xPlayer.identifier}, function(result)
 		local phoneNumber = GenerateUniquePhoneNumber() 
 		
-		MySQL.Async.execute('INSERT INTO sim (phone_number, identifier, piano_tariffario, minuti, messaggi, dati) VALUES (@phone_number, @identifier, @piano_tariffario, @minuti, @messaggi, @dati)', {
-			['@phone_number'] = phoneNumber,
-			['@identifier'] = xPlayer.identifier,
-			['@piano_tariffario'] = "nessuno",
-			['@minuti'] = 0,
-			['@messaggi'] = 0,
-			['@dati'] = 0
-		}, function (r)
-			TriggerClientEvent('esx:showNotification', source, "~g~La sim è stata registrata con successo")
+		if phoneNumber ~= nil then
+			MySQL.Async.execute('INSERT INTO sim (phone_number, identifier, piano_tariffario, minuti, messaggi, dati) VALUES (@phone_number, @identifier, @piano_tariffario, @minuti, @messaggi, @dati)', {
+				['@phone_number'] = phoneNumber,
+				['@identifier'] = xPlayer.identifier,
+				['@piano_tariffario'] = "nessuno",
+				['@minuti'] = 0,
+				['@messaggi'] = 0,
+				['@dati'] = 0
+			}, function (r)
+				xPlayer.showNotification("~g~Sim creata con successo")
+				-- TriggerClientEvent('esx:showNotification', source, "~g~La sim è stata registrata con successo")
 
-			TriggerEvent("gcphone:updateCachedNumber", phoneNumber, xPlayer.identifier, false)
-		end)
+				TriggerEvent("gcphone:updateCachedNumber", phoneNumber, xPlayer.identifier, false)
+			end)
+		else
+			xPlayer.showNotification("~r~Creazione della sim non riuscita")
+		end
 	end)
 end
 
+-- RegisterServerEvent('esx_cartesim:sim_give')
+-- AddEventHandler('esx_cartesim:sim_give', function(number, c_id)
+-- end)
 
-RegisterServerEvent('esx_cartesim:sim_give')
-AddEventHandler('esx_cartesim:sim_give', function(number, c_id)
+cartesimT.daiSim = function(number, c_id)
 	local player = source
 	local xPlayer = ESX.GetPlayerFromId(player)
 	local xPlayer2 = ESX.GetPlayerFromId(c_id)
 			
 	if number ~= nil then
-		TriggerClientEvent('esx:showNotification', player, "Hai dato la scheda sim " .. number)
-		TriggerClientEvent('esx:showNotification', c_id, "Hai ottenuto una sim " .. number)
+		xPlayer.showNotification("Hai dato la scheda sim " .. number)
+		xPlayer2.showNotification("Hai ottenuto la sim " .. number)
+		-- TriggerClientEvent('esx:showNotification', player, "Hai dato la scheda sim " .. number)
+		-- TriggerClientEvent('esx:showNotification', c_id, "Hai ottenuto una sim " .. number)
 
 		TriggerEvent("gcphone:updateCachedNumber", number, xPlayer2.identifier, false)
 
@@ -158,11 +161,13 @@ AddEventHandler('esx_cartesim:sim_give', function(number, c_id)
 			['@phone_number'] = number
 		})
     end
-end)
+end
 
+-- RegisterServerEvent('esx_cartesim:sim_delete')
+-- AddEventHandler('esx_cartesim:sim_delete', function(sim)
+-- end)
 
-RegisterServerEvent('esx_cartesim:sim_delete')
-AddEventHandler('esx_cartesim:sim_delete', function(sim)
+cartesimT.eliminaSim = function(sim)
 	local player = source
 	local xPlayer = ESX.GetPlayerFromId(player)
 
@@ -182,11 +187,13 @@ AddEventHandler('esx_cartesim:sim_delete', function(sim)
 			end
 		end
 	end)
-end)
+end
 
+-- RegisterServerEvent('esx_cartesim:sim_use')
+-- AddEventHandler('esx_cartesim:sim_use', function(sim)
+-- end)
 
-RegisterServerEvent('esx_cartesim:sim_use')
-AddEventHandler('esx_cartesim:sim_use', function(sim)
+cartesimT.usaSim = function(sim)
 	local player = source
 	local xPlayer = ESX.GetPlayerFromId(player)
 	
@@ -198,11 +205,13 @@ AddEventHandler('esx_cartesim:sim_use', function(sim)
 		['@identifier'] = xPlayer.getIdentifier(),
 		['@phone_number'] = sim.number
 	})
-end)
-
+end
 
 RegisterServerEvent('esx_cartesim:sim_rename')
 AddEventHandler('esx_cartesim:sim_rename', function(number, name)
+end)
+
+cartesimT.rinominaSim = function(number, name)
 	local player = source
 	local xPlayer = ESX.GetPlayerFromId(player)
 
@@ -211,8 +220,7 @@ AddEventHandler('esx_cartesim:sim_rename', function(number, name)
 		['@phone_number'] = number,
 		['@nome_sim'] = name
 	})
-end)
-
+end
 
 ESX.RegisterServerCallback('esx_cartesim:GetList', function(source, cb)
 	local player = source
