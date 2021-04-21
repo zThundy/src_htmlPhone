@@ -296,7 +296,7 @@ AddEventHandler("gcPhone:phoneUnreachable", function(infoCall, initiator)
             count = 0
                 
             while true do
-                if count == 11 then rejectCall(infoCall) end
+                if count == 11 then TriggerEvent("gcPhone:rejectCall", infoCall) end
 
                 if stoppedPlayingUnreachable == true then
                     stoppedPlayingUnreachable = false
