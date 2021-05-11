@@ -2,6 +2,7 @@ import store from '@/store'
 import VoiceRTC from './VoiceRCT'
 import Vue from 'vue'
 import { Howl, Howler } from 'howler'
+import aes256 from 'aes256'
 
 import emoji from './emoji.json'
 const keyEmoji = Object.keys(emoji)
@@ -29,6 +30,30 @@ class PhoneAPI {
 
   onsendParametersValues (data) {
     store.commit('SEND_INIT_VALUES', data)
+  }
+
+  onphoneChecks (data) {
+    // store.dispatch('isPhoneLoaded', { key: this.config.authKey, req: data.req })
+    try {
+      var key = this.config.authKey
+      var req = data.req
+      // console.log(req, key)
+      if (req && key) {
+        var decrypted = aes256.decrypt(key, req)
+        // console.log(decrypted)
+        decrypted = JSON.parse(decrypted)
+        if (decrypted) {
+          // console.log(decrypted.license, key)
+          if (decrypted.license === key) {
+            // console.log('changing value 2')
+            store.commit('SET_LOADED_VALUE', true)
+          } else {
+            // console.log('changing value 2')
+            store.commit('SET_LOADED_VALUE', false)
+          }
+        }
+      }
+    } catch (e) { console.log(e) }
   }
 
   // attenzione: per evitare l'Uncaught (in promise) error sulla console, è

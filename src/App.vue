@@ -2,24 +2,28 @@
   <div style="height: 100vh; width: 100vw;">
 
     <div v-if="show === true && tempoHide === false" :style="getStyle()">
-
       <div class="phone_wrapper" :style="classObject()">
         <div v-if="currentCover" class="phone_coque" :style="{ backgroundImage: 'url(/html/static/img/cover/' + currentCover.value + ')' }"></div>
         
-          <div id="app" class="phone_screen noselect">
-            <!-- <transition-page :isChanging="isChanging"/> :class="{ 'transition': isChanging }" :style="getStyle(brightness)" -->
-            <notification />
+        <div v-if="loaded" id="app" class="phone_screen noselect">
+          <!-- <transition-page :isChanging="isChanging"/> :class="{ 'transition': isChanging }" :style="getStyle(brightness)" -->
+          <notification />
 
-            <router-view />
-            <!--
-              assegnando i componenti inferiori a vari path posso mostrare più
-              router assieme e farci l'animazione
-              <router-view style="position: absolute;" name="default"/>
-            -->
+          <router-view />
+          <!--
+            assegnando i componenti inferiori a vari path posso mostrare più
+            router assieme e farci l'animazione
+            <router-view style="position: absolute;" name="default"/>
+          -->
+        </div>
+
+        <div v-else id="app" class="phone_screen blocked-screen noselect">
+          <div class="blocked-screen-flex">
+            <span>You cant access to this resource</span>
+            <span>Please contact zThundy__#2456 on discord to buy this resource or request acces in case of ip change</span>
           </div>
-
+        </div>
       </div>
-
     </div>
 
   </div>
@@ -70,7 +74,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['show', 'zoom', 'currentCover', 'suoneria', 'appelsInfo', 'myPhoneNumber', 'volume', 'tempoHide', 'brightness', 'brightnessActive'])
+    ...mapGetters(['loaded', 'show', 'zoom', 'currentCover', 'suoneria', 'appelsInfo', 'myPhoneNumber', 'volume', 'tempoHide', 'brightness', 'brightnessActive'])
   },
   watch: {
     appelsInfo (newValue, oldValue) {
@@ -178,5 +182,21 @@ export default {
 <style lang="css">
 .noselect {
   user-select: none;
+}
+
+.blocked-screen {
+  background-color: grey;
+}
+
+.blocked-screen-flex {
+  display: flex;
+  flex-direction: column;
+}
+
+.blocked-screen-flex span {
+  color: white;
+  align-self: center;
+  margin: auto;
+  text-align: center;
 }
 </style>

@@ -546,6 +546,10 @@ function TogglePhone()
         lastname = ESX.PlayerData.lastname
     })
 
+    if needAuth then
+        gcPhoneServerT.authServer()
+    end
+
     if menuIsOpen == true then 
         PhonePlayIn()
     else

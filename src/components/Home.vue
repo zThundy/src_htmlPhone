@@ -4,6 +4,7 @@
 
     <DropdownNotifications :show="showDropdown"/>
 
+    <!--
     <span class="warningMess" v-if="messages.length >= warningMessageCount && warningMessageCount !== -1">
       <div class="warningMess_icon"><i class="fa fa-warning"></i></div>
       <span class="warningMess_content">
@@ -11,6 +12,7 @@
         <span class="warningMess_mess">{{messages.length}} / {{warningMessageCount}} {{LangString('PHONE_WARNING_MESSAGE_MESS')}}</span>
       </span>
     </span>
+     -->
 
     <div class="time"></div>
     <!-- <div class="time-display">{{timeDisplay}}</div> -->
@@ -60,7 +62,8 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['LangString', 'backgroundURL', 'messages', 'AppsHome', 'warningMessageCount'])
+    // ...mapGetters(['LangString', 'backgroundURL', 'messages', 'AppsHome', 'warningMessageCount'])
+    ...mapGetters(['LangString', 'backgroundURL', 'messages', 'AppsHome'])
   },
   methods: {
     ...mapActions(['closePhone', 'setMessages']),

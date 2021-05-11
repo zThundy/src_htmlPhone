@@ -1,6 +1,7 @@
 {
-  "reseau": "Code",
-  "warningMessageCount": -1,
+  "authKey": "cnjOl7UrYnhgzgBVIgr78bZMTRSyG57xTBUa7Di4",
+
+  "operator_title": "Code",
   "themeColor": "#3399FF",
   "colors": [
     "#EF5350",
@@ -21,8 +22,6 @@
     "#8D6E63",
     "#78909C"
   ],
-
-  "useFormatNumberFrance": true,
 
   "defaultVolume": 0.2,
 

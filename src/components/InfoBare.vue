@@ -1,6 +1,6 @@
 <template>
   <div style="width: auto; top: 4px;" class='phone_infoBare barre-header'>
-    <span class='reseau'>{{config.reseau}}</span>
+    <span class='operator_title'>{{config.operator_title}}</span>
     <span class="time">
       <current-time style="font-size: 12px; margin-right: 2px;"></current-time>
     </span>
@@ -104,7 +104,7 @@ export default {
   display: inline-block;
 }
 
-.reseau {
+.operator_title {
   font-size: 12px;
 }
 
