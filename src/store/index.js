@@ -34,7 +34,6 @@ export default new Vuex.Store({
     tchat,
     twitter,
     dati,
-    wifi,
     instagram,
     whatsapp,
     galleria,
