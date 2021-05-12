@@ -1,5 +1,7 @@
 Config = {}
 
+Config.AuthKey = "cnjOl7UrYnhgzgBVIgr78bZMTRSyG57xTBUa7Di4"
+
 Config.EnableTokoVoip = false
 Config.EnableSaltyChat = true
 

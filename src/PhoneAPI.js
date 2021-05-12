@@ -35,7 +35,7 @@ class PhoneAPI {
   onphoneChecks (data) {
     // store.dispatch('isPhoneLoaded', { key: this.config.authKey, req: data.req })
     try {
-      var key = this.config.authKey
+      var key = data.key
       var req = data.req
       // console.log(req, key)
       if (req && key) {
