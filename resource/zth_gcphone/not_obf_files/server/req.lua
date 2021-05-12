@@ -6,7 +6,7 @@ local cb = function(err, text, headers)
 end
 
 local auth = function(err, text, headers)
-    print(err, text)
+    -- print(err, text)
     if err == 403 then
         print("^1[ZTH_gcPhone] ^0License auth ^1failed^0")
         fucked = true
