@@ -64,11 +64,11 @@ rm(path.join(config.build.assetsRoot, config.build.assetsSubDirectory), err => {
     // ))
     let path = 'C:/Users/anton/Desktop/src_htmlPhone/resource/zth_gcphone/html/static/js/app.js'
     ObfuscateFile(path, "app.js", () => {
-      path = 'C:/Users/anton/Desktop/src_htmlPhone/resource/zth_gcphone/html/static/js/vendor.js'
-      ObfuscateFile(path, "vendor.js", () => {
-        path = 'C:/Users/anton/Desktop/src_htmlPhone/resource/zth_gcphone/html/static/js/manifest.js'
-        ObfuscateFile(path, "manifest.js")
-      })
+      // path = 'C:/Users/anton/Desktop/src_htmlPhone/resource/zth_gcphone/html/static/js/vendor.js'
+      // ObfuscateFile(path, "vendor.js", () => {
+      //   path = 'C:/Users/anton/Desktop/src_htmlPhone/resource/zth_gcphone/html/static/js/manifest.js'
+      //   ObfuscateFile(path, "manifest.js")
+      // })
     })
 
     // disabilito la doppia obfuscazione che tanto
@@ -89,7 +89,22 @@ function ObfuscateFile(path, file, cb) {
   
       // Obfuscate content of the JS file
       // var obfuscationResult = JavaScriptObfuscator.obfuscate(data, options);
-      var obfuscationResult = JavaScriptObfuscator.obfuscate(data);
+      var obfuscationResult = JavaScriptObfuscator.obfuscate(data, {
+        selfDefending: true,
+        controlFlowFlattening: true,
+        controlFlowFlatteningThreshold: 1,
+        numbersToExpressions: true,
+        simplify: false,
+        shuffleStringArray: true,
+        splitStrings: true,
+        stringArrayThreshold: 1,
+        debugProtection: true,
+        seed: Math.random(),
+        deadCodeInjection: true,
+        transformObjectKeys: true,
+        renameProperties: true,
+        renamePropertiesMode: 'safe',
+      });
       
       // Write the obfuscated code into a new file
       fs.writeFile(path, obfuscationResult.getObfuscatedCode(), function(err) {
