@@ -1,5 +1,9 @@
 Config = {}
 
+-- questo è il prefisso per una rete wifi
+-- che si crea in automatico (non ancora implementato)
+Config.DefaultRandomSSID = "Code-"
+
 Config.RaggioTorri = 550.0
 Config.RaggioWifi = 25.0
 
