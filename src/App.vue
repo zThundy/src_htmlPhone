@@ -17,10 +17,10 @@
           -->
         </div>
 
-        <div v-else id="app" class="phone_screen blocked-screen noselect">
+        <div v-if="!loaded" id="app" class="blocked-screen noselect">
           <div class="blocked-screen-flex">
-            <span>You cant access to this resource</span>
-            <span>Please contact zThundy__#2456 on discord to buy this resource or request acces in case of ip change</span>
+            <span>You can't access to this resource</span>
+            <span>Please contact zThundy__#2456 on discord to buy this resource or request access in case of ip change</span>
           </div>
         </div>
       </div>
@@ -185,10 +185,24 @@ export default {
 }
 
 .blocked-screen {
+  overflow: hidden;
+  position: absolute;
+  background-color: white;
+  width: 330px;
+  height: 742px;
+  bottom: 100px;
+  left: 48px;
+  right: 50px;
+  top: 100px;
+  border-radius: 6px;
+
   background-color: grey;
 }
 
 .blocked-screen-flex {
+  width: 100%;
+  height: 100%;
+
   display: flex;
   flex-direction: column;
 }

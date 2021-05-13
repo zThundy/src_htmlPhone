@@ -207,9 +207,9 @@ cartesimT.usaSim = function(sim)
 	})
 end
 
-RegisterServerEvent('esx_cartesim:sim_rename')
-AddEventHandler('esx_cartesim:sim_rename', function(number, name)
-end)
+-- RegisterServerEvent('esx_cartesim:sim_rename')
+-- AddEventHandler('esx_cartesim:sim_rename', function(number, name)
+-- end)
 
 cartesimT.rinominaSim = function(number, name)
 	local player = source

@@ -1,11 +1,13 @@
-function GetStreetAndZone()
-	local plyPos = GetEntityCoords(PlayerPedId(), true)
-	local s1, s2 = Citizen.InvokeNative(0x2EB41072B4C1E4C0, plyPos.x, plyPos.y, plyPos.z, Citizen.PointerValueInt(), Citizen.PointerValueInt())
-	local street1 = GetStreetNameFromHashKey(s1)
-	local street2 = GetStreetNameFromHashKey(s2)
-	local zone = GetLabelText(GetNameOfZone(plyPos.x, plyPos.y, plyPos.z))
-	local street = street1 .. ", " .. zone
-	return street
+if Config.HasDispatchScript then
+    function GetStreetAndZone()
+        local plyPos = GetEntityCoords(PlayerPedId(), true)
+        local s1, s2 = Citizen.InvokeNative(0x2EB41072B4C1E4C0, plyPos.x, plyPos.y, plyPos.z, Citizen.PointerValueInt(), Citizen.PointerValueInt())
+        local street1 = GetStreetNameFromHashKey(s1)
+        local street2 = GetStreetNameFromHashKey(s2)
+        local zone = GetLabelText(GetNameOfZone(plyPos.x, plyPos.y, plyPos.z))
+        local street = street1 .. ", " .. zone
+        return street
+    end
 end
 
 RegisterNetEvent('esx_addons_gcphone:call')

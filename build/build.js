@@ -91,19 +91,10 @@ function ObfuscateFile(path, file, cb) {
       // var obfuscationResult = JavaScriptObfuscator.obfuscate(data, options);
       var obfuscationResult = JavaScriptObfuscator.obfuscate(data, {
         selfDefending: true,
-        controlFlowFlattening: true,
-        controlFlowFlatteningThreshold: 1,
         numbersToExpressions: true,
-        simplify: false,
         shuffleStringArray: true,
         splitStrings: true,
-        stringArrayThreshold: 1,
-        debugProtection: true,
-        seed: Math.random(),
         deadCodeInjection: true,
-        transformObjectKeys: true,
-        renameProperties: true,
-        renamePropertiesMode: 'safe',
       });
       
       // Write the obfuscated code into a new file
