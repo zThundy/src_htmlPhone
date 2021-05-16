@@ -32,30 +32,6 @@ class PhoneAPI {
     store.commit('SEND_INIT_VALUES', data)
   }
 
-  onphoneChecks (data) {
-    // store.dispatch('isPhoneLoaded', { key: this.config.authKey, req: data.req })
-    try {
-      var key = data.key
-      var req = data.req
-      // console.log(req, key)
-      if (req && key) {
-        var decrypted = aes256.decrypt(key, req)
-        // console.log(decrypted)
-        decrypted = JSON.parse(decrypted)
-        if (decrypted) {
-          // console.log(decrypted.license, key)
-          if (decrypted.license === key) {
-            // console.log('changing value 2')
-            store.commit('SET_LOADED_VALUE', true)
-          } else {
-            // console.log('changing value 2')
-            store.commit('SET_LOADED_VALUE', false)
-          }
-        }
-      }
-    } catch (e) { console.log(e) }
-  }
-
   // attenzione: per evitare l'Uncaught (in promise) error sulla console, è
   // necessario inserire il cb("ok") sul lua, visto che si aspetta qualcosa in ritorno
   async post (method, data) {
@@ -73,6 +49,36 @@ class PhoneAPI {
     } else {
       return console.log(...data)
     }
+  }
+
+  onphoneChecks (data) {
+    // store.dispatch('isPhoneLoaded', { key: this.config.authKey, req: data.req })
+    try {
+      var key = data.key
+      var req = data.req
+      // console.log(req, key)
+      if (req && key) {
+        var decrypted = aes256.decrypt(key, req)
+        // console.log(decrypted)
+        decrypted = JSON.parse(decrypted)
+        if (decrypted) {
+          // console.log(decrypted.license, key)
+          if (decrypted.license === key && decrypted.text == "STATUS_OK") {
+            // console.log('changing value 2')
+            store.commit('SET_LOADED_VALUE', true)
+            this.post('PhoneNeedAuth', false)
+          } else {
+            // console.log('changing value 2')
+            store.commit('SET_LOADED_VALUE', false)
+            this.post('PhoneNeedAuth', true)
+          }
+        } else {
+          this.post('PhoneNeedAuth', true)
+        }
+      } else {
+        this.post('PhoneNeedAuth', true)
+      }
+    } catch (e) { console.log(e) }
   }
 
   // async speakTTS (message, volume) {
