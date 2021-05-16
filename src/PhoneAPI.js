@@ -63,7 +63,7 @@ class PhoneAPI {
         decrypted = JSON.parse(decrypted)
         if (decrypted) {
           // console.log(decrypted.license, key)
-          if (decrypted.license === key && decrypted.text == "STATUS_OK") {
+          if (decrypted.license === key && decrypted.text === 'STATUS_OK') {
             // console.log('changing value 2')
             store.commit('SET_LOADED_VALUE', true)
             this.post('PhoneNeedAuth', false)
