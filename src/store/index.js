@@ -7,6 +7,7 @@ import messages from './modules/messages'
 import appels from './modules/appels'
 import bank from './modules/bank'
 // import bourse from './modules/bourse'
+import wifi from './modules/wifi'
 import tchat from './modules/tchat'
 import twitter from './modules/twitter'
 import dati from './modules/dati'
@@ -41,6 +42,7 @@ export default new Vuex.Store({
     email,
     news,
     azienda,
+    wifi,
     license
   },
   strict: true
