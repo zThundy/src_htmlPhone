@@ -1,39 +1,29 @@
 local bluetooth = false
 
-RegisterNUICallback("requestBluetoothPlayers", function(data, cb)
-    if not bluetooth then
-        bluetooth = data.toggle
-        TriggerServerEvent("gcphone:bluetooth_changeEnabledState", bluetooth)
+RegisterNUICallback("getClosestPlayers", function(data, cb)
+    -- gcPhoneServerT.bluetooth_changeEnabledState(bluetooth)
+    local players = {}
 
-        Citizen.CreateThread(function()
-            local players = {}
+    local tempPlayers = ESX.Game.GetPlayersInArea(GetEntityCoords(GetPlayerPed(-1)), Config.BluetoothRange + 0.1)
+    for _, c_source in pairs(tempPlayers) do table.insert(players, {
+        userid = GetPlayerServerId(c_source),
+        name = GetPlayerName(c_source)
+    }) end
 
-            while bluetooth do
-                Citizen.Wait(10000)
-                players = {}
-
-                local tempPlayers = ESX.Game.GetPlayersInArea(GetEntityCoords(GetPlayerPed(-1)), Config.BluetoothRange)
-                for _, c_source in pairs(tempPlayers) do table.insert(players, GetPlayerServerId(c_source)) end
-
-                ESX.TriggerServerCallback("gcphone:bluetooth_getPlayersLabel", function(users)
-                    if #players > 0 then
-                        SendNUIMessage({ event = "sendClosestPlayers", players = users })
-                    end
-                end, players)
-            end
-
-            bluetooth = false
-            TriggerServerEvent("gcphone:bluetooth_changeEnabledState", bluetooth)
-        end)
-    end
+    cb(players)
+    -- gcPhoneServerT.bluetooth_changeEnabledState(bluetooth)
 end)
 
-
 RegisterNUICallback("sendPicToUser", function(data, cb)
-    TriggerServerEvent("gcphone:bluetooth_sendPicToUser", data)
+    gcPhoneServerT.bluetooth_sendPicToUser(data)
+    -- TriggerServerEvent("gcphone:bluetooth_sendPicToUser", data)
     cb("ok")
 end)
 
+RegisterNUICallback("bluetoothToggled", function(data, cb)
+    bluetooth = data
+    cb("ok")
+end)
 
 RegisterNetEvent("gcphone:bluetooth_receivePic")
 AddEventHandler("gcphone:bluetooth_receivePic", function(link)

@@ -31,7 +31,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['LangString', 'fotografie', 'closestPlayers', 'bluetooth'])
+    ...mapGetters(['LangString', 'fotografie', 'bluetooth'])
   },
   methods: {
     ...mapActions(['setBackground', 'clearGallery']),
@@ -79,7 +79,7 @@ export default {
         let choix = [
           { id: 1, title: this.LangString('APP_GALLERIA_SET_WALLPAPER'), icons: 'fa-mobile' },
           { id: 2, title: this.LangString('APP_GALLERIA_INOLTRA'), icons: 'fa-paper-plane' },
-          // { id: 4, title: this.LangString('APP_GALLERIA_SEND_BLUETOOTH'), icons: 'fa-share-square' },
+          { id: 4, title: this.LangString('APP_GALLERIA_SEND_BLUETOOTH'), icons: 'fa-share-square' },
           { id: 3, title: this.LangString('APP_GALLERIA_ELIMINA_TUTTO'), icons: 'fa-trash', color: 'orange' },
           { id: -1, title: this.LangString('CANCEL'), icons: 'fa-undo', color: 'red' }
         ]
@@ -103,6 +103,7 @@ export default {
                 this.ignoredControls = true
                 let choix = []
                 var cancel = { id: -1, title: this.LangString('CANCEL'), icons: 'fa-undo', color: 'red' }
+                var closestPlayers = this.$phoneAPI.getClosestPlayers()
                 for (var i in this.closestPlayers) { choix.push({ id: this.closestPlayers[i].id, label: this.closestPlayers[i].name, title: this.closestPlayers[i].name, icons: 'fa-share-square' }) }
                 choix.push(cancel)
                 const data = await Modal.CreateModal({ choix })

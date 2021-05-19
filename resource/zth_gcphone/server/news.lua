@@ -23,7 +23,6 @@ gcPhoneT.news_sendNewPost = function(data)
     end)
 end
 
-
 function GetFetchedNews(cb)
     MySQL.Async.fetchAll("SELECT * FROM phone_news ORDER BY id DESC LIMIT 50", {}, function(result)
         for k, v in pairs(result) do

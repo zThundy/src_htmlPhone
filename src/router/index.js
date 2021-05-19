@@ -28,7 +28,7 @@ import TwitterScreen from '@/components/twitter/TwitterScreen'
 import InstaSpashScreen from '@/components/instagram/InstagramSpashScreen'
 import InstaScreen from '@/components/instagram/InstagramScreen'
 
-import Parametre from '@/components/parametre/Parametre'
+import Settings from '@/components/settings/Settings'
 import Photo from '@/components/Photo/Photo'
 
 // import Borsa from '@/components/Borsa/Borsa'
@@ -183,8 +183,8 @@ export default new Router({
     },
     {
       path: '/paramtre',
-      name: 'parametre',
-      component: Parametre
+      name: 'settings',
+      component: Settings
     },
     {
       path: '/appels',

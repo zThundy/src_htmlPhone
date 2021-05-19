@@ -1,7 +1,6 @@
 local sourceCoords = {}
 local suonerieAttive = {}
 
-
 -- questo evento viene chiamato da chi termina la suoneria, per qualsiasi motivo,
 -- e pulisce tutte le table a tutti i client
 RegisterServerEvent("gcphone:endSuoneriaForOthers")
@@ -12,7 +11,6 @@ AddEventHandler("gcphone:endSuoneriaForOthers", function(users)
 
     TriggerClientEvent("gcphone:endSuoneriaForSecondUser", -1, sourceId)
 end)
-
 
 -- questo evento aggiorna le coordinate dell'utente
 -- che ha avviato la call ed è la sourceId
@@ -28,7 +26,6 @@ AddEventHandler("gcphone:updateMyCoordsForOthers", function(coords, users)
         TriggerClientEvent("gcphone:startSuoneriaForSecondUser", user, sourceId, suonerieAttive[sourceId].sound, sourceCoords[sourceId])
     end
 end)
-
 
 -- questo evento avvia il loop che controlla la distanza dalla source
 -- per tutti gli utenti vicini alla source

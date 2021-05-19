@@ -848,13 +848,20 @@ class PhoneAPI {
   //   return this.post('requestBluetoothPlayers', { toggle: bool })
   // }
 
+  async bluetoothToggled (data) {
+    this.post('bluetoothToggled', data)
+  }
+
   async sendPicToUser (data) {
     this.post('sendPicToUser', data)
   }
 
-  onsendClosestPlayers (users) {
-    store.commit('UPDATE_CLOSEST_PLAYERS', users)
+  async getClosestPlayers () {
+    return this.post('getClosestPlayers')
   }
+  // onsendClosestPlayers (users) {
+  //   store.commit('UPDATE_CLOSEST_PLAYERS', users)
+  // }
 
   onaddPicToGallery (data) {
     store.dispatch('addPhoto', data)

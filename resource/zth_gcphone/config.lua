@@ -5,19 +5,28 @@ Config.AuthKey = "po82TPxrwlsiEW1GRLMpD6BHfpAmpcUVT3Eb2j2P"
 Config.EnableTokoVoip = false
 Config.EnableSaltyChat = true
 
+-- This is the configured key that you'll need to press to
+-- answer a static phone
 Config.KeyTakeCall = 46
+Config.KeyLabel = "~INPUT_CONTEXT~"
+-- This is the iban string length generated for
+-- each user on login
+Config.IbanStringLength = 7
 
-Config.Debug = false
+Config.PhoneDebug = false
+
+-- if enabled this will check if you have the phone item
+-- in your inventory
+Config.EnablePhoneItem = true
+-- this is the name assigned to the phone item
+Config.PhoneItemName = "phone"
 
 Config.BluetoothRange = 5.0
 Config.MaxSunoeriaDistance = 10.0
 
 Config.TelefoniFissi = {
-    -- Telefono Fisso Gioielleria
-    ['555889280'] = { name = "Gioielleria", coords = { x = -630.271, y = -230.216, z = 38.047 } },
-    
-    -- Telefono Fisso Fleeca
-    ['555621458'] = { name = "Fleeca Autostrada", coords = { x = -2958.855, y = 479.614, z = 15.790 } },
+    ['555889280'] = { name = "Gewlery", coords = { x = -630.271, y = -230.216, z = 38.047 } },
+    ['555621458'] = { name = "Fleeca", coords = { x = -2958.855, y = 479.614, z = 15.790 } },
 }
 
 Config.Keys = {
@@ -30,7 +39,7 @@ Config.Keys = {
 }
 
 Config.ShowNumberNotification = false
-Config.SurePropCleanup = false
+Config.EnsurePropCleanup = false
 
 Config.CoverShop = vector3(45.04, -1768.76, 29.61)
 

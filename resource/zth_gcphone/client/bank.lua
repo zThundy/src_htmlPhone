@@ -5,18 +5,15 @@ AddEventHandler('esx:playerLoaded', function()
     end)
 end)
 
-
 RegisterNetEvent("gcphone:bank_sendBankMovements")
 AddEventHandler("gcphone:bank_sendBankMovements", function(movements)
     SendNUIMessage({ event = "updateBankMovements", movements = movements })
 end)
 
-
 RegisterNUICallback("sendMoneyToIban", function(data, cb)
     gcPhoneServerT.sendMoneyToUser(data)
     cb("ok")
 end)
-
 
 RegisterNUICallback("requestBankInfo", function(data, cb)
     ESX.TriggerServerCallback("gcphone:bank_getBankInfo", function(bank, iban)
@@ -24,7 +21,6 @@ RegisterNUICallback("requestBankInfo", function(data, cb)
     end)
     cb("ok")
 end)
-
 
 RegisterNUICallback("requestFatture", function(data, cb)
     -- ESX.TriggerServerCallback("gcphone:bank_requestMyFatture", function(fatture)
@@ -39,7 +35,6 @@ RegisterNUICallback("requestFatture", function(data, cb)
     cb("ok")
 end)
 
-
 RegisterNUICallback("pagaFattura", function(data, cb)
     ESX.TriggerServerCallback("esx_billing:payBill", function(ok)
         if ok then
@@ -50,7 +45,6 @@ RegisterNUICallback("pagaFattura", function(data, cb)
     
     cb("ok")
 end)
-
 
 RegisterNetEvent("gcPhone:updateBankAmount")
 AddEventHandler("gcPhone:updateBankAmount", function(amount, iban)

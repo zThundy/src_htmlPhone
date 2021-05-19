@@ -7,7 +7,6 @@ end
 RegisterNetEvent("camera:open")
 AddEventHandler("camera:open", function() TakePhoto(nil) end)
 
-
 RegisterNUICallback('takePhoto', function(data, cb) TakePhoto(data, cb) end)
 
 function TakePhoto(data, cb)

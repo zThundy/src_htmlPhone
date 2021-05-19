@@ -1,11 +1,6 @@
-Reti = nil
-TriggerEvent("esx_wifi:getSharedObject", function(obj) Reti = obj end)
-
 local creationTimeout = {}
-gcPhoneT.modem_createModem = function(label, password, coords)
-    -- lo refresho ogni volta che chiamo sto evento perché porcoddio
-    TriggerEvent("esx_wifi:getSharedObject", function(obj) Reti = obj end)
 
+gcPhoneT.modem_createModem = function(label, password, coords)
     local player = source
     local xPlayer = ESX.GetPlayerFromId(player)
 
@@ -44,7 +39,7 @@ gcPhoneT.modem_rinnovaModem = function()
 
     if points >= Config.RinnovaModemPoints then
 
-        MySQL.Async.fetchAll("SELECT * FROM home_wifi_nets WHERE steam_id = @identifier", {
+        MySQL.Async.fetchAll("SELECT * FROM phone_wifi_nets WHERE steam_id = @identifier", {
             ['@identifier'] = xPlayer.identifier
         }, function(result)
             if #result > 0 then
@@ -95,12 +90,11 @@ AddEventHandler("gcphone:modem_compraModem", function()
     end
 end)
 
-
 ESX.RegisterServerCallback("gcphone:modem_getMenuInfo", function(source, cb)
     local elements = {}
     local xPlayer = ESX.GetPlayerFromId(source)
 
-    MySQL.Async.fetchAll("SELECT * FROM home_wifi_nets WHERE steam_id = @identifier", {
+    MySQL.Async.fetchAll("SELECT * FROM phone_wifi_nets WHERE steam_id = @identifier", {
         ['@identifier'] = xPlayer.identifier
     }, function(result)
         local points = exports["vip_points"]:getPoints(source) or 0

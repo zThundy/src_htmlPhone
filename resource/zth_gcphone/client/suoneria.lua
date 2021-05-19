@@ -5,7 +5,6 @@ RegisterNUICallback("endSuoneriaForOthers", function(data, cb)
     cb("ok")
 end)
 
-
 RegisterNUICallback("startSuoneriaForOthers", function(data, cb)
     local sound = data.sound
     TriggerServerEvent("gcphone:startSuoneriaForOthers", ESX.Game.GetPlayersInArea(GetEntityCoords(GetPlayerPed(-1)), Config.MaxSunoeriaDistance), sound, GetEntityCoords(GetPlayerPed(-1)))
@@ -13,19 +12,16 @@ RegisterNUICallback("startSuoneriaForOthers", function(data, cb)
     cb("ok")
 end)
 
-
 -- questo loop invia le coordinate di chi ha la suoneria attiva
 -- al server, dando la possibilità agli altri client di richiederle
 function StartCheckCoords()
     Citizen.CreateThread(function()
         while inCall do
             Citizen.Wait(2500)
-            
             TriggerServerEvent("gcphone:updateMyCoordsForOthers", GetEntityCoords(GetPlayerPed(-1)), ESX.Game.GetPlayersInArea(GetEntityCoords(GetPlayerPed(-1)), Config.MaxSunoeriaDistance))
         end
     end)
 end
-
 
 -- questo evento viene chiamato dal server a tutti gli utenti vicini alla source della
 -- suoneria. In più controlla se esci dal raggio o se rientri
@@ -33,7 +29,6 @@ end
 -- con 2000 richieste al secondo
 RegisterNetEvent("gcphone:startSuoneriaForSecondUser")
 AddEventHandler("gcphone:startSuoneriaForSecondUser", function(sourceId, sound, coords)
-
     -- questo controllo passa la prima volta (quando il client non ha nessuno registrato)
     -- con la suoneria attiva nelle vicinanze
     if sourceCoords[sourceId] == nil then
@@ -57,7 +52,6 @@ AddEventHandler("gcphone:startSuoneriaForSecondUser", function(sourceId, sound, 
         sourceCoords[sourceId] = coords
     end
 end)
-
 
 -- questo nel caso il giocatore risponda alla chiamata, o qualsiasi evento che
 -- termina la suoneria, chiude i loop di tutti gli utenti a prescindere che siano vivini o lontani

@@ -358,7 +358,7 @@
       "name": "Settings",
       "it_IT__name": "Settings",
       "icons": "/html/static/img/icons_app/settings.png",
-      "routeName": "parametre",
+      "routeName": "settings",
       "enabled": true
     },
     {

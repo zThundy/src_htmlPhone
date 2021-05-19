@@ -81,7 +81,6 @@ export default {
       'notification',
       'airplane',
       'bluetoothString',
-      'closestPlayers',
       'bluetooth',
       'currentCover',
       'myCovers',
@@ -115,13 +114,13 @@ export default {
           value: this.wifiString,
           values: []
         },
-        // {
-        //   meta: 'bluetooth',
-        //   icons: 'fa-bluetooth-b',
-        //   onValid: 'toggleBluetooth',
-        //   title: this.LangString('APP_CONFIG_BLUETOOTH'),
-        //   value: this.bluetoothString
-        // },
+        {
+          meta: 'bluetooth',
+          icons: 'fa-bluetooth-b',
+          onValid: 'toggleBluetooth',
+          title: this.LangString('APP_CONFIG_BLUETOOTH'),
+          value: this.bluetoothString
+        },
         {
           meta: 'notifications',
           icons: 'fa-bell',
@@ -264,6 +263,7 @@ export default {
 
     updateBluetoothTable () {
       this.closestPlayersRender = []
+      var closestPlayers = this.$phoneAPI.getClosestPlayers()
       for (var i in this.closestPlayers) {
         this.closestPlayersRender[this.closestPlayers[i].name] = {id: i, icon: 'fa-bluetooth-b', label: this.closestPlayers[i].name, value: this.closestPlayers[i].userid}
       }

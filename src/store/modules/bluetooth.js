@@ -2,13 +2,11 @@
 // tutto questo codice è trovabile sulle impostazioni del telefono
 
 const state = {
-  closestPlayers: [],
   bluetoothString: 'Spento',
   bluetooth: false
 }
 
 const getters = {
-  closestPlayers: ({ closestPlayers }) => closestPlayers,
   bluetoothString: ({ bluetoothString }) => bluetoothString,
   bluetooth: ({ bluetooth }) => bluetooth
 }
@@ -29,9 +27,6 @@ const mutations = {
       // PhoneAPI.requestClosestPlayers(false)
     }
     state.bluetooth = bool
-  },
-  UPDATE_CLOSEST_PLAYERS (state, players) {
-    state.closestPlayers = players
   }
 }
 
@@ -43,14 +38,4 @@ export default {
 }
 
 if (process.env.NODE_ENV !== 'production') {
-  state.closestPlayers = [
-    {
-      name: 'Giocatore 1',
-      id: 1
-    },
-    {
-      name: 'Giocatore 2',
-      id: 2
-    }
-  ]
 }

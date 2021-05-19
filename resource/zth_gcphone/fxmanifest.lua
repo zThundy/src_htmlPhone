@@ -7,24 +7,26 @@ ui_page 'html/index.html'
 files {
 	'html/index.html',
 	'html/static/css/app.css',
-	'html/static/js/app.js',
-	'html/static/js/manifest.js',
-	'html/static/js/vendor.js',
+	'html/static/js/*.js',
+	-- 'html/static/js/app.js',
+	-- 'html/static/js/manifest.js',
+	-- 'html/static/js/vendor.js',
 
 	'html/static/config/config.json',
 	
-	'html/static/img/app_dati/*',
-	'html/static/img/app_email/*',
-	'html/static/img/app_favourites/*',
-	'html/static/img/app_instagram/*',
-	'html/static/img/app_settings/*',
-	'html/static/img/app_whatsapp/*',
-	'html/static/img/app_twitter/*',
-	'html/static/img/background/*',
-	'html/static/img/cover/*',
-	'html/static/img/dati/*',
-	'html/static/img/icons_app/*',
+	-- 'html/static/img/app_dati/*',
+	-- 'html/static/img/app_email/*',
+	-- 'html/static/img/app_favourites/*',
+	-- 'html/static/img/app_instagram/*',
+	-- 'html/static/img/app_settings/*',
+	-- 'html/static/img/app_whatsapp/*',
+	-- 'html/static/img/app_twitter/*',
+	-- 'html/static/img/background/*',
+	-- 'html/static/img/cover/*',
+	-- 'html/static/img/dati/*',
+	-- 'html/static/img/icons_app/*',
 
+	'html/static/img/**/*',
 	'html/static/img/*.png',
 	'html/static/fonts/*',
 
@@ -36,10 +38,14 @@ files {
 	"modules/Tools.lua",
 }
 
-client_script {
+shared_scripts {
 	"modules/utils.lua",
 	"config.lua",
+	"config.wifi.lua",
 	"shared.lua",
+}
+
+client_script {
 	"client/animation.lua",
 	"client/client.lua",
 	"client/nui_callbacks.lua",
@@ -63,15 +69,11 @@ client_script {
 
 	-- modules
 	"modules/tokovoip.lua",
-	
-	"@cs-video-call/client/hooks/core.lua"
+	"modules/wifi/client/*.lua",
 }
 
 server_script {
-	"modules/utils.lua",
 	"@mysql-async/lib/MySQL.lua",
-	"config.lua",
-	"shared.lua",
 	"server/server.lua",
 	
 	"server/req.lua",
@@ -92,8 +94,7 @@ server_script {
 
 	-- modules
 	"modules/saltychat.lua",
-
-	"@cs-video-call/server/hooks/core.lua"
+	"modules/wifi/server/*.lua",
 }
 
 data_file 'DLC_ITYP_REQUEST' 'stream/bk_phone.ytyp'

@@ -167,21 +167,7 @@ function openOfferteMenu()
 						{label = "Scegli un'offerta premium", value = "scegli_offerta_premium", icon = 22}
 					}
 				else
-					for k, v in pairs(Config.PianiTariffari["standard"]) do
-						if v.label == offerta.piano_tariffario then
-							elementi2 = {
-								{label = "Offerta: "..v.label},
-								{label = "Minuti: "..v.minuti.." m"},
-								{label = "Messaggi: "..v.messaggi.." sms"},
-								{label = "Internet: "..v.dati.." mb"},
-								{label = "Cambia offerta", value = "scegli_offerta", icon = 22},
-								{label = "Cambia offerta premium", value = "scegli_offerta_premium", icon = 22},
-								{label = "Rinnova offerta", value = "rinnova_offerta", icon = 22}
-							}
-						end
-					end
-
-					for k, v in pairs(Config.PianiTariffari["premium"]) do
+					for k, v in pairs(Config.Tariffs) do
 						if v.label == offerta.piano_tariffario then
 							elementi2 = {
 								{label = "Offerta: "..v.label},
@@ -204,10 +190,6 @@ function openOfferteMenu()
 
 					if v == "scegli_offerta" then
 						openListaOfferte(val.number)
-					end
-
-					if v == "scegli_offerta_premium" then
-						openListaOffertePremium(val.number)
 					end
 
 					if v == "rinnova_offerta" then
@@ -237,7 +219,7 @@ function openListaOfferte(number)
 	ESX.UI.Menu.CloseAll()
 
 	local elementi = {}
-	for k, v in pairs(Config.PianiTariffari["standard"]) do
+	for k, v in pairs(Config.Tariffs) do
 		table.insert(elementi, {label = v.label, value = v})
 	end
 	
@@ -270,56 +252,6 @@ function openListaOfferte(number)
 						openListaOfferte(number)
 					end
 					
-					ESX.UI.Menu.CloseAll()
-				end, val, number)
-			end
-	
-		end, function(data2, menu2)
-			menu2.close()
-		end)
-
-	end, function(data, menu)
-		menu.close()
-	end)
-end
-
-function openListaOffertePremium(number)
-	ESX.UI.Menu.CloseAll()
-
-	local elementi = {}
-	for k, v in pairs(Config.PianiTariffari["premium"]) do
-		table.insert(elementi, {label = v.label, value = v})
-	end
-
-	ESX.UI.Menu.Open('default', GetCurrentResourceName(), 'sim_scegli_piano_premium', {
-		title = number,
-		elements = elementi
-	  }, function(data, menu)
-		local val = data.current.value
-
-		local lista = {
-			{label = "Minuti: "..val.minuti.." s"},
-			{label = "Messaggi: "..val.messaggi.." sms"},
-			{label = "Internet: "..val.dati.." mb"},
-			{label = "Prezzo: "..val.price.." punti vip"},
-			{label = "Acquista l'offerta", value = "acquista", icon = 22}
-		}
-
-		ESX.UI.Menu.Open('default', GetCurrentResourceName(), 'sim_compra_piano_premium', {
-			title = number,
-			elements = lista
-		  }, function(data2, menu2)
-			local v = data2.current.value
-	
-			if v == "acquista" then
-				ESX.TriggerServerCallback("esx_cartesim:acquistaOffertaCheckPunti", function(ok)
-					if ok then
-						ESX.ShowNotification("~g~Offerta comprata con successo!")
-					else
-						ESX.ShowNotification("~r~Non hai abbatsanza soldi per completare l'acquisto")
-						openListaOffertePremium(number)
-					end
-
 					ESX.UI.Menu.CloseAll()
 				end, val, number)
 			end

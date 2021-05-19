@@ -1,32 +1,9 @@
 function Reti.loadTorriRadio()
-	local torriRadioFunzionanti = {}
-	local torriRadioRotte = {}
-	local query = false
-	
-	MySQL.Async.fetchAll('SELECT * FROM phone_cell_towers', {}, function(result)
-		for i = 1, #result do
-			if result[i].broken == false then
-				torriRadioFunzionanti[i] = result[i]
-			else
-				torriRadioRotte[i] = result[i]
-			end
-		end
-
-		query = true
-	end)
-
-	while not query do Citizen.Wait(1000) end
-	
-	return torriRadioFunzionanti, torriRadioRotte
+	return MySQL.Sync.fetchAll('SELECT * FROM phone_cell_towers', {})
 end
 
 function Reti.loadRetiWifi()
-	local query = nil
-
-	MySQL.Async.fetchAll('SELECT * FROM phone_wifi_nets', {}, function(result) query = result end)
-	while query == nil do Citizen.Wait(1000) end
-	
-	return query
+	return MySQL.Sync.fetchAll('SELECT * FROM phone_wifi_nets', {})
 end
 
 function Reti.doesReteExist(retiWifi, owner_id)
@@ -39,6 +16,18 @@ function Reti.doesReteExist(retiWifi, owner_id)
 	end
 
 	return false
+end
+
+function Reti.updateCellTower(tower)
+	if tower then
+		MySQL.Async.execute("UPDATE phone_cell_towers SET tower_label = @label, x = @x, y = @y, broken = @broken WHERE id = @id", {
+			['@label'] = tower.tower_label,
+			['@x'] = tower.x,
+			['@y'] = tower.y,
+			['@broken'] = tower.broken,
+			['@id'] = tower.id
+		})
+	end
 end
 
 function Reti.AddReteWifi(source, rete, cb)
@@ -105,7 +94,7 @@ end
 function Reti.getRandomWiFiSSID()
 	ssid = Config.DefaultRandomSSID
 	
-	for i=1, 8 do
+	for i = 1, 8 do
 		ssid = ssid..tostring(math.random(0,9))
 	end
 	
@@ -133,7 +122,7 @@ end
 function Reti.getRandomWiFiPassword()
 	password = ""
 	
-	for i=1, 8 do
+	for i = 1, 8 do
 		password = password .. Reti.getRandomChar()
 	end
 	

@@ -1,20 +1,15 @@
-ESX.RegisterServerCallback("gcphone:bluetooth_getPlayersLabel", function(source, cb, players)
-    local users = {}
+local USERS_BLUETOOTH = {}
 
-    for _, player in pairs(players) do
-        if player ~= source then
-            table.insert(users, {
-                name = GetPlayerName(player),
-                id = player
-            })
-        end
-    end
-
-    cb(users)
-end)
-
-RegisterServerEvent("gcphone:bluetooth_sendPicToUser")
-AddEventHandler("gcphone:bluetooth_sendPicToUser", function(data)
+gcPhoneT.bluetooth_sendPicToUser = function(data)
     local player = source
-    TriggerClientEvent("gcphone:bluetooth_receivePic", player, data.id, data.link)
-end)
+    TriggerClientEvent("esx:showNotification", player, "~g~Immagine inviata con successo")
+    TriggerClientEvent("gcphone:bluetooth_receivePic", data.userid, data.link)
+end
+
+gcPhoneT.bluetooth_changeEnabledState = function(state)
+    local player = source
+    local xPlayer = ESX.GetPlayerFromId(player)
+
+    if state then xPlayer.showNotification("~g~Bluetooth acceso") else xPlayer.showNotification("~r~Bluetooth spento") end
+    USERS_BLUETOOTH[xPlayer.identifier] = state
+end

@@ -23,7 +23,6 @@ ESX.RegisterServerCallback("gcphone:cover_requestCovers", function(source, cb)
     end
 end)
 
-
 ESX.RegisterServerCallback("gcphone:cover_buyCover", function(source, cb, cover)
     local xPlayer = ESX.GetPlayerFromId(source)
 
@@ -50,7 +49,6 @@ ESX.RegisterServerCallback("gcphone:cover_buyCover", function(source, cb, cover)
         end
     end
 end)
-
 
 ESX.RegisterServerCallback("gcphone:cover_getMyPoints", function(source, cb)
     cb(exports["vip_points"]:getPoints(source))

@@ -47,16 +47,16 @@ gcPhoneT.tchat_addMessage = function(channel, message)
 	end)
 end
 
-RegisterServerEvent('gcPhone:custom_tchat_addMessage')
-AddEventHandler('gcPhone:custom_tchat_addMessage', function(channel, message)
-	local player = source
-	local identifier = gcPhone.getPlayerID(player)
-	
-	gcPhone.isAbleToSurfInternet(identifier, 0.05, function(isAble, mbToRemove)
-		if isAble then
-			gcPhone.usaDatiInternet(identifier, mbToRemove)
-
-			TchatAddMessage(channel, message)
-  		end
-	end)
-end)
+-- RegisterServerEvent('gcPhone:custom_tchat_addMessage')
+-- AddEventHandler('gcPhone:custom_tchat_addMessage', function(channel, message)
+-- 	local player = source
+-- 	local identifier = gcPhone.getPlayerID(player)
+-- 	
+-- 	gcPhone.isAbleToSurfInternet(identifier, 0.05, function(isAble, mbToRemove)
+-- 		if isAble then
+-- 			gcPhone.usaDatiInternet(identifier, mbToRemove)
+-- 
+-- 			TchatAddMessage(channel, message)
+--   		end
+-- 	end)
+-- end)

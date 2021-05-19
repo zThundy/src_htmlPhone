@@ -14,7 +14,6 @@ Citizen.CreateThread(function()
 	})
 end)
 
-
 RegisterNetEvent("gcphone:modem_chooseCredentials")
 AddEventHandler("gcphone:modem_chooseCredentials", function()
 	local data = {limit = 255, title = "Scegli il nome della rete"}
@@ -25,12 +24,10 @@ AddEventHandler("gcphone:modem_chooseCredentials", function()
 	gcPhoneServerT.modem_createModem(label, password, GetEntityCoords(GetPlayerPed(-1)))
 end)
 
-
 RegisterNetEvent("gcphone:modem_updateMenu")
 AddEventHandler("gcphone:modem_updateMenu", function()
 	OpenModemManagement()
 end)
-
 
 function OpenModemManagement()
 	ESX.UI.Menu.CloseAll()
@@ -69,7 +66,6 @@ function OpenModemManagement()
 		}, onMenuSelect, onMenuClose)
 	end)
 end
-
 
 AddEventHandler("gridsystem:hasExitedMarker", function(marker)
     if marker == nil then return end
