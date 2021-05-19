@@ -1,7 +1,7 @@
 gcPhoneT.azienda_requestJobInfo = function()
     local player = source
     local xPlayer = ESX.GetPlayerFromId(source)
-    local jobPlayers = ESX.GetPlayersWithJob(xPlayer.job.name)
+    local jobPlayers = GetPlayersWithJob(xPlayer.job.name)
     local myJobInfo, myAziendaInfo = {}, {}
 
     -- for i, v in pairs(xPlayer) do
@@ -36,8 +36,7 @@ gcPhoneT.azienda_requestJobInfo = function()
                     myAziendaInfo.employes = {}
                     -- myAziendaInfo.img = ??????
 
-                    for _, src in pairs(jobPlayers) do
-                        xPlayer = ESX.GetPlayerFromId(src)
+                    for _, xPlayer in pairs(jobPlayers) do
                         table.insert(myAziendaInfo.employes, {
                             steamid = xPlayer.identifier,
                             grade = xPlayer.job.grade,
@@ -54,8 +53,8 @@ gcPhoneT.azienda_requestJobInfo = function()
                     end)
 
                     GetAziendaMessages(player, xPlayer.job.name, function(messages)
-                        for _, v in pairs(jobPlayers) do
-                            TriggerClientEvent("gcphone:azienda_retriveMessages", v, messages)
+                        for _, xPlayer in pairs(jobPlayers) do
+                            TriggerClientEvent("gcphone:azienda_retriveMessages", xPlayer.source, messages)
                         end
                     end)
 
@@ -91,9 +90,8 @@ gcPhoneT.azienda_sendAziendaMessage = function(azienda, number, message)
                         if isAble then
                             gcPhone.usaDatiInternet(xPlayer.identifier, mbToRemove)
 
-                            local jobPlayers = ESX.GetPlayersWithJob(azienda)
-                            for _, v in pairs(jobPlayers) do
-                                TriggerClientEvent("gcphone:azienda_retriveMessages", v, messages)
+                            for _, xPlayer in pairs(GetPlayersWithJob(azienda)) do
+                                TriggerClientEvent("gcphone:azienda_retriveMessages", xPlayer.source, messages)
                                 AziendaShowError(v, 'AZIENDA_INFO_TITLE', 'APP_AZIENDA_NEW_MESSAGE')
                             end
                         else
@@ -153,9 +151,9 @@ gcPhoneT.azienda_employeAction = function(action, employe)
         else
             AziendaShowError(player, 'AZIENDA_INFO_TITLE', 'APP_AZIENDA_NOTIF_NO_CONNECTION')
         end
-    end)
 
-    UpdateAziendaEmployes(xPlayer.job.name)
+        UpdateAziendaEmployes(xPlayer.job.name)
+    end)
 end
 
 gcPhoneT.azienda_requestAziendaMessages = function()
@@ -222,12 +220,11 @@ function GetAziendaMessages(source, azienda, cb)
 end
 
 function UpdateAziendaEmployes(azienda, cb)
-    local jobPlayers = ESX.GetPlayersWithJob(azienda)
+    local jobPlayers = GetPlayersWithJob(azienda)
     local xPlayer = {}
     local employes = {}
 
-    for _, src in pairs(jobPlayers) do
-        xPlayer = ESX.GetPlayerFromId(src)
+    for _, xPlayer in pairs(jobPlayers) do
         table.insert(employes, {
             steamid = xPlayer.identifier,
             grade = xPlayer.job.grade,
@@ -252,4 +249,15 @@ function AziendaShowError(player, title, message)
 		color = "rgb(255, 180, 89)",
 		appName = "Azienda"
 	})
+end
+
+function GetPlayersWithJob(job)
+    local xPlayers = {}
+    for _, source in pairs(ESX.GetPlayers()) do
+        local xPlayer = ESX.GetPlayerFromId(source)
+        if xPlayer and xPlayer.job.name == job then
+            table.insert(xPlayers, xPlayer)
+        end
+    end
+    return xPlayers
 end

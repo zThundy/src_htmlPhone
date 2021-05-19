@@ -853,7 +853,7 @@ class PhoneAPI {
   }
 
   async updateBluetooth (data) {
-    return this.post("updateBluetooth", data)
+    return this.post('updateBluetooth', data)
   }
 
   async getClosestPlayers () {
