@@ -21,6 +21,8 @@ Config.EnablePhoneItem = true
 -- this is the name assigned to the phone item
 Config.PhoneItemName = "phone"
 
+-- this will be the maximum range for bluetooth
+-- picture sharing between players
 Config.BluetoothRange = 5.0
 Config.MaxSunoeriaDistance = 10.0
 
@@ -38,19 +40,32 @@ Config.Keys = {
     { code = 177, event = 'Backspace' },
 }
 
+-- this will enable the message notification called
+-- using the function ESX.ShowNotification()
 Config.ShowNumberNotification = false
+-- this will ensure the prop cleanup everytime the player will
+-- close the phone (not so efficient. not recommended)
 Config.EnsurePropCleanup = false
 
+-- this will be the coordinates where you'll find the cover
+-- shop for your phone
 Config.CoverShop = vector3(45.04, -1768.76, 29.61)
 
+-- this will be the default cover that your phone will have
+-- on firstlogin of a user. Keep in mind that the prop need to exists in
+-- the stream folder of this resource
 Config.BaseCover = {prop = "prop_amb_phone", label = "Nessuna cover"}
 
 --[[
-    @nomecover = è il nome dell'immagine senza il .png finale NON MODIFICARE
+    EDIT THE LINES WITH THE * AT THE END ONLY IF YOU KNOW
+    WHAT YOU'RE DOING
+
+    @nomecover = will be the name of the png file without the ending .png
     [nomecover] = {
-        @price = il prezzo da pagare in punti per comperare quella cover
-        @prop = il nome del prop della cover da mostrare in gioco. NON MODIFICARE
-        @label = cosa verrà mostrato sul telefono e sullo shop
+        @price = the price your user will need to pay to purchase this cover
+        set @price to 0 if you want the cover to be free
+        @prop = the name of the prop that the player will hold in his hand *
+        @label = what label will be shown to the user when browsing in the cover shop
     }
 ]]
 Config.Covers = {
@@ -90,19 +105,25 @@ Config.Covers = {
     ["white"] = {price = 101, prop = "prop_white_phone", label = "Bianca"},
     ["yellow"] = {price = 101, prop = "prop_yellow_phone", label = "Gialla"},
     ["yellow_pastel"] = {price = 101, prop = "prop_yellow_pastel_phone", label = "Gialla pastello"},
-    ["luke4316"] = {price = 101, prop = "prop_luke_phone", label = "Luke4316"},
-    -- ["test"] = {price = 0, prop = "prop_amb_phone", label = "Test"},
 }
 
-Config.BuyModemPoints = 501
-Config.RinnovaModemPoints = 501
-Config.ChangePasswordPoints = 50
-Config.AddDaysOnRenewal = 30
-
--- in secondi
-Config.WaitBeforeCreatingAgaing = 600
-
+-- These are the coords where the modem shop will be located
 Config.ModemManagement = vector3(-1083.502, -248.6952, 37.76329)
+
+-- this are self explainatory. But i will do it anyway ;)
+-- BuyModemPrice is the price the user will need to pay to buy a
+-- single modem from the shop
+Config.BuyModemPrice = 501
+-- RenewModemPrice is the price the user will need to pay to
+-- renew the modem for the value in days defined in Config.AddDaysOnRenewal
+Config.RenewModemPrice = 501
+Config.AddDaysOnRenewal = 30
+-- ChangePasswordPoints is the price the user will need to pay to change
+-- the password of the modem
+Config.ChangePasswordPoints = 50
+-- WaitBeforeCreatingAgaing is the time (in seconds) that will need to pass
+-- before allowing the user to create a new modem
+Config.WaitBeforeCreatingAgaing = 600
 
 Config.MinAziendaGrade = {
     ["cardealer"] = {

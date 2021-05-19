@@ -238,7 +238,7 @@ AddEventHandler("gcPhone:receiveMessage", function(message)
         if message.owner == 0 then
             local text = 'Hai ricevuto un messaggio'
 
-            if Config.ShowNumberNotification == true then
+            if Config.ShowNumberNotification then
                 text = 'Hai ricevuto un messaggio da '..message.transmitter
 
                 for _,contact in pairs(contacts) do
@@ -629,25 +629,21 @@ function startFixeCall(fixeNumber)
     end
 end
 
-
 function TakeAppel(infoCall)
     TogglePhone()
     SendNUIMessage({ event = 'waitingCall', infoCall = infoCall, initiator = initiator })
     gcPhoneServerT.acceptCall(infoCall, nil)
 end
 
-
 RegisterNetEvent("gcPhone:notifyFixePhoneChange")
 AddEventHandler("gcPhone:notifyFixePhoneChange", function(_PhoneInCall)
     PhoneInCall = _PhoneInCall
 end)
 
-
 RegisterNetEvent('gcPhone:register_FixePhone')
 AddEventHandler('gcPhone:register_FixePhone', function(phone_number, data)
     Config.TelefoniFissi[phone_number] = data
 end)
-
 
 Citizen.CreateThread(function()
     local mod = 0
@@ -702,7 +698,6 @@ Citizen.CreateThread(function()
     end
 end)
 
-
 AddEventHandler("gcPhone:phoneBoxActions", function(functionName, params)
     if functionName == 'startFixeCall' then
         if params and params.currentModel then
@@ -718,7 +713,6 @@ AddEventHandler("gcPhone:phoneBoxActions", function(functionName, params)
     end
 end)
 
-  
 function getPhoneBoxNumber(coords)
     local x, y, z = "0", "0", "0"
 

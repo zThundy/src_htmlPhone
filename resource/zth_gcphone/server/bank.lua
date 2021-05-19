@@ -32,51 +32,57 @@ gcPhoneT.sendMoneyToUser = function(data)
         xPlayer.showNotification("~r~Iban non trovato o non valido")
         return
     end
-
+    
     local user_identifier = getUserFromIban(iban)
     if user_identifier ~= nil then
-        if type(tonumber(data.money)) == "number" then
-            data.money = string.gsub(data.money, "$", "")
-            local amount = tonumber(data.money)
-            local c_xPlayer = ESX.GetPlayerFromIdentifier(user_identifier)
+        gcPhone.isAbleToSurfInternet(xPlayer.identifier, 0.5, function(isAble, mbToRemove)
+            if isAble then
+                if type(tonumber(data.money)) == "number" then
+                    data.money = string.gsub(data.money, "$", "")
+                    local amount = tonumber(data.money)
+                    local c_xPlayer = ESX.GetPlayerFromIdentifier(user_identifier)
 
-            if c_xPlayer ~= nil and xPlayer ~= nil then
-                if xPlayer.getAccount("bank").money >= amount then
-                    local user_iban = getUsersIban(xPlayer.identifier)
+                    if c_xPlayer ~= nil and xPlayer ~= nil then
+                        if xPlayer.getAccount("bank").money >= amount then
+                            local user_iban = getUsersIban(xPlayer.identifier)
 
-                    xPlayer.showNotification("~g~Hai inviato "..amount.."$ all'iban "..iban)
-                    c_xPlayer.showNotification("~g~Hai ricevuto un bonifico di "..amount.."$ dall'iban "..user_iban)
+                            xPlayer.showNotification("~g~Hai inviato "..amount.."$ all'iban "..iban)
+                            c_xPlayer.showNotification("~g~Hai ricevuto un bonifico di "..amount.."$ dall'iban "..user_iban)
 
-                    c_xPlayer.addAccountMoney("bank", amount)
-                    xPlayer.removeAccountMoney("bank", amount)
+                            c_xPlayer.addAccountMoney("bank", amount)
+                            xPlayer.removeAccountMoney("bank", amount)
 
-                    TriggerClientEvent("gcPhone:updateBankAmount", xPlayer.source, xPlayer.getAccount("bank").money, user_iban)
-                    TriggerClientEvent("gcPhone:updateBankAmount", c_xPlayer.source, c_xPlayer.getAccount("bank").money, c_user_iban)
+                            TriggerClientEvent("gcPhone:updateBankAmount", xPlayer.source, xPlayer.getAccount("bank").money, user_iban)
+                            TriggerClientEvent("gcPhone:updateBankAmount", c_xPlayer.source, c_xPlayer.getAccount("bank").money, c_user_iban)
 
-                    updateBankMovements(xPlayer.source, xPlayer.identifier, amount, "negative", c_user_iban, user_iban)
-                    updateBankMovements(c_xPlayer.source, c_xPlayer.identifier, amount, "positive", user_iban, c_user_iban)
-                end
-            else
-                MySQL.Async.fetchAll("SELECT * FROM user_accounts WHERE identifier = @identifier AND name = @name", {
-                    ['@identifier'] = user_identifier,
-                    ['@name'] = "bank"
-                }, function(result)
-                    if result ~= nil and result[1] ~= nil then
-                        MySQL.Async.execute("UPDATE user_accounts SET money = @money WHERE identifier = @identifier AND name = @name", {
-                            ['@money'] = amount + result[1].money,
+                            updateBankMovements(xPlayer.source, xPlayer.identifier, amount, "negative", c_user_iban, user_iban)
+                            updateBankMovements(c_xPlayer.source, c_xPlayer.identifier, amount, "positive", user_iban, c_user_iban)
+                        end
+                    else
+                        MySQL.Async.fetchAll("SELECT * FROM user_accounts WHERE identifier = @identifier AND name = @name", {
                             ['@identifier'] = user_identifier,
                             ['@name'] = "bank"
-                        }, function()
-                            xPlayer.showNotification("~g~Trasferimento completato con successo")
-                        end)
-                    else
-                        xPlayer.showNotification("~r~Iban non trovato o non valido")
+                        }, function(result)
+                            if result ~= nil and result[1] ~= nil then
+                                MySQL.Async.execute("UPDATE user_accounts SET money = @money WHERE identifier = @identifier AND name = @name", {
+                                    ['@money'] = amount + result[1].money,
+                                    ['@identifier'] = user_identifier,
+                                    ['@name'] = "bank"
+                                }, function()
+                                    xPlayer.showNotification("~g~Trasferimento completato con successo")
+                                end)
+                            else
+                                xPlayer.showNotification("~r~Iban non trovato o non valido")
+                            end
+                        end) 
                     end
-                end) 
+                else
+                    xPlayer.showNotification("~r~Il valore inserito non è un numero")
+                end
+            else
+                xPlayer.showNotification("~r~Non hai abbastanza internet per poter eseguire questa azione")
             end
-        else
-            xPlayer.showNotification("~r~Il valore inserito non è un numero")
-        end
+        end)
     else
         xPlayer.showNotification("~r~Iban non trovato o non valido")
     end
@@ -176,53 +182,3 @@ function GenerateIBAN(length)
 
     return ibn
 end
-
-
-
---[[
-    -- da aggiungere sull'es_extended per compatibilità
-
-    ESX.GenerateIBAN = function()
-        local function GenerateString(length)
-            local charset = {}
-        
-            for i = 48, 57 do table.insert(charset, string.char(i)) end	-- Numeri
-            for i = 65, 90 do table.insert(charset, string.char(i)) end	-- Lettere maiuscole
-
-            math.randomseed(os.time())
-        
-            if length > 0 then
-            return GenerateString(length - 1) .. charset[math.random(1, #charset)]
-            else
-            return ""
-            end
-        end
-        
-        local ibn = ''
-        local ibnLenght = 7
-
-        --ibn = string.random(ibnLenght - 1) .. charset[math.random(1, #charset)]
-
-        local ibans = MySQL.Sync.fetchAll('SELECT iban FROM users', {})
-
-        local check
-
-        repeat
-            check = true
-
-            ibn = GenerateString(ibnLenght)
-
-            for index, t in ipairs(ibans) do
-                if t.iban == ibn and t.iban ~= nil then
-                    check = false
-                    break
-                end
-            end
-
-        until check 
-
-        return ibn
-    end
-
-    -- da fare anche la compatibilità con l'xplayer
-]]

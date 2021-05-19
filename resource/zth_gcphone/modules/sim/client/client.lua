@@ -13,7 +13,7 @@ Citizen.CreateThread(function() --ok
 	TriggerEvent('tcm_grids:registerMarker', {
 		name = "piano_tariffario",
 		type = 20,
-		coords = vector3(Config.MarkerOfferte["x"], Config.MarkerOfferte["y"], Config.MarkerOfferte["z"]),
+		coords = Config.TariffsShop,
 		colour = { r = 55, b = 55, g = 255 },
 		size =  vector3(0.8, 0.8, 0.8),
 		action = function()
@@ -22,7 +22,7 @@ Citizen.CreateThread(function() --ok
 		msg = "Premi ~INPUT_CONTEXT~ per acquistare un piano tariffario",
 	})
 
-	local info = Config.BlipOfferte
+	local info = Config.TariffsBlip
 	local blip = AddBlipForCoord(info.x, info.y, 5.0)
 	SetBlipHighDetail(blip, true)
 	SetBlipSprite(blip, info.sprite)
@@ -34,17 +34,16 @@ Citizen.CreateThread(function() --ok
 	BeginTextCommandSetBlipName("STRING")
 	AddTextComponentString(info.name)
 	EndTextCommandSetBlipName(blip)
-end)
 
-RegisterKeyMapping('+openSimMenu', 'Menù sim', 'keyboard', 'f3')
-RegisterCommand('+openSimMenu', function() OpenSimMenu() end, false)
-RegisterCommand('-openSimMenu', function() end, false)
+	RegisterKeyMapping('+openSimMenu', 'Menù sim', 'keyboard', Config.SimCardKey)
+	RegisterCommand('+openSimMenu', function() OpenSimMenu() end, false)
+	RegisterCommand('-openSimMenu', function() end, false)
+end)
 
 function OpenSimMenu()
 	ESX.UI.Menu.CloseAll()
 	local elements = {}
 	ESX.TriggerServerCallback('esx_cartesim:GetList', function(sim)
-
         for _, v in pairs(sim) do
             if v.nome_sim ~= '' then
                 table.insert(elements, {label = tostring(v.nome_sim), value = v, piano_tariffario = v.piano_tariffario})
@@ -57,18 +56,14 @@ function OpenSimMenu()
 			title = 'Carte SIM',
 			elements = elements,
 		}, function(data, menu)
-			local val = data.current.value
-
-			local elements2 = {
-				{label = 'Usa', value = 'sim_use'},
-                {label = 'Dai', value = 'sim_give'},
-                {label = 'Rinomina', value = 'sim_rename'},
-				{label = 'Cancella', value = 'sim_delete'}
-			}
-
 		  	ESX.UI.Menu.Open('default', GetCurrentResourceName(), 'sim_change', {
-				title = tostring(val.number),
-				elements = elements2,
+				title = tostring(data.current.value.number),
+				elements = {
+					{label = 'Usa', value = 'sim_use'},
+					{label = 'Dai', value = 'sim_give'},
+					{label = 'Rinomina', value = 'sim_rename'},
+					{label = 'Cancella', value = 'sim_delete'}
+				},
 		  	}, function(data2, menu2)
 
 				if data2.current.value == 'sim_use' then
@@ -95,7 +90,6 @@ function OpenSimMenu()
 
                 if data2.current.value == 'sim_rename' then
                     ESX.UI.Menu.CloseAll()
-
                     local numero = data.current.value.number
 
                     ESX.UI.Menu.Open('dialog', GetCurrentResourceName(), 'usate_dialog_money', {
@@ -106,7 +100,6 @@ function OpenSimMenu()
                         if #sim_name > 10 then
                             ESX.ShowNotification("Il nome non può superare i 10 caratteri", "error")
                             menu3.close()
-
                             return
                         end
 
@@ -157,8 +150,6 @@ function openOfferteMenu()
 			title = "Offerte telefoniche",
 			elements = elementi
 		  }, function(data, menu)
-			local val = data.current.value
-			
 			ESX.TriggerServerCallback("esx_cartesim:GetOffertaByNumber", function(offerta)
 				if offerta.piano_tariffario == "nessuno" then
 					elementi2 = {
@@ -183,16 +174,14 @@ function openOfferteMenu()
 				end
 
 				ESX.UI.Menu.Open('default', GetCurrentResourceName(), 'sim_listasim_piani', {
-					title = val.number,
+					title = data.current.value.number,
 					elements = elementi2
 				  }, function(data2, menu2)
-					local v = data2.current.value
-
-					if v == "scegli_offerta" then
-						openListaOfferte(val.number)
+					if data2.current.value == "scegli_offerta" then
+						openListaOfferte(data.current.value.number)
 					end
 
-					if v == "rinnova_offerta" then
+					if data2.current.value == "rinnova_offerta" then
 						ESX.TriggerServerCallback("esx_cartesim:rinnovaOfferta", function(ok)
 							if ok then
 								ESX.ShowNotification("Offerta rinnovata con successo!", "success")
@@ -200,15 +189,12 @@ function openOfferteMenu()
 								ESX.ShowNotification("Non hai abbastanza soldi per rinnovare l'offerta", "error")
 								openOfferteMenu()
 							end
-						end, offerta.piano_tariffario, val.number)
+						end, offerta.piano_tariffario, data.current.value.number)
 					end
-		
 				end, function(data2, menu2)
 					ESX.UI.Menu.CloseAll()
 				end)
-
-			end, val.number)
-
+			end, data.current.value.number)
 		end, function(data, menu)
 			ESX.UI.Menu.CloseAll()
 		end)
@@ -229,21 +215,17 @@ function openListaOfferte(number)
 	  }, function(data, menu)
 		local val = data.current.value
 
-		local lista = {
-			{label = "Minuti: "..val.minuti.." s"},
-			{label = "Messaggi: "..val.messaggi.." sms"},
-			{label = "Internet: "..val.dati.." mb"},
-			{label = "Prezzo: "..val.price.."$"},
-			{label = "Acquista l'offerta", value = "acquista", icon = 22}
-		}
-
 		ESX.UI.Menu.Open('default', GetCurrentResourceName(), 'sim_compra_piano', {
 			title = number,
-			elements = lista
+			elements = {
+				{label = "Minuti: "..val.minuti.." s"},
+				{label = "Messaggi: "..val.messaggi.." sms"},
+				{label = "Internet: "..val.dati.." mb"},
+				{label = "Prezzo: "..val.price.."$"},
+				{label = "Acquista l'offerta", value = "acquista"}
+			}
 		  }, function(data2, menu2)
-			local v = data2.current.value
-	
-			if v == "acquista" then
+			if data2.current.value == "acquista" then
 				ESX.TriggerServerCallback("esx_cartesim:acquistaOffertaCheckSoldi", function(ok)
 					if ok then
 						ESX.ShowNotification("~g~Offerta comprata con successo!")
@@ -255,7 +237,6 @@ function openListaOfferte(number)
 					ESX.UI.Menu.CloseAll()
 				end, val, number)
 			end
-	
 		end, function(data2, menu2)
 			menu2.close()
 		end)

@@ -36,6 +36,11 @@ SELECT COUNT(*)
   prepare stmt from @query;
 EXECUTE stmt;
 
+INSERT INTO `items` (`name`, `label`, `weigth`) VALUES
+  ('phone', 'Phone', 1),
+  ('sim', 'Sim', 1),
+  ('modem', 'Modem', 1);
+
 -- Dump della struttura di tabella esfx.phone_cell_towers
 CREATE TABLE IF NOT EXISTS `phone_cell_towers` (
   `id` int(11) NOT NULL AUTO_INCREMENT,

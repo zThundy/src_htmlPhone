@@ -169,7 +169,7 @@ export default {
     this.changingRouter = true
     this.quickPics = [
       {meta: 'wifi', img: 'fa-wifi', state: this.isWifiOn},
-      {meta: 'bluetooth', img: 'fa-bluetooth-b', state: false},
+      {meta: 'bluetooth', img: 'fa-bluetooth-b', state: this.bluetooth},
       {meta: 'notifications', img: 'fa-bell', state: this.notification},
       {meta: 'airplane', img: 'fa-plane', state: this.airplane},
       {meta: 'refresh', img: 'fa-refresh', state: false}

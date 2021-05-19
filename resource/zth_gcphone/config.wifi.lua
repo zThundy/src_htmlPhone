@@ -27,7 +27,7 @@ Config.EnableSyncThread = true
 -- default: 900 = 15 minutes
 Config.SyncThreadWait = 900
 
-Config.WifiDebug = true
+Config.WifiDebug = false
 Config.DebugRadiusTowers = false
 
 -- i giorni da aggiungere al modem per la scadenza

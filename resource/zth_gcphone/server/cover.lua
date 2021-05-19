@@ -27,9 +27,7 @@ ESX.RegisterServerCallback("gcphone:cover_buyCover", function(source, cb, cover)
     local xPlayer = ESX.GetPlayerFromId(source)
 
     if xPlayer ~= nil then
-        local points = exports["vip_points"]:getPoints(source)
-
-        if points >= Config.Covers[cover].price then
+        if xPlayer.getAccount("bank").money >= Config.Covers[cover].price then
 
             MySQL.Async.insert("INSERT INTO phone_user_covers(identifier, cover) VALUES(@identifier, @cover)", {
                 ['@identifier'] = xPlayer.identifier,
@@ -39,7 +37,7 @@ ESX.RegisterServerCallback("gcphone:cover_buyCover", function(source, cb, cover)
                     cb(false)
                 else
                     if Config.Covers[cover].price ~= 0 then
-                        exports["vip_points"]:removePoints(source, Config.Covers[cover].price)
+                        xPlayer.removeAccountMoney("bank", Config.Covers[cover].price)
                     end
                     cb(true)
                 end
@@ -48,8 +46,4 @@ ESX.RegisterServerCallback("gcphone:cover_buyCover", function(source, cb, cover)
             cb(false)
         end
     end
-end)
-
-ESX.RegisterServerCallback("gcphone:cover_getMyPoints", function(source, cb)
-    cb(exports["vip_points"]:getPoints(source))
 end)

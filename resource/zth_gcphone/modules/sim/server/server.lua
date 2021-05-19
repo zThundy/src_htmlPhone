@@ -5,23 +5,43 @@ cartesimT = {}
 local tunnel = module("zth_gcphone", "modules/TunnelV2")
 tunnel.bindInterface("cartesim_server_t", cartesimT)
 
-function GenerateUniquePhoneNumber()
+ESX.RegisterUsableItem("sim", function(source)
+	local xPlayer = ESX.GetPlayerFromId(source)
+	
+	xPlayer.removeInventoryItem('sim', 1)
+	NewSim(source)
+end)
+
+-- RegisterServerEvent("esx_cartesim:createNewSim")
+-- AddEventHandler("esx_cartesim:createNewSim", function()
+-- 	local player = source
+-- 	local xPlayer = ESX.GetPlayerFromId(player)
+-- 	xPlayer.removeInventoryItem('sim', 1)
+-- 	NewSim(player)
+-- end)
+
+function GenerateUniquePhoneNumber(result)
     local query = false
 	local numbers = {}
 	
-	local result = MySQL.Sync.fetchAll("SELECT * FROM sim", {})
 	for index, value in pairs(result) do
 		numbers[tostring(value.phone_number)] = true
 	end
 	
-	local rand_number = string.format("555%04d", math.random(0, 99999))
+	-- ensure that a 5 digit number is created
+	-- local first_random_part = math.random(11111, 99999)
+	-- if tostring(first_random_part):length() < 5 then
+	-- 	first_random_part = first_random_part .. math.random(1, 9)
+	-- 	first_random_part = tonumber(first_random_part)
+	-- end
+	math.randomseed(os.time()); math.randomseed(os.time()); math.randomseed(os.time())
+	local rand_number = string.format("555%04d", math.random(11111, 99999))
 	if numbers[tostring(rand_number)] == nil then
 		return rand_number
 	end
 
-	return GenerateUniquePhoneNumber()
+	return GenerateUniquePhoneNumber(result)
 end
-
 
 RegisterServerEvent("esx:playerLoaded")
 AddEventHandler('esx:playerLoaded', function(source, xPlayer)
@@ -66,23 +86,13 @@ AddEventHandler('esx:playerLoaded', function(source, xPlayer)
 	end)
 end)
 
-
-RegisterServerEvent("esx_cartesim:createNewSim")
-AddEventHandler("esx_cartesim:createNewSim", function()
-	local player = source
-	local xPlayer = ESX.GetPlayerFromId(player)
-	
-	xPlayer.removeInventoryItem('sim', 1)
-	NewSim(player)
-end)
-
-
 function NewSim(source)
 	local player = source
 	local xPlayer = ESX.GetPlayerFromId(player)
 	
 	MySQL.Async.fetchAll('SELECT * FROM users WHERE identifier = @identifier', {['@identifier'] = xPlayer.identifier}, function(result)
-		local phoneNumber = GenerateUniquePhoneNumber() 
+		local result = MySQL.Sync.fetchAll("SELECT * FROM sim", {})
+		local phoneNumber = GenerateUniquePhoneNumber(result) 
 		
 		if phoneNumber ~= nil then
 			MySQL.Async.execute('INSERT INTO sim (phone_number, identifier, piano_tariffario, minuti, messaggi, dati) VALUES (@phone_number, @identifier, @piano_tariffario, @minuti, @messaggi, @dati)', {

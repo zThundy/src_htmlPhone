@@ -1,7 +1,7 @@
-Config = {}
+Config.SimCardKey = "f4"
 
-Config.MarkerOfferte = {x = -1080.403, y = -247.197, z = 37.763}
-Config.BlipOfferte = {
+Config.TariffsShop = vector3(-1080.403, -247.197, 37.763)
+Config.TariffsBlip = {
 	x = -1059.33,
 	y = -238.72,
 	name = "Life invader",

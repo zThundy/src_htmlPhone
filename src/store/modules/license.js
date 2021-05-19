@@ -44,5 +44,5 @@ export default {
 }
 
 if (process.env.NODE_ENV !== 'production') {
-  state.loaded = false
+  state.loaded = true
 }

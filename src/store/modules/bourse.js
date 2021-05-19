@@ -107,4 +107,6 @@ if (process.env.NODE_ENV !== 'production') {
       realName: 'NVDA'
     }
   ]
+
+  // state.stocksInfo = []
 }

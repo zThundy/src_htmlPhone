@@ -137,7 +137,6 @@ gcPhoneT.instagram_nuovoPost = function(username, password, data)
 						['@filter'] = data.filter,
 						['@didascalia'] = data.didascalia
 				}, function(id)
-
 					MySQL.Async.fetchAll('SELECT * from phone_instagram_posts WHERE id = @id', {['@id'] = id}, function(posts)
 						post = posts[1]
 						post['author'] = user.author
@@ -173,7 +172,6 @@ gcPhoneT.instagram_getPosts = function(username, password)
 					-- buildata da mandare a nui
       				local accountId = user and user.id
 					InstagramGetPosts(accountId, function(posts)
-						
       					gcPhone.isAbleToSurfInternet(identifier, 0.04 * #posts, function(isAble, mbToRemove)
 							if isAble then
 								gcPhone.usaDatiInternet(identifier, mbToRemove)
@@ -195,7 +193,6 @@ gcPhoneT.instagram_getPosts = function(username, password)
 				gcPhone.usaDatiInternet(identifier, mbToRemove)
 				
 				InstagramGetPosts(nil, function(posts)
-					
     				gcPhone.isAbleToSurfInternet(identifier, 0.04 * #posts, function(isAble, mbToRemove)
 						if isAble then
 							gcPhone.usaDatiInternet(identifier, mbToRemove)
@@ -222,7 +219,6 @@ gcPhoneT.instagram_createAccount = function(username, password, avatarUrl)
 			gcPhone.usaDatiInternet(identifier, mbToRemove)
 			
 			createNewInstagramAccount(username, password, avatarUrl, function(id)
-
     			if id ~= 0 then
 					TriggerClientEvent('gcPhone:instagram_setAccount', player, username, password, avatarUrl)
 					  
@@ -255,7 +251,6 @@ gcPhoneT.instagram_loginAccount = function(username, password)
       				InstagramShowError(player, 'INSTAGRAM_INFO_TITLE', 'APP_INSTAGRAM_NOTIF_LOGIN_ERROR')
     			else
 					InstagramShowSuccess(player, 'INSTAGRAM_INFO_TITLE', 'APP_INSTAGRAM_NOTIF_LOGIN_SUCCESS')
-
       				TriggerClientEvent('gcPhone:instagram_setAccount', player, username, password, user.avatar_url)
     			end
   			end)
@@ -287,7 +282,6 @@ gcPhoneT.instagram_changePassword = function(username, password, newPassword)
 						['@password'] = password, 
 						['@newpassword'] = newPassword
 					}, function()
-
 						InstagramShowSuccess(player, 'INSTAGRAM_INFO_TITLE', 'APP_INSTAGRAM_NOTIF_PASSCHANGE_SUCCESS')
 					end)
     			end
@@ -328,33 +322,25 @@ gcPhoneT.instagram_toggleLikePost = function(username, password, postId)
         				['@authorId'] = user.id,
         				['@postId'] = postId
 					}, function(row) 
-						
 						if row[1] == nil then
-							
           					MySQL.Async.insert('INSERT INTO phone_instagram_likes (`authorId`, `postId`) VALUES(@authorId, @postId)', {
             					['@authorId'] = user.id,
             					['@postId'] = postId
 							  }, function(newrow)
-								
             					MySQL.Async.execute('UPDATE `phone_instagram_posts` SET `likes`= likes + 1 WHERE id = @id', {['@id'] = post.id}, function()
-									
 									-- questo evento aggiorna i like per tutti i giocatori
 									TriggerClientEvent('gcPhone:instagram_updatePostLikes', -1, post.id, post.likes + 1)
 									-- questo evento aggiorna il colore del cuore per chi lo mette
 									TriggerClientEvent('gcPhone:instagram_updateLikeForUser', player, post.id, true)
-									  
             					end)    
           					end)
 						else
 							MySQL.Async.execute('DELETE FROM phone_instagram_likes WHERE id = @id', {['@id'] = row[1].id}, function()
-								
 								MySQL.Async.execute('UPDATE `phone_instagram_posts` SET `likes`= likes - 1 WHERE id = @id', {['@id'] = post.id}, function()
-									
 									-- questo evento aggiorna i like per tutti i giocatori
 									TriggerClientEvent('gcPhone:instagram_updatePostLikes', -1, post.id, post.likes - 1)
 									-- questo evento aggiorna il colore del cuore per chi lo mette
 									TriggerClientEvent('gcPhone:instagram_updateLikeForUser', player, post.id, false)
-									  
             					end)
           					end)
         				end
@@ -376,7 +362,6 @@ gcPhoneT.instagram_setAvatarurl = function(username, password, avatarUrl)
 			gcPhone.usaDatiInternet(identifier, mbToRemove)
 			
 			getInstagramUser(username, password, function(user)
-
 				MySQL.Async.execute("UPDATE phone_instagram_accounts SET avatar_url = @avatarUrl WHERE username = @username AND password = @password", {
 					['@username'] = username,
 					['@password'] = password,
@@ -384,7 +369,6 @@ gcPhoneT.instagram_setAvatarurl = function(username, password, avatarUrl)
 				}, function(result)
 					if result == 1 then
 						TriggerClientEvent('gcPhone:instagram_setAccount', player, username, password, avatarUrl)
-						
 						TwitterShowSuccess(player, 'Twitter Info', 'APP_INSTAGRAM_NOTIF_AVATAR_SUCCESS')
 					else
 						InstagramShowError(player, 'INSTAGRAM_INFO_TITLE', 'APP_INSTAGRAM_NOTIF_LOGIN_ERROR')

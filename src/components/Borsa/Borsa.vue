@@ -3,35 +3,41 @@
     <PhoneTitle :title="LangString('APP_BOURSE_TITLE')" @back="onBackspace" :backgroundColor="'rgba(77, 100, 111, 1.0)'" />
     <div v-if="stocksProfile" class='container'>
       <div class="stocks-menu">
-        <div class="stocks-menu-button selected"><i class="fas fa-chart-line stocks-menu-icon"></i>Mercato</div>
-        <div class="stocks-menu-button"><i class="fas fa-business-time stocks-menu-icon"></i>Investimenti</div>
+        <div class="stocks-menu-button" :class="{ selected: currentPage === 0 }"><i class="fas fa-chart-line stocks-menu-icon"></i>Mercato</div>
+        <div class="stocks-menu-button" :class="{ selected: currentPage === 1 }"><i class="fas fa-business-time stocks-menu-icon"></i>Investimenti</div>
       </div>
-      <img class="info-logo" src="https://icon-library.com/images/png-web-icon/png-web-icon-5.jpg" />
-      <div class='profile-info'>
-        <div class='info-user'>
-          <p class='info-user-name'>{{ stocksProfile.name }}</p>
-          <p class='info-user-surname'>{{ stocksProfile.surname }}</p>
+
+      <div v-if="currentPage === 0">
+        <img class="info-logo" src="/html/static/img/icons_app/borsa.png" />
+
+        <div class='profile-info'>
+          <div class='info-user'>
+            <p class='info-user-name'>{{ stocksProfile.name }}</p>
+            <p class='info-user-surname'>{{ stocksProfile.surname }}</p>
+          </div>
+          <div class='info-balance'>
+            <p class='info-balance-title'>Portafoglio</p>
+            <p class='info-balance-amount'>{{ stocksProfile.balance }} $</p>
+          </div>
         </div>
-        <div class='info-balance'>
-          <p class='info-balance-title'>Portafoglio</p>
-          <p class='info-balance-amount'>{{ stocksProfile.balance }} $</p>
-        </div>
-      </div>
-      <div v-if="stocksInfo" class="stocks-table">
-        <div class="stocks-table-inner">
-          <div v-for="(table, ticker) in stocksInfo" :key="ticker" class="stocks-table-elem" :class="{ select: currentSelect === ticker }">
-            <p class="stocks-ticker stocks-bold">{{ table.fakeName }}</p>
-            <p class="stocks-ticker stocks-current-mp">{{ table.currentMarket }} $</p>
-            <p class="stocks-ticker stocks-current-variation" :style="{ color: getInfoColor(table) }">
-              {{ table.currentMarket - table.closeMarket | truncate(1, " ") }}
-              ({{ (Math.abs(table.currentMarket - table.closeMarket) * 100) / table.closeMarket | truncate(2, "%") }})
-              <i class="stocks-ticker stocks-current-arrow fas"
-                :class="getArrow(table)" :style="{ color: getInfoColor(table) }"
-              ></i>
-            </p>
+
+        <div v-if="stocksInfo" class="stocks-table">
+          <div class="stocks-table-inner">
+            <div v-for="(table, ticker) in stocksInfo" :key="ticker" class="stocks-table-elem" :class="{ select: currentSelect === ticker }">
+              <p class="stocks-ticker stocks-bold">{{ table.fakeName }}</p>
+              <p class="stocks-ticker stocks-current-mp">{{ table.currentMarket }} $</p>
+              <p class="stocks-ticker stocks-current-variation" :style="{ color: getInfoColor(table) }">
+                {{ table.currentMarket - table.closeMarket | truncate(1, " ") }}
+                ({{ (Math.abs(table.currentMarket - table.closeMarket) * 100) / table.closeMarket | truncate(2, "%") }})
+                <i class="stocks-ticker stocks-current-arrow fas"
+                  :class="getArrow(table)" :style="{ color: getInfoColor(table) }"
+                ></i>
+              </p>
+            </div>
           </div>
         </div>
       </div>
+
     </div>
 
   </div>
@@ -46,7 +52,8 @@ export default {
   components: { PhoneTitle },
   data () {
     return {
-      currentSelect: -1
+      currentSelect: 0,
+      currentPage: 0
     }
   },
   computed: {
@@ -84,18 +91,29 @@ export default {
     },
     onDown () {
       this.currentSelect = this.currentSelect === this.stocksInfo.length - 1 ? this.currentSelect : this.currentSelect + 1
-      console.log(this.currentSelect)
       this.scrollIntoView()
+    },
+    onLeft () {
+      if (this.currentPage === 0) return
+      this.currentPage -= 1
+    },
+    onRight () {
+      if (this.currentPage === 1) return
+      this.currentPage += 1
     }
   },
   created () {
     this.$bus.$on('keyUpArrowDown', this.onDown)
     this.$bus.$on('keyUpArrowUp', this.onUp)
+    this.$bus.$on('keyUpArrowLeft', this.onLeft)
+    this.$bus.$on('keyUpArrowRight', this.onRight)
     this.$bus.$on('keyUpBackspace', this.onBackspace)
   },
   beforeDestroy () {
     this.$bus.$off('keyUpArrowDown', this.onDown)
     this.$bus.$off('keyUpArrowUp', this.onUp)
+    this.$bus.$off('keyUpArrowLeft', this.onLeft)
+    this.$bus.$off('keyUpArrowRight', this.onRight)
     this.$bus.$off('keyUpBackspace', this.onBackspace)
   }
 }
@@ -122,9 +140,10 @@ export default {
 .stocks-menu-button {
   background-color: #81949c;
   height: 45px;
-  padding: 10px;
+  padding: 12px;
   margin-top: 8px;
   border-radius: 20px;
+  font-size: 18px;
 }
 
 .stocks-menu-icon {
@@ -172,14 +191,14 @@ export default {
 .stocks-table {
   background-color: #001e27;
   margin-top: -30px;
-  height: 85%;
+  height: 490px;
 }
 
 .stocks-table-inner {
   top: 70px;
   position: relative;
-  height: 438px;
-  overflow-y: auto;
+  height: 439px;
+  overflow-y: hidden;
 }
 
 .stocks-table-elem {
@@ -192,6 +211,10 @@ export default {
 
 .stocks-table-elem.select {
   background-color: #005c79;
+}
+
+.stocks-menu-button.selected {
+  background-color: #00394a;
 }
 
 .stocks-ticker {

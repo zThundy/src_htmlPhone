@@ -289,7 +289,7 @@ RegisterServerEvent("gcphone:updateCachedNumber")
 AddEventHandler("gcphone:updateCachedNumber", function(number, identifier, isChanging)
     -- print(number, identifier, isChanging)
     number = tostring(number)
-    identifier = tonumber(identifier)
+    identifier = identifier
 
     if identifier then
         gcPhone.debug("Updated number " .. number .. " for identifier " .. identifier)
@@ -342,8 +342,6 @@ AddEventHandler("gcphone:updateCachedNumber", function(number, identifier, isCha
 end)
 
 function gcPhone.getSourceFromIdentifier(identifier, cb)
-    identifier = tonumber(identifier)
-
     local xPlayer = ESX.GetPlayerFromIdentifier(identifier)
     if xPlayer ~= nil then cb(xPlayer.source) else cb(nil) end
 end

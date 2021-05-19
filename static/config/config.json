@@ -1,7 +1,7 @@
 {
   "authKey": "cnjOl7UrYnhgzgBVIgr78bZMTRSyG57xTBUa7Di4",
 
-  "operator_title": "Code",
+  "operator_title": "ThundyPhone",
   "themeColor": "#3399FF",
   "colors": [
     "#EF5350",
@@ -380,7 +380,7 @@
       "it_IT__name": "Borsa",
       "icons": "/html/static/img/icons_app/borsa.png",
       "routeName": "borsa.splash",
-      "enabled": false
+      "enabled": true
     },
     {
       "name": "Dark Chat",

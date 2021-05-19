@@ -42,6 +42,7 @@ shared_scripts {
 	"modules/utils.lua",
 	"config.lua",
 	"config.wifi.lua",
+	"config.sim.lua",
 	"shared.lua",
 }
 
@@ -70,6 +71,7 @@ client_script {
 	-- modules
 	"modules/tokovoip.lua",
 	"modules/wifi/client/*.lua",
+	"modules/sim/client/*.lua",
 }
 
 server_script {
@@ -95,6 +97,7 @@ server_script {
 	-- modules
 	"modules/saltychat.lua",
 	"modules/wifi/server/*.lua",
+	"modules/sim/server/*.lua",
 }
 
 data_file 'DLC_ITYP_REQUEST' 'stream/bk_phone.ytyp'

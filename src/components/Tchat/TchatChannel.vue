@@ -1,6 +1,6 @@
 <template>
   <div class="phone_app">
-    <PhoneTitle :title="LangString('APP_DARKTCHAT_TITLE')" :backgroundColor="'rgb(95, 94, 198)'" :textColor="'white'" @back="onBack" />
+    <PhoneTitle :title="LangString('APP_DARKTCHAT_TITLE')" :backgroundColor="'rgb(122, 122, 122)'" :textColor="'white'" @back="onBack" />
     
     <div style="padding-top: 20px;" class="slice"></div>
 
@@ -206,7 +206,7 @@ export default {
   margin-left: 15px;
 }
 .elemento.select .elem-title .diese, .elemento:hover .elem-title .diese {
-  color:#0079d3;
+  color:rgb(122, 122, 122);
 }
 
 .elementi::-webkit-scrollbar-track {
@@ -218,7 +218,7 @@ export default {
   background-color: transparent;
 }
 .elementi::-webkit-scrollbar-thumb {
-  background-color: #0079d3;
+  background-color: rgb(122, 122, 122);
 }
 
 .slice {
@@ -228,7 +228,7 @@ export default {
 
 .slice:nth-child(2) {
   top: 24px;
-  background: rgb(95, 94, 198);
+  background: rgb(122, 122, 122);
   color: white;
   clip-path: polygon(0 58%, 400% 50%, 100% 50%, 0 100%);
   padding: 3rem 70% 25%;

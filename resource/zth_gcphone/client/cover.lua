@@ -19,18 +19,14 @@ Citizen.CreateThread(function()
 	})
 end)
 
-
 AddEventHandler("gridsystem:hasExitedMarker", function(marker)
     if marker == nil then return end
     if marker.name == "negozio_cover" then
         ESX.UI.Menu.CloseAll()
-        
         ChangeCover("Nessuna cover", "base")
-
         SendNUIMessage({ show = false })
     end
 end)
-
 
 function requestCovers()
     ESX.TriggerServerCallback("gcphone:cover_requestCovers", function(covers)
@@ -38,22 +34,17 @@ function requestCovers()
     end)
 end
 
-
 RegisterNUICallback("requestMyCovers", function(data, cb)
     requestCovers()
     cb("ok")
 end)
 
-
 RegisterNUICallback("changingCover", function(data, cb)
     myCover = string.gsub(data.cover.value, ".png", "")
     -- print("changingCover", myCover)
-
     onCoverChange()
-
     cb("ok")
 end)
-
 
 function openShopMenu(myCovers)
     local elements = {}
@@ -63,11 +54,8 @@ function openShopMenu(myCovers)
         while isMenuOpened do
             if GetDistanceBetweenCoords(GetEntityCoords(GetPlayerPed(-1)), Config.CoverShop, true) >= 5.0 then
                 isMenuOpened = false
-
                 ESX.UI.Menu.CloseAll()
-
                 ChangeCover("Nessuna cover", "base")
-
                 SendNUIMessage({ show = false })
             end
 
@@ -75,73 +63,64 @@ function openShopMenu(myCovers)
         end
     end)
 
-    ESX.TriggerServerCallback("gcphone:cover_getMyPoints", function(points)
-        -- qui mi preparo la table per controllare quale cover ho già e quali no
-        local tempCovers = {}
-        for name, val in pairs(myCovers) do tempCovers[string.gsub(val.value, ".png", "")] = val end
+    -- qui mi preparo la table per controllare quale cover ho già e quali no
+    local tempCovers = {}
+    for name, val in pairs(myCovers) do tempCovers[string.gsub(val.value, ".png", "")] = val end
 
-        table.insert(elements, { label = "Code Coins: "..points })
-
-        for name, info in pairs(Config.Covers) do
-            if tempCovers[name] == nil then
-                table.insert(elements, { label = info.label.." - "..info.price.." punti", value = info, name = name })
-            end
+    for name, info in pairs(Config.Covers) do
+        if tempCovers[name] == nil then
+            table.insert(elements, { label = info.label.." - "..info.price.."$", value = info, name = name })
         end
+    end
 
-        -- onMenuSelect
-        onMenuSelect = function(data, _)
-            if data.current.value == nil then return end
-            
-            local value = data.current.value
-            local name = data.current.name
+    -- onMenuSelect
+    onMenuSelect = function(data, _)
+        if data.current.value == nil then return end
+        local value = data.current.value
+        local name = data.current.name
 
-            TriggerServerEvent("nfesx_mall:buyGift", name, value.label, 'covers', value.price)
+        TriggerServerEvent("nfesx_mall:buyGift", name, value.label, 'covers', value.price)
 
-            --[[
-                ESX.TriggerServerCallback("gcphone:cover_buyCover", function(ok)
-                    if ok then
-                        ESX.ShowNotification("~g~Cover comprata con successo")
-                        requestCovers()
-                    else
-                        ESX.ShowNotification("~r~Non hai abbastanza punti per comprare una cover")
-                    end
+        --[[
+            ESX.TriggerServerCallback("gcphone:cover_buyCover", function(ok)
+                if ok then
+                    ESX.ShowNotification("~g~Cover comprata con successo")
+                    requestCovers()
+                else
+                    ESX.ShowNotification("~r~Non hai abbastanza punti per comprare una cover")
+                end
 
-                    ESX.UI.Menu.CloseAll()
-                    SendNUIMessage({ show = false })
+                ESX.UI.Menu.CloseAll()
+                SendNUIMessage({ show = false })
 
-                    ChangeCover(value.label, name)
-                end, name)
-            ]]
-
-            ESX.UI.Menu.CloseAll()
-            SendNUIMessage({ show = false })
-
-            ChangeCover(value.label, name)
-        end
-
-        -- onMenuChangeIndex
-        onMenuChangeIndex = function(data, _)
-            ChangeCover(data.current.value.label, data.current.name)
-        end
-
-        -- onMenuClose
-        onMenuClose = function(data, _)
-            ESX.UI.Menu.CloseAll()
-
-            ChangeCover("Nessuna cover", "base")
-
-            SendNUIMessage({ show = false })
-        end
+                ChangeCover(value.label, name)
+            end, name)
+        ]]
 
         ESX.UI.Menu.CloseAll()
+        SendNUIMessage({ show = false })
+        ChangeCover(value.label, name)
+    end
 
-        SendNUIMessage({ show = true })
+    -- onMenuChangeIndex
+    onMenuChangeIndex = function(data, _)
+        ChangeCover(data.current.value.label, data.current.name)
+    end
 
-        ESX.UI.Menu.Open('default', GetCurrentResourceName(), 'negozio_cover', {
-            title = "Negozio di cover",
-            elements = elements
-        }, onMenuSelect, onMenuClose, onMenuChangeIndex)
-    end)
+    -- onMenuClose
+    onMenuClose = function(data, _)
+        ESX.UI.Menu.CloseAll()
+        ChangeCover("Nessuna cover", "base")
+        SendNUIMessage({ show = false })
+    end
+
+    ESX.UI.Menu.CloseAll()
+    SendNUIMessage({ show = true })
+
+    ESX.UI.Menu.Open('default', GetCurrentResourceName(), 'negozio_cover', {
+        title = "Negozio di cover",
+        elements = elements
+    }, onMenuSelect, onMenuClose, onMenuChangeIndex)
 end
 
 

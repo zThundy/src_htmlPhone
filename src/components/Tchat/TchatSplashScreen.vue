@@ -22,7 +22,7 @@ export default {
   justify-content: center;
   align-items: center;
   
-  background-color: rgb(95, 94, 198);
+  background-color: rgb(122, 122, 122);
 }
 
 img {
