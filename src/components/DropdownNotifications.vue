@@ -90,7 +90,7 @@ export default {
       'toggleNotifications',
       'toggleAirplane',
       'toggleWifi',
-      'updateBluetooth',
+      'toggleBluetooth',
       'changeBrightness',
       'setupUnreadMessages',
       'resetUnreadMessages'
@@ -143,8 +143,8 @@ export default {
           this.toggleAirplane()
           pick.state = this.airplane
         } else if (pick.meta === 'bluetooth') {
-          this.updateBluetooth(!this.bluetooth)
-          pick.state = this.bluetooth
+          this.toggleBluetooth()
+          pick.state = Boolean(this.bluetooth)
         } else if (pick.meta === 'refresh') {
           pick.state = !pick.state
         }

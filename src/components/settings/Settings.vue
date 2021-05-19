@@ -80,7 +80,6 @@ export default {
       'retiWifi',
       'notification',
       'airplane',
-      'bluetoothString',
       'bluetooth',
       'currentCover',
       'myCovers',
@@ -117,9 +116,10 @@ export default {
         {
           meta: 'bluetooth',
           icons: 'fa-bluetooth-b',
-          onValid: 'toggleBluetooth',
+          onValid: 'toggleBluetoothLocally',
           title: this.LangString('APP_CONFIG_BLUETOOTH'),
-          value: this.bluetoothString
+          value: (this.bluetooth) ? 'Attivo' : 'Disattivo',
+          bottone: true
         },
         {
           meta: 'notifications',
@@ -239,8 +239,8 @@ export default {
       'toggleNotifications',
       'toggleAirplane',
       'updateWifiString',
-      'updateBluetooth',
-      'toggleWifi'
+      'toggleWifi',
+      'toggleBluetooth'
     ]),
     scrollIntoView: function () {
       this.$nextTick(() => {
@@ -259,16 +259,6 @@ export default {
         this.retiWifiRender['Wifi spento'] = {icons: 'fa-ban', label: 'Wifi spento', value: 'cancel', color: 'red'}
       }
       return this.retiWifiRender
-    },
-
-    updateBluetoothTable () {
-      this.closestPlayersRender = []
-      var closestPlayers = this.$phoneAPI.getClosestPlayers()
-      for (var i in this.closestPlayers) {
-        this.closestPlayersRender[this.closestPlayers[i].name] = {id: i, icon: 'fa-bluetooth-b', label: this.closestPlayers[i].name, value: this.closestPlayers[i].userid}
-      }
-      this.closestPlayersRender['Annulla'] = {icons: 'fa-undo', label: 'Annulla', value: 'cancel', color: 'red'}
-      return this.closestPlayersRender
     },
 
     onBackspace () {
@@ -299,9 +289,6 @@ export default {
       // qui controllo se il parametro ha un submenu
       if (param.meta !== undefined && param.meta === 'wifi') {
         this.paramList[this.currentSelect].values = this.updateWifiTable()
-      }
-      if (param.meta !== undefined && param.meta === 'bluetooth') {
-        this.paramList[this.currentSelect].values = this.updateBluetoothTable()
       }
       this.actionItem(param)
     },
@@ -420,14 +407,6 @@ export default {
       })
     },
 
-    async toggleBluetooth (param, data) {
-      if (this.bluetooth) {
-        this.updateBluetooth(false)
-      } else {
-        this.updateBluetooth(true)
-      }
-    },
-
     onChangeCover: function (param, data) {
       this.setCurrentCover({ label: data.title, value: data.value })
       this.$phoneAPI.changingCover({ label: data.title, value: data.value })
@@ -463,6 +442,11 @@ export default {
       if (data.value !== 'cancel') {
         this.setLanguage(data.value)
       }
+    },
+
+    toggleBluetoothLocally () {
+      this.toggleBluetooth()
+      this.bottone['bluetooth'] = Boolean(this.bluetooth)
     },
 
     toggleNotificationsLocally () {
@@ -503,6 +487,7 @@ export default {
     // in phone.js
     this.bottone['notifications'] = Boolean(this.notification)
     this.bottone['airplane'] = Boolean(this.airplane)
+    this.bottone['bluetooth'] = Boolean(this.bluetooth)
     // qui richiedo le mie cover da phoneapi
     this.$phoneAPI.requestMyCovers()
     // console.log(JSON.stringify(this.myCovers))

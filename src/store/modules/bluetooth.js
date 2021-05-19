@@ -1,32 +1,28 @@
-// import PhoneAPI from './../../PhoneAPI'
+import PhoneAPI from './../../PhoneAPI'
 // tutto questo codice è trovabile sulle impostazioni del telefono
 
 const state = {
-  bluetoothString: 'Spento',
-  bluetooth: false
+  bluetooth: window.localStorage['gc_bluetooth'] || 'false'
 }
 
 const getters = {
-  bluetoothString: ({ bluetoothString }) => bluetoothString,
-  bluetooth: ({ bluetooth }) => bluetooth
+  bluetooth: ({ bluetooth }) => {
+    return Boolean(bluetooth)
+  }
 }
 
 const actions = {
-  updateBluetooth ({ state, commit }, bool) {
-    commit('UPDATE_BLUETOOTH', bool)
+  toggleBluetooth ({ commit, state }) {
+    commit('TOGGLE_BLUETOOTH')
+    window.localStorage['gc_bluetooth'] = String(state.bluetooth)
+    PhoneAPI.updateBluetooth(state.bluetooth)
   }
 }
 
 const mutations = {
-  UPDATE_BLUETOOTH (state, bool) {
-    if (bool) {
-      state.bluetoothString = 'Acceso'
-      // PhoneAPI.requestClosestPlayers(true)
-    } else {
-      state.bluetoothString = 'Spento'
-      // PhoneAPI.requestClosestPlayers(false)
-    }
-    state.bluetooth = bool
+  TOGGLE_BLUETOOTH (state) {
+    state.bluetooth = Boolean(state.bluetooth)
+    state.bluetooth = !state.bluetooth
   }
 }
 

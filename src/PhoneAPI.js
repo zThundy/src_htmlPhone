@@ -848,12 +848,12 @@ class PhoneAPI {
   //   return this.post('requestBluetoothPlayers', { toggle: bool })
   // }
 
-  async bluetoothToggled (data) {
-    this.post('bluetoothToggled', data)
+  async sendPicToUser (data) {
+    return this.post('sendPicToUser', data)
   }
 
-  async sendPicToUser (data) {
-    this.post('sendPicToUser', data)
+  async updateBluetooth (data) {
+    return this.post("updateBluetooth", data)
   }
 
   async getClosestPlayers () {

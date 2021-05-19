@@ -20,7 +20,7 @@ RegisterNUICallback("sendPicToUser", function(data, cb)
     cb("ok")
 end)
 
-RegisterNUICallback("bluetoothToggled", function(data, cb)
+RegisterNUICallback("updateBluetooth", function(data, cb)
     bluetooth = data
     cb("ok")
 end)

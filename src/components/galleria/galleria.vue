@@ -104,7 +104,7 @@ export default {
                 let choix = []
                 var cancel = { id: -1, title: this.LangString('CANCEL'), icons: 'fa-undo', color: 'red' }
                 var closestPlayers = this.$phoneAPI.getClosestPlayers()
-                for (var i in this.closestPlayers) { choix.push({ id: this.closestPlayers[i].id, label: this.closestPlayers[i].name, title: this.closestPlayers[i].name, icons: 'fa-share-square' }) }
+                for (var i in closestPlayers) { choix.push({ id: closestPlayers[i].id, label: closestPlayers[i].name, title: closestPlayers[i].name, icons: 'fa-share-square' }) }
                 choix.push(cancel)
                 const data = await Modal.CreateModal({ choix })
                 if (data.id === -1) {
