@@ -84,5 +84,6 @@ export default {
   margin-top: auto;
   margin-bottom: auto;
   margin-left: 15px;
+  max-width: 80%;
 }
 </style>
