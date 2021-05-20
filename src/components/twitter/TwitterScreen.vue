@@ -1,6 +1,6 @@
 <template>
   <div style="width: 100%; height: 745px; overflow: hidden; background-color: rgb(30, 50, 75);" class="phone_app">
-    <PhoneTitle :title="currentScreen.title" :color="'white'" backgroundColor="rgb(20, 40, 65)" v-on:back="quit"/>
+    <PhoneTitle :title="currentScreen.title" :color="'white'" backgroundColor="rgb(55, 161, 242)" v-on:back="quit"/>
     
     <div class="phone_content">
       <component v-bind:is="currentScreen.component"/>
@@ -129,11 +129,11 @@ export default {
 
 <style scoped>
 .twitter_menu {
-  border-top: 1px solid rgb(61, 89, 133);
+  border-top: 1px solid rgb(110, 118, 125);
   height: 56px;
   display: flex;
   width: 100%;
-  background-color: rgb(20, 40, 65);
+  background-color: rgb(55, 161, 242);
 }
 
 .twitter_menu-item {
@@ -143,12 +143,12 @@ export default {
   justify-content: center;
   align-items: center;
 
-  color: rgb(45, 88, 141);
-  background-color: rgb(20, 40, 65);
+  color: rgb(110, 118, 125);
+  background-color: rgb(255, 255, 255);
 }
 
 .twitter_menu-item.select {
-  color: rgb(0, 98, 255);
+  color: rgb(55, 161, 242);
 }
 
 </style>

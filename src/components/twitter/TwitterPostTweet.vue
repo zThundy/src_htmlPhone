@@ -108,7 +108,7 @@ export default {
 
 <style scoped>
 .background {
-  background-color: rgb(35, 51, 76);
+  background-color: rgb(255, 255, 255);
 }
 
 .tweet_write {
@@ -133,7 +133,7 @@ export default {
 .tweet_write .textarea-input {
   align-self: center;
   margin-top: 20px;
-  border: 5px solid rgb(20, 40, 65);
+  /*border: 5px solid rgb(20, 40, 65);*/
   outline: none;
   font-size: 16px;
   padding: 13px 16px;
@@ -163,7 +163,7 @@ export default {
   height: 32px;
 
   border-radius: 14px;
-  background-color: rgb(62, 89, 133);
+  background-color: rgb(55, 161, 242);
 
   color: white;
   line-height: 32px;
@@ -177,7 +177,7 @@ export default {
   height: 32px;
 
   border-radius: 14px;
-  background-color: rgb(62, 89, 133);
+  background-color: rgb(55, 161, 242);
 
   color: white;
   line-height: 32px;

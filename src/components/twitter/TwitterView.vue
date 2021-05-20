@@ -237,24 +237,24 @@ export default {
   flex-direction: column;
   overflow-y: auto;
 
-  background-color: rgb(35, 51, 76);
+  background-color: rgb(255, 255, 255);
 }
 
 .tweet {
   /* background-color: #DBF0F4; */
-  background-color: rgb(35, 51, 76);
+  background-color: rgb(255, 255, 255);
   flex: 0 0 auto;
   width: 100%;
   display: flex;
   flex-direction: row;
-  border-bottom: rgb(61, 89, 133) 1px solid;
+  border-bottom: rgb(110, 118, 125) 1px solid;
   padding-top: 6px;
 
-  color: rgb(255, 255, 255);
+  color: rgb(0, 0, 0);
 }
 
 .tweet.select {
-  background-color: rgb(42, 62, 86);
+  background-color: rgba(110, 118, 125, 0.308);
 }
 
 .tweet-img {
@@ -309,7 +309,7 @@ export default {
 .tweet-like {
   margin-top: 4px;
   margin-bottom: 4px;
-
+  color: rgb(110, 118, 125);
   display: flex;
   width: 100%;
   height: 24px;
