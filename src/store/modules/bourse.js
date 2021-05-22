@@ -1,22 +1,24 @@
 const state = {
   stocksProfile: null,
-  stocksInfo: null
+  stocksInfo: [],
+  myStocksInfo: null
 }
 
 const getters = {
   stocksProfile: ({ stocksProfile }) => stocksProfile,
-  stocksInfo: ({ stocksInfo }) => stocksInfo
+  stocksInfo: ({ stocksInfo }) => stocksInfo,
+  myStocksInfo: ({ myStocksInfo }) => myStocksInfo
 }
 
 const actions = {
-  resetBourse ({ commit }) {
-    commit('SET_BORSA_INFO', [])
-  }
 }
 
 const mutations = {
-  SET_BOURSE_INFO (state, stocksInfo) {
-    state.stocksInfo = stocksInfo
+  UPDATE_BOURSE_PROFILE (state, profile) {
+    state.stocksProfile = profile
+  },
+  UPDATE_BOURSE_CRYPTO (state, crypto) {
+    state.stocksInfo = crypto
   }
 }
 
@@ -35,76 +37,64 @@ if (process.env.NODE_ENV !== 'production') {
     balance: 5129382
   }
 
+  state.myStocksInfo = [
+    {
+      totalPrice: 59699.074,
+      totalBougth: 20,
+      name: 'BTCN'
+    }
+  ]
+
   state.stocksInfo = [
     {
       currentMarket: 59699.074,
       closeMarket: 60056.664,
-      currency: 'USD',
-      fakeName: 'BTCN',
-      realName: 'BTC-USD'
+      name: 'BTCN'
     },
     {
       currentMarket: 2114.0967,
       closeMarket: 2113.3074,
-      currency: 'USD',
-      fakeName: 'ETHR',
-      realName: 'ETH-USD'
+      name: 'ETHR'
     },
     {
       currentMarket: 335.61954,
       closeMarket: 333.44257,
-      currency: 'USD',
-      fakeName: 'BNBC',
-      realName: 'BNB-USD'
+      name: 'BNBC'
     },
     {
       currentMarket: 0.057192378,
       closeMarket: 0.058815677,
-      currency: 'USD',
-      fakeName: 'DOGE',
-      realName: 'DOGE-USD'
+      name: 'DOGE'
     },
     {
       currentMarket: 661.75,
       closeMarket: 667.93,
-      currency: 'USD',
-      fakeName: 'COIL',
-      realName: 'TSLA'
+      name: 'COIL'
     },
     {
       currentMarket: 81.09,
       closeMarket: 78.5,
-      currency: 'USD',
-      fakeName: 'LFI',
-      realName: 'AMD'
+      name: 'LFI'
     },
     {
       currentMarket: 3161.0,
       closeMarket: 3094.08,
-      currency: 'USD',
-      fakeName: 'GOP',
-      realName: 'AMZN'
+      name: 'GOP'
     },
     {
       currentMarket: 132.53,
       closeMarket: 132.89,
-      currency: 'USD',
-      fakeName: 'SBURBN',
-      realName: 'NKE'
+      name: 'SBURBN'
     },
     {
       currentMarket: 141.28,
       closeMarket: 141.45,
-      currency: 'USD',
-      fakeName: 'ECOLA',
-      realName: 'PEP'
+      name: 'ECOLA'
     },
     {
       currentMarket: 552.47,
       closeMarket: 533.93,
-      currency: 'USD',
-      fakeName: 'DDEN',
-      realName: 'NVDA'
+      name: 'DDEN'
     }
   ]
 

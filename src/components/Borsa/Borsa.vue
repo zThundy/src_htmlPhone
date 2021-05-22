@@ -1,6 +1,7 @@
 <template>
   <div class="phone_app">
     <PhoneTitle :title="LangString('APP_BOURSE_TITLE')" @back="onBackspace" :backgroundColor="'rgba(77, 100, 111, 1.0)'" />
+
     <div v-if="stocksProfile" class='container'>
       <div class="stocks-menu">
         <div class="stocks-menu-button" :class="{ selected: currentPage === 0 }"><i class="fas fa-chart-line stocks-menu-icon"></i>Mercato</div>
@@ -17,24 +18,44 @@
           </div>
           <div class='info-balance'>
             <p class='info-balance-title'>Portafoglio</p>
-            <p class='info-balance-amount'>{{ stocksProfile.balance }} $</p>
+            <md-amount class="info-balance-amount" :value="stocksProfile.balance" :duration="500" has-separator transition></md-amount> $
           </div>
         </div>
 
-        <div v-if="stocksInfo" class="stocks-table">
+        <div class="stocks-table">
           <div class="stocks-table-inner">
-            <div v-for="(table, ticker) in stocksInfo" :key="ticker" class="stocks-table-elem" :class="{ select: currentSelect === ticker }">
-              <p class="stocks-ticker stocks-bold">{{ table.fakeName }}</p>
+
+            <div v-for="(table, key) in stocksInfo" :key="key" class="stocks-table-elem" :class="{ select: currentSelect === key }">
+              <p class="stocks-ticker stocks-bold">{{ table.name }}</p>
               <p class="stocks-ticker stocks-current-mp">{{ table.currentMarket }} $</p>
-              <p class="stocks-ticker stocks-current-variation" :style="{ color: getInfoColor(table) }">
-                {{ table.currentMarket - table.closeMarket | truncate(1, " ") }}
-                ({{ (Math.abs(table.currentMarket - table.closeMarket) * 100) / table.closeMarket | truncate(2, "%") }})
-                <i class="stocks-ticker stocks-current-arrow fas"
-                  :class="getArrow(table)" :style="{ color: getInfoColor(table) }"
+              <p class="stocks-ticker stocks-current-variation" :style="{ color: getBourseColor(table) }">
+                {{ Number(table.currentMarket - table.closeMarket).toFixed(1) }}
+                ({{ Number((Math.abs(table.currentMarket - table.closeMarket) * 100) / table.closeMarket).toFixed(2) }}%)
+                <i class="stocks-ticker stocks-current-arrow"
+                  :class="getBourseArrow(table)" :style="{ color: getBourseColor(table) }"
                 ></i>
               </p>
             </div>
+
           </div>
+        </div>
+      </div>
+
+      <div v-if="currentPage === 1">
+        <img class="info-logo" src="/html/static/img/icons_app/borsa.png" />
+
+        <div class='profile-info'>
+          <div class='info-user'>
+            <p class='info-user-name'>{{ stocksProfile.name }}</p>
+            <p class='info-user-surname'>{{ stocksProfile.surname }}</p>
+          </div>
+          <div class='info-balance'>
+            <p class='info-balance-title'>Portafoglio</p>
+            <md-amount class="info-balance-amount" :value="stocksProfile.balance" :duration="500" has-separator transition></md-amount> $
+          </div>
+        </div>
+        
+        <div v-if="myStocksInfo" class="stocks-table">
         </div>
       </div>
 
@@ -46,18 +67,26 @@
 <script>
 import { mapGetters } from 'vuex'
 import PhoneTitle from './../PhoneTitle'
+import Modal from '@/components/Modal/index.js'
+
+import { Amount } from 'mand-mobile'
+import 'mand-mobile/lib/mand-mobile.css'
 
 export default {
-  name: 'app-stocks',
-  components: { PhoneTitle },
+  name: 'borsa',
+  components: {
+    PhoneTitle,
+    [Amount.name]: Amount
+  },
   data () {
     return {
-      currentSelect: 0,
-      currentPage: 0
+      currentSelect: -1,
+      currentPage: 0,
+      ignoreControls: false
     }
   },
   computed: {
-    ...mapGetters(['LangString', 'stocksProfile', 'stocksInfo'])
+    ...mapGetters(['LangString', 'stocksInfo', 'stocksProfile', 'myStocksInfo'])
   },
   methods: {
     scrollIntoView () {
@@ -68,46 +97,97 @@ export default {
         }
       })
     },
-    getInfoColor (item) {
-      if (item.currentMarket - item.closeMarket > 0) {
+    onBackspace () {
+      if (this.ignoreControls) {
+        this.ignoreControls = false
+        return
+      }
+      if (this.currentPage === 1) {
+        this.currentPage = 0
+        return
+      }
+      this.$router.push({ name: 'menu' })
+    },
+    onUp () {
+      if (this.ignoreControls) return
+      this.currentSelect = this.currentSelect === 0 ? 0 : this.currentSelect - 1
+      this.scrollIntoView()
+    },
+    onDown () {
+      if (this.ignoreControls) return
+      // console.log(JSON.stringify(this.stocksInfo))
+      // console.log(this.stocksInfo.length)
+      // console.log(this.stocksInfo)
+      this.currentSelect = this.currentSelect === this.stocksInfo.length - 1 ? this.currentSelect : this.currentSelect + 1
+      this.scrollIntoView()
+    },
+    onLeft () {
+      if (this.ignoreControls) return
+      if (this.currentPage === 0) return
+      this.currentPage -= 1
+      this.currentSelect = 0
+    },
+    onRight () {
+      if (this.ignoreControls) return
+      if (this.currentPage === 1) return
+      this.currentPage += 1
+      this.currentSelect = 0
+    },
+    onEnter () {
+      if (this.currentPage === 0) {
+        this.ignoreControls = true
+        let choix = [
+          { id: 1, title: this.LangString('APP_BOURSE_CHOICE_BUY'), icons: 'fa-money', color: 'green' },
+          { id: 2, title: this.LangString('CANCEL'), icons: 'fa-undo', color: 'red' }
+        ]
+        Modal.CreateModal({ choix }).then(reponse => {
+          if (reponse.id === 1) {
+            this.$phoneAPI.getReponseText({
+              limit: 5,
+              text: '1',
+              title: this.LangString('APP_BOURSE_BUY_TITLE')
+            }).then(data => {
+              if (data && !isNaN(Number(data))) {
+                this.$phoneAPI.buyCryto({ amount: data, crypto: this.stocksInfo[this.currentSelect] })
+              }
+              this.ignoreControls = false
+            })
+          } else {
+            this.ignoreControls = false
+          }
+        })
+      } else {
+
+      }
+    },
+    getBourseColor (tb) {
+      if (tb.currentMarket - tb.closeMarket === 0) {
+        return '#00ffff'
+      } else if (tb.currentMarket - tb.closeMarket > 0) {
         return '#4caf50'
       } else {
         return ' #f44336'
       }
     },
-    getArrow (item) {
-      if (item.currentMarket - item.closeMarket > 0) {
-        return 'fa-arrow-up'
+    getBourseArrow (tb) {
+      if (tb.currentMarket - tb.closeMarket === 0) {
+        return 'fas fa-arrow-right'
+      } else if (tb.currentMarket - tb.closeMarket > 0) {
+        return 'fas fa-arrow-up'
       } else {
-        return 'fa-arrow-down'
+        return 'fas fa-arrow-down'
       }
-    },
-    onBackspace () {
-      this.$router.push({ name: 'menu' })
-    },
-    onUp () {
-      this.currentSelect = this.currentSelect === 0 ? 0 : this.currentSelect - 1
-      this.scrollIntoView()
-    },
-    onDown () {
-      this.currentSelect = this.currentSelect === this.stocksInfo.length - 1 ? this.currentSelect : this.currentSelect + 1
-      this.scrollIntoView()
-    },
-    onLeft () {
-      if (this.currentPage === 0) return
-      this.currentPage -= 1
-    },
-    onRight () {
-      if (this.currentPage === 1) return
-      this.currentPage += 1
     }
   },
   created () {
+    this.$phoneAPI.requestBourseProfile()
+
     this.$bus.$on('keyUpArrowDown', this.onDown)
     this.$bus.$on('keyUpArrowUp', this.onUp)
     this.$bus.$on('keyUpArrowLeft', this.onLeft)
     this.$bus.$on('keyUpArrowRight', this.onRight)
     this.$bus.$on('keyUpBackspace', this.onBackspace)
+    this.$bus.$on('keyUpEnter', this.onEnter)
   },
   beforeDestroy () {
     this.$bus.$off('keyUpArrowDown', this.onDown)
@@ -115,6 +195,7 @@ export default {
     this.$bus.$off('keyUpArrowLeft', this.onLeft)
     this.$bus.$off('keyUpArrowRight', this.onRight)
     this.$bus.$off('keyUpBackspace', this.onBackspace)
+    this.$bus.$off('keyUpEnter', this.onEnter)
   }
 }
 </script>

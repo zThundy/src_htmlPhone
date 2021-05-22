@@ -214,7 +214,6 @@ class PhoneAPI {
     store.dispatch('resetPhone')
     store.dispatch('resetMessage')
     store.dispatch('resetContact')
-    store.dispatch('resetBourse')
     store.dispatch('resetAppels')
     store.dispatch('resetDati')
     return this.post('deleteALL')
@@ -343,10 +342,6 @@ class PhoneAPI {
   async postUpdateMoney (money, iban) {
     return this.post('sendMoneyToIban', { money, iban })
   }
-
-  // onupdateBourse (data) {
-  //   store.commit('SET_BOURSE_INFO', data.bourse)
-  // }
 
   // Call
   async startCall (numero, extraData = undefined) {
@@ -984,6 +979,32 @@ class PhoneAPI {
 
   onupdateAziendaEmployes (data) {
     store.commit('UPDATE_AZIENDA_EMPLOYES', data.employes)
+  }
+
+  // ////////////// //
+  // BORSA FUNZIONI //
+  // ////////////// //
+
+  async requestBourseProfile () {
+    return this.post('requestBourseProfile')
+  }
+
+  async requestBourseCrypto () {
+    return this.post('requestBourseCrypto')
+  }
+
+  onreceiveBourseProfile (data) {
+    // console.log(JSON.stringify(data))
+    store.commit('UPDATE_BOURSE_PROFILE', data.profile)
+  }
+
+  onreceiveBourseCrypto (data) {
+    // console.log(JSON.stringify(data))
+    store.commit('UPDATE_BOURSE_CRYPTO', data.crypto)
+  }
+
+  async buyCrypto (data) {
+    return this.post('buyCrypto', data)
   }
 }
 

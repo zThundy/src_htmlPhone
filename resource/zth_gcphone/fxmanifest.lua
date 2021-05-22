@@ -67,6 +67,7 @@ client_script {
 	"client/email.lua",
 	"client/news.lua",
 	"client/azienda.lua",
+	"client/bourse.lua",
 
 	-- modules
 	"modules/tokovoip.lua",
@@ -93,6 +94,7 @@ server_script {
 	"server/email.lua",
 	"server/news.lua",
 	"server/azienda.lua",
+	"server/bourse.lua",
 
 	-- modules
 	"modules/saltychat.lua",

@@ -120,6 +120,7 @@ export default {
     this.setupUnreadAziendaMessages()
     // this.$phoneAPI.requestMyCovers()
     this.sendStartupValues()
+    this.$phoneAPI.requestBourseCrypto()
     /*
     for (var key in this.messages) {
       if (this.messages[key].isRead === 0) {

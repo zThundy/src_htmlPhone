@@ -485,7 +485,6 @@
       "APP_PHONE_NUMBER_HIDDEN": "Numero nascosto",
       "APP_PHONE_NUMBER_UNKNOWN": "Sconosciuto",
       "APP_PHONE_CALL_IGNORE": "Ignora",
-      "APP_BOURSE_TITLE": "Borsa",
       "APP_CONTACT_TITLE": "Contatti",
       "APP_CONTACT_NEW": "Nuovo contatto",
       "APP_CONTACT_EDIT": "Modifica contatto",
@@ -699,6 +698,10 @@
       "APP_AZIENDA_DEMOTE_EMPLOYE": "Degrada / Licenzia",
       "APP_EMOJI_TITLE": "Lista emoji",
       "APP_FACEBOOK_TITLE": "Facebook",
+      "APP_BOURSE_TITLE": "Borsa",
+      "APP_BOURSE_CHOICE_BUY": "Compra",
+      "APP_BOURSE_CHOICE_SELL": "Vendi",
+      "APP_BOURSE_BUY_TITLE": "Quanti ne vuoi comprare?",
 
       "TIMEAGO": [
         "Proprio adesso",
