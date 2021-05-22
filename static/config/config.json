@@ -702,6 +702,8 @@
       "APP_BOURSE_CHOICE_BUY": "Compra",
       "APP_BOURSE_CHOICE_SELL": "Vendi",
       "APP_BOURSE_BUY_TITLE": "Quanti ne vuoi comprare?",
+      "APP_BOURSE_SELL_TITLE": "Quanti ne vuoi vendere?",
+      "APP_BOURSE_ERROR_INTERNET": "Non hai abbastanza giga per eseguire questa azione",
 
       "TIMEAGO": [
         "Proprio adesso",

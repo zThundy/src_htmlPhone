@@ -1,6 +1,7 @@
 <template>
   <div>
-    <link rel="stylesheet" href="https://cssgram-cssgram.netdna-ssl.com/cssgram.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cssgram/0.1.10/cssgram.min.css">
+    <!-- <link rel="stylesheet" href="https://cssgram-cssgram.netdna-ssl.com/cssgram.min.css"> -->
 
     <div class="phone_fullscreen_img" v-if="imgZoom !== undefined" @click.stop="imgZoom = undefined">
       <img :src="imgZoom" />

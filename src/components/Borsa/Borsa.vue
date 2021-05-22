@@ -55,7 +55,18 @@
           </div>
         </div>
         
-        <div v-if="myStocksInfo" class="stocks-table">
+
+        <div class="stocks-table">
+          <div class="stocks-table-inner">
+
+            <div v-for="(table, key) in myStocksInfo" :key="key" class="stocks-table-elem" :class="{ select: currentSelect === key }">
+              <p class="stocks-ticker stocks-bold">{{ table.name }}</p>
+              <p class="stocks-ticker stocks-current-mp">{{ table.amount }}</p>
+              <p class="stocks-ticker stocks-current-mp">{{ getCurrentMarket(table).toFixed(1) }} $</p>
+              <p class="stocks-ticker stocks-current-mp">{{ (getCurrentMarket(table) * table.amount).toFixed(1) }} $</p>
+            </div>
+
+          </div>
         </div>
       </div>
 
@@ -134,6 +145,7 @@ export default {
       this.currentSelect = 0
     },
     onEnter () {
+      if (this.ignoreControls) return
       if (this.currentPage === 0) {
         this.ignoreControls = true
         let choix = [
@@ -147,8 +159,10 @@ export default {
               text: '1',
               title: this.LangString('APP_BOURSE_BUY_TITLE')
             }).then(data => {
-              if (data && !isNaN(Number(data))) {
-                this.$phoneAPI.buyCryto({ amount: data, crypto: this.stocksInfo[this.currentSelect] })
+              // console.log(data.text)
+              // console.log(isNaN(Number(data.text)))
+              if (data && data.text && !isNaN(Number(data.text))) {
+                this.$phoneAPI.buyCrypto({ amount: Number(data.text), crypto: this.stocksInfo[this.currentSelect] })
               }
               this.ignoreControls = false
             })
@@ -157,7 +171,29 @@ export default {
           }
         })
       } else {
-
+        this.ignoreControls = true
+        let choix = [
+          { id: 1, title: this.LangString('APP_BOURSE_CHOICE_SELL'), icons: 'fa-money', color: 'yellow' },
+          { id: 2, title: this.LangString('CANCEL'), icons: 'fa-undo', color: 'red' }
+        ]
+        Modal.CreateModal({ choix }).then(reponse => {
+          if (reponse.id === 1) {
+            this.$phoneAPI.getReponseText({
+              limit: 5,
+              text: '1',
+              title: this.LangString('APP_BOURSE_SELL_TITLE')
+            }).then(data => {
+              // console.log(data.text)
+              // console.log(isNaN(Number(data.text)))
+              if (data && data.text && !isNaN(Number(data.text))) {
+                this.$phoneAPI.sellCrypto({ amount: Number(data.text), crypto: this.myStocksInfo[this.currentSelect], price: this.getCurrentMarket(this.myStocksInfo[this.currentSelect]) })
+              }
+              this.ignoreControls = false
+            })
+          } else {
+            this.ignoreControls = false
+          }
+        })
       }
     },
     getBourseColor (tb) {
@@ -177,6 +213,16 @@ export default {
       } else {
         return 'fas fa-arrow-down'
       }
+    },
+    getCurrentMarket (tb) {
+      if (tb.name) {
+        for (var id in this.stocksInfo) {
+          if (this.stocksInfo[id].name === tb.name) {
+            return this.stocksInfo[id].currentMarket
+          }
+        }
+      }
+      return 0
     }
   },
   created () {

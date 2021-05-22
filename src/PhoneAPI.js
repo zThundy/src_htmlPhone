@@ -1006,6 +1006,14 @@ class PhoneAPI {
   async buyCrypto (data) {
     return this.post('buyCrypto', data)
   }
+
+  onreceiveMyCrypto (data) {
+    store.commit('UPDATE_BOURSE_PERSONAL_CRYPTO', data.crypto)
+  }
+
+  async sellCrypto (data) {
+    return this.post('sellCrypto', data)
+  }
 }
 
 function decimalAdjust (type, value, exp) {

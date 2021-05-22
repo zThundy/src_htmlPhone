@@ -19,6 +19,9 @@ const mutations = {
   },
   UPDATE_BOURSE_CRYPTO (state, crypto) {
     state.stocksInfo = crypto
+  },
+  UPDATE_BOURSE_PERSONAL_CRYPTO (state, crypto) {
+    state.myStocksInfo = crypto
   }
 }
 
