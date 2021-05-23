@@ -2,8 +2,7 @@
   <div class="phone_app">
     <PhoneTitle :title="title" :showSegnaleSection="showSegnaleSection" v-if="showHeader" @back="back"/>
 
-    <div class="phone_content elements">
-
+    <div class="elements">
       <div class="element" v-for='(elem, key) in list' :key="key" v-bind:class="{ select: key === currentSelect }">
           
         <div class="elem-pic" v-bind:style="stylePuce(elem)">{{ formatEmoji(elem.letter || elem[keyDispay][0]) }}</div>
@@ -15,7 +14,6 @@
         </div>
       
       </div>
-
     </div>
 
   </div>
@@ -164,28 +162,38 @@ export default {
 .elements {
   height: 100%;
   width: 100%;
-  overflow: auto;
+  overflow: hidden;
 }
 
 .element {
+  width: 92%;
   height: 60px;
-  border-bottom: 1px solid #d8d8d8;
-  line-height: 58px;
+  /* border-bottom: 1px solid #d8d8d8; */
+  /* line-height: 60px; */
+  margin-top: 12px;
+
   display: flex;
   align-items: center;
   position: relative;
+
   font-weight: 300;
   font-size: 18px;
+  background-color: rgb(245, 245, 245);
+  box-shadow: 0px 0px 8px 0px rgba(0, 0, 0, 0.4);
+
+  margin-left: auto;
+  margin-right: auto;
 }
 
 .element.select {
-  background-color: #DDD;
+  background-color: rgb(235, 255, 255);
 }
 
 .elem-pic {
   margin-left: 12px;
   height: 48px;
   width: 48px;
+
   text-align: center;
   line-height: 48px;
   position: absolute;

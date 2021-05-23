@@ -4,9 +4,7 @@
     <PhoneTitle v-if="currentModule === 1" :title="LangString('APP_EMAIL_TITLE')" :backgroundColor="'rgb(216, 71, 49)'" />
 
     <div class="emails-container">
-
       <div v-if="currentModule === 0">
-
         <div class="email-container" v-for="(email, key) of emails" :key="key" :class="{ select: key === currentSelect }">
 
           <div v-if="email" class="email-timestamp">{{ formatTime(email.time) }}</div>
@@ -31,13 +29,11 @@
         <div class="email-write-dot">
           <i class="email-write-icon fa fa-pencil"></i>
         </div>
-
       </div>
 
       <div v-if="currentModule === 1">
 
         <div class="email-container" v-for="(email, key) of sentEmails" :key="key" :class="{ select: key === currentSelect }">
-
           <div v-if="email" class="email-timestamp">{{ formatTime(email.time) }}</div>
 
           <div v-if="email" class="email-header">
@@ -54,7 +50,6 @@
           </div>
 
           <div class="email-divider"></div>
-
         </div>
 
         <div class="email-write-dot">
@@ -62,7 +57,6 @@
         </div>
 
       </div>
-
     </div>
 
     <!--

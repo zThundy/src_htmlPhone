@@ -329,15 +329,15 @@ export default {
 .groupImage {
   position: inherit;
   
-  top: 35px;
-  right: 15px;
+  top: 35.5px;
+  right: 16px;
 }
 
 .groupImage img {
   object-fit: cover;
 
   border-radius: 50%;
-  border: 2px solid rgb(255, 255, 255);
+  border: 2px solid rgb(117, 117, 117);
 
   height: 40px;
   width: 40px;

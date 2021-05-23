@@ -543,8 +543,8 @@ export default {
 }
 
 .groupImage {
-  top: 35px;
-  right: 15px;
+  top: 35.5px;
+  right: 15.5px;
 }
 
 .groupImage img {

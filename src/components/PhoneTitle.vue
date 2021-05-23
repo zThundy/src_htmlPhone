@@ -68,6 +68,7 @@ export default {
   /* height: 64px; */
   /* line-height: 10px; */
   /* font-size: 28px; */
+  border-bottom: 1px solid #838383;
 }
 
 .phone_title i {

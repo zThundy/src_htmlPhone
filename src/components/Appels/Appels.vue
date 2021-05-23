@@ -1,20 +1,22 @@
 <template>
-   <div style="width: 326px; height: 743px;" class="phone_app">
+   <div class="phone_app">
     <PhoneTitle :title="LangString('APP_PHONE_TITLE')" v-on:back="onBackspace" />
+
+    <div class="subMenu">
+      <div class="subMenu-elem" v-for="(Comp, i) of subMenu" :key="i" :class="{ selected: currentMenuIndex === i }">
+        <!-- <i class="subMenu-icon fa" :class="['fa-' + Comp.icon]"></i> -->
+        <span class="subMenu-name">{{ Comp.name }}</span>
+        <span class="subMenu-underline"></span>
+      </div>
+    </div>
     
     <div class="content">
       <component :is="subMenu[currentMenuIndex].Comp" />
     </div>
-
-    <div class="subMenu">
     
-      <div class="subMenu-elem" :style="getColorItem(i)" v-for="(Comp, i) of subMenu" :key="i">
-        <i class="subMenu-icon fa" :class="['fa-' + Comp.icon]"></i>
-        <span class="subMenu-name">{{ Comp.name }}</span>
-      </div>
-      
+    <div class="email-write-dot">
+      <img src="/html/static/img/icons_app/phone_digits.png" class="email-write-icon"/>
     </div>
-
    </div>
 </template>
 
@@ -115,37 +117,64 @@ export default {
 }
 
 .subMenu {
-  border-top: 1px solid rgba(0,0,0,0.24);
   display: flex;
-  height: 56px;
+  height: 40px;
 }
 
-.subMenu-elem {
-  height: 100%;
-  width: 100%;
-  text-align: center;
-  line-height: 56px;
-  height: 56px;
-  display: flex;
-  color: #959595;
-  flex-direction: column;
-}
-
-.subMenu-elem-select, .subMenu-elem:hover {
-  color: #007aff;
-}
-
+/*
 .subMenu-icon {
-  margin-top: 6px;
+  margin-top: 8px;
   font-size: 22px;
   line-height: 22px;
   height: 22px;
 }
+*/
+
+.subMenu-underline {
+  display: block;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+  margin-top: 20px;
+}
 
 .subMenu-name {
   display: block;
-  font-size: 14px;
-  height: 14px;
-  line-height: 14px;
+  font-size: 20px;
+  height: 10px;
+  margin-top: 6px;
+}
+
+.subMenu-elem {
+  width: 100%;
+  text-align: center;
+
+  display: flex;
+  color: rgba(0, 0, 0, 0.3);
+  flex-direction: column;
+}
+
+.subMenu-elem.selected {
+  color: rgb(13, 158, 0);
+  border-bottom: 1px solid rgb(13, 158, 0);
+}
+
+.email-write-dot {
+  position: fixed;
+
+  bottom: 20%;
+  right: 30%;
+
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.6);
+  /* box-shadow: 0 12px 10px -10px black; */
+  border-radius: 50%;
+}
+
+.email-write-dot .email-write-icon {
+  color: white;
+
+  width: 60px;
+  height: 60px;
+
+  display: flex;
+  justify-content: center;
 }
 </style>

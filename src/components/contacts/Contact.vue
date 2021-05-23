@@ -1,5 +1,5 @@
 <template>
-  <div style="width: 326px; height: 743px;" class="phone_app">
+  <div class="phone_app">
     <PhoneTitle :title="contact.display" @back="forceCancel"/>
 
     <div class='phone_content content inputText'>
