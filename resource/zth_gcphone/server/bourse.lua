@@ -73,9 +73,15 @@ MySQL.ready(function()
             if not CACHED_USER_CRYPTO[v.identifier] then CACHED_USER_CRYPTO[v.identifier] = {} end
 
             CACHED_USER_CRYPTO[v.identifier][v.id] = v
+        end
 
-            table.sort(CACHED_USER_CRYPTO[v.identifier], function(a, b)
-                return a.amount > b.amount
+        -- print(ESX.DumpTable(CACHED_USER_CRYPTO))
+
+        for id, _ in pairs(CACHED_USER_CRYPTO) do
+            table.sort(CACHED_USER_CRYPTO[id], function(a, b)
+                if a and b then
+                    return a.amount > b.amount
+                end
             end)
         end
     end)
@@ -83,21 +89,27 @@ end)
 
 gcPhoneT.getBourseProfile = function()
     local player = source
-    local xPlayer = ESX.GetPlayerFromId(player)
+	local identifier = gcPhone.getPlayerID(player)
     
-	gcPhone.isAbleToSurfInternet(xPlayer.identifier, 0.5, function(isAble, mbToRemove)
-		if isAble then
-            gcPhone.usaDatiInternet(xPlayer.identifier, mbToRemove)
-        end
-    end)
+	local isAble, mbToRemove = gcPhone.isAbleToSurfInternet(identifier, 0.5)
+    if isAble then
+        gcPhone.usaDatiInternet(identifier, mbToRemove)
+        local result = MySQL.Sync.fetchAll("SELECT firstname, lastname FROM users WHERE identifier = @identifier", {['@identifier'] = identifier})
     
-    local result = MySQL.Sync.fetchAll("SELECT firstname, lastname FROM users WHERE identifier = @identifier", {['@identifier'] = xPlayer.identifier})
-
-    return {
-        name = result[1].firstname,
-        surname = result[1].lastname,
-        balance = xPlayer.getAccount("bank").money
-    }
+        return {
+            name = result[1].firstname,
+            surname = result[1].lastname,
+            balance = xPlayer.getAccount("bank").money
+        }
+    else
+        TriggerClientEvent("gcphone:sendGenericNotification", player, {
+            message = "APP_BOURSE_ERROR_INTERNET",
+            title = "Borsa",
+            icon = "money",
+            color = "rgb(0, 204, 0)",
+            appName = "Borsa"
+        })
+    end
 end
 
 gcPhoneT.requestCryptoValues = function()
@@ -112,58 +124,57 @@ gcPhoneT.buyCrypto = function(data)
     if money >= math.ceil(data.crypto.currentMarket * data.amount) then
         xPlayer.removeAccountMoney("bank", math.ceil(data.crypto.currentMarket * data.amount))
 
-        gcPhone.isAbleToSurfInternet(xPlayer.identifier, 0.5, function(isAble, mbToRemove)
-            if isAble then
-                gcPhone.usaDatiInternet(xPlayer.identifier, mbToRemove)
+        local isAble, mbToRemove = gcPhone.isAbleToSurfInternet(xPlayer.identifier, 0.5)
+        if isAble then
+            gcPhone.usaDatiInternet(xPlayer.identifier, mbToRemove)
 
-                if PlayerHasCrypto(xPlayer.identifier, data.crypto.name) then
-                    local crypto = GetPlayerCrypto(xPlayer.identifier, data.crypto.name)
-                    crypto.amount = crypto.amount + data.amount
-                    crypto.price = data.crypto.currentMarket
+            if PlayerHasCrypto(xPlayer.identifier, data.crypto.name) then
+                local crypto = GetPlayerCrypto(xPlayer.identifier, data.crypto.name)
+                crypto.amount = crypto.amount + data.amount
+                crypto.price = data.crypto.currentMarket
 
-                    MySQL.Async.execute("UPDATE phone_user_crypto SET amount = @amount, price = @price WHERE id = @id", {
-                        ['@amount'] = crypto.amount,
-                        ['@price'] = data.crypto.currentMarket,
-                        ['@id'] = crypto.id
-                    })
-
-                    CACHED_USER_CRYPTO[xPlayer.identifier][crypto.id] = {
-                        id = crypto.id,
-                        identifier = crypto.identifier,
-                        name = crypto.name,
-                        amount = crypto.amount,
-                        price = crypto.price
-                    }
-                else
-                    MySQL.Async.insert("INSERT INTO phone_user_crypto(identifier, name, amount, price) VALUES(@identifier, @name, @amount, @price)", {
-                        ['@identifier'] = xPlayer.identifier,
-                        ['@name'] = data.crypto.name,
-                        ['@amount'] = data.amount,
-                        ['@price'] = data.crypto.currentMarket
-                    }, function(id)
-                        if id then
-                            CACHED_USER_CRYPTO[xPlayer.identifier][id] = {
-                                id = id,
-                                identifier = xPlayer.identifier,
-                                name = data.crypto.name,
-                                amount = data.amount,
-                                price = data.crypto.currentMarket
-                            }
-                        end
-                    end)
-                end
-            else
-                TriggerClientEvent("gcphone:sendGenericNotification", player, {
-                    message = "APP_BOURSE_ERROR_INTERNET",
-                    title = "Borsa",
-                    icon = "money",
-                    color = "rgb(0, 204, 0)",
-                    appName = "Borsa"
+                MySQL.Async.execute("UPDATE phone_user_crypto SET amount = @amount, price = @price WHERE id = @id", {
+                    ['@amount'] = crypto.amount,
+                    ['@price'] = data.crypto.currentMarket,
+                    ['@id'] = crypto.id
                 })
-            end
-        end)
 
-        return true
+                CACHED_USER_CRYPTO[xPlayer.identifier][crypto.id] = {
+                    id = crypto.id,
+                    identifier = crypto.identifier,
+                    name = crypto.name,
+                    amount = crypto.amount,
+                    price = crypto.price
+                }
+            else
+                MySQL.Async.insert("INSERT INTO phone_user_crypto(identifier, name, amount, price) VALUES(@identifier, @name, @amount, @price)", {
+                    ['@identifier'] = xPlayer.identifier,
+                    ['@name'] = data.crypto.name,
+                    ['@amount'] = data.amount,
+                    ['@price'] = data.crypto.currentMarket
+                }, function(id)
+                    if id then
+                        CACHED_USER_CRYPTO[xPlayer.identifier][id] = {
+                            id = id,
+                            identifier = xPlayer.identifier,
+                            name = data.crypto.name,
+                            amount = data.amount,
+                            price = data.crypto.currentMarket
+                        }
+                    end
+                end)
+            end
+
+            return true
+        else
+            TriggerClientEvent("gcphone:sendGenericNotification", player, {
+                message = "APP_BOURSE_ERROR_INTERNET",
+                title = "Borsa",
+                icon = "money",
+                color = "rgb(0, 204, 0)",
+                appName = "Borsa"
+            })
+        end
     end
 
     return false
@@ -171,15 +182,23 @@ end
 
 gcPhoneT.getMyCrypto = function()
     local player = source
-    local xPlayer = ESX.GetPlayerFromId(player)
+	local identifier = gcPhone.getPlayerID(player)
 
-    gcPhone.isAbleToSurfInternet(xPlayer.identifier, 0.5, function(isAble, mbToRemove)
-        if isAble then
-            gcPhone.usaDatiInternet(xPlayer.identifier, mbToRemove)
-        end
-    end)
+    local isAble, mbToRemove = gcPhone.isAbleToSurfInternet(identifier, 0.5)
+    if isAble then
+        gcPhone.usaDatiInternet(identifier, mbToRemove)
 
-    return CACHED_USER_CRYPTO[xPlayer.identifier]
+        -- print(ESX.DumpTable(CACHED_USER_CRYPTO[xPlayer.identifier]))
+        return CACHED_USER_CRYPTO[identifier]
+    else
+        TriggerClientEvent("gcphone:sendGenericNotification", player, {
+            message = "APP_BOURSE_ERROR_INTERNET",
+            title = "Borsa",
+            icon = "money",
+            color = "rgb(0, 204, 0)",
+            appName = "Borsa"
+        })
+    end
 end
 
 gcPhoneT.sellCrypto = function(data)
@@ -187,81 +206,42 @@ gcPhoneT.sellCrypto = function(data)
     local xPlayer = ESX.GetPlayerFromId(player)
 
     if data.crypto.amount >= data.amount then
-        gcPhone.isAbleToSurfInternet(xPlayer.identifier, 0.5, function(isAble, mbToRemove)
-            if isAble then
-                gcPhone.usaDatiInternet(xPlayer.identifier, mbToRemove)
+        local isAble, mbToRemove = gcPhone.isAbleToSurfInternet(xPlayer.identifier, 0.5)
+        if isAble then
+            gcPhone.usaDatiInternet(xPlayer.identifier, mbToRemove)
 
-                xPlayer.addAccountMoney("bank", math.floor(data.amount * data.price))
-                local crypto = GetPlayerCrypto(xPlayer.identifier, data.crypto.name)
-                crypto.amount = crypto.amount - data.amount
+            xPlayer.addAccountMoney("bank", math.floor(data.amount * data.price))
+            local crypto = GetPlayerCrypto(xPlayer.identifier, data.crypto.name)
+            crypto.amount = crypto.amount - data.amount
 
-                if crypto.amount == 0 then
-                    MySQL.Async.execute("DELETE FROM phone_user_crypto WHERE id = @id", {
-                        ['@id'] = crypto.id
-                    })
-
-                    CACHED_USER_CRYPTO[xPlayer.identifier][crypto.id] = nil
-                else
-                    MySQL.Async.execute("UPDATE phone_user_crypto SET amount = @amount, price = @price WHERE id = @id", {
-                        ['@amount'] = crypto.amount,
-                        ['@price'] = data.price,
-                        ['@id'] = crypto.id
-                    })
-
-                    CACHED_USER_CRYPTO[xPlayer.identifier][crypto.id].price = data.price
-                    CACHED_USER_CRYPTO[xPlayer.identifier][crypto.id].amount = crypto.amount
-                end
-            else
-                TriggerClientEvent("gcphone:sendGenericNotification", player, {
-                    message = "APP_BOURSE_ERROR_INTERNET",
-                    title = "Borsa",
-                    icon = "money",
-                    color = "rgb(0, 204, 0)",
-                    appName = "Borsa"
+            if crypto.amount == 0 then
+                MySQL.Async.execute("DELETE FROM phone_user_crypto WHERE id = @id", {
+                    ['@id'] = crypto.id
                 })
-            end
-        end)
 
-        return true
+                CACHED_USER_CRYPTO[xPlayer.identifier][crypto.id] = nil
+            else
+                MySQL.Async.execute("UPDATE phone_user_crypto SET amount = @amount, price = @price WHERE id = @id", {
+                    ['@amount'] = crypto.amount,
+                    ['@price'] = data.price,
+                    ['@id'] = crypto.id
+                })
+
+                CACHED_USER_CRYPTO[xPlayer.identifier][crypto.id].price = data.price
+                CACHED_USER_CRYPTO[xPlayer.identifier][crypto.id].amount = crypto.amount
+            end
+
+            return true
+        else
+            TriggerClientEvent("gcphone:sendGenericNotification", player, {
+                message = "APP_BOURSE_ERROR_INTERNET",
+                title = "Borsa",
+                icon = "money",
+                color = "rgb(0, 204, 0)",
+                appName = "Borsa"
+            })
+        end
     end
 
     return false
 end
-
-RegisterCommand("fluctuate", function(source)
-    CACHED_CRYPTO = {}
-
-    MySQL.Async.fetchAll("SELECT * FROM phone_crypto_market", {}, function(result)
-        for _, v in pairs(result) do
-            table.insert(CACHED_CRYPTO, {
-                name = v.name,
-                currentMarket = v.price,
-                closeMarket = v.old_price,
-                time = v.last_fluctuation
-            })
-        end
-
-        for _, v in pairs(CACHED_CRYPTO) do
-            -- difference in seconds
-            local diff = os.difftime(os.time(), math.floor(v.time / 1000))
-            -- 86400 are the seconds in a day
-            if diff > 86400 then
-                v.closeMarket = v.currentMarket
-                -- range = 1 ---- current ---- 5000
-                v.currentMarket = random(1000, math.ceil(v.currentMarket) + random(0, 50000)) / 1000
-
-                MySQL.Async.execute("UPDATE phone_crypto_market SET price = @price, old_price = @oprice WHERE name = @name", {
-                    ['@price'] = v.currentMarket,
-                    ['@oprice'] = v.closeMarket,
-                    ['@name'] = v.name
-                })
-            end
-        end
-        
-        table.sort(CACHED_CRYPTO, function(a, b)
-            return a.currentMarket > b.currentMarket
-        end)
-
-        TriggerClientEvent("testfluc", -1)
-    end)
-end)

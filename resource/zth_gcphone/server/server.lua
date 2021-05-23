@@ -58,14 +58,14 @@ MySQL.ready(function()
     end)
 end)
 
-function GetPianoTariffarioParam(phone_number, param, cb)
-    MySQL.Async.fetchAll("SELECT * FROM sim WHERE phone_number = @phone_number", {['@phone_number'] = phone_number}, function(result)
-		if #result > 0 then
-			if result[1][param] ~= nil then
-				cb(result[1][param])
-			end
-		end
-	end)
+function GetPianoTariffarioParam(phone_number, param)
+    local result = MySQL.Sync.fetchScalar("SELECT " .. param .. " FROM sim WHERE phone_number = @phone_number", {
+        ['@phone_number'] = phone_number
+    })
+
+    print(phone_number, param)
+    print(ESX.DumpTable(result))
+    return result[1] and result[1] or 0
 end
 
 function UpdatePianoTariffario(phone_number, param, value)
@@ -153,13 +153,12 @@ end
 
 function gcPhone.usaDatiInternet(identifier, value)
     local phone_number = gcPhone.getPhoneNumber(identifier)
-    
-	GetPianoTariffarioParam(phone_number, "dati", function(dati)
-        gcPhoneT.updateParametroTariffa(phone_number, "dati", dati - value)
-    end)
+	local dati = GetPianoTariffarioParam(phone_number, "dati")
+
+    gcPhoneT.updateParametroTariffa(phone_number, "dati", dati - value)
 end
 
-function gcPhone.isAbleToSurfInternet(identifier, neededMB, cb)
+function gcPhone.isAbleToSurfInternet(identifier, neededMB)
 	local phone_number = gcPhone.getPhoneNumber(identifier)
 	
 	local iSegnalePlayer = gcPhone.getPlayerSegnaleIndex(segnaliTelefoniPlayers, identifier)
@@ -167,22 +166,21 @@ function gcPhone.isAbleToSurfInternet(identifier, neededMB, cb)
     local hasAirplane = gcPhone.getAirplaneForUser(identifier)
     
     if iWifiConnectedPlayer ~= nil and wifiConnectedPlayers[iWifiConnectedPlayer].connected then
-    	cb(true, 0)
+        return true, 0
     else
-        if not hasAirplane then
+        if not hasAirplane and phone_number then
             if iSegnalePlayer ~= nil and segnaliTelefoniPlayers[iSegnalePlayer].potenzaSegnale ~= 0 then
-                GetPianoTariffarioParam(phone_number, "dati", function(dati)
-                    if dati > 0 and dati >= neededMB then
-                        cb(true, neededMB)
-                    else
-                        cb(false)
-                    end
-                end)
+                local dati = GetPianoTariffarioParam(phone_number, "dati")
+                if dati > 0 and dati >= neededMB then
+                    return true, neededMB
+                else
+                    return false, 0
+                end
             else
-                cb(false)
+                return false, 0
             end
         else
-            cb(false)
+            return false, 0
         end
     end
 end
@@ -193,15 +191,14 @@ function gcPhone.isAbleToSendMessage(identifier, cb)
     local iSegnalePlayer = gcPhone.getPlayerSegnaleIndex(segnaliTelefoniPlayers, identifier)
     local hasAirplane = gcPhone.getAirplaneForUser(identifier)
     
-    if not hasAirplane then
+    if not hasAirplane and phone_number then
         if segnaliTelefoniPlayers[iSegnalePlayer] ~= nil and segnaliTelefoniPlayers[iSegnalePlayer].potenzaSegnale > 0 then
-            GetPianoTariffarioParam(phone_number, "messaggi", function(messaggi)
-                if messaggi > 0 then
-                    cb(true)
-                else
-                    cb(false)
-                end                    
-            end)
+            local messaggi = GetPianoTariffarioParam(phone_number, "messaggi")
+            if messaggi > 0 then
+                cb(true)
+            else
+                cb(false)
+            end
         else
             cb(false)
         end
@@ -215,20 +212,19 @@ function gcPhone.isAbleToCall(identifier, cb)
     local xPlayer = ESX.GetPlayerFromIdentifier(identifier)
     local hasAirplane = gcPhone.getAirplaneForUser(identifier)
     
-    if not hasAirplane then
-        GetPianoTariffarioParam(phone_number, "minuti", function(min)
-            if xPlayer.hasJob("police", 0).check or xPlayer.hasJob("ambulance", 0).check then return cb(true, false, min) end
+    if not hasAirplane and phone_number then
+        local min = GetPianoTariffarioParam(phone_number, "minuti")
+        if xPlayer.hasJob("police", 0).check or xPlayer.hasJob("ambulance", 0).check then return cb(true, false, min) end
 
-            if min == nil then
-                cb(false, true, 0, "~r~Non hai un piano tariffario!")
+        if min == nil then
+            cb(false, true, 0, "~r~Non hai un piano tariffario!")
+        else
+            if min > 0 then
+                cb(true, true, min)
             else
-                if min > 0 then
-                    cb(true, true, min)
-                else
-                    cb(false, true, 0, "~r~Hai finito i minuti previsti dalla tua offerta!")
-                end
+                cb(false, true, 0, "~r~Hai finito i minuti previsti dalla tua offerta!")
             end
-        end)
+        end
     else
         cb(false, true, 0, "~r~Non puoi chiamare con la modalità aereo")
     end
@@ -267,19 +263,6 @@ gcPhoneT.getItemAmount = function(item)
         return items.count
     end
 end
-
-ESX.RegisterServerCallback("gcphone:getNumberFromIdentifier", function(source, cb)
-    local identifier = gcPhone.getPlayerID(source)
-    local number = gcPhone.getPhoneNumber(identifier)
-
-    cb(number)
-end)
-
-ESX.RegisterServerCallback("gcphone:getPianoTariffarioLabel", function(source, cb, phone_number, label)
-    GetPianoTariffarioParam(phone_number, label, function(piano_tariffario)
-        cb(piano_tariffario)
-    end)
-end)
 
 --==================================================================================================================
 -------- Utils
@@ -484,53 +467,51 @@ function addMessage(source, identifier, phone_number, message)
 
     -- print(otherIdentifier, isInstalled)
     
-    if otherIdentifier ~= nil then
+    if otherIdentifier and myPhone then
         segnaleTransmitter = segnaliTelefoniPlayers[gcPhone.getPlayerSegnaleIndex(segnaliTelefoniPlayers, identifier)]
 
-    	if segnaleTransmitter ~= nil and segnaleTransmitter.potenzaSegnale > 0 then
-            GetPianoTariffarioParam(myPhone, "messaggi", function(messaggi)
-                if messaggi > 0 then
+    	if segnaleTransmitter and segnaleTransmitter.potenzaSegnale > 0 then
+            local messaggi = GetPianoTariffarioParam(myPhone, "messaggi")
+            if messaggi > 0 then
+                UpdatePianoTariffario(myPhone, "messaggi", messaggi - 1)
 
-                    UpdatePianoTariffario(myPhone, "messaggi", messaggi - 1)
+                local memess = _internalAddMessage(phone_number, myPhone, message, 1)
+                TriggerClientEvent("gcPhone:receiveMessage", player, memess)
+                -- print(ESX.DumpTable(memess))
+                
+                local tomess = _internalAddMessage(myPhone, phone_number, message, 0)
+                -- print(ESX.DumpTable(tomess))
 
-                    local memess = _internalAddMessage(phone_number, myPhone, message, 1)
-                    TriggerClientEvent("gcPhone:receiveMessage", player, memess)
-                    -- print(ESX.DumpTable(memess))
-                    
-                    local tomess = _internalAddMessage(myPhone, phone_number, message, 0)
-                    -- print(ESX.DumpTable(tomess))
+                gcPhone.getSourceFromIdentifier(otherIdentifier, function(target_source)
+                    target_source = tonumber(target_source)
 
-                    gcPhone.getSourceFromIdentifier(otherIdentifier, function(target_source)
-                        target_source = tonumber(target_source)
-
-                        if target_source ~= nil then
-                            
-                            -- qui controllo se la sim a cui stai mandando il
-                            -- messaggio è installata o no
-                            if isInstalled and not hasAirplane then
-                                -- print("sim installata")
-                                -- se la sim è installata allora mando il telefono e gli mando la notifica
-                                -- local retIndex = gcPhone.getPlayerSegnaleIndex(segnaliTelefoniPlayers, otherIdentifier)
-                                -- print(retIndex)
-                                segnaleReceiver = segnaliTelefoniPlayers[gcPhone.getPlayerSegnaleIndex(segnaliTelefoniPlayers, otherIdentifier)]
-                                -- print(ESX.DumpTable(segnaleReceiver), ESX.DumpTable(segnaliTelefoniPlayers))
-                                if segnaleReceiver ~= nil and segnaleReceiver.potenzaSegnale > 0 then
-                                    TriggerClientEvent("gcPhone:receiveMessage", target_source, tomess)
-                                    setMessageReceived(phone_number, myPhone)
-                                end
-                            else
-                                -- questo è l'evento che ti fa il bing quando invii il messaggio
-                                -- lo ho tolto così non fa la notifica
-                                -- TriggerClientEvent("gcPhone:receiveMessage", tonumber(target_source), tomess)
+                    if target_source ~= nil then
+                        
+                        -- qui controllo se la sim a cui stai mandando il
+                        -- messaggio è installata o no
+                        if isInstalled and not hasAirplane then
+                            -- print("sim installata")
+                            -- se la sim è installata allora mando il telefono e gli mando la notifica
+                            -- local retIndex = gcPhone.getPlayerSegnaleIndex(segnaliTelefoniPlayers, otherIdentifier)
+                            -- print(retIndex)
+                            segnaleReceiver = segnaliTelefoniPlayers[gcPhone.getPlayerSegnaleIndex(segnaliTelefoniPlayers, otherIdentifier)]
+                            -- print(ESX.DumpTable(segnaleReceiver), ESX.DumpTable(segnaliTelefoniPlayers))
+                            if segnaleReceiver ~= nil and segnaleReceiver.potenzaSegnale > 0 then
+                                TriggerClientEvent("gcPhone:receiveMessage", target_source, tomess)
                                 setMessageReceived(phone_number, myPhone)
                             end
+                        else
+                            -- questo è l'evento che ti fa il bing quando invii il messaggio
+                            -- lo ho tolto così non fa la notifica
+                            -- TriggerClientEvent("gcPhone:receiveMessage", tonumber(target_source), tomess)
+                            setMessageReceived(phone_number, myPhone)
                         end
-                    end)
-                else
-                    TriggerClientEvent("esx:showNotification", player, "~r~Hai finito i messaggi previsti dal tuo piano tariffario")
-                    -- xPlayer.showNotification("Hai finito i messaggi previsti dal tuo piano tariffario", "error")
-                end
-            end)
+                    end
+                end)
+            else
+                TriggerClientEvent("esx:showNotification", player, "~r~Hai finito i messaggi previsti dal tuo piano tariffario")
+                -- xPlayer.showNotification("Hai finito i messaggi previsti dal tuo piano tariffario", "error")
+            end
         else
             TriggerClientEvent("esx:showNotification", player, "~r~Non c'è segnale per mandare un messaggio")
         	-- xPlayer.showNotification("Non c'è segnale per mandare un messaggio", "error")

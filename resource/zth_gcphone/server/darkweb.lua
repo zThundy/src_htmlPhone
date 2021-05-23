@@ -4,27 +4,26 @@ gcPhoneT.darkweb_fetchDarkmessages = function()
     local messages = {}
 
     MySQL.Async.fetchAll("SELECT * FROM phone_darkweb_messages ORDER BY id DESC LIMIT 130", {}, function(r)
-        gcPhone.isAbleToSurfInternet(identifier, 0.01 * #r, function(isAble, mbToRemove)
-            if isAble then
-                gcPhone.usaDatiInternet(identifier, mbToRemove)
+        local isAble, mbToRemove = gcPhone.isAbleToSurfInternet(identifier, 0.01 * #r)
+        if isAble then
+            gcPhone.usaDatiInternet(identifier, mbToRemove)
 
-                for i = #r, 1, -1 do
-                    i = tonumber(i)
+            for i = #r, 1, -1 do
+                i = tonumber(i)
 
-                    messages[i] = r[i]
+                messages[i] = r[i]
 
-                    if tostring(identifier) == tostring(r[i].author) then
-                        messages[i].mine = 1
-                    else
-                        messages[i].mine = 0
-                    end
+                if tostring(identifier) == tostring(r[i].author) then
+                    messages[i].mine = 1
+                else
+                    messages[i].mine = 0
                 end
-
-                TriggerClientEvent("gcphone:darkweb_sendMessages", player, messages)
-            else
-                TriggerClientEvent("esx:showNotification", player, "~r~Non hai abbastanza giga per poter inviare un messaggio o non c'è linea")
             end
-        end)
+
+            TriggerClientEvent("gcphone:darkweb_sendMessages", player, messages)
+        else
+            TriggerClientEvent("esx:showNotification", player, "~r~Non hai abbastanza giga per poter inviare un messaggio o non c'è linea")
+        end
     end)
 end
 
@@ -32,16 +31,15 @@ gcPhoneT.darkweb_sendDarkMessage = function(data)
     local player = source
     local identifier = gcPhone.getPlayerID(player)
 	
-	gcPhone.isAbleToSurfInternet(identifier, 0.5, function(isAble, mbToRemove)
-		if isAble then
-            gcPhone.usaDatiInternet(identifier, mbToRemove)
-            
-            MySQL.Async.insert("INSERT INTO phone_darkweb_messages(author, message) VALUES(@author, @message)", {
-                ['@author'] = identifier,
-                ['@message'] = data.message
-            })
-        else
-            TriggerClientEvent("esx:showNotification", player, "~r~Non hai abbastanza giga per poter inviare un messaggio o non c'è linea")
-        end
-    end)
+	local isAble, mbToRemove = gcPhone.isAbleToSurfInternet(identifier, 0.5)
+    if isAble then
+        gcPhone.usaDatiInternet(identifier, mbToRemove)
+        
+        MySQL.Async.insert("INSERT INTO phone_darkweb_messages(author, message) VALUES(@author, @message)", {
+            ['@author'] = identifier,
+            ['@message'] = data.message
+        })
+    else
+        TriggerClientEvent("esx:showNotification", player, "~r~Non hai abbastanza giga per poter inviare un messaggio o non c'è linea")
+    end
 end

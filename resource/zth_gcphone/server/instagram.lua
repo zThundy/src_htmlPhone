@@ -120,36 +120,35 @@ gcPhoneT.instagram_nuovoPost = function(username, password, data)
 	local player = source
 	local identifier = gcPhone.getPlayerID(player)
 
-	gcPhone.isAbleToSurfInternet(identifier, 0.5, function(isAble, mbToRemove)
-		if isAble then
-			gcPhone.usaDatiInternet(identifier, mbToRemove)
+	local isAble, mbToRemove = gcPhone.isAbleToSurfInternet(identifier, 0.5)
+	if isAble then
+		gcPhone.usaDatiInternet(identifier, mbToRemove)
 
-			getInstagramUser(username, password, function(user)
-				if user == false then
-					InstagramShowError(player, 'INSTAGRAM_INFO_TITLE', 'APP_INSTAGRAM_NO_ACCOUNT')
-					return
-				end
+		getInstagramUser(username, password, function(user)
+			if user == false then
+				InstagramShowError(player, 'INSTAGRAM_INFO_TITLE', 'APP_INSTAGRAM_NO_ACCOUNT')
+				return
+			end
 
-				MySQL.Async.insert("INSERT INTO phone_instagram_posts (`authorId`, `image`, `identifier`, `filter`, `didascalia`) VALUES(@authorId, @message, @identifier, @filter, @didascalia)", {
-						['@authorId'] = user.id,
-						['@message'] = data.message,
-						['@identifier'] = identifier,
-						['@filter'] = data.filter,
-						['@didascalia'] = data.didascalia
-				}, function(id)
-					MySQL.Async.fetchAll('SELECT * from phone_instagram_posts WHERE id = @id', {['@id'] = id}, function(posts)
-						post = posts[1]
-						post['author'] = user.author
-						post['authorIcon'] = user.authorIcon
-						TriggerClientEvent('gcPhone:instagram_newPostToNUI', -1, post)
-					end)
-
+			MySQL.Async.insert("INSERT INTO phone_instagram_posts (`authorId`, `image`, `identifier`, `filter`, `didascalia`) VALUES(@authorId, @message, @identifier, @filter, @didascalia)", {
+					['@authorId'] = user.id,
+					['@message'] = data.message,
+					['@identifier'] = identifier,
+					['@filter'] = data.filter,
+					['@didascalia'] = data.didascalia
+			}, function(id)
+				MySQL.Async.fetchAll('SELECT * from phone_instagram_posts WHERE id = @id', {['@id'] = id}, function(posts)
+					post = posts[1]
+					post['author'] = user.author
+					post['authorIcon'] = user.authorIcon
+					TriggerClientEvent('gcPhone:instagram_newPostToNUI', -1, post)
 				end)
+
 			end)
-		else
-			InstagramShowError(player, 'INSTAGRAM_INFO_TITLE', 'APP_INSTAGRAM_NOTIF_NO_CONNECTION')
-		end
-	end)
+		end)
+	else
+		InstagramShowError(player, 'INSTAGRAM_INFO_TITLE', 'APP_INSTAGRAM_NOTIF_NO_CONNECTION')
+	end
 end
 
 gcPhoneT.instagram_getPosts = function(username, password)
@@ -157,56 +156,51 @@ gcPhoneT.instagram_getPosts = function(username, password)
 	local identifier = gcPhone.getPlayerID(player)
 	
 	if username ~= nil and username ~= "" and password ~= nil and password ~= "" then
-  		gcPhone.isAbleToSurfInternet(identifier, 1, function(isAble, mbToRemove)
-			if isAble then
-				gcPhone.usaDatiInternet(identifier, mbToRemove)
-				
-				-- funzione che controlla se l'utente esista effettivamente
-				getInstagramUser(username, password, function(user)
-					if user == false then
-						InstagramShowError(player, 'INSTAGRAM_INFO_TITLE', 'APP_INSTAGRAM_NO_ACCOUNT')
-						return
-					end
+		local isAble, mbToRemove = gcPhone.isAbleToSurfInternet(identifier, 1)
+		if isAble then
+			gcPhone.usaDatiInternet(identifier, mbToRemove)
+			
+			-- funzione che controlla se l'utente esista effettivamente
+			getInstagramUser(username, password, function(user)
+				if user == false then
+					InstagramShowError(player, 'INSTAGRAM_INFO_TITLE', 'APP_INSTAGRAM_NO_ACCOUNT')
+					return
+				end
 
-					-- questa funzione ti ritorna la table già bella
-					-- buildata da mandare a nui
-      				local accountId = user and user.id
-					InstagramGetPosts(accountId, function(posts)
-      					gcPhone.isAbleToSurfInternet(identifier, 0.04 * #posts, function(isAble, mbToRemove)
-							if isAble then
-								gcPhone.usaDatiInternet(identifier, mbToRemove)
-								
-        						TriggerClientEvent('gcPhone:instagram_updatePosts', player, posts)
-        					else
-  								InstagramShowError(player, 'INSTAGRAM_INFO_TITLE', 'APP_INSTAGRAM_NOTIF_NO_CONNECTION')
-  							end
-  						end)
-      				end)
-    			end)
-  			else
-  				InstagramShowError(player, 'INSTAGRAM_INFO_TITLE', 'APP_INSTAGRAM_NOTIF_NO_CONNECTION')
-  			end
-  		end)
+				-- questa funzione ti ritorna la table già bella
+				-- buildata da mandare a nui
+				local accountId = user and user.id
+				InstagramGetPosts(accountId, function(posts)
+					local isAble, mbToRemove = gcPhone.isAbleToSurfInternet(identifier, 0.04 * #posts)
+					if isAble then
+						gcPhone.usaDatiInternet(identifier, mbToRemove)
+						
+						TriggerClientEvent('gcPhone:instagram_updatePosts', player, posts)
+					else
+						InstagramShowError(player, 'INSTAGRAM_INFO_TITLE', 'APP_INSTAGRAM_NOTIF_NO_CONNECTION')
+					end
+				end)
+			end)
+		else
+			InstagramShowError(player, 'INSTAGRAM_INFO_TITLE', 'APP_INSTAGRAM_NOTIF_NO_CONNECTION')
+		end
   	else
-  		gcPhone.isAbleToSurfInternet(identifier, 1, function(isAble, mbToRemove)
-			if isAble then
-				gcPhone.usaDatiInternet(identifier, mbToRemove)
-				
-				InstagramGetPosts(nil, function(posts)
-    				gcPhone.isAbleToSurfInternet(identifier, 0.04 * #posts, function(isAble, mbToRemove)
-						if isAble then
-							gcPhone.usaDatiInternet(identifier, mbToRemove)
-							
-      						TriggerClientEvent('gcPhone:instagram_updatePosts', player, posts)
-      					else
-  							InstagramShowError(player, 'INSTAGRAM_INFO_TITLE', 'APP_INSTAGRAM_NOTIF_NO_CONNECTION')
-  						end
-  					end)
-    			end)
-  			else
-  				InstagramShowError(player, 'INSTAGRAM_INFO_TITLE', 'APP_INSTAGRAM_NOTIF_NO_CONNECTION')
-  			end
-  		end)
+		local isAble, mbToRemove = gcPhone.isAbleToSurfInternet(identifier, 1)
+		if isAble then
+			gcPhone.usaDatiInternet(identifier, mbToRemove)
+			
+			InstagramGetPosts(nil, function(posts)
+				local isAble, mbToRemove = gcPhone.isAbleToSurfInternet(identifier, 0.04 * #posts)
+				if isAble then
+					gcPhone.usaDatiInternet(identifier, mbToRemove)
+					TriggerClientEvent('gcPhone:instagram_updatePosts', player, posts)
+				else
+					InstagramShowError(player, 'INSTAGRAM_INFO_TITLE', 'APP_INSTAGRAM_NOTIF_NO_CONNECTION')
+				end
+			end)
+		else
+			InstagramShowError(player, 'INSTAGRAM_INFO_TITLE', 'APP_INSTAGRAM_NOTIF_NO_CONNECTION')
+		end
   	end
 end
 
@@ -214,169 +208,164 @@ gcPhoneT.instagram_createAccount = function(username, password, avatarUrl)
 	local player = source
 	local identifier = gcPhone.getPlayerID(player)
   	
-	gcPhone.isAbleToSurfInternet(identifier, 0.5, function(isAble, mbToRemove)
-		if isAble then
-			gcPhone.usaDatiInternet(identifier, mbToRemove)
-			
-			createNewInstagramAccount(username, password, avatarUrl, function(id)
-    			if id ~= 0 then
-					TriggerClientEvent('gcPhone:instagram_setAccount', player, username, password, avatarUrl)
-					  
-      				InstagramShowSuccess(player, 'INSTAGRAM_INFO_TITLE', 'APP_INSTAGRAM_ACCOUNT_CREATED')
-    			else
-					InstagramShowError(player, 'INSTAGRAM_INFO_TITLE', 'APP_INSTAGRAM_NOTIF_ACCOUNT_CREATE_ERROR')
-    			end
-  			end)
-  		else
-			InstagramShowError(player, 'INSTAGRAM_INFO_TITLE', 'APP_INSTAGRAM_NOTIF_NO_CONNECTION')
-  		end
-  	end)
+	local isAble, mbToRemove = gcPhone.isAbleToSurfInternet(identifier, 0.5)
+	if isAble then
+		gcPhone.usaDatiInternet(identifier, mbToRemove)
+		
+		createNewInstagramAccount(username, password, avatarUrl, function(id)
+			if id ~= 0 then
+				TriggerClientEvent('gcPhone:instagram_setAccount', player, username, password, avatarUrl)
+					
+				InstagramShowSuccess(player, 'INSTAGRAM_INFO_TITLE', 'APP_INSTAGRAM_ACCOUNT_CREATED')
+			else
+				InstagramShowError(player, 'INSTAGRAM_INFO_TITLE', 'APP_INSTAGRAM_NOTIF_ACCOUNT_CREATE_ERROR')
+			end
+		end)
+	else
+		InstagramShowError(player, 'INSTAGRAM_INFO_TITLE', 'APP_INSTAGRAM_NOTIF_NO_CONNECTION')
+	end
 end
 
 gcPhoneT.instagram_loginAccount = function(username, password)
 	local player = source
 	local identifier = gcPhone.getPlayerID(player)
 	
-	gcPhone.isAbleToSurfInternet(identifier, 0.5, function(isAble, mbToRemove)
-		if isAble then
-			gcPhone.usaDatiInternet(identifier, mbToRemove)
+	local isAble, mbToRemove = gcPhone.isAbleToSurfInternet(identifier, 0.5)
+	if isAble then
+		gcPhone.usaDatiInternet(identifier, mbToRemove)
 
-			getInstagramUser(username, password, function(user)
-				if user == false then
-					InstagramShowError(player, 'INSTAGRAM_INFO_TITLE', 'APP_INSTAGRAM_NO_ACCOUNT')
-      				return
-				end
-				
-				if user == nil then
-      				InstagramShowError(player, 'INSTAGRAM_INFO_TITLE', 'APP_INSTAGRAM_NOTIF_LOGIN_ERROR')
-    			else
-					InstagramShowSuccess(player, 'INSTAGRAM_INFO_TITLE', 'APP_INSTAGRAM_NOTIF_LOGIN_SUCCESS')
-      				TriggerClientEvent('gcPhone:instagram_setAccount', player, username, password, user.avatar_url)
-    			end
-  			end)
-  		else
-  			InstagramShowError(player, 'INSTAGRAM_INFO_TITLE', 'APP_INSTAGRAM_NOTIF_NO_CONNECTION')
-  		end
-  	end)
+		getInstagramUser(username, password, function(user)
+			if user == false then
+				InstagramShowError(player, 'INSTAGRAM_INFO_TITLE', 'APP_INSTAGRAM_NO_ACCOUNT')
+				return
+			end
+			
+			if user == nil then
+				InstagramShowError(player, 'INSTAGRAM_INFO_TITLE', 'APP_INSTAGRAM_NOTIF_LOGIN_ERROR')
+			else
+				InstagramShowSuccess(player, 'INSTAGRAM_INFO_TITLE', 'APP_INSTAGRAM_NOTIF_LOGIN_SUCCESS')
+				TriggerClientEvent('gcPhone:instagram_setAccount', player, username, password, user.avatar_url)
+			end
+		end)
+	else
+		InstagramShowError(player, 'INSTAGRAM_INFO_TITLE', 'APP_INSTAGRAM_NOTIF_NO_CONNECTION')
+	end
 end
 
 gcPhoneT.instagram_changePassword = function(username, password, newPassword)
 	local player = source
 	local identifier = gcPhone.getPlayerID(player)
 	
-	gcPhone.isAbleToSurfInternet(identifier, 0.5, function(isAble, mbToRemove)
-		if isAble then
-			gcPhone.usaDatiInternet(identifier, mbToRemove)
+	local isAble, mbToRemove = gcPhone.isAbleToSurfInternet(identifier, 0.5)
+	if isAble then
+		gcPhone.usaDatiInternet(identifier, mbToRemove)
 
-			getInstagramUser(username, password, function(user)
-				if user == false then
-					InstagramShowError(player, 'INSTAGRAM_INFO_TITLE', 'APP_INSTAGRAM_NO_ACCOUNT')
-      				return
-				end
-				
-				if user == nil then
-      				InstagramShowError(player, 'INSTAGRAM_INFO_TITLE', 'APP_INSTAGRAM_NOTIF_LOGIN_ERROR')
-    			else
-      				MySQL.Async.execute("UPDATE phone_instagram_accounts SET password = @newpassword WHERE username = @username AND password = @password", {
-						['@username'] = username,
-						['@password'] = password, 
-						['@newpassword'] = newPassword
-					}, function()
-						InstagramShowSuccess(player, 'INSTAGRAM_INFO_TITLE', 'APP_INSTAGRAM_NOTIF_PASSCHANGE_SUCCESS')
-					end)
-    			end
-  			end)
-  		else
-  			InstagramShowError(player, 'INSTAGRAM_INFO_TITLE', 'APP_INSTAGRAM_NOTIF_NO_CONNECTION')
-  		end
-  	end)
+		getInstagramUser(username, password, function(user)
+			if user == false then
+				InstagramShowError(player, 'INSTAGRAM_INFO_TITLE', 'APP_INSTAGRAM_NO_ACCOUNT')
+				return
+			end
+			
+			if user == nil then
+				InstagramShowError(player, 'INSTAGRAM_INFO_TITLE', 'APP_INSTAGRAM_NOTIF_LOGIN_ERROR')
+			else
+				MySQL.Async.execute("UPDATE phone_instagram_accounts SET password = @newpassword WHERE username = @username AND password = @password", {
+					['@username'] = username,
+					['@password'] = password, 
+					['@newpassword'] = newPassword
+				}, function()
+					InstagramShowSuccess(player, 'INSTAGRAM_INFO_TITLE', 'APP_INSTAGRAM_NOTIF_PASSCHANGE_SUCCESS')
+				end)
+			end
+		end)
+	else
+		InstagramShowError(player, 'INSTAGRAM_INFO_TITLE', 'APP_INSTAGRAM_NOTIF_NO_CONNECTION')
+	end
 end
 
 gcPhoneT.instagram_toggleLikePost = function(username, password, postId)
 	local player = source
 	local identifier = gcPhone.getPlayerID(player)
 	
-	gcPhone.isAbleToSurfInternet(identifier, 0.02, function(isAble, mbToRemove)
-		if isAble then
-			gcPhone.usaDatiInternet(identifier, mbToRemove)
+	local isAble, mbToRemove = gcPhone.isAbleToSurfInternet(identifier, 0.02)
+	if isAble then
+		gcPhone.usaDatiInternet(identifier, mbToRemove)
+		
+		getInstagramUser(username, password, function(user)
+			if user == nil then
+				InstagramShowError(player, 'INSTAGRAM_INFO_TITLE', 'APP_INSTAGRAM_NOTIF_LOGIN_ERROR')
+				return
+			end
 			
-			getInstagramUser(username, password, function(user)
-    			if user == nil then
-        			InstagramShowError(player, 'INSTAGRAM_INFO_TITLE', 'APP_INSTAGRAM_NOTIF_LOGIN_ERROR')
-      				return
+			if user == false then
+				InstagramShowError(player, 'INSTAGRAM_INFO_TITLE', 'APP_INSTAGRAM_NO_ACCOUNT')
+				return
+			end
+
+			MySQL.Async.fetchAll('SELECT * FROM phone_instagram_posts WHERE id = @id', {['@id'] = postId}, function(posts)
+				local post = posts[1]
+				if post == nil then
+					InstagramShowError(player, 'INSTAGRAM_INFO_TITLE', 'APP_INSTAGRAM_NOTIF_POST_NOT_FOUND')
+					return
 				end
 				
-				if user == false then
-					InstagramShowError(player, 'INSTAGRAM_INFO_TITLE', 'APP_INSTAGRAM_NO_ACCOUNT')
-      				return
-				end
-
-    			MySQL.Async.fetchAll('SELECT * FROM phone_instagram_posts WHERE id = @id', {['@id'] = postId}, function(posts)
-					local post = posts[1]
-					if post == nil then
-						InstagramShowError(player, 'INSTAGRAM_INFO_TITLE', 'APP_INSTAGRAM_NOTIF_POST_NOT_FOUND')
-						return
+				MySQL.Async.fetchAll('SELECT * FROM phone_instagram_likes WHERE authorId = @authorId AND postId = @postId', {
+					['@authorId'] = user.id,
+					['@postId'] = postId
+				}, function(row) 
+					if row[1] == nil then
+						MySQL.Async.insert('INSERT INTO phone_instagram_likes (`authorId`, `postId`) VALUES(@authorId, @postId)', {
+							['@authorId'] = user.id,
+							['@postId'] = postId
+							}, function(newrow)
+							MySQL.Async.execute('UPDATE `phone_instagram_posts` SET `likes`= likes + 1 WHERE id = @id', {['@id'] = post.id}, function()
+								-- questo evento aggiorna i like per tutti i giocatori
+								TriggerClientEvent('gcPhone:instagram_updatePostLikes', -1, post.id, post.likes + 1)
+								-- questo evento aggiorna il colore del cuore per chi lo mette
+								TriggerClientEvent('gcPhone:instagram_updateLikeForUser', player, post.id, true)
+							end)    
+						end)
+					else
+						MySQL.Async.execute('DELETE FROM phone_instagram_likes WHERE id = @id', {['@id'] = row[1].id}, function()
+							MySQL.Async.execute('UPDATE `phone_instagram_posts` SET `likes`= likes - 1 WHERE id = @id', {['@id'] = post.id}, function()
+								-- questo evento aggiorna i like per tutti i giocatori
+								TriggerClientEvent('gcPhone:instagram_updatePostLikes', -1, post.id, post.likes - 1)
+								-- questo evento aggiorna il colore del cuore per chi lo mette
+								TriggerClientEvent('gcPhone:instagram_updateLikeForUser', player, post.id, false)
+							end)
+						end)
 					end
-					
-      				MySQL.Async.fetchAll('SELECT * FROM phone_instagram_likes WHERE authorId = @authorId AND postId = @postId', {
-        				['@authorId'] = user.id,
-        				['@postId'] = postId
-					}, function(row) 
-						if row[1] == nil then
-          					MySQL.Async.insert('INSERT INTO phone_instagram_likes (`authorId`, `postId`) VALUES(@authorId, @postId)', {
-            					['@authorId'] = user.id,
-            					['@postId'] = postId
-							  }, function(newrow)
-            					MySQL.Async.execute('UPDATE `phone_instagram_posts` SET `likes`= likes + 1 WHERE id = @id', {['@id'] = post.id}, function()
-									-- questo evento aggiorna i like per tutti i giocatori
-									TriggerClientEvent('gcPhone:instagram_updatePostLikes', -1, post.id, post.likes + 1)
-									-- questo evento aggiorna il colore del cuore per chi lo mette
-									TriggerClientEvent('gcPhone:instagram_updateLikeForUser', player, post.id, true)
-            					end)    
-          					end)
-						else
-							MySQL.Async.execute('DELETE FROM phone_instagram_likes WHERE id = @id', {['@id'] = row[1].id}, function()
-								MySQL.Async.execute('UPDATE `phone_instagram_posts` SET `likes`= likes - 1 WHERE id = @id', {['@id'] = post.id}, function()
-									-- questo evento aggiorna i like per tutti i giocatori
-									TriggerClientEvent('gcPhone:instagram_updatePostLikes', -1, post.id, post.likes - 1)
-									-- questo evento aggiorna il colore del cuore per chi lo mette
-									TriggerClientEvent('gcPhone:instagram_updateLikeForUser', player, post.id, false)
-            					end)
-          					end)
-        				end
-      				end)
-    			end)
+				end)
 			end)
-		else
-  			InstagramShowError(player, 'INSTAGRAM_INFO_TITLE', 'APP_INSTAGRAM_NOTIF_NO_CONNECTION')
-  		end
-  	end)
+		end)
+	else
+		InstagramShowError(player, 'INSTAGRAM_INFO_TITLE', 'APP_INSTAGRAM_NOTIF_NO_CONNECTION')
+	end
 end
 
 gcPhoneT.instagram_setAvatarurl = function(username, password, avatarUrl)
 	local player = source
 	local identifier = gcPhone.getPlayerID(player)
 
-	gcPhone.isAbleToSurfInternet(identifier, 0.5, function(isAble, mbToRemove)
-		if isAble then
-			gcPhone.usaDatiInternet(identifier, mbToRemove)
-			
-			getInstagramUser(username, password, function(user)
-				MySQL.Async.execute("UPDATE phone_instagram_accounts SET avatar_url = @avatarUrl WHERE username = @username AND password = @password", {
-					['@username'] = username,
-					['@password'] = password,
-					['@avatarUrl'] = avatarUrl
-				}, function(result)
-					if result == 1 then
-						TriggerClientEvent('gcPhone:instagram_setAccount', player, username, password, avatarUrl)
-						TwitterShowSuccess(player, 'Twitter Info', 'APP_INSTAGRAM_NOTIF_AVATAR_SUCCESS')
-					else
-						InstagramShowError(player, 'INSTAGRAM_INFO_TITLE', 'APP_INSTAGRAM_NOTIF_LOGIN_ERROR')
-					end
-				end)
+	local isAble, mbToRemove = gcPhone.isAbleToSurfInternet(identifier, 0.5)
+	if isAble then
+		gcPhone.usaDatiInternet(identifier, mbToRemove)
+		
+		getInstagramUser(username, password, function(user)
+			MySQL.Async.execute("UPDATE phone_instagram_accounts SET avatar_url = @avatarUrl WHERE username = @username AND password = @password", {
+				['@username'] = username,
+				['@password'] = password,
+				['@avatarUrl'] = avatarUrl
+			}, function(result)
+				if result == 1 then
+					TriggerClientEvent('gcPhone:instagram_setAccount', player, username, password, avatarUrl)
+					TwitterShowSuccess(player, 'Twitter Info', 'APP_INSTAGRAM_NOTIF_AVATAR_SUCCESS')
+				else
+					InstagramShowError(player, 'INSTAGRAM_INFO_TITLE', 'APP_INSTAGRAM_NOTIF_LOGIN_ERROR')
+				end
 			end)
-		else
-			InstagramShowError(player, 'INSTAGRAM_INFO_TITLE', 'APP_INSTAGRAM_NOTIF_NO_CONNECTION')
-		end
-	end)
+		end)
+	else
+		InstagramShowError(player, 'INSTAGRAM_INFO_TITLE', 'APP_INSTAGRAM_NOTIF_NO_CONNECTION')
+	end
 end

@@ -1,13 +1,12 @@
 function TchatGetMessageChannel(identifier, channel, cb)
-	gcPhone.isAbleToSurfInternet(identifier, 2, function(isAble, mbToRemove)
-		if isAble then
-			gcPhone.usaDatiInternet(identifier, mbToRemove)
+	local isAble, mbToRemove = gcPhone.isAbleToSurfInternet(identifier, 2)
+	if isAble then
+		gcPhone.usaDatiInternet(identifier, mbToRemove)
 
-    		MySQL.Sync.fetchAll("SELECT * FROM phone_app_chat WHERE channel = @channel ORDER BY time DESC LIMIT 100", { 
-        		['@channel'] = channel
-			}, cb)
-    	end
-    end)
+		MySQL.Sync.fetchAll("SELECT * FROM phone_app_chat WHERE channel = @channel ORDER BY time DESC LIMIT 100", { 
+			['@channel'] = channel
+		}, cb)
+	end
 end
 
 function TchatAddMessage(channel, message)
@@ -24,39 +23,23 @@ end
 gcPhoneT.tchat_channel = function(channel)
 	local identifier = gcPhone.getPlayerID(source)
 	
-	gcPhone.isAbleToSurfInternet(identifier, 0.5, function(isAble, mbToRemove)
-		if isAble then
-			gcPhone.usaDatiInternet(identifier, mbToRemove)
-			
-			TchatGetMessageChannel(identifier, channel, function(messages)
-    			TriggerClientEvent('gcPhone:tchat_channel', source, channel, messages)
-  			end)
-  		end
-  	end)
+	local isAble, mbToRemove = gcPhone.isAbleToSurfInternet(identifier, 0.5)
+	if isAble then
+		gcPhone.usaDatiInternet(identifier, mbToRemove)
+		
+		TchatGetMessageChannel(identifier, channel, function(messages)
+			TriggerClientEvent('gcPhone:tchat_channel', source, channel, messages)
+		end)
+	end
 end
 
 gcPhoneT.tchat_addMessage = function(channel, message)
 	local identifier = gcPhone.getPlayerID(source)
 	
-	gcPhone.isAbleToSurfInternet(identifier, 0.05, function(isAble, mbToRemove)
-		if isAble then
-			gcPhone.usaDatiInternet(identifier, mbToRemove)
+	local isAble, mbToRemove = gcPhone.isAbleToSurfInternet(identifier, 0.05)
+	if isAble then
+		gcPhone.usaDatiInternet(identifier, mbToRemove)
 
-			TchatAddMessage(channel, message)
-  		end
-	end)
+		TchatAddMessage(channel, message)
+	end
 end
-
--- RegisterServerEvent('gcPhone:custom_tchat_addMessage')
--- AddEventHandler('gcPhone:custom_tchat_addMessage', function(channel, message)
--- 	local player = source
--- 	local identifier = gcPhone.getPlayerID(player)
--- 	
--- 	gcPhone.isAbleToSurfInternet(identifier, 0.05, function(isAble, mbToRemove)
--- 		if isAble then
--- 			gcPhone.usaDatiInternet(identifier, mbToRemove)
--- 
--- 			TchatAddMessage(channel, message)
---   		end
--- 	end)
--- end)

@@ -2,7 +2,7 @@
   <div v-if="show === true && tempoHide === false">
 
     <div class="notifications">
-      <div v-for='notif in list' :key="notif.id" class="notification">
+      <div v-for='notif in list' :key="notif.id" class="notification" :style="{ 'z-index': notif.id }">
 
         <div class="appName" :style="style(notif)">
           <i v-if="notif.icon" class="fa" :class="'fa-' + notif.icon"/>

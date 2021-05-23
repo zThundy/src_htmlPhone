@@ -35,54 +35,53 @@ gcPhoneT.sendMoneyToUser = function(data)
     
     local user_identifier = getUserFromIban(iban)
     if user_identifier ~= nil then
-        gcPhone.isAbleToSurfInternet(xPlayer.identifier, 0.5, function(isAble, mbToRemove)
-            if isAble then
-                if type(tonumber(data.money)) == "number" then
-                    data.money = string.gsub(data.money, "$", "")
-                    local amount = tonumber(data.money)
-                    local c_xPlayer = ESX.GetPlayerFromIdentifier(user_identifier)
+        local isAble, mbToRemove = gcPhone.isAbleToSurfInternet(xPlayer.identifier, 0.5)
+        if isAble then
+            if type(tonumber(data.money)) == "number" then
+                data.money = string.gsub(data.money, "$", "")
+                local amount = tonumber(data.money)
+                local c_xPlayer = ESX.GetPlayerFromIdentifier(user_identifier)
 
-                    if c_xPlayer ~= nil and xPlayer ~= nil then
-                        if xPlayer.getAccount("bank").money >= amount then
-                            local user_iban = getUsersIban(xPlayer.identifier)
+                if c_xPlayer ~= nil and xPlayer ~= nil then
+                    if xPlayer.getAccount("bank").money >= amount then
+                        local user_iban = getUsersIban(xPlayer.identifier)
 
-                            xPlayer.showNotification("~g~Hai inviato "..amount.."$ all'iban "..iban)
-                            c_xPlayer.showNotification("~g~Hai ricevuto un bonifico di "..amount.."$ dall'iban "..user_iban)
+                        xPlayer.showNotification("~g~Hai inviato "..amount.."$ all'iban "..iban)
+                        c_xPlayer.showNotification("~g~Hai ricevuto un bonifico di "..amount.."$ dall'iban "..user_iban)
 
-                            c_xPlayer.addAccountMoney("bank", amount)
-                            xPlayer.removeAccountMoney("bank", amount)
+                        c_xPlayer.addAccountMoney("bank", amount)
+                        xPlayer.removeAccountMoney("bank", amount)
 
-                            TriggerClientEvent("gcPhone:updateBankAmount", xPlayer.source, xPlayer.getAccount("bank").money, user_iban)
-                            TriggerClientEvent("gcPhone:updateBankAmount", c_xPlayer.source, c_xPlayer.getAccount("bank").money, c_user_iban)
+                        TriggerClientEvent("gcPhone:updateBankAmount", xPlayer.source, xPlayer.getAccount("bank").money, user_iban)
+                        TriggerClientEvent("gcPhone:updateBankAmount", c_xPlayer.source, c_xPlayer.getAccount("bank").money, c_user_iban)
 
-                            updateBankMovements(xPlayer.source, xPlayer.identifier, amount, "negative", c_user_iban, user_iban)
-                            updateBankMovements(c_xPlayer.source, c_xPlayer.identifier, amount, "positive", user_iban, c_user_iban)
-                        end
-                    else
-                        MySQL.Async.fetchAll("SELECT * FROM user_accounts WHERE identifier = @identifier AND name = @name", {
-                            ['@identifier'] = user_identifier,
-                            ['@name'] = "bank"
-                        }, function(result)
-                            if result ~= nil and result[1] ~= nil then
-                                MySQL.Async.execute("UPDATE user_accounts SET money = @money WHERE identifier = @identifier AND name = @name", {
-                                    ['@money'] = amount + result[1].money,
-                                    ['@identifier'] = user_identifier,
-                                    ['@name'] = "bank"
-                                }, function()
-                                    xPlayer.showNotification("~g~Trasferimento completato con successo")
-                                end)
-                            else
-                                xPlayer.showNotification("~r~Iban non trovato o non valido")
-                            end
-                        end) 
+                        updateBankMovements(xPlayer.source, xPlayer.identifier, amount, "negative", c_user_iban, user_iban)
+                        updateBankMovements(c_xPlayer.source, c_xPlayer.identifier, amount, "positive", user_iban, c_user_iban)
                     end
                 else
-                    xPlayer.showNotification("~r~Il valore inserito non è un numero")
+                    MySQL.Async.fetchAll("SELECT * FROM user_accounts WHERE identifier = @identifier AND name = @name", {
+                        ['@identifier'] = user_identifier,
+                        ['@name'] = "bank"
+                    }, function(result)
+                        if result ~= nil and result[1] ~= nil then
+                            MySQL.Async.execute("UPDATE user_accounts SET money = @money WHERE identifier = @identifier AND name = @name", {
+                                ['@money'] = amount + result[1].money,
+                                ['@identifier'] = user_identifier,
+                                ['@name'] = "bank"
+                            }, function()
+                                xPlayer.showNotification("~g~Trasferimento completato con successo")
+                            end)
+                        else
+                            xPlayer.showNotification("~r~Iban non trovato o non valido")
+                        end
+                    end) 
                 end
             else
-                xPlayer.showNotification("~r~Non hai abbastanza internet per poter eseguire questa azione")
+                xPlayer.showNotification("~r~Il valore inserito non è un numero")
             end
-        end)
+        else
+            xPlayer.showNotification("~r~Non hai abbastanza internet per poter eseguire questa azione")
+        end
     else
         xPlayer.showNotification("~r~Iban non trovato o non valido")
     end
