@@ -29,7 +29,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['LangString', 'myEmail'])
+    ...mapGetters(['config', 'LangString', 'myEmail'])
   },
   methods: {
     ...mapMutations(['SETUP_MY_EMAIL']),
@@ -39,12 +39,12 @@ export default {
       // dopo i controlli metto le info nel input
       if (!this.localEmail) {
         let select = document.querySelector('.inputDiv')
-        let options = { limit: parseInt(select.dataset.maxlength) || 64, title: 'Digita l\'email (senza @code.it)' }
+        let options = { limit: parseInt(select.dataset.maxlength) || 64, title: 'Digita l\'email (senza ' + this.config.email_suffix + ')' }
         this.$phoneAPI.getReponseText(options).then(data => {
           if (data.text.length > 25) {
             this.$phoneAPI.sendErrorMessage('Non puoi digitare tutti questi caratteri in questo campo')
           } else {
-            if (!data.text.includes('@code.it')) { data.text = data.text + '@code.it' }
+            if (!data.text.includes(this.config.email_suffix)) { data.text = data.text + this.config.email_suffix }
             data.text = data.text.replace(' ', '_')
             this.localEmail = data.text
           }

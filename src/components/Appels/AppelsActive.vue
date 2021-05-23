@@ -1,6 +1,6 @@
 <template>
    <div style="width: 100%; height: 100%;"  class="phone_app">
-    <div class="backblur" v-bind:style="{background: 'url(' + backgroundURL +')'}"></div>
+    <div class="backblur" v-bind:style="{ background: 'url(' + backgroundURL +')' }"></div>
     <InfoBare />
     <div class="num">{{ appelsDisplayNumber }}</div>
     <div class="contactName">{{ formatEmoji(appelsDisplayName) }}</div>
@@ -18,7 +18,6 @@
     -->
 
     <div class="actionbox">
-
       <div class="action raccrocher" :class="{ disableTrue: status === 0 && select !== 0 }">
         <svg viewBox="0 0 24 24">
           <g transform="rotate(135, 12, 12)">
@@ -116,7 +115,6 @@ export default {
       }
     }
   },
-
   watch: {
     appelsInfo () {
       if (this.appelsInfo === null) return
@@ -127,29 +125,22 @@ export default {
       }
     }
   },
-
   computed: {
     ...mapGetters(['LangString', 'backgroundURL', 'appelsInfo', 'appelsDisplayName', 'appelsDisplayNumber', 'myPhoneNumber']),
     timeDisplay () {
-      if (this.time < 0) {
-        return this.LangString('APP_PHONE_DIALING_MESSAGE')
-      }
+      if (this.time < 0) { return this.LangString('APP_PHONE_DIALING_MESSAGE') }
       const min = Math.floor(this.time / 60)
       let sec = this.time % 60
-      if (sec < 10) {
-        sec = '0' + sec
-      }
+      if (sec < 10) { sec = '0' + sec }
       return `${min}:${sec}`
     }
   },
-
   mounted () {
     if (this.appelsInfo !== null && this.appelsInfo.initiator === true) {
       this.status = 1
       this.$phoneAPI.setIgnoreFocus(true)
     }
   },
-
   created () {
     // if (this.tts) {
     //   var numbstring = this.appelsDisplayNumber.split('').join(' ')

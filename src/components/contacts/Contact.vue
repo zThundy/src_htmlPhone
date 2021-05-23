@@ -3,7 +3,6 @@
     <PhoneTitle :title="contact.display" @back="forceCancel"/>
 
     <div class='phone_content content inputText'>
-
       <div class="group select" data-type="text" data-model='display' data-maxlength='30' data-title="Inserisci il nome del contatto">
         <input type="text" v-model="contact.display" maxlength="30" v-autofocus>
         <span class="highlight"></span>
@@ -25,7 +24,7 @@
         <label>{{ LangString('APP_CONTACT_LABEL_EMAIL') }}</label>
       </div>
 
-      <div  style="margin-top: 23px; width: 263px; margin-left: 23px; " class="group" data-type="button" data-action='save'>
+      <div style="margin-top: 23px; width: 263px; margin-left: 23px; " class="group" data-type="button" data-action='save'>
         <input style="font-weight: 100;" type='button' class="btn btn-green" :value="LangString('APP_CONTACT_SAVE')"/>
       </div>
 
@@ -36,7 +35,6 @@
       <div style="margin-top: 23px; width: 263px; margin-left: 23px;" class="group" data-type="button" data-action='deleteC'>
         <input style="font-weight: 100;" type='button' class="btn btn-red" :value="LangString('APP_CONTACT_DELETE')"/>
       </div>
-
     </div>
 
   </div>
@@ -107,8 +105,8 @@ export default {
         }
         this.$phoneAPI.getReponseText(options).then(data => {
           if (select.dataset.model === 'email') {
-            if (!data.text.includes('@code.it')) {
-              data.text = data.text + '@code.it'
+            if (!data.text.includes(this.config.email_suffix)) {
+              data.text = data.text + this.config.email_suffix
             }
           }
           this.contact[select.dataset.model] = data.text
@@ -215,8 +213,8 @@ export default {
 }
 
 input {
-  font-size:24px;
-  display:block;
+  font-size: 24px;
+  display: block;
   width: 90%;
   border:none;
   border-bottom: 1px solid #e9e9eb;
@@ -235,6 +233,7 @@ label {
   pointer-events: none;
   left: 5px;
   top: 10px;
+
   transition: 0.2s ease all; 
   -moz-transition: 0.2s ease all; 
   -webkit-transition: 0.2s ease all;
@@ -248,31 +247,27 @@ input:focus ~ label, input:valid ~ label {
 }
 
 /* BOTTOM BARS ================================= */
-.bar 	{ position:relative; display:block; width: 90%; }
+.bar { position: relative; display: block; width: 90%; }
 .bar:before, .bar:after {
-  content:'';
-  height:2px;
-  width:0;
-  bottom:1px;
-  position:absolute;
-  background:#007aff;
-  transition:0.2s ease all;
-  -moz-transition:0.2s ease all;
-  -webkit-transition:0.2s ease all;
+  content: '';
+  height: 2px;
+  width: 0;
+  bottom: 1px;
+  position: absolute;
+  background: #007aff;
+
+  transition: 0.2s ease all;
+  -moz-transition: 0.2s ease all;
+  -webkit-transition: 0.2s ease all;
 }
 
-.bar:before {
-  left:50%;
-}
-
-.bar:after {
-  right:50%;
-}
+.bar:before { left: 50%; }
+.bar:after { right: 50%; }
 
 /* active state */
 input:focus ~ .bar:before, input:focus ~ .bar:after,
 .group.select input ~ .bar:before, .group.select input ~ .bar:after {
-  width:50%;
+  width: 50%;
 }
 
 /* HIGHLIGHTER ================================== */
@@ -293,7 +288,7 @@ input:focus ~ .highlight {
   animation: inputHighlighter 0.3s ease;
 }
 
-.group .btn{
+.group .btn {
   width: 100%;
   padding: 0px 0px;
   height: 48px;
@@ -306,32 +301,34 @@ input:focus ~ .highlight {
   background-color: #edeeee;
 }
 
-.group.select .btn{
+.group.select .btn {
   /* border: 6px solid #C0C0C0; */
   line-height: 18px;
 }
 
-.group .btn.btn-green{
+.group .btn.btn-green {
   border: 1px solid #0b81ff;
   color: #0b81ff;
   background-color: white;
   font-weight: 500;
   border-radius: 28px;
 }
-.group.select .btn.btn-green, .group:hover .btn.btn-green{
+
+.group.select .btn.btn-green {
   background-image: linear-gradient(to right, #62A3FF, #4994FF , #0b81ff); 
   color: white;
   border: none;
 }
-.group .btn.btn-orange{
+
+.group .btn.btn-orange {
   border: 1px solid #B6B6B6;
   color: #B6B6B6;
   background-color: white;
   font-weight: 500;
   border-radius: 28px;
 }
-.group.select .btn.btn-orange, .group:hover .btn.btn-orange{
 
+.group.select .btn.btn-orange {
   background-image: linear-gradient(to right, #D3D3D3, #C5C5C5 , #B6B6B6); 
   color: white;
   border: #B6B6B6;
@@ -344,7 +341,8 @@ input:focus ~ .highlight {
   font-weight: 500;
   border-radius: 28px;
 }
-.group.select .btn.btn-red, .group:hover .btn.btn-red{
+
+.group.select .btn.btn-red {
   background-image: linear-gradient(to right, #FF5B5B, #FF4B4B , #FE3C3C); 
   color: white;
   border: none;
@@ -352,16 +350,18 @@ input:focus ~ .highlight {
 
 /* ANIMATIONS ================ */
 @-webkit-keyframes inputHighlighter {
-	from { background:#5264AE; }
-  to 	{ width:0; background:transparent; }
+	from { background: #5264AE; }
+  to 	{ width: 0; background: transparent; }
 }
+
 @-moz-keyframes inputHighlighter {
-	from { background:#5264AE; }
-  to 	{ width:0; background:transparent; }
+	from { background: #5264AE; }
+  to 	{ width: 0; background: transparent; }
 }
+
 @keyframes inputHighlighter {
-	from { background:#5264AE; }
-  to 	{ width:0; background:transparent; }
+	from { background: #5264AE; }
+  to 	{ width: 0; background: transparent; }
 }
 </style>
 

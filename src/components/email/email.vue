@@ -6,7 +6,6 @@
     <div class="emails-container">
       <div v-if="currentModule === 0">
         <div class="email-container" v-for="(email, key) of emails" :key="key" :class="{ select: key === currentSelect }">
-
           <div v-if="email" class="email-timestamp">{{ formatTime(email.time) }}</div>
 
           <div v-if="email" class="email-header">
@@ -23,7 +22,6 @@
           </div>
 
           <div class="email-divider"></div>
-          
         </div>
 
         <div class="email-write-dot">

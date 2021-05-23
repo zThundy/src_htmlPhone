@@ -72,49 +72,49 @@ if (process.env.NODE_ENV !== 'production') {
       id: 5,
       number: '55587422',
       display: 'altrocontatto',
-      email: 'altrocontatto@code.it'
+      email: 'altrocontatto@phone.com'
     },
     {
       id: 6,
       icon: 'https://i.imgur.com/1YgvLHK.jpg',
       number: '55529322',
       display: 'questoenuovo',
-      email: 'questoenuovo@code.it'
+      email: 'questoenuovo@phone.com'
     },
     {
       id: 7,
       icon: 'https://i.imgur.com/1YgvLHK.jpg',
       number: '55529322',
       display: 'questoenuovo',
-      email: 'questoenuovo@code.it'
+      email: 'questoenuovo@phone.com'
     },
     {
       id: 8,
       icon: 'https://i.imgur.com/1YgvLHK.jpg',
       number: '55529322',
       display: 'questoenuovo',
-      email: 'questoenuovo@code.it'
+      email: 'questoenuovo@phone.com'
     },
     {
       id: 9,
       icon: 'https://i.imgur.com/1YgvLHK.jpg',
       number: '55529322',
       display: 'questoenuovo',
-      email: 'questoenuovo@code.it'
+      email: 'questoenuovo@phone.com'
     },
     {
       id: 10,
       icon: 'https://i.imgur.com/1YgvLHK.jpg',
       number: '55529322',
       display: 'questoenuovo',
-      email: 'questoenuovo@code.it'
+      email: 'questoenuovo@phone.com'
     },
     {
       id: 11,
       icon: 'https://i.imgur.com/1YgvLHK.jpg',
       number: '55529322',
       display: 'questoenuovo',
-      email: 'questoenuovo@code.it'
+      email: 'questoenuovo@phone.com'
     }
   ]
 }

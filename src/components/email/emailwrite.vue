@@ -12,7 +12,7 @@
           </tr>
           <tr colspan="2">
             <td class="email-header-content-title">{{ LangString("APP_EMAIL_SENDING_TO_LABEL") }}</td>
-            <td class="email-header-content-text" :class="{ select: currentSelect == 0 }" data-model='receiver' data-maxlength='25' data-title="Digita il destinatario (senza @code.it)">
+            <td class="email-header-content-text" :class="{ select: currentSelect == 0 }" data-model='receiver' data-maxlength='25' :data-title="'Digita il destinatario (senza ' + config.email_suffix + ')'">
               <input disabled v-model="email.receiver" maxlength="25">
               <span class="bar"></span>
             </td>
@@ -131,7 +131,7 @@ export default {
             break
           case 2:
             this.$phoneAPI.getReponseText(options).then(data => {
-              if (!data.text.includes('@code.it')) { data.text = data.text + '@code.it' }
+              if (!data.text.includes(this.config.email_suffix)) { data.text = data.text + this.config.email_suffix }
               this.email[model] = data.text
             })
             // dopo la risposta da phoneapi riattivo i controlli

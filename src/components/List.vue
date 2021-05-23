@@ -186,7 +186,8 @@ export default {
 }
 
 .element.select {
-  background-color: rgb(235, 255, 255);
+  box-shadow: 0px 0px 8px 0px rgba(0, 0, 0, 0.9);
+  background-color: rgb(245, 245, 245);
 }
 
 .elem-pic {
@@ -201,24 +202,27 @@ export default {
 
 .elem-puce {
   background-color: #EE3838;
-  top: 0px;
   color: white;
-  height: 18px;
-  width: 18px;
+
+  height: 16px;
+  width: 16px;
   line-height: 18px;
+
   border-radius: 50%;
   text-align: center;
-  font-size: 14px;
+  font-size: 12px;
   margin: 0px;
   padding: 0px;
   position: absolute;
-  left: 42px;
+
+  top: 4px;
+  left: 45px;
   z-index: 6;
 }
 
 .elem-title {
   margin-left: 70px;
-  font-size: 20px;
+  font-size: 18px;
   /* font-weight: 200; */
   line-height: 20px;
 }

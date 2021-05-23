@@ -3,6 +3,7 @@
 <template>
    <div class="phone_app">
     <PhoneTitle :title="LangString('APP_PHONE_TITLE')" @back="quit" />
+
     <div class="content">
       <div class="number">
         {{ numeroFormat }}
@@ -10,18 +11,14 @@
       </div>
 
       <div class="keyboard">
-        <div
-          class="key"
-          v-for="(key, i) of keyInfo" :key="key.primary"
-          :class="{'key-select': i === keySelect, 'keySpe': key.isNotNumber === true}"
-        >
-          <span class="key-primary">{{key.primary}}</span>
-          <span class="key-secondary">{{key.secondary}}</span>
+        <div class="key" v-for="(key, i) of keyInfo" :key="key.primary" :class="{ 'key-select': i === keySelect, 'keySpe': key.isNotNumber === true }">
+          <span class="key-primary">{{ key.primary }}</span>
+          <span class="key-secondary">{{ key.secondary }}</span>
         </div>
       </div>
 
       <div class="call">
-        <div class="call-btn" :class="{'active': keySelect === 12}">
+        <div class="call-btn" :class="{ 'active': keySelect === 12 }">
         <svg viewBox="0 0 24 24">
           <g transform="rotate(0, 12, 12)">
           <path d="M6.62,10.79C8.06,13.62 10.38,15.94 13.21,17.38L15.41,15.18C15.69,14.9 16.08,14.82 16.43,14.93C17.55,15.3 18.75,15.5 20,15.5A1,1 0 0,1 21,16.5V20A1,1 0 0,1 20,21A17,17 0 0,1 3,4A1,1 0 0,1 4,3H7.5A1,1 0 0,1 8.5,4C8.5,5.25 8.7,6.45 9.07,7.57C9.18,7.92 9.1,8.31 8.82,8.59L6.62,10.79Z"/>
@@ -88,7 +85,7 @@ export default {
         this.numero += this.keyInfo[this.keySelect].primary
       }
     },
-    onBackspace: function () {
+    onBackspace () {
       if (this.ignoreControls === true) return
       if (this.numero.length !== 0) {
         this.numero = this.numero.slice(0, -1)
@@ -100,12 +97,6 @@ export default {
       if (this.numero.length !== 0) {
         this.numero = this.numero.slice(0, -1)
       }
-    },
-    onPressKey (key) {
-      this.numero = this.numero + key.primary
-    },
-    onPressCall () {
-      this.startCall({ numero: this.numeroFormat })
     },
     quit () {
       history.back()
@@ -148,27 +139,27 @@ export default {
 </script>
 
 <style scoped>
-
-
-.number{
+.number {
   margin-top: 140px;
   width: 100%;
-  height: 52px;
+  height: 50px;
   font-size: 26px;
   line-height: 52px;
+
   text-align: right;
-  padding-right: 8px;
   border-bottom: 1px solid #C0C0C0;
-  margin-bottom: 8px;
+  margin-bottom: 0;
   box-shadow: 0px -6px 12px 0px rgba(189,189,189,0.4);
   position: relative;
-  padding-right: 60px;
+  padding-right: 50px;
 }
+
 .keyboard {
   display: flex;
   flex-wrap: wrap;
   width: 100%;
 }
+
 .key {
   position: relative;
   flex: 1 1 33.33%;
@@ -176,14 +167,14 @@ export default {
   height: 96px;
 }
 
-.key-select::after, .key:hover::after {
+.key-select::after {
   content: '';
   position: absolute;
-  top: calc(50% - 45px);
-  left: calc(50% - 45px);
+  top: calc(58% - 45px);
+  left: calc(55% - 45px);
   display: block;
-  width: 90px;
-  height: 90px;
+  width: 80px;
+  height: 80px;
   background: radial-gradient(rgba(0, 0, 0, 0.04), rgba(0, 0, 0, 0.16));
   border-radius: 50%;
 }
@@ -193,8 +184,9 @@ export default {
   font-size: 36px;
   color: black;
   line-height: 22px;
-  padding-top: 36px;
+  padding-top: 34px;
 }
+
 .keySpe .key-primary {
   color: #2c3e50;
   line-height: 96px;
@@ -207,13 +199,15 @@ export default {
   font-size: 12px;
   color: black;
   line-height: 12px;
-  padding-top: 6px;
+  padding-top: 8px;
 }
+
 .call {
-  margin-top: 18px;
+  margin-top: 30px;
   display: flex;
   justify-content: center;
 }
+
 .call-btn {
   margin-top: -29px;
   height: 70px;
@@ -221,15 +215,18 @@ export default {
   border-radius: 50%;
   background-color: #52d66a;
 }
-.call-btn.active, .call-btn:hover {
-  background-color: #43a047;
+
+.call-btn.active {
+  background-color: #00ff0d;
 }
+
 .call-btn svg {
   width: 50px;
   height: 50px;
   margin: 10px;
   fill: #EEE;
 }
+
 .deleteNumber {
   display: inline-block;
   position: absolute;
@@ -237,14 +234,15 @@ export default {
   top: 16px;
   right: 12px;
   height: 18px;
-  width: 32px;
+  width: 25px;
   padding: 0;
 }
+
 .deleteNumber:after {
   content: '';
   position: absolute;
   left: -5px;
-  top:0;
+  top: 0;
   width: 0;
   height: 0;
   border-style: solid;
