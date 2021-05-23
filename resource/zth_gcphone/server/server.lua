@@ -63,9 +63,8 @@ function GetPianoTariffarioParam(phone_number, param)
         ['@phone_number'] = phone_number
     })
 
-    print(phone_number, param)
-    print(ESX.DumpTable(result))
-    return result[1] and result[1] or 0
+    -- print(phone_number, param)
+    return result and result or 0
 end
 
 function UpdatePianoTariffario(phone_number, param, value)

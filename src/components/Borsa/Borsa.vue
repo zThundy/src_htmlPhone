@@ -215,7 +215,7 @@ export default {
       }
     },
     getCurrentMarket (tb) {
-      if (tb.name) {
+      if (tb && tb.name) {
         for (var id in this.stocksInfo) {
           if (this.stocksInfo[id].name === tb.name) {
             return this.stocksInfo[id].currentMarket

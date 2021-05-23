@@ -21,6 +21,7 @@ const mutations = {
     state.stocksInfo = crypto
   },
   UPDATE_BOURSE_PERSONAL_CRYPTO (state, crypto) {
+    // console.log(JSON.stringify(crypto))
     state.myStocksInfo = crypto
   }
 }
