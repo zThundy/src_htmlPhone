@@ -1,6 +1,6 @@
 <template>
   <div style="width: auto; top: 4px;" class='phone_infoBare barre-header'>
-    <span class='operator_title'>{{config.operator_title}}</span>
+    <span class='operator_title'>{{ config.operator_title }}</span>
     <span class="time">
       <current-time style="font-size: 12px; margin-right: 2px;"></current-time>
     </span>
@@ -13,8 +13,8 @@
       <img src="/html/static/img/app_dati/wifioff.png" style="height: 14px; width: 14px;">
     </div>
     
-    <div class="bars">
-      <hr v-if="updateBars()" :style="barra1">
+    <div v-if="updateBars()" class="bars">
+      <hr :style="barra1">
       <hr :style="barra2">
       <hr :style="barra3">
       <hr :style="barra4">

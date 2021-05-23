@@ -42,10 +42,6 @@ export default {
       type: String,
       default: 'rgb(240, 240, 240)'
     },
-    showSlice: {
-      type: Boolean,
-      default: false
-    },
     color: {
       type: String,
       default: 'black'

@@ -43,7 +43,7 @@ if (process.env.NODE_ENV !== 'production') {
   state.myStocksInfo = [
     {
       totalPrice: 59699.074,
-      totalBougth: 20,
+      amount: 20,
       name: 'BTCN'
     }
   ]

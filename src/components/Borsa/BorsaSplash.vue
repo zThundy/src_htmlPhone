@@ -21,7 +21,7 @@ export default {
   display: flex;
   justify-content: center;
   align-items: center;
-  background-color: #00394a;
+  background-color: #006482;
 }
 
 img {

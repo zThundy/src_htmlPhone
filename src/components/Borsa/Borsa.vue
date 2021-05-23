@@ -60,10 +60,10 @@
           <div class="stocks-table-inner">
 
             <div v-for="(table, key) in myStocksInfo" :key="key" class="stocks-table-elem" :class="{ select: currentSelect === key }">
-              <p class="stocks-ticker stocks-bold">{{ table.name }}</p>
-              <p class="stocks-ticker stocks-current-mp">{{ table.amount }}</p>
-              <p class="stocks-ticker stocks-current-mp">{{ getCurrentMarket(table).toFixed(1) }} $</p>
-              <p class="stocks-ticker stocks-current-mp">{{ (getCurrentMarket(table) * table.amount).toFixed(1) }} $</p>
+              <p class="stocks-ticker-personal stocks-bold">{{ table.name }}</p>
+              <p class="stocks-ticker-personal stocks-current-mp">{{ table.amount }}</p>
+              <p class="stocks-ticker-personal stocks-current-mp">{{ getCurrentMarket(table).toFixed(1) }} $</p>
+              <p class="stocks-ticker-personal stocks-current-mp">{{ (getCurrentMarket(table) * table.amount).toFixed(1) }} $</p>
             </div>
 
           </div>
@@ -261,14 +261,14 @@ export default {
   z-index: 1;
   display: flex;
   justify-content: space-around;
-  color: rgb(228, 228, 228);
+  color: rgb(15, 15, 15);
 }
 
 .stocks-menu-button {
-  background-color: #81949c;
+  background-color: #96b2be;
   height: 45px;
   padding: 12px;
-  margin-top: 8px;
+  margin-top: 10px;
   border-radius: 20px;
   font-size: 18px;
 }
@@ -342,13 +342,22 @@ export default {
 
 .stocks-menu-button.selected {
   background-color: #00394a;
+  color: white;
 }
 
 .stocks-ticker {
   position: relative;
-  top: 20px;
+  top: 22px;
   margin-left: 10px;
   color: #69a7c3;
+}
+
+.stocks-ticker-personal {
+  position: relative;
+  top: 22px;
+  color: #69a7c3;
+  margin-left: 5px;
+  margin-right: 10px;
 }
 
 .stocks-bold {
