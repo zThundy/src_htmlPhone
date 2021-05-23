@@ -173,7 +173,7 @@ export default {
       } else {
         this.ignoreControls = true
         let choix = [
-          { id: 1, title: this.LangString('APP_BOURSE_CHOICE_SELL'), icons: 'fa-money', color: 'yellow' },
+          { id: 1, title: this.LangString('APP_BOURSE_CHOICE_SELL'), icons: 'fa-money', color: '#ff5f13' },
           { id: 2, title: this.LangString('CANCEL'), icons: 'fa-undo', color: 'red' }
         ]
         Modal.CreateModal({ choix }).then(reponse => {

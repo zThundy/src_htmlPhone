@@ -2,7 +2,7 @@ import PhoneAPI from './../../PhoneAPI'
 // tutto questo codice è trovabile sulle impostazioni del telefono
 
 const state = {
-  bluetooth: window.localStorage['gc_bluetooth'] || 'false'
+  bluetooth: window.localStorage['gc_bluetooth'] || false
 }
 
 const getters = {
