@@ -107,7 +107,7 @@ export default {
     },
     onBack () {
       if (this.ignoreControls === true) return
-      this.$router.push({ name: 'home' })
+      this.$router.push({ name: 'menu' })
     },
     async addChannelOption () {
       try {

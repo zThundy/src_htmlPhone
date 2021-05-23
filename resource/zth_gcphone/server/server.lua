@@ -213,7 +213,7 @@ function gcPhone.isAbleToCall(identifier, cb)
     
     if not hasAirplane and phone_number then
         local min = GetPianoTariffarioParam(phone_number, "minuti")
-        if xPlayer.hasJob("police", 0).check or xPlayer.hasJob("ambulance", 0).check then return cb(true, false, min) end
+        if Config.IgnoredPlanJobs[xPlayer.job.name] then return cb(true, false, min) end
 
         if min == nil then
             cb(false, true, 0, "~r~Non hai un piano tariffario!")

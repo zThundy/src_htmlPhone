@@ -1,9 +1,16 @@
 -- this is the default prefix that a new
 -- automatically generated modem will have
-Config.DefaultRandomSSID = "Code-"
+Config.DefaultRandomSSID = "Phone-"
 
 Config.RaggioTorri = 550.0
 Config.RaggioWifi = 25.0
+
+-- if a user has a job included in this list, every call
+-- made by them will not consume minutes
+Config.IgnoredPlanJobs = {
+    ["police"] = true,
+    ["ambulance"] = true
+}
 
 -- this is the wait time in seconds that the script
 -- wait before checking the distance between the user

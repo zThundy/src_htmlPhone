@@ -106,7 +106,7 @@ export default {
     onIgnoreCall () {
       this.ignoreCall()
       this.$phoneAPI.setIgnoreFocus(false)
-      this.$router.push({ name: 'home' })
+      this.$router.push({ name: 'menu' })
     },
     startTimer () {
       if (this.intervalNum === undefined) {
