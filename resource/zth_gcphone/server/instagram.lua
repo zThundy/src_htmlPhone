@@ -359,7 +359,7 @@ gcPhoneT.instagram_setAvatarurl = function(username, password, avatarUrl)
 			}, function(result)
 				if result == 1 then
 					TriggerClientEvent('gcPhone:instagram_setAccount', player, username, password, avatarUrl)
-					TwitterShowSuccess(player, 'Twitter Info', 'APP_INSTAGRAM_NOTIF_AVATAR_SUCCESS')
+					InstagramShowSuccess(player, 'Instagram Info', 'APP_INSTAGRAM_NOTIF_AVATAR_SUCCESS')
 				else
 					InstagramShowError(player, 'INSTAGRAM_INFO_TITLE', 'APP_INSTAGRAM_NOTIF_LOGIN_ERROR')
 				end
