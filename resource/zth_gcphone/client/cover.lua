@@ -7,9 +7,9 @@ Citizen.CreateThread(function()
     TriggerEvent('gridsystem:registerMarker', {
 		name = "negozio_cover",
 		type = 20,
-		coords = Config.CoverShop,
-		colour = { r = 55, g = 255, b = 55 },
-		size =  vector3(0.8, 0.8, 0.8),
+		pos = Config.CoverShop,
+		color = { r = 55, g = 255, b = 55 },
+		scale = vector3(0.8, 0.8, 0.8),
         action = function()
             ESX.TriggerServerCallback("gcphone:cover_requestCovers", function(covers)
                 openShopMenu(covers)

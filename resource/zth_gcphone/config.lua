@@ -49,7 +49,7 @@ Config.EnsurePropCleanup = false
 
 -- this will be the coordinates where you'll find the cover
 -- shop for your phone
-Config.CoverShop = vector3(45.04, -1768.76, 29.61)
+Config.CoverShop = vector3(59.89, -1579.18, 29.6)
 
 -- this will be the default cover that your phone will have
 -- on firstlogin of a user. Keep in mind that the prop need to exists in
@@ -108,7 +108,7 @@ Config.Covers = {
 }
 
 -- These are the coords where the modem shop will be located
-Config.ModemManagement = vector3(-1083.502, -248.6952, 37.76329)
+Config.ModemManagement = vector3(68.31, -1569.53, 29.6)
 
 -- this are self explainatory. But i will do it anyway ;)
 -- BuyModemPrice is the price the user will need to pay to buy a

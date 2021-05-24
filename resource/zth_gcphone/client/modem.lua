@@ -4,9 +4,9 @@ Citizen.CreateThread(function()
     TriggerEvent('gridsystem:registerMarker', {
 		name = "modem_management",
 		type = 20,
-		coords = Config.ModemManagement,
-		colour = { r = 55, b = 255, g = 55 },
-		size =  vector3(0.8, 0.8, 0.8),
+		pos = Config.ModemManagement,
+		color = { r = 55, b = 255, g = 55 },
+		scale = vector3(0.8, 0.8, 0.8),
         action = function()
             OpenModemManagement()
 		end,
