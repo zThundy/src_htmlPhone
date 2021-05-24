@@ -10,12 +10,12 @@ Citizen.CreateThread(function() --ok
 		Citizen.Wait(1)
 	end
 
-	TriggerEvent('tcm_grids:registerMarker', {
+	TriggerEvent('gridsystem:registerMarker', {
 		name = "piano_tariffario",
 		type = 20,
-		coords = Config.TariffsShop,
-		colour = { r = 55, b = 55, g = 255 },
-		size =  vector3(0.8, 0.8, 0.8),
+		pos = Config.TariffsShop,
+		color = { r = 55, b = 55, g = 255 },
+		scale =  vector3(0.8, 0.8, 0.8),
 		action = function()
 			openOfferteMenu()
 		end,

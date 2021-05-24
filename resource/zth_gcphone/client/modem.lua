@@ -36,7 +36,6 @@ function OpenModemManagement()
 		onMenuSelect = function(data, _)
 			if data.current.value == "aggiorna_password" then
 				local password = GetResponseText({limit = 255, title = "Cambia la password della rete in:"})
-				
 				gcPhoneServerT.modem_cambiaPassword(password)
 			end
 

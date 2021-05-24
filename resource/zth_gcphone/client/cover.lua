@@ -123,7 +123,6 @@ function openShopMenu(myCovers)
     }, onMenuSelect, onMenuClose, onMenuChangeIndex)
 end
 
-
 function ChangeCover(label, cover)
     cover = cover..".png"
     SendNUIMessage({ event = "changePhoneCover", cover = cover, label = label })

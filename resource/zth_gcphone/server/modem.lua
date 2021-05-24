@@ -52,7 +52,7 @@ gcPhoneT.modem_rinnovaModem = function()
             end
         end)
     else
-        xPlayer.showNotification("~r~Non hai abbastanza punti")
+        xPlayer.showNotification("~r~Non hai abbastanza soldi")
     end
 end
 
@@ -66,7 +66,7 @@ gcPhoneT.modem_cambiaPassword = function(password)
         Reti.UpdateReteWifi(player, { password = password }, "password")
         TriggerClientEvent("gcphone:modem_updateMenu", player)
     else
-        xPlayer.showNotification("~r~Non hai abbastanza punti")
+        xPlayer.showNotification("~r~Non hai abbastanza soldi")
     end
 end
 
@@ -81,7 +81,7 @@ gcPhoneT.modem_compraModem = function()
         xPlayer.removeAccountMoney("bank", Config.BuyModemPrice)
         TriggerClientEvent("gcphone:modem_updateMenu", player)
     else
-        xPlayer.showNotification("~r~Non hai abbastanza punti per poter comprare un modem")
+        xPlayer.showNotification("~r~Non hai abbastanza soldi per poter comprare un modem")
     end
 end
 
@@ -107,10 +107,10 @@ ESX.RegisterServerCallback("gcphone:modem_getMenuInfo", function(source, cb)
             table.insert(elements, { label = "SSID "..label })
             table.insert(elements, { label = "Password "..password, value = "aggiorna_password" })
 
-            table.insert(elements, { label = "Rinnova il modem per "..Config.RenewModemPrice.." punti", value = "rinnova_modem" })
+            table.insert(elements, { label = "Rinnova il modem per "..Config.RenewModemPrice.."$", value = "rinnova_modem" })
         else
             table.insert(elements, { label = "Non hai acquistato un modem" })
-            table.insert(elements, { label = "Compra un modem per "..Config.BuyModemPrice.." punti", value = "buy_modem" })
+            table.insert(elements, { label = "Compra un modem per "..Config.BuyModemPrice.."$", value = "buy_modem" })
         end
 
         cb(elements)
