@@ -28,7 +28,6 @@ ESX.RegisterServerCallback("gcphone:cover_buyCover", function(source, cb, cover)
 
     if xPlayer ~= nil then
         if xPlayer.getAccount("bank").money >= Config.Covers[cover].price then
-
             MySQL.Async.insert("INSERT INTO phone_user_covers(identifier, cover) VALUES(@identifier, @cover)", {
                 ['@identifier'] = xPlayer.identifier,
                 ['@cover'] = cover..".png"

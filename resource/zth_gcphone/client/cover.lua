@@ -79,27 +79,21 @@ function openShopMenu(myCovers)
         local value = data.current.value
         local name = data.current.name
 
-        TriggerServerEvent("nfesx_mall:buyGift", name, value.label, 'covers', value.price)
+        ESX.TriggerServerCallback("gcphone:cover_buyCover", function(ok)
+            if ok then
+                ESX.ShowNotification("~g~Cover comprata con successo")
+                requestCovers()
+            else
+                ESX.ShowNotification("~r~Non hai abbastanza soldi per comprare una cover")
+            end
 
-        --[[
-            ESX.TriggerServerCallback("gcphone:cover_buyCover", function(ok)
-                if ok then
-                    ESX.ShowNotification("~g~Cover comprata con successo")
-                    requestCovers()
-                else
-                    ESX.ShowNotification("~r~Non hai abbastanza punti per comprare una cover")
-                end
-
-                ESX.UI.Menu.CloseAll()
-                SendNUIMessage({ show = false })
-
-                ChangeCover(value.label, name)
-            end, name)
-        ]]
-
-        ESX.UI.Menu.CloseAll()
-        SendNUIMessage({ show = false })
-        ChangeCover(value.label, name)
+            ESX.UI.Menu.CloseAll()
+            SendNUIMessage({ show = false })
+            ChangeCover(value.label, name)
+        end, name)
+        -- ESX.UI.Menu.CloseAll()
+        -- SendNUIMessage({ show = false })
+        -- ChangeCover(value.label, name)
     end
 
     -- onMenuChangeIndex

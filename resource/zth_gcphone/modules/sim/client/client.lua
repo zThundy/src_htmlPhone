@@ -154,8 +154,7 @@ function openOfferteMenu()
 				if offerta.piano_tariffario == "nessuno" then
 					elementi2 = {
 						{label = "Offerta: Nessun'offerta"},
-						{label = "Scegli un'offerta", value = "scegli_offerta", icon = 22},
-						{label = "Scegli un'offerta premium", value = "scegli_offerta_premium", icon = 22}
+						{label = "Scegli un'offerta", value = "scegli_offerta", icon = 22}
 					}
 				else
 					for k, v in pairs(Config.Tariffs) do
@@ -166,7 +165,6 @@ function openOfferteMenu()
 								{label = "Messaggi: "..v.messaggi.." sms"},
 								{label = "Internet: "..v.dati.." mb"},
 								{label = "Cambia offerta", value = "scegli_offerta", icon = 22},
-								{label = "Cambia offerta premium", value = "scegli_offerta_premium", icon = 22},
 								{label = "Rinnova offerta", value = "rinnova_offerta", icon = 22}
 							}
 						end
