@@ -62,7 +62,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['LangString', 'contacts'])
+    ...mapGetters(['config', 'LangString', 'contacts'])
   },
   methods: {
     ...mapActions(['updateContact', 'addContact']),

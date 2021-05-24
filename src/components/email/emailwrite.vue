@@ -70,10 +70,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters([
-      'LangString',
-      'myEmail'
-    ])
+    ...mapGetters(['config', 'LangString', 'myEmail'])
   },
   methods: {
     ...mapActions([]),
