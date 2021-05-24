@@ -51,18 +51,15 @@
   "fileUploadService_Field": "image",
 
   "background": {
-    "Explicit Code": "code.png",
-    "EC Azzurro": "azzurro.png",
-    "EC Bianco": "bianco.png",
-    "EC Blu": "blu.png",
-    "EC Giallo": "giallo.png",
-    "EC Nero": "nero.png",
+    "Apple": "apple.png",
+    "Cielo stellato": "cielostellato.png",
+    "Rick & Morty": "rickmorty.png",
     "Personalizzato": "Link"
   },
 
   "background_default": {
-    "label": "Explicit Code",
-    "value": "code.png"
+    "label": "Apple",
+    "value": "apple.png"
   },
 
   "cover_default": {
@@ -72,12 +69,9 @@
 
   "suoneria": {
     "Astronomia": "ring.ogg",
-    "Safaera": "safaera.ogg",
+    "Twerk": "safaera.ogg",
     "Bella Ciao": "bella_ciao.ogg",
-    "Casa Papel": "casa_papel.ogg",
-    "Iphone 11": "iphone_11.ogg",
-    "Tusa": "tusa.ogg",
-    "XXXTentacion": "xtentacion.ogg"
+    "Iphone 11": "iphone_11.ogg"
   },
 
   "suoneria_default": {
