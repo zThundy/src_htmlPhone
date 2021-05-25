@@ -30,10 +30,12 @@ Citizen.CreateThread(function()
 end)
 
 gcPhoneT.richiediTorriRadio = function()
+	while radioTowers == nil do Citizen.Wait(500) end
 	return radioTowers
 end
 
 gcPhoneT.richiediRetiWifi = function()
+	while retiWifi == nil do Citizen.Wait(500) end
 	return retiWifi
 end
 
