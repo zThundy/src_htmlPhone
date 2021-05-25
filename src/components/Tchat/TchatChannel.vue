@@ -12,7 +12,7 @@
 
         <!-- <span class="diese">#</span>{{elem.channel}} -->
         <div class="elem-title">
-          <div class="glitch"># {{elem.channel}}</div>
+          <div class="glitch"># {{ formatEmoji(elem.channel) }}</div>
         </div>
       </div>
 
@@ -43,6 +43,9 @@ export default {
   },
   methods: {
     ...mapActions(['tchatAddChannel', 'tchatRemoveChannel']),
+    formatEmoji (message) {
+      return this.$phoneAPI.convertEmoji(message)
+    },
     scrollIntoView () {
       this.$nextTick(() => {
         const elem = this.$el.querySelector('.select')

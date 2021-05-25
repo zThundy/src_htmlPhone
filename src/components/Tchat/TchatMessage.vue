@@ -8,27 +8,21 @@
       
       <div style="background-color: #090f20;" class="phone_content">
         <div style="padding-top: 50px;" class="elementi" ref="elementsDiv">
-
           <div class="sms" v-bind:class="{ select: key === currentSelect}" v-for='(mess, key) in tchatMessages' v-bind:key="key">
-            
             <span class='sms_message sms_me'>
-              <span>{{mess.message}}</span>
+              <span>{{ formatEmoji(mess.message) }}</span>
             </span>
-
           </div>
-
         </div>
 
         <div style="width: 306px; bottom: 5px;" id='sms_write'>
           <input type="text" :placeholder="LangString('APP_DARKTCHAT_PLACEHOLDER_ENTER_MESSAGE')">
           
           <div style="font-size: 10px;" class="sms_send">
-
             <svg height="24" viewBox="0 0 24 24" width="24">
               <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/>
               <path d="M0 0h24v24H0z" fill="none"/>
             </svg>
-
           </div>
         </div>
 
@@ -67,6 +61,9 @@ export default {
     setChannel (channel) {
       this.channel = channel
       this.tchatSetChannel({ channel })
+    },
+    formatEmoji (message) {
+      return this.$phoneAPI.convertEmoji(message)
     },
     ...mapActions(['tchatSetChannel', 'tchatSendMessage']),
     scrollIntoView () {

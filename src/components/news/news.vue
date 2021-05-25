@@ -26,7 +26,7 @@
           </md-swiper>
 
           <div class="journal-message-container">
-            <p v-if="elem.messages && elem.message.length > 0">{{ elem.message }}</p>
+            <p v-if="elem.messages && elem.message.length > 0">{{ formatEmoji(elem.message) }}</p>
             <timeago class="journal-message-timeago" :since='elem.time' :auto-update="20"></timeago>
           </div>
           
@@ -61,7 +61,7 @@
           </md-swiper>
 
           <div v-if="tempNews.description && tempNews.description.length > 0" class="journal-message-container">
-            <p>{{ tempNews.description }}</p>
+            <p>{{ formatEmoji(tempNews.description) }}</p>
           </div>
 
         </div>
@@ -126,6 +126,9 @@ export default {
     // },
     afterChange (from, to) {
       this.currentPicIndex = to
+    },
+    formatEmoji (message) {
+      return this.$phoneAPI.convertEmoji(message)
     },
     scrollIntoView () {
       this.$nextTick(() => {
