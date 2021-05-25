@@ -7,13 +7,9 @@
     </div>
 
     <div class="darkweb_menu">
-
       <div v-for="(s, i) in screen" :key="i" class="darkweb_menu-item" :class="{ select: i === currentScreenIndex }">
-
         <i class="fa" :class="s.icon"></i>
-
       </div>
-
     </div>
   </div>
 </template>

@@ -6,18 +6,15 @@
     </div>
 
     <div class="dark-wrapper" ref="elementsDiv">
-
       <div class="darkweb" v-for='(val, key) in darkwebMessages' v-bind:key="key" v-bind:class="{ select: key === selectMessage }">
-
         <div class="dark-content">
-
           <div class="dark-head">
             <div class="dark-head-author">{{ LangString("APP_DARKWEB_USER_TITLE") }}</div>
             <i v-if="val.mine == 1" class="dark-user-icon fa fa-user"></i>
           </div>
 
           <div class="dark-message">
-            <template v-if="!isImage(val.message)">{{ val.message }}</template>
+            <template v-if="!isImage(val.message)">{{ formatEmoji(val.message) }}</template>
             <img v-else :src="val.message" class="dark-message-img">
           </div>
 
@@ -37,12 +34,10 @@
               <!-- <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24"><path fill="none" d="M0 0h24v24H0V0z"/><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81 1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9c-1.66 0-3 1.34-3 3s1.34 3 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.16c-.05.21-.08.43-.08.65 0 1.61 1.31 2.92 2.92 2.92s2.92-1.31 2.92-2.92-1.31-2.92-2.92-2.92z"/></svg> -->
             </div>
           </div>
-
         </div>
-
       </div>
-      
     </div>
+
   </div>
 </template>
 
@@ -67,6 +62,9 @@ export default {
   methods: {
     ...mapActions(['darkwebPostMessage']),
     ...mapMutations(['CHANGE_BRIGHTNESS_STATE']),
+    formatEmoji (message) {
+      return this.$phoneAPI.convertEmoji(message)
+    },
     async showOption () {
       this.ignoreControls = true
       const message = this.darkwebMessages[this.selectMessage]
