@@ -3,7 +3,6 @@
     <PhoneTitle :title="LangString('APP_EMAIL_CHOOSE_CONTACT')" :backgroundColor="'rgb(216, 71, 49)'" />
 
     <list :list='lcontacts' :showHeader="false" :disable="disableList" :title="LangString('APP_CONTACT_TITLE')" @back="back" @select='onSelect'></list>
-  
   </div>
 </template>
 

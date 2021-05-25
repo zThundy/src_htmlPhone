@@ -4,7 +4,6 @@
 
     <div class="email-container">
       <div class="email-header">
-
         <table class="email-header-content">
           <tr colspan="2">
             <td class="email-header-content-title">{{ LangString("APP_EMAIL_READING_FROM_LABEL") }}</td>
@@ -16,23 +15,20 @@
           </tr>
           <tr colspan="2">
             <td class="email-header-content-title">{{ LangString("APP_EMAIL_READING_TITLE_LABEL") }}</td>
-            <td class="email-header-content-text">{{ currentEmail.title }}</td>
+            <td class="email-header-content-text">{{ formatEmoji(currentEmail.title) }}</td>
           </tr>
         </table>
-
       </div>
 
       <div class="email-body">
-
         <table class="email-body-content">
           <tr colspan="2">
             <td class="email-body-content-title">{{ LangString("APP_EMAIL_READING_MESSAGE_LABEL") }}</td>
           </tr>
           <tr colspan="2">
-            <td class="email-body-content-text">{{ currentEmail.message }}</td>
+            <td class="email-body-content-text">{{ formatEmoji(currentEmail.message) }}</td>
           </tr>
         </table>
-
       </div>
 
     </div>
@@ -54,16 +50,16 @@ export default {
     }
   },
   computed: {
-    ...mapGetters([
-      'LangString',
-      'emails'
-    ])
+    ...mapGetters(['LangString', 'emails'])
   },
   methods: {
     ...mapActions([]),
     onBackspace () {
       // history.back()
       this.$router.push({ name: 'email' })
+    },
+    formatEmoji (message) {
+      return this.$phoneAPI.convertEmoji(message)
     }
   },
   created () {
