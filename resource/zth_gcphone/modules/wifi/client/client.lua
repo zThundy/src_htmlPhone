@@ -16,14 +16,16 @@ Citizen.CreateThread(function()
 	Reti:InitScript()
 end)
 
-RegisterNetEvent('esx_wifi:riceviTorriRadio')
-AddEventHandler('esx_wifi:riceviTorriRadio', function(torriRadioServer)
-	torriRadio = torriRadioServer
-	Reti.RefreshBlips()
-end)
+--[[
+	RegisterNetEvent('esx_wifi:riceviTorriRadio')
+	AddEventHandler('esx_wifi:riceviTorriRadio', function(torriRadioServer)
+		torriRadio = torriRadioServer
+		Reti.RefreshBlips()
+	end)
 
-RegisterNetEvent('esx_wifi:riceviRetiWifi')
-AddEventHandler('esx_wifi:riceviRetiWifi', function(retiWifiServer) retiWifi = retiWifiServer end)
+	RegisterNetEvent('esx_wifi:riceviRetiWifi')
+	AddEventHandler('esx_wifi:riceviRetiWifi', function(retiWifiServer) retiWifi = retiWifiServer end)
+]]
 
 RegisterNetEvent('esx:playerLoaded')
 AddEventHandler('esx:playerLoaded', function(source) playerCaricato = true end)
@@ -55,7 +57,8 @@ function Reti:InitScript()
 		self.agganciato = false
 		self.vecchiaPotenzaSegnale = 0
 
-		TriggerServerEvent('esx_wifi:richiediTorriRadio')
+		retiWifi = gcPhoneServerT.richiediTorriRadio()
+		-- TriggerServerEvent('esx_wifi:richiediTorriRadio')
 
 		while #torriRadio == 0 do Citizen.Wait(100) end
 		blipCaricati = self.RefreshBlips()
@@ -98,7 +101,10 @@ function Reti:InitScript()
 				end
 			end
 
-			if Config.EnableSyncThread then TriggerServerEvent('esx_wifi:richiediTorriRadio') end
+			if Config.EnableSyncThread then
+				-- TriggerServerEvent('esx_wifi:richiediTorriRadio')
+				retiWifi = gcPhoneServerT.richiediTorriRadio()
+			end
 
 			TriggerEvent('gcphone:aggiornameAConnessione', self.potenzaSegnale)
 		end
@@ -106,8 +112,8 @@ function Reti:InitScript()
 
 	-- thread per controllo distanza reti wifi
 	Citizen.CreateThread(function()
-		TriggerServerEvent('esx_wifi:richiediRetiWifi')
-
+		-- TriggerServerEvent('esx_wifi:richiediRetiWifi')
+		retiWifi = gcPhoneServerT.richiediRetiWifi()
 		local distanza = 0
 
 		while true do
@@ -140,7 +146,11 @@ function Reti:InitScript()
 				end
 			end
 
-			if Config.EnableSyncThread then TriggerServerEvent('esx_wifi:richiediRetiWifi') end
+			if Config.EnableSyncThread then
+				-- TriggerServerEvent('esx_wifi:richiediRetiWifi')
+				retiWifi = gcPhoneServerT.richiediRetiWifi()
+				Reti.RefreshBlips()
+			end
 
 			TriggerEvent('gcphone:aggiornaRetiWifi', self.retiWifiVicine)
 		end

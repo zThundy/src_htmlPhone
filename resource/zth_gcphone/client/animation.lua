@@ -2,7 +2,7 @@ local ped = nil
 
 local phoneProp = 0
 local phoneModel = 0
-local cachedProps = {}
+local CACHED_PROPS = {}
 -- OR "prop_npc_phone"
 -- OR "prop_npc_phone_02"
 -- OR "prop_cs_phone_01"
@@ -64,12 +64,12 @@ function newPhoneProp()
 
 	-- SetEntityAsNoLongerNeeded(phoneModel)
 
-	table.insert(cachedProps, phoneProp)
+	table.insert(CACHED_PROPS, phoneProp)
 end
 
 
 function onCoverChange()
-	if #cachedProps > 2 then doCleanup() end
+	if #CACHED_PROPS > 2 then doCleanup() end
 
 	newPhoneProp()
 end
@@ -84,13 +84,13 @@ end
 
 
 function doCleanup()
-	for k, v in pairs(cachedProps) do
+	for k, v in pairs(CACHED_PROPS) do
 		if DoesEntityExist(v) then
 			Citizen.InvokeNative(0xAE3CBE5BF394C9C9 , Citizen.PointerValueIntInitialized(v))
 		end
 	end
 
-	cachedProps = {}
+	CACHED_PROPS = {}
 	gcPhone.debug("Cleared extra props for restart or overflow")
 end
 

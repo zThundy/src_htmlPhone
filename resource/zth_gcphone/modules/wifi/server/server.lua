@@ -29,21 +29,31 @@ Citizen.CreateThread(function()
 	end
 end)
 
-RegisterServerEvent('esx_wifi:richiediTorriRadio')
-AddEventHandler('esx_wifi:richiediTorriRadio', function()
-	local player = source
-	while radioTowers == nil do Citizen.Wait(500) end
+gcPhoneT.richiediTorriRadio = function()
+	return radioTowers
+end
 
-	TriggerClientEvent('esx_wifi:riceviTorriRadio', player, radioTowers)
-end)
+gcPhoneT.richiediRetiWifi = function()
+	return retiWifi
+end
 
-RegisterServerEvent('esx_wifi:richiediRetiWifi')
-AddEventHandler('esx_wifi:richiediRetiWifi', function()
-	local player = source
-	while retiWifi == nil do Citizen.Wait(500) end
+--[[
+	RegisterServerEvent('esx_wifi:richiediTorriRadio')
+	AddEventHandler('esx_wifi:richiediTorriRadio', function()
+		local player = source
+		while radioTowers == nil do Citizen.Wait(500) end
 
-	TriggerClientEvent('esx_wifi:riceviRetiWifi', player, retiWifi)
-end)
+		TriggerClientEvent('esx_wifi:riceviTorriRadio', player, radioTowers)
+	end)
+
+	RegisterServerEvent('esx_wifi:richiediRetiWifi')
+	AddEventHandler('esx_wifi:richiediRetiWifi', function()
+		local player = source
+		while retiWifi == nil do Citizen.Wait(500) end
+
+		TriggerClientEvent('esx_wifi:riceviRetiWifi', player, retiWifi)
+	end)
+]]
 
 RegisterServerEvent('esx_wifi:connettiAllaTorre')
 AddEventHandler('esx_wifi:connettiAllaTorre', function(player, labelTorreRadio, potenza)

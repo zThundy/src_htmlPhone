@@ -249,7 +249,7 @@ gcPhoneT.getFirstnameAndLastname = function(identifier)
     -- fill values if loaded query had some errors
     if not CACHED_NAMES[identifier] then
         -- this needs to be syncronus cause return :)
-        print(identifier)
+        -- print(identifier)
         local r = MySQL.Sync.fetchAll("SELECT firstname, lastname FROM users WHERE identifier = @identifier", {['@identifier'] = identifier})
         if (r and r[1]) and (r[1].firstname and r[1].lastname) then
             CACHED_NAMES[identifier] = {
