@@ -11,7 +11,14 @@ gcPhoneT.email_requestMyEmail = function()
             TriggerClientEvent("gcphone:email_sendMyEmail", player, email)
         end)
     else
-        TriggerClientEvent("esx:showNotification", player, "~r~Non hai abbastanza giga per poter richiedere la tua email")
+        TriggerClientEvent("gcphone:sendGenericNotification", player, {
+            message = "APP_EMAIL_ERROR_INTERNET",
+            title = "Email",
+            icon = "envelope",
+            color = "rgb(216, 71, 49)",
+            appName = "Email"
+        })
+        -- TriggerClientEvent("esx:showNotification", player, "~r~Non hai abbastanza giga per poter richiedere la tua email")
     end
 end
 
@@ -40,7 +47,14 @@ gcPhoneT.email_sendEmail = function(data)
                 ['@pic'] = data.pic,
             })
         else
-            TriggerClientEvent("esx:showNotification", player, "~r~Non hai abbastanza giga per poter inviare questa email")
+            TriggerClientEvent("gcphone:sendGenericNotification", player, {
+                message = "APP_EMAIL_ERROR_INTERNET",
+                title = "Email",
+                icon = "envelope",
+                color = "rgb(216, 71, 49)",
+                appName = "Email"
+            })
+            -- TriggerClientEvent("esx:showNotification", player, "~r~Non hai abbastanza giga per poter inviare questa email")
         end
     end)
 end
@@ -56,7 +70,14 @@ gcPhoneT.email_requestEmails = function()
                 gcPhone.usaDatiInternet(identifier, mbToRemove)
                 TriggerClientEvent("gcphone:email_sendRequestedEmails", player, emails)
             else
-                TriggerClientEvent("esx:showNotification", player, "~r~Non hai abbastanza giga per poter scaricare le tue email")
+                TriggerClientEvent("gcphone:sendGenericNotification", player, {
+                    message = "APP_EMAIL_ERROR_INTERNET",
+                    title = "Email",
+                    icon = "envelope",
+                    color = "rgb(216, 71, 49)",
+                    appName = "Email"
+                })
+                -- TriggerClientEvent("esx:showNotification", player, "~r~Non hai abbastanza giga per poter scaricare le tue email")
             end
         end)
     end)
@@ -75,7 +96,14 @@ gcPhoneT.email_deleteEmail = function(emailID)
 
                     TriggerClientEvent("gcphone:email_sendRequestedEmails", player, emails)
                 else
-                    TriggerClientEvent("esx:showNotification", player, "~r~Non hai abbastanza giga per poter scaricare le tue email")
+                    TriggerClientEvent("gcphone:sendGenericNotification", player, {
+                        message = "APP_EMAIL_ERROR_INTERNET",
+                        title = "Email",
+                        icon = "envelope",
+                        color = "rgb(216, 71, 49)",
+                        appName = "Email"
+                    })
+                    -- TriggerClientEvent("esx:showNotification", player, "~r~Non hai abbastanza giga per poter scaricare le tue email")
                 end
             end)
         end)
@@ -94,7 +122,14 @@ gcPhoneT.email_registerEmail = function(email)
             ['@email'] = email
         })
     else
-        TriggerClientEvent("esx:showNotification", player, "~r~Non hai abbastanza giga per poter registrare la tua email")
+        TriggerClientEvent("gcphone:sendGenericNotification", player, {
+            message = "APP_EMAIL_ERROR_INTERNET",
+            title = "Email",
+            icon = "envelope",
+            color = "rgb(216, 71, 49)",
+            appName = "Email"
+        })
+        -- TriggerClientEvent("esx:showNotification", player, "~r~Non hai abbastanza giga per poter registrare la tua email")
     end
 end
 

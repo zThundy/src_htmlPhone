@@ -15,12 +15,13 @@ gcPhoneT.azienda_requestJobInfo = function()
         gcPhone.usaDatiInternet(xPlayer.identifier, mbToRemove)
 
         if Config.MinAziendaGrade[xPlayer.job.name] then
+            local firstname, lastname = gcPhoneT.getFirstnameAndLastname(xPlayer.identifier)
             myJobInfo = {
                 steamid = xPlayer.identifier,
                 gradeName = xPlayer.job.grade_label,
                 grade = xPlayer.job.grade,
                 buttons = {},
-                name = xPlayer.firstname.." "..xPlayer.lastname
+                name = firstname .. " " .. lastname
             }
 
             myJobInfo.buttons = GetButtons(xPlayer.job.name, xPlayer.job.grade)
@@ -37,11 +38,12 @@ gcPhoneT.azienda_requestJobInfo = function()
                 -- myAziendaInfo.img = ??????
 
                 for _, xPlayer in pairs(jobPlayers) do
+                    firstname, lastname = gcPhoneT.getFirstnameAndLastname(xPlayer.identifier)
                     table.insert(myAziendaInfo.employes, {
                         steamid = xPlayer.identifier,
                         grade = xPlayer.job.grade,
                         gradeName = xPlayer.job.grade_label,
-                        name = xPlayer.firstname.." "..xPlayer.lastname,
+                        name = firstname .. " " .. lastname,
                         phoneNumber = gcPhone.getPhoneNumber(xPlayer.identifier),
                         salary = xPlayer.job.grade_salary,
                         isOnline = true -- to be implemented the false state???? IDK 
@@ -76,12 +78,13 @@ gcPhoneT.azienda_sendAziendaMessage = function(azienda, number, message)
     local isAble, mbToRemove = gcPhone.isAbleToSurfInternet(xPlayer.identifier, 0.1)
     if isAble then
         gcPhone.usaDatiInternet(xPlayer.identifier, mbToRemove)
+        local firstname, lastname = gcPhoneT.getFirstnameAndLastname(xPlayer.identifier)
 
         MySQL.Async.insert("INSERT INTO phone_azienda_messages(azienda, authorIdentifier, authorNumber, authorName, message) VALUES(@azienda, @identifier, @number, @name, @message)", {
             ['@azienda'] = azienda,
             ['@identifier'] = xPlayer.identifier,
             ['@number'] = number,
-            ['@name'] = xPlayer.firstname.." "..xPlayer.lastname,
+            ['@name'] = firstname .. " " .. lastname,
             ['@message'] = message
         }, function()
             GetAziendaMessages(player, azienda, function(messages)
@@ -124,11 +127,12 @@ gcPhoneT.azienda_employeAction = function(action, employe)
     local isAble, mbToRemove = gcPhone.isAbleToSurfInternet(xPlayer.identifier, 0.5)
     if isAble then
         gcPhone.usaDatiInternet(xPlayer.identifier, mbToRemove)
+        local firstname, lastname = gcPhoneT.getFirstnameAndLastname(c_xPlayer.identifier)
 
         if action == "promote" then
             if c_xPlayer.job.grade < tonumber(maxGrade) then
                 c_xPlayer.setJob(xPlayer.job.name, c_xPlayer.job.grade + 1)
-                xPlayer.showNotification("~g~"..c_xPlayer.firstname.." "..c_xPlayer.lastname.." promosso al grado "..c_xPlayer.job.grade_label.." ["..c_xPlayer.job.grade.."]")
+                xPlayer.showNotification("~g~" .. firstname .. " " .. lastname .. " promosso al grado "..c_xPlayer.job.grade_label.." ["..c_xPlayer.job.grade.."]")
             else
                 xPlayer.showNotification("~r~Non puoi eseguire questa azione")
             end
@@ -136,9 +140,9 @@ gcPhoneT.azienda_employeAction = function(action, employe)
             if xPlayer.job.grade > c_xPlayer.job.grade then
                 if c_xPlayer.job.grade ~= 0 then
                     c_xPlayer.setJob(xPlayer.job.name, c_xPlayer.job.grade - 1)
-                    xPlayer.showNotification("~g~"..c_xPlayer.firstname.." "..c_xPlayer.lastname.." degradato al grado "..c_xPlayer.job.grade_label.." ["..c_xPlayer.job.grade.."]")
+                    xPlayer.showNotification("~g~" .. firstname .. " " .. lastname .. " degradato al grado "..c_xPlayer.job.grade_label.." ["..c_xPlayer.job.grade.."]")
                 else
-                    xPlayer.showNotification("~g~"..c_xPlayer.firstname.." "..c_xPlayer.lastname.." licenziato")
+                    xPlayer.showNotification("~g~" .. firstname .. " " .. lastname .. " licenziato")
                     c_xPlayer.setJob("unemployed", 0)
                 end
             else
@@ -218,13 +222,15 @@ function UpdateAziendaEmployes(azienda, cb)
     local jobPlayers = GetPlayersWithJob(azienda)
     local xPlayer = {}
     local employes = {}
+    local firstname, lastname
 
     for _, xPlayer in pairs(jobPlayers) do
+        firstname, lastname = gcPhoneT.getFirstnameAndLastname(xPlayer.identifier)
         table.insert(employes, {
             steamid = xPlayer.identifier,
             grade = xPlayer.job.grade,
             gradeName = xPlayer.job.grade_label,
-            name = xPlayer.firstname.." "..xPlayer.lastname,
+            name = firstname .. " " .. lastname,
             phoneNumber = gcPhone.getPhoneNumber(xPlayer.identifier),
             salary = xPlayer.job.grade_salary,
             isOnline = true -- to be implemented the false state???? IDK 

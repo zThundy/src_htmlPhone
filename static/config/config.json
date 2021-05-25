@@ -670,6 +670,7 @@
       "APP_EMAIL_REGISTER_PLACEHOLDER": "Email (Max 25)",
       "APP_EMAIL_REGISTER_CHOICE_ONE": "Modifica",
       "APP_EMAIL_REGISTER_CHOICE_TWO": "Registrati",
+      "APP_EMAIL_ERROR_INTERNET": "Non hai abbastanza giga per poter eseguire questa azione",
       "APP_NEWS_TITLE": "News",
       "APP_NEWS_UPLOAD_PICTURE": "Carica immagine",
       "APP_NEWS_WRITE_MESSAGE": "Scrivi descrizione",

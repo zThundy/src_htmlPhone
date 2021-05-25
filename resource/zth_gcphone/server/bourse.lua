@@ -104,11 +104,11 @@ gcPhoneT.getBourseProfile = function()
 	local isAble, mbToRemove = gcPhone.isAbleToSurfInternet(xPlayer.identifier, 0.5)
     if isAble then
         gcPhone.usaDatiInternet(xPlayer.identifier, mbToRemove)
-        local result = MySQL.Sync.fetchAll("SELECT firstname, lastname FROM users WHERE identifier = @identifier", {['@identifier'] = xPlayer.identifier})
+        local firstname, lastname = gcPhoneT.getFirstnameAndLastname(xPlayer.identifier)
     
         return {
-            name = result[1].firstname,
-            surname = result[1].lastname,
+            name = firstname,
+            surname = lastname,
             balance = xPlayer.getAccount("bank").money
         }
     else

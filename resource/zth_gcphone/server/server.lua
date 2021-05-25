@@ -13,7 +13,8 @@ built_phones = false
 phone_loaded = false
 
 enableGlobalAirplane = {}
-cachedNumbers = {}
+CACHED_NUMBERS = {}
+CACHED_NAMES = {}
 
 RegisterServerEvent('esx_phone:getShILovePizzaaredObjILovePizzaect')
 AddEventHandler('esx_phone:getShILovePizzaaredObjILovePizzaect', function(cb)
@@ -36,7 +37,7 @@ MySQL.ready(function()
 
     MySQL.Async.fetchAll("SELECT phone_number, identifier FROM sim", {}, function(r)
         for _, v in pairs(r) do
-            cachedNumbers[tostring(v.phone_number)] = {identifier = v.identifier, inUse = false}
+            CACHED_NUMBERS[tostring(v.phone_number)] = {identifier = v.identifier, inUse = false}
 
             --[[
                 da esx_cartesim aggiorno la sim in uso al
@@ -45,7 +46,7 @@ MySQL.ready(function()
                 MySQL.Async.fetchAll("SELECT phone_number FROM users WHERE identifier = @identifier", {['@identifier'] = v.identifier}, function(user)
                     if user ~= nil and user[1] ~= nil then
                         if user[1].phone_number == v.phone_number then
-                            cachedNumbers[tostring(v.phone_number)].inUse = true
+                            CACHED_NUMBERS[tostring(v.phone_number)].inUse = true
                         end
                     end
                 end)
@@ -237,15 +238,29 @@ end
 -------- 
 --==================================================================================================================
 
-gcPhoneT.getFirstnameAndLastname = function()
-    local player = source
-    local xPlayer = ESX.GetPlayerFromId(player)
-    local r = MySQL.Sync.fetchAll("SELECT firstname, lastname FROM users WHERE identifier = @identifier", {
-        ['@identifier'] = xPlayer.identifier
-    })
+gcPhoneT.getFirstnameAndLastname = function(identifier)
+    if not identifier then
+        gcPhone.debug("Error getting firstname and lastname, identifier not specified: using source insted")
+        local player = source
+        local xPlayer = ESX.GetPlayerFromId(player)
+        identifier = xPlayer.identifier
+    end
 
-    if r[1] then
-        return r[1].firstname, r[1].lastname
+    -- fill values if loaded query had some errors
+    if not CACHED_NAMES[identifier] then
+        -- this needs to be syncronus cause return :)
+        print(identifier)
+        local r = MySQL.Sync.fetchAll("SELECT firstname, lastname FROM users WHERE identifier = @identifier", {['@identifier'] = identifier})
+        if (r and r[1]) and (r[1].firstname and r[1].lastname) then
+            CACHED_NAMES[identifier] = {
+                firstname = r[1].firstname,
+                lastname = r[1].lastname
+            }
+        end
+    end
+
+    if CACHED_NAMES[identifier] then
+        return CACHED_NAMES[identifier].firstname, CACHED_NAMES[identifier].lastname
     else
         return "None", "None"
     end
@@ -276,29 +291,29 @@ AddEventHandler("gcphone:updateCachedNumber", function(number, identifier, isCha
     if identifier then
         gcPhone.debug("Updated number " .. number .. " for identifier " .. identifier)
     else
-        gcPhone.debug("Removed number " .. number .. " from cachedNumbers")
+        gcPhone.debug("Removed number " .. number .. " from CACHED_NUMBERS")
     end
 
     local oldNumber = gcPhone.getPhoneNumber(identifier)
-    -- print(ESX.DumpTable(cachedNumbers[number]), ESX.DumpTable(cachedNumbers[oldNumber]), oldNumber)
+    -- print(ESX.DumpTable(CACHED_NUMBERS[number]), ESX.DumpTable(CACHED_NUMBERS[oldNumber]), oldNumber)
 
     -- qui controllo se la il numero sta venendo cambiato
     -- con un altra sim
-    if cachedNumbers[number] ~= nil then
-        if cachedNumbers[oldNumber] ~= nil then
+    if CACHED_NUMBERS[number] ~= nil then
+        if CACHED_NUMBERS[oldNumber] ~= nil then
             if isChanging then
-                cachedNumbers[oldNumber].inUse = false
-                cachedNumbers[number].inUse = true
+                CACHED_NUMBERS[oldNumber].inUse = false
+                CACHED_NUMBERS[number].inUse = true
             else
                 -- da esx_cartesim al login del player
                 gcPhone.debug("User " .. identifier .. " is joining, registering " .. number .. " as 'inUse' number")
                 -- print("Registrando numero al login", number, identifier)
-                cachedNumbers[number].inUse = true
+                CACHED_NUMBERS[number].inUse = true
             end
         else
             -- in realtà questo potrebbe essere inutile :/ IDK
             -- forse evita bug :)
-            cachedNumbers[number].inUse = true
+            CACHED_NUMBERS[number].inUse = true
         end
     end
 
@@ -308,18 +323,18 @@ AddEventHandler("gcphone:updateCachedNumber", function(number, identifier, isCha
     if identifier then
         -- nel caso in cui la stia passando a qualcuno, resetto lo
         -- stato inUse della sim
-        if cachedNumbers[number] ~= nil then
-            if tostring(cachedNumbers[number].identifier) ~= tostring(identifier) then
-                cachedNumbers[number].inUse = false
+        if CACHED_NUMBERS[number] ~= nil then
+            if tostring(CACHED_NUMBERS[number].identifier) ~= tostring(identifier) then
+                CACHED_NUMBERS[number].inUse = false
             end
 
-            cachedNumbers[number].identifier = identifier
+            CACHED_NUMBERS[number].identifier = identifier
         else
             -- nel caso in cui la sim non esiste nella cache, la aggiungo
-            cachedNumbers[number] = {identifier = identifier, inUse = false}
+            CACHED_NUMBERS[number] = {identifier = identifier, inUse = false}
         end
     else
-        cachedNumbers[number] = nil
+        CACHED_NUMBERS[number] = nil
     end
 end)
 
@@ -335,7 +350,7 @@ function gcPhone.getPhoneNumber(identifier)
     ]]
 
     if identifier then
-        for number, v in pairs(cachedNumbers) do
+        for number, v in pairs(CACHED_NUMBERS) do
             if tostring(v.identifier) == tostring(identifier) and v.inUse then
                 return number
             end
@@ -358,9 +373,9 @@ function gcPhone.getIdentifierByPhoneNumber(phone_number)
     ]]
 
     phone_number = tostring(phone_number)
-    if cachedNumbers[phone_number] == nil then return nil, false end
+    if CACHED_NUMBERS[phone_number] == nil then return nil, false end
 
-    return cachedNumbers[phone_number].identifier, cachedNumbers[phone_number].inUse
+    return CACHED_NUMBERS[phone_number].identifier, CACHED_NUMBERS[phone_number].inUse
 end
 
 function gcPhone.getSourceFromPhoneNumber(phone_number)
@@ -951,7 +966,6 @@ end
 RegisterServerEvent("esx:playerLoaded")
 AddEventHandler('esx:playerLoaded', function(source, xPlayer)
     local player = tonumber(source)
-
     if not built_phones then buildPhones() end
 
     local identifier = gcPhone.getPlayerID(player)
@@ -964,6 +978,15 @@ AddEventHandler('esx:playerLoaded', function(source, xPlayer)
     if notReceivedMessages > 0 then setMessagesReceived(phone_number) end
 
     TriggerClientEvent("gcPhone:allMessage", player, getMessages(identifier), notReceivedMessages)
+
+    MySQL.Async.fecthAll("SELECT firstname, lastname FROM users WHERE identifier = @identifier", {['@identifier'] = xPlayer.identifier}, function(r)
+        if r[1] and r[1].firstname and r[2].lastname then
+            CACHED_NAMES[xPlayer.identifier] = {
+                firstname = r[1].firstname,
+                lastname = r[1].lastname
+            }
+        end
+    end)
 end)
 
 gcPhoneT.updateAvatarContatto = function(data)

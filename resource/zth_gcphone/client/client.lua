@@ -539,7 +539,7 @@ function TogglePhone()
     SendNUIMessage({
         event = "sendParametersValues",
         job = ESX.PlayerData.job.label,
-        job2 = "error",
+        job2 = "None",
         firstname = firstname,
         lastname = lastname
     })
