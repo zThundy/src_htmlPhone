@@ -20,7 +20,8 @@ export default {
   name: 'email.splash',
   data () {
     return {
-      randomWait: Math.floor(Math.random() * (5000 - 6000) + 6000)
+      // randomWait: Math.floor(Math.random() * (5000 - 6000) + 6000)
+      randomWait: 2000
     }
   },
   components: {
