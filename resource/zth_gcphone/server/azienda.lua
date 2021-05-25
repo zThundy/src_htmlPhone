@@ -67,7 +67,7 @@ gcPhoneT.azienda_requestJobInfo = function()
             TriggerClientEvent("gcphone:azienda_sendJobInfo", player, myJobInfo, myAziendaInfo)
         end
     else
-        AziendaShowError(player, 'AZIENDA_INFO_TITLE', 'APP_AZIENDA_NOTIF_NO_CONNECTION')
+        AziendaShowNotification(player, 'AZIENDA_INFO_TITLE', 'APP_AZIENDA_NOTIF_NO_CONNECTION')
     end
 end
 
@@ -94,15 +94,15 @@ gcPhoneT.azienda_sendAziendaMessage = function(azienda, number, message)
 
                     for _, xPlayer in pairs(GetPlayersWithJob(azienda)) do
                         TriggerClientEvent("gcphone:azienda_retriveMessages", xPlayer.source, messages)
-                        AziendaShowError(v, 'AZIENDA_INFO_TITLE', 'APP_AZIENDA_NEW_MESSAGE')
+                        AziendaShowNotification(xPlayer.source, 'AZIENDA_INFO_TITLE', 'APP_AZIENDA_NEW_MESSAGE')
                     end
                 else
-                    AziendaShowError(player, 'AZIENDA_INFO_TITLE', 'APP_AZIENDA_NOTIF_NO_CONNECTION')
+                    AziendaShowNotification(player, 'AZIENDA_INFO_TITLE', 'APP_AZIENDA_NOTIF_NO_CONNECTION')
                 end
             end)
         end)
     else
-        AziendaShowError(player, 'AZIENDA_INFO_TITLE', 'APP_AZIENDA_NOTIF_NO_CONNECTION')
+        AziendaShowNotification(player, 'AZIENDA_INFO_TITLE', 'APP_AZIENDA_NOTIF_NO_CONNECTION')
     end
 end
 
@@ -150,7 +150,7 @@ gcPhoneT.azienda_employeAction = function(action, employe)
             end
         end
     else
-        AziendaShowError(player, 'AZIENDA_INFO_TITLE', 'APP_AZIENDA_NOTIF_NO_CONNECTION')
+        AziendaShowNotification(player, 'AZIENDA_INFO_TITLE', 'APP_AZIENDA_NOTIF_NO_CONNECTION')
     end
 
     UpdateAziendaEmployes(xPlayer.job.name)
@@ -167,7 +167,7 @@ gcPhoneT.azienda_requestAziendaMessages = function()
             
             TriggerClientEvent("gcphone:azienda_retriveMessages", player, messages)
         else
-            AziendaShowError(player, 'AZIENDA_INFO_TITLE', 'APP_AZIENDA_NOTIF_NO_CONNECTION')
+            AziendaShowNotification(player, 'AZIENDA_INFO_TITLE', 'APP_AZIENDA_NOTIF_NO_CONNECTION')
         end
     end)
 end
@@ -242,7 +242,7 @@ function UpdateAziendaEmployes(azienda, cb)
     end
 end
 
-function AziendaShowError(player, title, message)
+function AziendaShowNotification(player, title, message)
     TriggerClientEvent("gcphone:sendGenericNotification", player, {
 		message = message,
 		title = title,

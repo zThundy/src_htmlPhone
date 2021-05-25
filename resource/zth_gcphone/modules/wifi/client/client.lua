@@ -57,7 +57,7 @@ function Reti:InitScript()
 		self.agganciato = false
 		self.vecchiaPotenzaSegnale = 0
 
-		retiWifi = gcPhoneServerT.richiediTorriRadio()
+		torriRadio = gcPhoneServerT.richiediTorriRadio()
 		-- TriggerServerEvent('esx_wifi:richiediTorriRadio')
 
 		while #torriRadio == 0 do Citizen.Wait(100) end
