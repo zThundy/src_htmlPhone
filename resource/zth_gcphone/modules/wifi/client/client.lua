@@ -16,16 +16,16 @@ Citizen.CreateThread(function()
 	Reti:InitScript()
 end)
 
---[[
-	RegisterNetEvent('esx_wifi:riceviTorriRadio')
-	AddEventHandler('esx_wifi:riceviTorriRadio', function(torriRadioServer)
-		torriRadio = torriRadioServer
-		Reti.RefreshBlips()
-	end)
+-- used only on startup
+RegisterNetEvent('esx_wifi:riceviTorriRadio')
+AddEventHandler('esx_wifi:riceviTorriRadio', function(torriRadioServer)
+	torriRadio = torriRadioServer
+	Reti.RefreshBlips()
+end)
 
-	RegisterNetEvent('esx_wifi:riceviRetiWifi')
-	AddEventHandler('esx_wifi:riceviRetiWifi', function(retiWifiServer) retiWifi = retiWifiServer end)
-]]
+-- used only on startup
+RegisterNetEvent('esx_wifi:riceviRetiWifi')
+AddEventHandler('esx_wifi:riceviRetiWifi', function(retiWifiServer) retiWifi = retiWifiServer end)
 
 RegisterNetEvent('esx:playerLoaded')
 AddEventHandler('esx:playerLoaded', function(source) playerCaricato = true end)
