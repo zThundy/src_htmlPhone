@@ -979,7 +979,7 @@ AddEventHandler('esx:playerLoaded', function(source, xPlayer)
 
     TriggerClientEvent("gcPhone:allMessage", player, getMessages(identifier), notReceivedMessages)
 
-    MySQL.Async.fecthAll("SELECT firstname, lastname FROM users WHERE identifier = @identifier", {['@identifier'] = xPlayer.identifier}, function(r)
+    MySQL.Async.fetchAll("SELECT firstname, lastname FROM users WHERE identifier = @identifier", {['@identifier'] = xPlayer.identifier}, function(r)
         if r[1] and r[1].firstname and r[2].lastname then
             CACHED_NAMES[xPlayer.identifier] = {
                 firstname = r[1].firstname,

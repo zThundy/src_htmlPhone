@@ -22,7 +22,7 @@ import TwitterAccount from './TwitterAccount'
 import TwitterTopTweet from './TwitterTopTweet'
 import { mapGetters } from 'vuex'
 
-import Vue from 'vue'
+// import Vue from 'vue'
 
 export default {
   name: 'twitter-screen',
@@ -67,13 +67,13 @@ export default {
   methods: {
     onLeft () {
       this.currentScreenIndex = Math.max(0, this.currentScreenIndex - 1)
-      Vue.notify({
-        message: 'messaggio messaggio messaggio messaggio messaggio messaggio messaggio messaggio messaggio messaggio messaggio messaggio ',
-        title: 'autore' + ' : SONO FIKO',
-        icon: 'twitter',
-        backgroundColor: 'rgb(55, 55, 255)',
-        appName: 'Twitter'
-      })
+      // Vue.notify({
+      //   message: 'messaggio messaggio messaggio messaggio messaggio messaggio messaggio messaggio messaggio messaggio messaggio messaggio ',
+      //   title: 'autore' + ' : SONO FIKO',
+      //   icon: 'twitter',
+      //   backgroundColor: 'rgb(55, 55, 255)',
+      //   appName: 'Twitter'
+      // })
       // Vue.notify({
       //   title: 'autore' + ' : SONO FIKO',
       //   message: 'messaggio messaggio messaggio messaggio messaggio messaggio messaggio messaggio messaggio messaggio messaggio messaggio ',
