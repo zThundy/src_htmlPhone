@@ -111,6 +111,13 @@ function PhonePlayAnim(status)
 	RequestAnimDict(dict)
 	while not HasAnimDictLoaded(dict) do Citizen.Wait(1) end
 
+	-- first time:
+	-- currentStatus = "out"
+	-- status = "text"
+	----------------------------
+	-- second time:
+	-- currentStatus = "text"
+	-- status = "out"
 	local anim = lib[dict][currentStatus][status]
 	if currentStatus ~= 'out' then StopAnimTask(ped, lastDict, lastAnim, 1.0) end
 
@@ -120,6 +127,25 @@ function PhonePlayAnim(status)
 		Citizen.Wait(380)
 		newPhoneProp()
 	end
+
+	--[[
+		Citizen.CreateThreadNow(function()
+			while true do
+				ped = GetPlayerPed(-1)
+				-- print("looping animation")
+				-- print(currentStatus, status)
+				if status == "out" then
+					-- print("should breaking this")
+					StopAnimTask(ped, lastDict, lastAnim, 1.0)
+					return
+				end
+				if not IsEntityPlayingAnim(ped, lastDict, lastAnim, 3) then
+					TaskPlayAnim(ped, lastDict, lastAnim, 3.0, -1, -1, 50, 0, false, false, false)
+				end
+				Citizen.Wait(2000)
+			end
+		end)
+	]]
 
 	lastDict = dict
 	lastAnim = anim
