@@ -97,9 +97,7 @@
     </template>
 
     <template v-else-if="state === STATI.ACCOUNT">
-      <div style="margin-top: 30px; margin-left: auto; margin-right: auto;" class="img" data-type="button">
-        <img :src="instagramAvatarUrl" style="border-radius: 100px; height: 128px; width: 128px; border-style: solid; border-width: 1px;">
-      </div>
+      <img :src="instagramAvatarUrl" class="loggedInImage">
 
       <div style="margin-left: auto; margin-right: auto; margin-top: 50px;" class="group img" data-type="button" @click.stop="onPressChangeAvartar">
         <input type='button' class="btn btn-generic" style="margin-left: auto; margin-right: auto;" :value="LangString('APP_INSTAGRAM_ACCOUNT_AVATAR')" @click.stop="onPressChangeAvartar"/>
