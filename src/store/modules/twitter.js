@@ -176,91 +176,93 @@ if (process.env.NODE_ENV !== 'production') {
     authorIcon: 'https://pbs.twimg.com/profile_images/986085090684960768/AcD9lOLw_bigger.jpg',
     likes: 0,
     time: new Date()
-  },
-  {
-    id: 6,
-    message: 'Super Message de la mort.',
-    author: 'Gannon',
-    authorIcon: 'https://pbs.twimg.com/profile_images/986085090684960768/AcD9lOLw_bigger.jpg',
-    likes: 0,
-    time: new Date()
-  },
-  {
-    id: 7,
-    message: 'Super Message de la mort.',
-    author: 'Gannon',
-    authorIcon: 'https://pbs.twimg.com/profile_images/986085090684960768/AcD9lOLw_bigger.jpg',
-    likes: 0,
-    time: new Date()
-  },
-  {
-    id: 8,
-    message: 'Super Message de la mort.',
-    author: 'Gannon',
-    authorIcon: 'https://pbs.twimg.com/profile_images/986085090684960768/AcD9lOLw_bigger.jpg',
-    likes: 0,
-    time: new Date()
-  }]
-  state.tweets = [{
-    id: 1,
-    message: 'questo è il primo messaggio di twitter :grinning: :grinning: :grinning: :grinning: :grinning: :rofl: :rofl: :rofl: :rofl: :rofl: :rofl: :rofl: :rofl: :rofl: :rofl: :rofl: :rofl: :rofl: :rofl:',
-    author: 'Gannon',
-    time: new Date(),
-    likes: 3,
-    isLikes: 60
-  }, {
-    id: 2,
-    message: 'Borderlands 3 arrives on Xbox One, PS4, and PC on September 13, 2019! Tune in to the Gameplay Reveal Event on May 1st, where we’ll debut the first hands-on looks! Pre-order now to get the Gold Weapon Skins Pack! ➜ https://borderlands.com  ',
-    author: 'Gearbox Official',
-    authorIcon: 'https://pbs.twimg.com/profile_images/702982240184107008/tUKxvkcs_400x400.jpg',
-    time: new Date(),
-    likes: 65
-  }, {
-    id: 3,
-    message: 'https://wallpaperaccess.com/full/109672.jpg',
-    img: 'https://cdn.discordapp.com/attachments/563443658192322576/563473765569396746/samurai-background-hd-1920x1200-45462.jpg',
-    author: 'Gannon',
-    likes: 0,
-    time: new Date()
-  }, {
-    id: 4,
-    message: 'Super Message de la mort.',
-    author: 'Gannon',
-    authorIcon: 'https://pbs.twimg.com/profile_images/986085090684960768/AcD9lOLw_bigger.jpg',
-    likes: 0,
-    time: new Date()
-  },
-  {
-    id: 5,
-    message: 'Super Message de la mort.',
-    author: 'Gannon',
-    authorIcon: 'https://pbs.twimg.com/profile_images/986085090684960768/AcD9lOLw_bigger.jpg',
-    likes: 0,
-    time: new Date()
-  },
-  {
-    id: 6,
-    message: 'Super Message de la mort.',
-    author: 'Gannon',
-    authorIcon: 'https://pbs.twimg.com/profile_images/986085090684960768/AcD9lOLw_bigger.jpg',
-    likes: 0,
-    time: new Date()
-  },
-  {
-    id: 7,
-    message: 'Super Message de la mort.',
-    author: 'Gannon',
-    authorIcon: 'https://pbs.twimg.com/profile_images/986085090684960768/AcD9lOLw_bigger.jpg',
-    likes: 0,
-    time: new Date()
-  },
-  {
-    id: 8,
-    message: 'Super Message de la mort.',
-    author: 'Gannon',
-    authorIcon: 'https://pbs.twimg.com/profile_images/986085090684960768/AcD9lOLw_bigger.jpg',
-    likes: 0,
-    time: new Date()
-  }]
+  }
+  // },
+  // {
+  //   id: 6,
+  //   message: 'Super Message de la mort.',
+  //   author: 'Gannon',
+  //   authorIcon: 'https://pbs.twimg.com/profile_images/986085090684960768/AcD9lOLw_bigger.jpg',
+  //   likes: 0,
+  //   time: new Date()
+  // },
+  // {
+  //   id: 7,
+  //   message: 'Super Message de la mort.',
+  //   author: 'Gannon',
+  //   authorIcon: 'https://pbs.twimg.com/profile_images/986085090684960768/AcD9lOLw_bigger.jpg',
+  //   likes: 0,
+  //   time: new Date()
+  // },
+  // {
+  //   id: 8,
+  //   message: 'Super Message de la mort.',
+  //   author: 'Gannon',
+  //   authorIcon: 'https://pbs.twimg.com/profile_images/986085090684960768/AcD9lOLw_bigger.jpg',
+  //   likes: 0,
+  //   time: new Date()
+  // }]
+  // state.tweets = [{
+  //   id: 1,
+  //   message: 'questo è il primo messaggio di twitter :grinning: :grinning: :grinning: :grinning: :grinning: :rofl: :rofl: :rofl: :rofl: :rofl: :rofl: :rofl: :rofl: :rofl: :rofl: :rofl: :rofl: :rofl: :rofl:',
+  //   author: 'Gannon',
+  //   time: new Date(),
+  //   likes: 3,
+  //   isLikes: 60
+  // }, {
+  //   id: 2,
+  //   message: 'Borderlands 3 arrives on Xbox One, PS4, and PC on September 13, 2019! Tune in to the Gameplay Reveal Event on May 1st, where we’ll debut the first hands-on looks! Pre-order now to get the Gold Weapon Skins Pack! ➜ https://borderlands.com  ',
+  //   author: 'Gearbox Official',
+  //   authorIcon: 'https://pbs.twimg.com/profile_images/702982240184107008/tUKxvkcs_400x400.jpg',
+  //   time: new Date(),
+  //   likes: 65
+  // }, {
+  //   id: 3,
+  //   message: 'https://wallpaperaccess.com/full/109672.jpg',
+  //   img: 'https://cdn.discordapp.com/attachments/563443658192322576/563473765569396746/samurai-background-hd-1920x1200-45462.jpg',
+  //   author: 'Gannon',
+  //   likes: 0,
+  //   time: new Date()
+  // }, {
+  //   id: 4,
+  //   message: 'Super Message de la mort.',
+  //   author: 'Gannon',
+  //   authorIcon: 'https://pbs.twimg.com/profile_images/986085090684960768/AcD9lOLw_bigger.jpg',
+  //   likes: 0,
+  //   time: new Date()
+  // },
+  // {
+  //   id: 5,
+  //   message: 'Super Message de la mort.',
+  //   author: 'Gannon',
+  //   authorIcon: 'https://pbs.twimg.com/profile_images/986085090684960768/AcD9lOLw_bigger.jpg',
+  //   likes: 0,
+  //   time: new Date()
+  // },
+  // {
+  //   id: 6,
+  //   message: 'Super Message de la mort.',
+  //   author: 'Gannon',
+  //   authorIcon: 'https://pbs.twimg.com/profile_images/986085090684960768/AcD9lOLw_bigger.jpg',
+  //   likes: 0,
+  //   time: new Date()
+  // },
+  // {
+  //   id: 7,
+  //   message: 'Super Message de la mort.',
+  //   author: 'Gannon',
+  //   authorIcon: 'https://pbs.twimg.com/profile_images/986085090684960768/AcD9lOLw_bigger.jpg',
+  //   likes: 0,
+  //   time: new Date()
+  // },
+  // {
+  //   id: 8,
+  //   message: 'Super Message de la mort.',
+  //   author: 'Gannon',
+  //   authorIcon: 'https://pbs.twimg.com/profile_images/986085090684960768/AcD9lOLw_bigger.jpg',
+  //   likes: 0,
+  //   time: new Date()
+  // }
+  ]
   // state.tweets = []
 }

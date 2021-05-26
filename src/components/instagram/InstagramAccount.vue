@@ -1,9 +1,8 @@
 <template>
   <!--314px, 579px-->
-  <div style="width: 100%; height: 600px;" class='phone_content content inputText'>
+  <div style="width: 100%; height: 600px;" class='content inputText'>
 
     <template v-if="state === STATI.MENU">
-
       <template v-if="!isLogin">
         <div class="group" data-type="button" @click.stop="state = STATI.LOGIN">
           <input type='button' class="btn btn-cyan" @click.stop="state = STATI.LOGIN" :value="LangString('APP_INSTAGRAM_ACCOUNT_LOGIN')"/>
@@ -33,7 +32,6 @@
           <input type='button' class="btn btn-red" @click.stop="logout" :value="LangString('APP_INSTAGRAM_ACCOUNT_LOGOUT')" />
         </div>
       </template>
-
     </template>
 
     <!-- PAGINA LOGIN CON USERNAME E PASSWORD -->
@@ -55,7 +53,6 @@
         <input name="login-btn" type='button' class="btn btn-cyan btn-action" @click.stop="login"/>
         <label for="login-btn" class="login-btn-label">Log in</label>
       </div>
-
     </template>
 
     <!-- PAGINA CON IMPOSTAZIONI DELLE NOTIFICHE -->
@@ -99,13 +96,12 @@
     <template v-else-if="state === STATI.ACCOUNT">
       <img :src="instagramAvatarUrl" class="loggedInImage">
 
-      <div style="margin-left: auto; margin-right: auto; margin-top: 50px;" class="group img" data-type="button" @click.stop="onPressChangeAvartar">
-        <input type='button' class="btn btn-generic" style="margin-left: auto; margin-right: auto;" :value="LangString('APP_INSTAGRAM_ACCOUNT_AVATAR')" @click.stop="onPressChangeAvartar"/>
+      <div style="margin-top: 50px;" class="group" data-type="button" @click.stop="onPressChangeAvartar">
+        <input type='button' class="btn btn-cyan" @click.stop="onPressChangeAvartar" :value="LangString('APP_INSTAGRAM_ACCOUNT_AVATAR')"/>
       </div>
-
-      <i class="fa fa-lock" style="position: absolute; margin-top: 445px; left: 155px;"></i>
-      <div style="margin-top: 250px" class="group" data-type="button" @click.stop="changePassword">
-        <input type='button' class="btn btn-red" style="margin-left: auto; margin-right: auto;" :value="LangString('APP_INSTAGRAM_ACCOUNT_CHANGE_PASSWORD')" @click.stop="changePassword"/>
+      
+      <div class="group bottom" data-type="button" @click.stop="changePassword">
+        <input type='button' class="btn btn-border" @click.stop="changePassword" :value="LangString('APP_INSTAGRAM_ACCOUNT_CHANGE_PASSWORD')" />
       </div>
     </template>
 

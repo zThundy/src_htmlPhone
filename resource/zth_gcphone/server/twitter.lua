@@ -1,3 +1,9 @@
+local CACHED_TWEETS = {}
+
+local function FetchTweets()
+
+end
+
 function TwitterShowError(player, title, message)
 	--[[
 		Vue.notify({
@@ -31,7 +37,7 @@ function TwitterShowSuccess(player, title, message)
 end
 
 
-function TwitterGetTweets (accountId, cb)
+function TwitterGetTweets(accountId, cb)
 	if accountId == nil then
 		MySQL.Async.fetchAll([===[
 			SELECT phone_twitter_tweets.*,

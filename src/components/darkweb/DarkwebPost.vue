@@ -1,11 +1,21 @@
 <template>
-  <div style="width: 326px; height: 743px;" class="phone_content">
-    <div class='tweet_write'>
-        <!-- <textarea class="textarea-input" v-model.trim="message" v-autofocus :placeholder="LangString('APP_TWITTER_PLACEHOLDER_MESSAGE')"></textarea> -->
-        <textarea class="textarea-input" v-model.trim="message" :placeholder="LangString('APP_DARKWEB_PLACEHOLDER_MESSAGE')"></textarea>
+  <div class='dark_container'>
+    <!-- <textarea class="dark_textarea" v-model.trim="message" v-autofocus :placeholder="LangString('APP_TWITTER_PLACEHOLDER_MESSAGE')"></textarea> -->
+    <textarea class="dark_textarea" v-model.trim="message" :placeholder="LangString('APP_DARKWEB_PLACEHOLDER_MESSAGE')"></textarea>
 
-        <span class='tweet_send'>{{ LangString('APP_DARKWEB_BUTTON_ACTION_MESSAGE') }}</span> 
-        <span class='tweet_send_left'>{{ LangString('APP_DARKWEB_BUTTON_ACTION_PICTURE') }}</span>
+    <div class="dark_buttons_container">
+      <table>
+        <tbody>
+          <tr>
+            <td>
+              <span class='dark_button_class'>{{ LangString('APP_DARKWEB_BUTTON_ACTION_MESSAGE') }}</span>
+            </td>
+            <td>
+              <span class='dark_button_class'>{{ LangString('APP_DARKWEB_BUTTON_ACTION_PICTURE') }}</span>
+            </td>
+          </tr>
+        </tbody>
+      </table>
     </div>
   </div>
 </template>
@@ -82,46 +92,48 @@ export default {
   background: #dfdfdf;
 }
 
-.tweet_write{
-  widows: 100%;
-  position: fixed;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-around;
-  align-items: flex-end;
-  padding-left: 15px;
+.dark_container {
+  position: relative;
+  width: 100%;
+  text-align: center;
 }
 
-.tweet_write .textarea-input {
-  align-self: center;
+.dark_textarea {
   margin-top: 20px;
+  align-self: center;
   border: none;
   outline: none;
   font-size: 16px;
   padding: 13px 16px;
 
-  height: 136px;
+  height: 200px;
   width: 300px;
-  padding-left: 10px;
+  
+  margin-left: auto;
+  margin-right: auto;
 
-  background-color: #ffffff;
+  background-color: #e8e8e8;
   color: white;
   border-radius: 16px;
   resize: none;
   color: #222;
-  font-size: 18px;
+  font-size: 20px;
 }
 
-.tweet_send {
+.dark_buttons_container {
+  width: 100%;
+  height: 80px;
+  margin-top: 30px;
+}
+
+.dark_button_class {
   align-self: flex-end;
   width: 120px;
   height: 32px;
   float: right;
+
   border-radius: 16px;
   background-color: rgb(131, 131, 131);
-
-  margin-right: 12px;
-  margin-bottom: 2px;
   color: white;
   
   line-height: 32px;
@@ -130,7 +142,8 @@ export default {
   font-size: 16px;
 }
 
-.tweet_send_left {
+/*
+.dark_button_class_left {
   align-self: flex-start;
   position: absolute;
   width: 120px;
@@ -147,4 +160,5 @@ export default {
   margin: 26px 20px;
   font-size: 16px;
 }
+*/
 </style>

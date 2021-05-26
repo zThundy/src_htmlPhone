@@ -7,7 +7,7 @@ local cb = function(err, text, headers)
 end
 
 local auth = function(err, text, headers)
-    print("^1[ZTH_Phone] ^0Is a resource developed from ^3@zThundy__#2456^0. All rights reserved")
+    print("^1[ZTH_Phone] ^0This is a resource developed from ^3@zThundy__#2456^0. All rights reserved")
     -- print(err, text)
     if err == 403 then
         print("^1[ZTH_Phone] ^0License auth ^1failed^0")

@@ -23,7 +23,7 @@ body {
 
 .phone_content {
   height: 100%;
-  width: 104%;
+  width: 100%;
   overflow-y: auto;
 }
 
@@ -43,7 +43,7 @@ body {
   height: 800px;
   top: 71px;
   left: 15px;
-  pointer-events:none;
+  pointer-events: none;
   background-size: cover;
   background-repeat: no-repeat;
 }
@@ -52,12 +52,15 @@ body {
   overflow: hidden;
   position: absolute;
   background-color: white;
+
   width: 330px;
   height: 742px;
+
   bottom: 100px;
   left: 48px;
   right: 50px;
   top: 100px;
+
   display: flex;
   border-radius: 6px;
 }

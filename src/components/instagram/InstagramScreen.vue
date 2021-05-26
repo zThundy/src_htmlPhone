@@ -6,7 +6,7 @@
       <i class="fa fa-instagram"></i>
     </div>
     
-    <div style="width: 100%; height: 100%; overflow: hidden;" class="phone_content">
+    <div style="overflow: hidden;" class="phone_content">
       <component :is="currentScreen.component"/>
     </div>
 
@@ -144,7 +144,7 @@ export default {
 
 .instagram-menu {
   border-top: 1px solid rgb(230, 230, 230);
-  height: 56px;
+  height: 70px;
   display: flex;
   width: 100%;
 }
@@ -160,6 +160,7 @@ export default {
   justify-content: center;
   align-items: center;
   color: rgb(180, 180, 180);
+  font-size: 20px;
 }
 
 .instagram-menu-item.select {

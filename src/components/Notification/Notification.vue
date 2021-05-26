@@ -1,20 +1,16 @@
 <template>
-  <div v-if="show === true && tempoHide === false">
+  <div class="notifications">
 
-    <div class="notifications">
-      <div v-for='notif in list' :key="notif.id" class="notification" :style="{ 'z-index': notif.id }">
-
-        <div class="appName" :style="style(notif)">
-          <i v-if="notif.icon" class="fa" :class="'fa-' + notif.icon"/>
-          <span>{{ notif.appName }}</span>
-        </div>
-
-        <div class="divider"></div>
-
-        <div v-if="notif.title" class="message-title" style="font-weight: bold">{{ formatEmoji(notif.title) }}</div>
-        <div v-if="notif.message" class="message">{{ formatEmoji(notif.message) }}</div>
-
+    <div v-for='notif in list' :key="notif.id" class="notification">
+      <div class="appName" :style="style(notif)">
+        <i v-if="notif.icon" class="fa" :class="'fa-' + notif.icon"/>
+        <span>{{ notif.appName }}</span>
       </div>
+
+      <div class="divider"></div>
+
+      <div v-if="notif.title" class="message-title">{{ formatEmoji(notif.title) }}</div>
+      <div v-if="notif.message" class="message">{{ formatEmoji(notif.message) }}</div>
     </div>
 
   </div>
@@ -165,14 +161,6 @@ export default {
   font-weight: bold;
 }
 
-.title {
-  color: rgb(0, 0, 0);
-  font-size: 16px;
-  font-weight: bold;
-
-  align-content: flex-start;
-}
-
 .divider {
   height: .5px;
   width: 98%;
@@ -189,6 +177,7 @@ export default {
   margin-top: 5px;
   color: rgb(0, 0, 0);
   font-size: 14px;
+  font-weight: bold;
 }
 
 .message {

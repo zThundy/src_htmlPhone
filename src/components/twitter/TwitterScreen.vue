@@ -1,5 +1,5 @@
 <template>
-  <div style="width: 100%; height: 735px; overflow: hidden; background-color: rgb(30, 50, 75);" class="phone_app">
+  <div style="overflow: hidden;" class="phone_app">
     <PhoneTitle :title="currentScreen.title" :color="'white'" backgroundColor="rgb(55, 161, 242)" v-on:back="quit"/>
     
     <div class="phone_content">
@@ -22,7 +22,7 @@ import TwitterAccount from './TwitterAccount'
 import TwitterTopTweet from './TwitterTopTweet'
 import { mapGetters } from 'vuex'
 
-// import Vue from 'vue'
+import Vue from 'vue'
 
 export default {
   name: 'twitter-screen',
@@ -67,13 +67,13 @@ export default {
   methods: {
     onLeft () {
       this.currentScreenIndex = Math.max(0, this.currentScreenIndex - 1)
-      // Vue.notify({
-      //   message: 'messaggio messaggio messaggio messaggio messaggio messaggio messaggio messaggio messaggio messaggio messaggio messaggio ',
-      //   title: 'autore' + ' : SONO FIKO',
-      //   icon: 'twitter',
-      //   backgroundColor: 'rgb(55, 55, 255)',
-      //   appName: 'Twitter'
-      // })
+      Vue.notify({
+        message: 'messaggio messaggio messaggio messaggio messaggio messaggio messaggio messaggio messaggio messaggio messaggio messaggio ',
+        title: 'autore' + ' : SONO FIKO',
+        icon: 'twitter',
+        backgroundColor: 'rgb(55, 55, 255)',
+        appName: 'Twitter'
+      })
       // Vue.notify({
       //   title: 'autore' + ' : SONO FIKO',
       //   message: 'messaggio messaggio messaggio messaggio messaggio messaggio messaggio messaggio messaggio messaggio messaggio messaggio ',

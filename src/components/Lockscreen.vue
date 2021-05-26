@@ -1,5 +1,5 @@
 <template>
-  <div style="width: 100%; height: 743px;" class="lockscreen" v-bind:style="{background: 'url(' + this.backgroundURL + ')'}">
+  <div style="width: 100%; height: 743px;" class="lockscreen" v-bind:style="{ background: 'url(' + this.backgroundURL + ')' }">
     <div class="lockscreen-brightness">
       <InfoBare />
 
@@ -9,7 +9,6 @@
 
       <div v-if="hasUnredMessages" class="messagelist">
         <div v-for="(elem, key) in buildUnreadMessages" v-bind:key="key">
-
           <span v-if="key < 5" class="messlist">
             <div class="warningMess_icon">
               <i class="fa fa-envelope" :style="{ color: colors[key] }"></i>
@@ -20,19 +19,15 @@
               <div v-if="!isSMSImage(elem.message)" class="messaggio">{{ formatEmoji(elem.message) }}</div>
               <div v-else class="messaggio">Immagine</div>
             </span>
-
           </span>
-
         </div>
       </div>
 
       <div class='bottom-zone'>
-        
         <div class="rectangle">
           <div v-if="!hasPressed" class="rectangle-inside"></div>
           <div v-else class="rectangle-inside slide"></div>
         </div>
-
       </div>
 
     </div>
