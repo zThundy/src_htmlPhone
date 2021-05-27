@@ -607,13 +607,13 @@ export default {
   color: black;
   justify-content: right;
   position: absolute;
-  right: 35px;
+  right: 20px;
   top: 15px;
 }
 
 .switchDiv {
   position: absolute;
-  left: 77%;
+  left: 82%;
   bottom: 18%;
   overflow-y: hidden;
 }
