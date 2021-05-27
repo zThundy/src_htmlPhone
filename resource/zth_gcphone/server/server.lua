@@ -979,14 +979,21 @@ AddEventHandler('esx:playerLoaded', function(source, xPlayer)
 
     TriggerClientEvent("gcPhone:allMessage", player, getMessages(identifier), notReceivedMessages)
 
-    MySQL.Async.fetchAll("SELECT firstname, lastname FROM users WHERE identifier = @identifier", {['@identifier'] = xPlayer.identifier}, function(r)
-        if r[1] and r[1].firstname and r[2].lastname then
-            CACHED_NAMES[xPlayer.identifier] = {
-                firstname = r[1].firstname,
-                lastname = r[1].lastname
-            }
-        end
-    end)
+    local r = MySQL.Sync.fetchAll("SELECT firstname, lastname FROM users WHERE identifier = @identifier", {['@identifier'] = identifier})
+    if (r and r[1]) and (r[1].firstname and r[1].lastname) then
+        CACHED_NAMES[identifier] = {
+            firstname = r[1].firstname,
+            lastname = r[1].lastname
+        }
+    end
+    -- MySQL.Async.fetchAll("SELECT firstname, lastname FROM users WHERE identifier = @identifier", {['@identifier'] = xPlayer.identifier}, function(r)
+    --     if r[1] and r[1].firstname and r[2].lastname then
+    --         CACHED_NAMES[xPlayer.identifier] = {
+    --             firstname = r[1].firstname,
+    --             lastname = r[1].lastname
+    --         }
+    --     end
+    -- end)
 end)
 
 gcPhoneT.updateAvatarContatto = function(data)
