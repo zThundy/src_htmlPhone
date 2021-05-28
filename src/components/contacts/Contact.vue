@@ -1,6 +1,6 @@
 <template>
   <div class="phone_app">
-    <PhoneTitle :title="contact.display" @back="forceCancel"/>
+    <PhoneTitle :backgroundColor="'rgb(194, 108, 7)'" :title="contact.display" @back="forceCancel"/>
 
     <div class='phone_content content inputText'>
       <div class="group select" data-type="text" data-model='display' data-maxlength='30' data-title="Inserisci il nome del contatto">

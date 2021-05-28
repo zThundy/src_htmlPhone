@@ -1,8 +1,6 @@
 <template>
   <div class="contact">
-
-    <list :list='lcontacts' :title="LangString('APP_CONTACT_INOLTRA')" @back="back" @select='onSelect'></list>
-  
+    <list :headerBackground="'rgb(194, 108, 7)'" :list='lcontacts' :title="LangString('APP_CONTACT_INOLTRA')" @back="back" @select='onSelect'></list>
   </div>
 </template>
 

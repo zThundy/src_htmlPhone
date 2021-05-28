@@ -1,6 +1,6 @@
 <template>
   <div class="phone_app">
-    <PhoneTitle :title="title" :showSegnaleSection="showSegnaleSection" v-if="showHeader" @back="back"/>
+    <PhoneTitle :title="title" :backgroundColor="headerBackground" :showSegnaleSection="showSegnaleSection" v-if="showHeader" @back="back"/>
 
     <div class="elements">
       <div class="element" v-for='(elem, key) in list' :key="key" v-bind:class="{ select: key === currentSelect }">
@@ -40,6 +40,10 @@ export default {
     showHeader: {
       type: Boolean,
       default: true
+    },
+    headerBackground: {
+      type: String,
+      default: 'white'
     },
     showSegnaleSection: {
       type: Boolean,
@@ -166,6 +170,7 @@ export default {
 }
 
 .element {
+  overflow: hidden;
   width: 92%;
   height: 60px;
   /* border-bottom: 1px solid #d8d8d8; */

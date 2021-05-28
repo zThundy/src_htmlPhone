@@ -1,6 +1,6 @@
 <template>
    <div class="phone_app">
-    <PhoneTitle :title="LangString('APP_PHONE_TITLE')" v-on:back="onBackspace" />
+    <PhoneTitle :backgroundColor="'rgb(78, 144, 61)'" :title="LangString('APP_PHONE_TITLE')" v-on:back="onBackspace" />
 
     <div class="subMenu">
       <div class="subMenu-elem" v-for="(Comp, i) of subMenu" :key="i" :class="{ selected: currentMenuIndex === i }">

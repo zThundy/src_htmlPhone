@@ -1,7 +1,7 @@
 <template>
 <!--ESTE HTML ES ACOPLADO DEL VIEJO--> 
   <div style="backgroundColor: white" class="phone_app messages">
-    <PhoneTitle :title="formatEmoji(displayContact)" style="backgroundColor: #F1F1F1; color: black" @back="quit"/> <!--:title="displayContact" :backgroundColor="color" -->
+    <PhoneTitle :backgroundColor="'rgb(194, 108, 7)'" :title="formatEmoji(displayContact)" style="color: black" @back="quit"/> <!--:title="displayContact" :backgroundColor="color" -->
     
     <div class="phone_fullscreen_img" v-if="imgZoom !== undefined">
       <img :src="imgZoom" />

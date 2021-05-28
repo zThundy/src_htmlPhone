@@ -1,8 +1,6 @@
 <template>
-  <div style="width: 100%; height: 743px;" class="contact">
-    <PhoneTitle :title="LangString('APP_EMAIL_CHOOSE_CONTACT')" :backgroundColor="'rgb(216, 71, 49)'" />
-
-    <list :list='lcontacts' :showHeader="false" :disable="disableList" :title="LangString('APP_CONTACT_TITLE')" @back="back" @select='onSelect'></list>
+  <div class="contact">
+    <list :list='lcontacts' :showHeader="true" :headerBackground="'rgb(216, 71, 49)'" :disable="disableList" :title="LangString('APP_EMAIL_CHOOSE_CONTACT')" @back="back" @select='onSelect'></list>
   </div>
 </template>
 

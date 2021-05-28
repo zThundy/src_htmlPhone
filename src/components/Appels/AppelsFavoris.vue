@@ -1,6 +1,6 @@
 <template>
   <div>
-    <list :list='callList' :showHeader="false" :disable='ignoreControls' v-on:select="onSelect"></list>
+    <list :headerBackground="'rgb(6, 152, 87)'" :list='callList' :showHeader="false" :disable='ignoreControls' v-on:select="onSelect"></list>
   </div>
 </template>
 

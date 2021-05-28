@@ -2,7 +2,7 @@
 
 <template>
    <div class="phone_app">
-    <PhoneTitle :title="LangString('APP_PHONE_TITLE')" @back="quit" />
+    <PhoneTitle :backgroundColor="'rgb(78, 144, 61)'" :title="LangString('APP_PHONE_TITLE')" @back="quit" />
 
     <div class="content">
       <div class="number">

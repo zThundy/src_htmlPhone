@@ -1,10 +1,7 @@
 <template>
-  <div style="width: 326px; height: 743px; backgroundColor: white" class="contact">
-
-    <list :list='lcontacts' :title="LangString('APP_MESSAGES_INOLTRA')" @back="back" @select='onSelect'></list>
-  
+  <div class="contact">
+    <list :headerBackground="'rgb(194, 108, 7)'" :list='lcontacts' :title="LangString('APP_MESSAGES_INOLTRA')" @back="back" @select='onSelect'></list>
   </div>
-
 </template>
 
 <script>

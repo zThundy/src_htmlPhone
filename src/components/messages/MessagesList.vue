@@ -1,8 +1,6 @@
 <template>
-  <div style="width: 326px; height: 743px;" class="screen">
-
-    <list class="fontList" :list='messagesData' :disable="disableList" :title="LangString('APP_MESSAGE_TITLE')" @back="back" @select="onSelect" @option='onOption'></list>
-  
+  <div class="screen">
+    <list class="fontList" :list='messagesData' :headerBackground="'rgb(194, 108, 7)'" :disable="disableList" :title="LangString('APP_MESSAGE_TITLE')" @back="back" @select="onSelect" @option='onOption'></list>
   </div>
 </template>
 
