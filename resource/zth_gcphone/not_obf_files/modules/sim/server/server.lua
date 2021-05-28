@@ -46,7 +46,7 @@ end
 RegisterServerEvent("esx:playerLoaded")
 AddEventHandler('esx:playerLoaded', function(source, xPlayer)
 	MySQL.Async.fetchAll("SELECT phone_number FROM users WHERE identifier = @identifier", {['@identifier'] = xPlayer.identifier}, function(result)
-		TriggerEvent("gcphone:updateCachedNumber", result[1].phone_number, xPlayer.identifier, false)
+		gcPhoneT.updateCachedNumber(result[1].phone_number, xPlayer.identifier, false)
 
 		if #result > 0 then
 			if result[1].phone_number ~= nil then
@@ -106,7 +106,7 @@ function NewSim(source)
 				xPlayer.showNotification("~g~Sim creata con successo")
 				-- TriggerClientEvent('esx:showNotification', source, "~g~La sim è stata registrata con successo")
 
-				TriggerEvent("gcphone:updateCachedNumber", phoneNumber, xPlayer.identifier, false)
+				gcPhoneT.updateCachedNumber(phoneNumber, xPlayer.identifier, false)
 			end)
 		else
 			xPlayer.showNotification("~r~Creazione della sim non riuscita")
@@ -129,7 +129,7 @@ cartesimT.daiSim = function(number, c_id)
 		-- TriggerClientEvent('esx:showNotification', player, "Hai dato la scheda sim " .. number)
 		-- TriggerClientEvent('esx:showNotification', c_id, "Hai ottenuto una sim " .. number)
 
-		TriggerEvent("gcphone:updateCachedNumber", number, xPlayer2.identifier, false)
+		gcPhoneT.updateCachedNumber(number, xPlayer2.identifier, false)
 
 		MySQL.Async.fetchAll("SELECT * FROM users WHERE identifier = @identifier", {['@identifier'] = xPlayer.identifier}, function(result)
 			if result[1].phone_number == number then
@@ -166,7 +166,7 @@ cartesimT.eliminaSim = function(sim)
 
 			if simZ == sim then
 				MySQL.Async.execute('DELETE FROM sim WHERE phone_number = @phone_number', {['@phone_number'] = simZ})
-				TriggerEvent("gcphone:updateCachedNumber", sim, false, false)
+				gcPhoneT.updateCachedNumber(sim, false, false)
 				break
 			end
 		end
@@ -183,7 +183,7 @@ cartesimT.usaSim = function(sim)
 	
 	TriggerClientEvent("gcPhone:myPhoneNumber", player, sim.number)
 	TriggerClientEvent("gcPhone:UpdateNumber", player, sim.number)
-	TriggerEvent("gcphone:updateCachedNumber", sim.number, xPlayer.identifier, true)
+	gcPhoneT.updateCachedNumber(sim.number, xPlayer.identifier, true)
 
 	MySQL.Async.execute('UPDATE users SET phone_number = @phone_number WHERE identifier = @identifier', {
 		['@identifier'] = xPlayer.getIdentifier(),

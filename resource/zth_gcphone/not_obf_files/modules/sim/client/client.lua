@@ -1,7 +1,7 @@
 ESX = nil
 
 local tunnel = module("zth_gcphone", "modules/TunnelV2")
-gcPhoneServerT = tunnel.getInterface("gcphone_server_t", "gcphone_server_t")
+-- gcPhoneServerT = tunnel.getInterface("gcphone_server_t", "gcphone_server_t")
 cartesimServerT = tunnel.getInterface("cartesim_server_t", "cartesim_server_t")
 
 Citizen.CreateThread(function() --ok
