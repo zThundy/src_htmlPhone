@@ -61,7 +61,7 @@ AddEventHandler('esx_addons_gcphone:call', function(data)
     end
 
     if message ~= nil and message ~= "" then
-        TriggerServerEvent('esx_addons_gcphone:startCall', number, message, {
+        gcPhoneServerT.servicesStartCall(number, message, {
             x = coords.x,
             y = coords.y,
             z = coords.z
