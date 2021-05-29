@@ -1,6 +1,3 @@
-ESX = nil
-TriggerEvent('esx:getSharedObject', function(obj) ESX = obj end)
-
 cartesimT = {}
 local tunnel = module("zth_gcphone", "modules/TunnelV2")
 tunnel.bindInterface("cartesim_server_t", cartesimT)

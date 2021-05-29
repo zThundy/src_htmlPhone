@@ -1,19 +1,16 @@
-ESX = nil
-
 local tunnel = module("zth_gcphone", "modules/TunnelV2")
 -- gcPhoneServerT = tunnel.getInterface("gcphone_server_t", "gcphone_server_t")
 cartesimServerT = tunnel.getInterface("cartesim_server_t", "cartesim_server_t")
 
-Citizen.CreateThread(function() --ok
-	while ESX == nil do
-		ESX = exports["es_extended"]:getSharedObject()
-		Citizen.Wait(1)
-	end
-
+Citizen.CreateThread(function()
+	while ESX == nil do Citizen.Wait(100) end
+	while ESX.GetPlayerData().job == nil do Citizen.Wait(500) end
+	
+	local coords = Config.TariffsShop
 	TriggerEvent('gridsystem:registerMarker', {
 		name = "piano_tariffario",
 		type = 20,
-		pos = Config.TariffsShop,
+		pos = coords,
 		color = { r = 55, b = 55, g = 255 },
 		scale =  vector3(0.8, 0.8, 0.8),
 		action = function()
@@ -23,7 +20,7 @@ Citizen.CreateThread(function() --ok
 	})
 
 	local info = Config.TariffsBlip
-	local blip = AddBlipForCoord(info.x, info.y, 5.0)
+	local blip = AddBlipForCoord(coords.x, coords.y, coords.z)
 	SetBlipHighDetail(blip, true)
 	SetBlipSprite(blip, info.sprite)
 	SetBlipColour(blip, info.color)
@@ -46,9 +43,9 @@ function OpenSimMenu()
 	ESX.TriggerServerCallback('esx_cartesim:GetList', function(sim)
         for _, v in pairs(sim) do
             if v.nome_sim ~= '' then
-                table.insert(elements, {label = tostring(v.nome_sim), value = v, piano_tariffario = v.piano_tariffario})
+                table.insert(elements, { label = tostring(v.nome_sim), value = v, piano_tariffario = v.piano_tariffario })
             else
-                table.insert(elements, {label = tostring(v.number), value = v, piano_tariffario = v.piano_tariffario})
+                table.insert(elements, { label = tostring(v.number), value = v, piano_tariffario = v.piano_tariffario })
             end
 		end
 		
@@ -59,10 +56,10 @@ function OpenSimMenu()
 		  	ESX.UI.Menu.Open('default', GetCurrentResourceName(), 'sim_change', {
 				title = tostring(data.current.value.number),
 				elements = {
-					{label = 'Usa', value = 'sim_use'},
-					{label = 'Dai', value = 'sim_give'},
-					{label = 'Rinomina', value = 'sim_rename'},
-					{label = 'Cancella', value = 'sim_delete'}
+					{ label = 'Usa', value = 'sim_use' },
+					{ label = 'Dai', value = 'sim_give' },
+					{ label = 'Rinomina', value = 'sim_rename' },
+					{ label = 'Cancella', value = 'sim_delete' }
 				},
 		  	}, function(data2, menu2)
 
