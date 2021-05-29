@@ -51,7 +51,7 @@ AddEventHandler('tcm_player:updateDeathStatus',function(_isDead) isDead = _isDea
 --  
 --====================================================================================
 Citizen.CreateThread(function()
-    RegisterKeyMapping('+openPhone', 'Apri telefono', 'keyboard', 'k')
+    RegisterKeyMapping('+openPhone', 'Apri telefono', 'keyboard', Config.KeyToOpenPhone)
     RegisterCommand('+openPhone', function()
         if not IsEntityPlayingAnim(GetPlayerPed(-1), 'mp_arresting', 'idle', 3) then
             if not isDead then
