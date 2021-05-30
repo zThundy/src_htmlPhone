@@ -80,8 +80,7 @@
   },
 
   "weazelJob": {
-    "reporter": true,
-    "altrojob": true
+    "police": true
   },
 
   "serviceCall": [{

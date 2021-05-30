@@ -4,7 +4,7 @@ gcPhoneT.news_requestMyJob = function()
     return xPlayer.job.name
 end
 
-gcPhoneT.news_requestEmails = function()
+gcPhoneT.news_requestNews = function()
     local player = source
     GetFetchedNews(function(news)
         TriggerClientEvent("gcphone:news_sendRequestedNews", player, news)

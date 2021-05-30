@@ -2,16 +2,13 @@
   <div class="phone_app">
     <PhoneTitle :title="LangString('APP_NEWS_TITLE')" :color="'white'" :backgroundColor="'rgb(106, 104, 231)'" />
 
-    <div class="phone_fullscreen_img" v-if="imgZoom !== undefined" @click.stop="imgZoom = undefined">
+    <div class="phone_fullscreen_img" v-if="imgZoom !== undefined">
       <img :src="imgZoom" />
     </div>
 
     <div class="journals-container">
-
       <div v-if="currentModule === 0">
-
         <div v-for="(elem, key) of news" :key="key" :class="{ select: currentSelect === key }" class="journal-container">
-
           <md-swiper
             v-if="elem.pics && elem.pics.length > 0"
             class="journal-swiper-container"
@@ -29,15 +26,11 @@
             <p v-if="elem.messages && elem.message.length > 0">{{ formatEmoji(elem.message) }}</p>
             <timeago class="journal-message-timeago" :since='elem.time' :auto-update="20"></timeago>
           </div>
-          
         </div>
-
       </div>
 
       <div v-if="currentModule === 1">
-
         <div class="bottoni">
-          
           <div class="bottone">
             <input type='button' :value="LangString('APP_NEWS_UPLOAD_PICTURE')" :class="{ select: currentSelect === 0 }"/>
           </div>
@@ -49,11 +42,9 @@
           <div class="bottone">
             <input type='button' :value="LangString('APP_NEWS_SEND_POST')" :class="{ select: currentSelect === 2 }"/>
           </div>
-
         </div>
 
         <div class="journal-container">
-
           <md-swiper v-if="tempNews.pics && tempNews.pics.length > 0" class="journal-swiper-container" :autoplay="5000" :transition-duration="600" ref="swiper">
             <md-swiper-item class="journal-swiper-item" v-for="(pic, key) of tempNews.pics" :key="key">
               <img :src="pic"/>
@@ -63,11 +54,8 @@
           <div v-if="tempNews.description && tempNews.description.length > 0" class="journal-message-container">
             <p>{{ formatEmoji(tempNews.description) }}</p>
           </div>
-
         </div>
-
       </div>
-
     </div>
     
     <div class="journal-footer" v-if="config.weazelJob[job]">
@@ -87,8 +75,6 @@ import { mapGetters, mapMutations } from 'vuex'
 import PhoneTitle from './../PhoneTitle'
 import Modal from '@/components/Modal/index'
 
-import config from '../../../static/config/config'
-
 import { Swiper, SwiperItem } from 'mand-mobile'
 import 'mand-mobile/lib/mand-mobile.css'
 
@@ -104,18 +90,12 @@ export default {
       currentSelect: -1,
       currentModule: 0,
       ignoreControl: false,
-      config: config,
       currentPicIndex: 0,
       imgZoom: undefined
     }
   },
   computed: {
-    ...mapGetters([
-      'LangString',
-      'news',
-      'job',
-      'tempNews'
-    ])
+    ...mapGetters(['LangString', 'news', 'job', 'tempNews', 'config'])
   },
   methods: {
     ...mapMutations(['UPDATE_TEMP_INFO', 'CHANGE_BRIGHTNESS_STATE']),

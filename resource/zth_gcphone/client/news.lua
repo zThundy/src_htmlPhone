@@ -1,5 +1,5 @@
 RegisterNUICallback("fetchNews", function(data, cb)
-    gcPhoneServerT.news_requestEmails()
+    gcPhoneServerT.news_requestNews()
     cb("ok")
 end)
 
