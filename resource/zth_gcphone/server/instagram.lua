@@ -139,13 +139,24 @@ gcPhoneT.instagram_nuovoPost = function(username, password, data)
 					['@filter'] = data.filter,
 					['@didascalia'] = data.didascalia
 			}, function(id)
-				MySQL.Async.fetchAll('SELECT * from phone_instagram_posts WHERE id = @id', {['@id'] = id}, function(posts)
-					post = posts[1]
-					post['author'] = user.author
-					post['authorIcon'] = user.authorIcon
-					TriggerClientEvent('gcPhone:instagram_newPostToNUI', -1, post)
+				--[[
+					MySQL.Async.fetchAll('SELECT * from phone_instagram_posts WHERE id = @id', {['@id'] = id}, function(posts)
+						post = posts[1]
+						post['author'] = user.author
+						post['authorIcon'] = user.authorIcon
+						TriggerClientEvent('gcPhone:instagram_newPostToNUI', -1, post)
+					end)
+				]]
+				InstagramGetPosts(nil, function(posts)
+					local isAble, mbToRemove = gcPhoneT.isAbleToSurfInternet(identifier, 0.04 * #posts)
+					if isAble then
+						gcPhoneT.usaDatiInternet(identifier, mbToRemove)
+						
+						TriggerClientEvent('gcPhone:instagram_updatePosts', player, posts)
+					else
+						InstagramShowError(player, 'INSTAGRAM_INFO_TITLE', 'APP_INSTAGRAM_NOTIF_NO_CONNECTION')
+					end
 				end)
-
 			end)
 		end)
 	else

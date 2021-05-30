@@ -41,9 +41,9 @@ function TakePhoto(data, cb)
 			takePhoto = false
 			disableCameraMovement = true
 			if data.options == nil then data.options = { width = 800 } end 
-			data.options.headers = {['Authorization'] = string.format('Client-ID %s', '1a792f246b071c4')}
+			data.options.headers = {['Authorization'] = string.format('Client-ID %s', Config.ImgurClientId)}
 			
-		  	exports['screenshot-basic']:requestScreenshotUpload(data.url, data.field, {headers = {['Authorization'] = string.format('Client-ID %s', '1a792f246b071c4')}}, function(data)
+		  	exports['screenshot-basic']:requestScreenshotUpload(data.url, data.field, { headers = data.options.headers }, function(data)
 				local resp = json.decode(data)
 				DestroyMobilePhone()
 				CellCamActivate(false, false)
@@ -55,6 +55,8 @@ function TakePhoto(data, cb)
 					DestroyMobilePhone()
 					CellCamActivate(false, false)
 
+					PhonePlayOut()
+					Citizen.Wait(1000)
 					PhonePlayText()
 				else
 					cb(nil)

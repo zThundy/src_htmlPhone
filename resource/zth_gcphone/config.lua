@@ -34,6 +34,11 @@ Config.PhoneItemName = "phone"
 Config.BluetoothRange = 5.0
 Config.MaxSunoeriaDistance = 10.0
 
+-- Imgur client id for api
+-- If you don't know how to upload images to imgur please visit
+-- https://apidocs.imgur.com/
+Config.ImgurClientId = "1a792f246b071c4"
+
 Config.TelefoniFissi = {
     ['555889280'] = { name = "Gewlery", coords = { x = -630.271, y = -230.216, z = 38.047 } },
     ['555621458'] = { name = "Fleeca", coords = { x = -2958.855, y = 479.614, z = 15.790 } },
