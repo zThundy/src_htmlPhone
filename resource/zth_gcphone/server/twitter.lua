@@ -1,9 +1,3 @@
-local CACHED_TWEETS = {}
-
-local function FetchTweets()
-
-end
-
 function TwitterShowError(player, title, message)
 	--[[
 		Vue.notify({
