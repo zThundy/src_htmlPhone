@@ -118,11 +118,11 @@ end
 
 gcPhoneT.instagram_nuovoPost = function(username, password, data)
 	local player = source
-	local identifier = gcPhone.getPlayerID(player)
+	local identifier = gcPhoneT.getPlayerID(player)
 
-	local isAble, mbToRemove = gcPhone.isAbleToSurfInternet(identifier, 0.5)
+	local isAble, mbToRemove = gcPhoneT.isAbleToSurfInternet(identifier, 0.5)
 	if isAble then
-		gcPhone.usaDatiInternet(identifier, mbToRemove)
+		gcPhoneT.usaDatiInternet(identifier, mbToRemove)
 
 		getInstagramUser(username, password, function(user)
 			if user == false then
@@ -153,12 +153,12 @@ end
 
 gcPhoneT.instagram_getPosts = function(username, password)
 	local player = source
-	local identifier = gcPhone.getPlayerID(player)
+	local identifier = gcPhoneT.getPlayerID(player)
 	
 	if username ~= nil and username ~= "" and password ~= nil and password ~= "" then
-		local isAble, mbToRemove = gcPhone.isAbleToSurfInternet(identifier, 1)
+		local isAble, mbToRemove = gcPhoneT.isAbleToSurfInternet(identifier, 1)
 		if isAble then
-			gcPhone.usaDatiInternet(identifier, mbToRemove)
+			gcPhoneT.usaDatiInternet(identifier, mbToRemove)
 			
 			-- funzione che controlla se l'utente esista effettivamente
 			getInstagramUser(username, password, function(user)
@@ -171,9 +171,9 @@ gcPhoneT.instagram_getPosts = function(username, password)
 				-- buildata da mandare a nui
 				local accountId = user and user.id
 				InstagramGetPosts(accountId, function(posts)
-					local isAble, mbToRemove = gcPhone.isAbleToSurfInternet(identifier, 0.04 * #posts)
+					local isAble, mbToRemove = gcPhoneT.isAbleToSurfInternet(identifier, 0.04 * #posts)
 					if isAble then
-						gcPhone.usaDatiInternet(identifier, mbToRemove)
+						gcPhoneT.usaDatiInternet(identifier, mbToRemove)
 						
 						TriggerClientEvent('gcPhone:instagram_updatePosts', player, posts)
 					else
@@ -185,14 +185,14 @@ gcPhoneT.instagram_getPosts = function(username, password)
 			InstagramShowError(player, 'INSTAGRAM_INFO_TITLE', 'APP_INSTAGRAM_NOTIF_NO_CONNECTION')
 		end
   	else
-		local isAble, mbToRemove = gcPhone.isAbleToSurfInternet(identifier, 1)
+		local isAble, mbToRemove = gcPhoneT.isAbleToSurfInternet(identifier, 1)
 		if isAble then
-			gcPhone.usaDatiInternet(identifier, mbToRemove)
+			gcPhoneT.usaDatiInternet(identifier, mbToRemove)
 			
 			InstagramGetPosts(nil, function(posts)
-				local isAble, mbToRemove = gcPhone.isAbleToSurfInternet(identifier, 0.04 * #posts)
+				local isAble, mbToRemove = gcPhoneT.isAbleToSurfInternet(identifier, 0.04 * #posts)
 				if isAble then
-					gcPhone.usaDatiInternet(identifier, mbToRemove)
+					gcPhoneT.usaDatiInternet(identifier, mbToRemove)
 					TriggerClientEvent('gcPhone:instagram_updatePosts', player, posts)
 				else
 					InstagramShowError(player, 'INSTAGRAM_INFO_TITLE', 'APP_INSTAGRAM_NOTIF_NO_CONNECTION')
@@ -206,11 +206,11 @@ end
 
 gcPhoneT.instagram_createAccount = function(username, password, avatarUrl)
 	local player = source
-	local identifier = gcPhone.getPlayerID(player)
+	local identifier = gcPhoneT.getPlayerID(player)
   	
-	local isAble, mbToRemove = gcPhone.isAbleToSurfInternet(identifier, 0.5)
+	local isAble, mbToRemove = gcPhoneT.isAbleToSurfInternet(identifier, 0.5)
 	if isAble then
-		gcPhone.usaDatiInternet(identifier, mbToRemove)
+		gcPhoneT.usaDatiInternet(identifier, mbToRemove)
 		
 		createNewInstagramAccount(username, password, avatarUrl, function(id)
 			if id ~= 0 then
@@ -228,11 +228,11 @@ end
 
 gcPhoneT.instagram_loginAccount = function(username, password)
 	local player = source
-	local identifier = gcPhone.getPlayerID(player)
+	local identifier = gcPhoneT.getPlayerID(player)
 	
-	local isAble, mbToRemove = gcPhone.isAbleToSurfInternet(identifier, 0.5)
+	local isAble, mbToRemove = gcPhoneT.isAbleToSurfInternet(identifier, 0.5)
 	if isAble then
-		gcPhone.usaDatiInternet(identifier, mbToRemove)
+		gcPhoneT.usaDatiInternet(identifier, mbToRemove)
 
 		getInstagramUser(username, password, function(user)
 			if user == false then
@@ -254,11 +254,11 @@ end
 
 gcPhoneT.instagram_changePassword = function(username, password, newPassword)
 	local player = source
-	local identifier = gcPhone.getPlayerID(player)
+	local identifier = gcPhoneT.getPlayerID(player)
 	
-	local isAble, mbToRemove = gcPhone.isAbleToSurfInternet(identifier, 0.5)
+	local isAble, mbToRemove = gcPhoneT.isAbleToSurfInternet(identifier, 0.5)
 	if isAble then
-		gcPhone.usaDatiInternet(identifier, mbToRemove)
+		gcPhoneT.usaDatiInternet(identifier, mbToRemove)
 
 		getInstagramUser(username, password, function(user)
 			if user == false then
@@ -285,11 +285,11 @@ end
 
 gcPhoneT.instagram_toggleLikePost = function(username, password, postId)
 	local player = source
-	local identifier = gcPhone.getPlayerID(player)
+	local identifier = gcPhoneT.getPlayerID(player)
 	
-	local isAble, mbToRemove = gcPhone.isAbleToSurfInternet(identifier, 0.02)
+	local isAble, mbToRemove = gcPhoneT.isAbleToSurfInternet(identifier, 0.02)
 	if isAble then
-		gcPhone.usaDatiInternet(identifier, mbToRemove)
+		gcPhoneT.usaDatiInternet(identifier, mbToRemove)
 		
 		getInstagramUser(username, password, function(user)
 			if user == nil then
@@ -345,11 +345,11 @@ end
 
 gcPhoneT.instagram_setAvatarurl = function(username, password, avatarUrl)
 	local player = source
-	local identifier = gcPhone.getPlayerID(player)
+	local identifier = gcPhoneT.getPlayerID(player)
 
-	local isAble, mbToRemove = gcPhone.isAbleToSurfInternet(identifier, 0.5)
+	local isAble, mbToRemove = gcPhoneT.isAbleToSurfInternet(identifier, 0.5)
 	if isAble then
-		gcPhone.usaDatiInternet(identifier, mbToRemove)
+		gcPhoneT.usaDatiInternet(identifier, mbToRemove)
 		
 		getInstagramUser(username, password, function(user)
 			MySQL.Async.execute("UPDATE phone_instagram_accounts SET avatar_url = @avatarUrl WHERE username = @username AND password = @password", {

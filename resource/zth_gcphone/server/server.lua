@@ -84,8 +84,8 @@ gcPhoneT.allUpdate = function()
     Citizen.CreateThreadNow(function()
         while not phone_loaded do Citizen.Wait(100) end
 
-        local identifier = gcPhone.getPlayerID(player)
-        local num = gcPhone.getPhoneNumber(identifier)
+        local identifier = gcPhoneT.getPlayerID(player)
+        local num = gcPhoneT.getPhoneNumber(identifier)
 
         TriggerClientEvent("gcPhone:updatePhoneNumber", player, num)
         TriggerClientEvent("gcPhone:contactList", player, getContacts(identifier))
@@ -105,14 +105,14 @@ end
 
 gcPhoneT.updateAirplaneForUser = function(bool)
     local player = source
-    local identifier = gcPhone.getPlayerID(player)
+    local identifier = gcPhoneT.getPlayerID(player)
     enableGlobalAirplane[identifier] = bool
 end
 
 gcPhoneT.updateSegnaleTelefono = function(potenza)
     local player = source
-    local identifier = gcPhone.getPlayerID(player)
-    local iSegnalePlayer = gcPhone.getPlayerSegnaleIndex(segnaliTelefoniPlayers, identifier)
+    local identifier = gcPhoneT.getPlayerID(player)
+    local iSegnalePlayer = gcPhoneT.getPlayerSegnaleIndex(segnaliTelefoniPlayers, identifier)
 
     if iSegnalePlayer == nil then
     	table.insert(segnaliTelefoniPlayers, {identifier = identifier, potenzaSegnale = potenza})
@@ -123,8 +123,8 @@ end
 
 gcPhoneT.updateReteWifi = function(connected, rete)
     local player = source
-    local identifier = gcPhone.getPlayerID(player)
-    local iSegnalePlayer = gcPhone.getPlayerSegnaleIndex(wifiConnectedPlayers, identifier)
+    local identifier = gcPhoneT.getPlayerID(player)
+    local iSegnalePlayer = gcPhoneT.getPlayerSegnaleIndex(wifiConnectedPlayers, identifier)
     
     if iSegnalePlayer == nil then
     	table.insert(wifiConnectedPlayers, {identifier = identifier, connected = connected, rete = rete})
@@ -134,11 +134,11 @@ gcPhoneT.updateReteWifi = function(connected, rete)
     end
 end
 
-function gcPhone.getAirplaneForUser(identifier)
+function gcPhoneT.getAirplaneForUser(identifier)
     return enableGlobalAirplane[identifier]
 end
 
-function gcPhone.getPlayerSegnaleIndex(tabella, identifier)
+function gcPhoneT.getPlayerSegnaleIndex(tabella, identifier)
 	index = nil
 	
     for i=1, #tabella do
@@ -151,19 +151,19 @@ function gcPhone.getPlayerSegnaleIndex(tabella, identifier)
 	return index
 end
 
-function gcPhone.usaDatiInternet(identifier, value)
-    local phone_number = gcPhone.getPhoneNumber(identifier)
+function gcPhoneT.usaDatiInternet(identifier, value)
+    local phone_number = gcPhoneT.getPhoneNumber(identifier)
 	local dati = GetPianoTariffarioParam(phone_number, "dati")
 
     gcPhoneT.updateParametroTariffa(phone_number, "dati", dati - value)
 end
 
-function gcPhone.isAbleToSurfInternet(identifier, neededMB)
-	local phone_number = gcPhone.getPhoneNumber(identifier)
+function gcPhoneT.isAbleToSurfInternet(identifier, neededMB)
+	local phone_number = gcPhoneT.getPhoneNumber(identifier)
 	
-	local iSegnalePlayer = gcPhone.getPlayerSegnaleIndex(segnaliTelefoniPlayers, identifier)
-    local iWifiConnectedPlayer = gcPhone.getPlayerSegnaleIndex(wifiConnectedPlayers, identifier)
-    local hasAirplane = gcPhone.getAirplaneForUser(identifier)
+	local iSegnalePlayer = gcPhoneT.getPlayerSegnaleIndex(segnaliTelefoniPlayers, identifier)
+    local iWifiConnectedPlayer = gcPhoneT.getPlayerSegnaleIndex(wifiConnectedPlayers, identifier)
+    local hasAirplane = gcPhoneT.getAirplaneForUser(identifier)
     
     if iWifiConnectedPlayer ~= nil and wifiConnectedPlayers[iWifiConnectedPlayer].connected then
         return true, 0
@@ -185,11 +185,11 @@ function gcPhone.isAbleToSurfInternet(identifier, neededMB)
     end
 end
 
-function gcPhone.isAbleToSendMessage(identifier, cb)
-	local phone_number = gcPhone.getPhoneNumber(identifier)
+function gcPhoneT.isAbleToSendMessage(identifier, cb)
+	local phone_number = gcPhoneT.getPhoneNumber(identifier)
 	
-    local iSegnalePlayer = gcPhone.getPlayerSegnaleIndex(segnaliTelefoniPlayers, identifier)
-    local hasAirplane = gcPhone.getAirplaneForUser(identifier)
+    local iSegnalePlayer = gcPhoneT.getPlayerSegnaleIndex(segnaliTelefoniPlayers, identifier)
+    local hasAirplane = gcPhoneT.getAirplaneForUser(identifier)
     
     if not hasAirplane and phone_number then
         if segnaliTelefoniPlayers[iSegnalePlayer] ~= nil and segnaliTelefoniPlayers[iSegnalePlayer].potenzaSegnale > 0 then
@@ -207,10 +207,10 @@ function gcPhone.isAbleToSendMessage(identifier, cb)
     end
 end
 
-function gcPhone.isAbleToCall(identifier, cb)
-	local phone_number = gcPhone.getPhoneNumber(identifier)
+function gcPhoneT.isAbleToCall(identifier, cb)
+	local phone_number = gcPhoneT.getPhoneNumber(identifier)
     local xPlayer = ESX.GetPlayerFromIdentifier(identifier)
-    local hasAirplane = gcPhone.getAirplaneForUser(identifier)
+    local hasAirplane = gcPhoneT.getAirplaneForUser(identifier)
     
     if not hasAirplane and phone_number then
         local min = GetPianoTariffarioParam(phone_number, "minuti")
@@ -282,8 +282,7 @@ end
 -------- Utils
 --==================================================================================================================
 
-RegisterServerEvent("gcphone:updateCachedNumber")
-AddEventHandler("gcphone:updateCachedNumber", function(number, identifier, isChanging)
+gcPhoneT.updateCachedNumber = function(number, identifier, isChanging)
     -- print(number, identifier, isChanging)
     number = tostring(number)
     identifier = identifier
@@ -294,7 +293,7 @@ AddEventHandler("gcphone:updateCachedNumber", function(number, identifier, isCha
         gcPhone.debug("Removed number " .. number .. " from CACHED_NUMBERS")
     end
 
-    local oldNumber = gcPhone.getPhoneNumber(identifier)
+    local oldNumber = gcPhoneT.getPhoneNumber(identifier)
     -- print(ESX.DumpTable(CACHED_NUMBERS[number]), ESX.DumpTable(CACHED_NUMBERS[oldNumber]), oldNumber)
 
     -- qui controllo se la il numero sta venendo cambiato
@@ -336,14 +335,14 @@ AddEventHandler("gcphone:updateCachedNumber", function(number, identifier, isCha
     else
         CACHED_NUMBERS[number] = nil
     end
-end)
+end
 
-function gcPhone.getSourceFromIdentifier(identifier, cb)
+function gcPhoneT.getSourceFromIdentifier(identifier, cb)
     local xPlayer = ESX.GetPlayerFromIdentifier(identifier)
     if xPlayer ~= nil then cb(xPlayer.source) else cb(nil) end
 end
 
-function gcPhone.getPhoneNumber(identifier)
+function gcPhoneT.getPhoneNumber(identifier)
     --[[
         local result = MySQL.Sync.fetchAll("SELECT * FROM users WHERE identifier = @identifier", {['@identifier'] = identifier })
         if #result > 0 then return result[1].phone_number end
@@ -360,7 +359,7 @@ function gcPhone.getPhoneNumber(identifier)
     return nil
 end
 
-function gcPhone.getIdentifierByPhoneNumber(phone_number)
+function gcPhoneT.getIdentifierByPhoneNumber(phone_number)
     --[[
         local result = MySQL.Sync.fetchAll("SELECT identifier FROM users WHERE phone_number = @phone_number", {['@phone_number'] = phone_number })
         local isInstalled = true
@@ -378,15 +377,15 @@ function gcPhone.getIdentifierByPhoneNumber(phone_number)
     return CACHED_NUMBERS[phone_number].identifier, CACHED_NUMBERS[phone_number].inUse
 end
 
-function gcPhone.getSourceFromPhoneNumber(phone_number)
-    local identifier, _ = gcPhone.getIdentifierByPhoneNumber(phone_number)
+function gcPhoneT.getSourceFromPhoneNumber(phone_number)
+    local identifier, _ = gcPhoneT.getIdentifierByPhoneNumber(phone_number)
     local xPlayer = ESX.GetPlayerFromIdentifier(identifier)
     if xPlayer == nil then return nil end
 
     return xPlayer.source
 end
 
-function gcPhone.getPlayerID(source)
+function gcPhoneT.getPlayerID(source)
     local xPlayer = ESX.GetPlayerFromId(source)
     if xPlayer == nil then return nil end
     
@@ -446,19 +445,19 @@ end
 
 gcPhoneT.addContact = function(display, phoneNumber, email)
     local player = source
-    local identifier = gcPhone.getPlayerID(player)
+    local identifier = gcPhoneT.getPlayerID(player)
     addContact(player, identifier, phoneNumber, display, email)
 end
 
 gcPhoneT.updateContact = function(id, display, phoneNumber, email)
     local player = source
-    local identifier = gcPhone.getPlayerID(player)
+    local identifier = gcPhoneT.getPlayerID(player)
     updateContact(player, identifier, id, phoneNumber, display, email)
 end
 
 gcPhoneT.deleteContact = function(id)
     local player = source
-    local identifier = gcPhone.getPlayerID(player)
+    local identifier = gcPhoneT.getPlayerID(player)
     deleteContact(player, identifier, id)
 end
 
@@ -475,14 +474,14 @@ function addMessage(source, identifier, phone_number, message)
     local player = tonumber(source)
     -- local xPlayer = ESX.GetPlayerFromId(player)
 
-    local otherIdentifier, isInstalled = gcPhone.getIdentifierByPhoneNumber(phone_number)
-    local myPhone = gcPhone.getPhoneNumber(identifier)
-    local hasAirplane = gcPhone.getAirplaneForUser(otherIdentifier)
+    local otherIdentifier, isInstalled = gcPhoneT.getIdentifierByPhoneNumber(phone_number)
+    local myPhone = gcPhoneT.getPhoneNumber(identifier)
+    local hasAirplane = gcPhoneT.getAirplaneForUser(otherIdentifier)
 
     -- print(otherIdentifier, isInstalled)
     
     if otherIdentifier and myPhone then
-        segnaleTransmitter = segnaliTelefoniPlayers[gcPhone.getPlayerSegnaleIndex(segnaliTelefoniPlayers, identifier)]
+        segnaleTransmitter = segnaliTelefoniPlayers[gcPhoneT.getPlayerSegnaleIndex(segnaliTelefoniPlayers, identifier)]
 
     	if segnaleTransmitter and segnaleTransmitter.potenzaSegnale > 0 then
             local messaggi = GetPianoTariffarioParam(myPhone, "messaggi")
@@ -496,7 +495,7 @@ function addMessage(source, identifier, phone_number, message)
                 local tomess = _internalAddMessage(myPhone, phone_number, message, 0)
                 -- print(ESX.DumpTable(tomess))
 
-                gcPhone.getSourceFromIdentifier(otherIdentifier, function(target_source)
+                gcPhoneT.getSourceFromIdentifier(otherIdentifier, function(target_source)
                     target_source = tonumber(target_source)
 
                     if target_source ~= nil then
@@ -506,9 +505,9 @@ function addMessage(source, identifier, phone_number, message)
                         if isInstalled and not hasAirplane then
                             -- print("sim installata")
                             -- se la sim è installata allora mando il telefono e gli mando la notifica
-                            -- local retIndex = gcPhone.getPlayerSegnaleIndex(segnaliTelefoniPlayers, otherIdentifier)
+                            -- local retIndex = gcPhoneT.getPlayerSegnaleIndex(segnaliTelefoniPlayers, otherIdentifier)
                             -- print(retIndex)
-                            segnaleReceiver = segnaliTelefoniPlayers[gcPhone.getPlayerSegnaleIndex(segnaliTelefoniPlayers, otherIdentifier)]
+                            segnaleReceiver = segnaliTelefoniPlayers[gcPhoneT.getPlayerSegnaleIndex(segnaliTelefoniPlayers, otherIdentifier)]
                             -- print(ESX.DumpTable(segnaleReceiver), ESX.DumpTable(segnaliTelefoniPlayers))
                             if segnaleReceiver ~= nil and segnaleReceiver.potenzaSegnale > 0 then
                                 TriggerClientEvent("gcPhone:receiveMessage", target_source, tomess)
@@ -538,11 +537,11 @@ end
 
 gcPhoneT.sendMessage = function(phoneNumber, message)
     local player = source
-    local identifier = gcPhone.getPlayerID(player)
+    local identifier = gcPhoneT.getPlayerID(player)
     addMessage(player, identifier, phoneNumber, message)
 end
 
-gcPhone.internalAddMessage = function(transmitter, receiver, message, owner)
+gcPhoneT.internalAddMessage = function(transmitter, receiver, message, owner)
     return _internalAddMessage(transmitter, receiver, message, owner)
 end
 
@@ -565,8 +564,8 @@ end
 
 gcPhoneT.setReadMessageNumber = function(num)
     local player = source
-    local identifier = gcPhone.getPlayerID(player)
-    local mePhoneNumber = gcPhone.getPhoneNumber(identifier)
+    local identifier = gcPhoneT.getPlayerID(player)
+    local mePhoneNumber = gcPhoneT.getPhoneNumber(identifier)
 
     MySQL.Sync.execute("UPDATE phone_messages SET phone_messages.isRead = 1 WHERE phone_messages.receiver = @receiver AND phone_messages.transmitter = @transmitter", {
         ['@receiver'] = mePhoneNumber,
@@ -593,28 +592,28 @@ end
 
 gcPhoneT.deleteMessageNumber = function(number)
     local player = source
-    local identifier = gcPhone.getPlayerID(player)
+    local identifier = gcPhoneT.getPlayerID(player)
     MySQL.Async.execute("DELETE FROM phone_messages WHERE `receiver` = @receiver and `transmitter` = @transmitter", { 
-        ['@receiver'] = gcPhone.getPhoneNumber(identifier), 
+        ['@receiver'] = gcPhoneT.getPhoneNumber(identifier), 
         ['@transmitter'] = number 
     })
 end
 
-function gcPhone.deleteReceivedMessages(identifier)
-    MySQL.Async.execute("DELETE FROM phone_messages WHERE `receiver` = @receiver", { ['@receiver'] = gcPhone.getPhoneNumber(identifier) })
+function gcPhoneT.deleteReceivedMessages(identifier)
+    MySQL.Async.execute("DELETE FROM phone_messages WHERE `receiver` = @receiver", { ['@receiver'] = gcPhoneT.getPhoneNumber(identifier) })
 end
 
 gcPhoneT.deleteAllMessage = function()
     local player = source
-    local identifier = gcPhone.getPlayerID(player)
-    gcPhone.deleteReceivedMessages(identifier)
+    local identifier = gcPhoneT.getPlayerID(player)
+    gcPhoneT.deleteReceivedMessages(identifier)
 end
 
 gcPhoneT.deleteAll = function()
     local player = source
-    local identifier = gcPhone.getPlayerID(player)
+    local identifier = gcPhoneT.getPlayerID(player)
 
-    gcPhone.deleteReceivedMessages(identifier)
+    gcPhoneT.deleteReceivedMessages(identifier)
     MySQL.Sync.execute("DELETE FROM phone_users_contacts WHERE `identifier` = @identifier", { ['@identifier'] = identifier })
     gcPhoneT.appelsDeleteAllHistorique(identifier)
 
@@ -678,8 +677,8 @@ end
     RegisterServerEvent('gcPhone:getHistoriqueCall')
     AddEventHandler('gcPhone:getHistoriqueCall', function()
         local player = tonumber(source)
-        local identifier = gcPhone.getPlayerID(player)
-        local num = gcPhone.getPhoneNumber(identifier)
+        local identifier = gcPhoneT.getPlayerID(player)
+        local num = gcPhoneT.getPhoneNumber(identifier)
 
         sendHistoriqueCall(player, num)
     end)
@@ -729,7 +728,7 @@ function internal_startCall(player, phone_number, rtcOffer, extraData)
     end
 
     -- local xPlayer = ESX.GetPlayerFromId(player)
-    local srcIdentifier = gcPhone.getPlayerID(player)
+    local srcIdentifier = gcPhoneT.getPlayerID(player)
     -- srcIdentifier è l'identifier del giocatore che ha
     -- avviato la chiamata
     
@@ -747,14 +746,14 @@ function internal_startCall(player, phone_number, rtcOffer, extraData)
     if extraData ~= nil and extraData.useNumber ~= nil then
         srcPhone = extraData.useNumber
     else
-        srcPhone = gcPhone.getPhoneNumber(srcIdentifier)
+        srcPhone = gcPhoneT.getPhoneNumber(srcIdentifier)
     end
     -- srcPhone è il numero di telefono di chi ha avviato la chiamata
     
     -- qui mi prendo tutte le informazioni del giocatore a cui sto chiamanto
     -- (infatti phone_number è il numero che ricevo dal telefono)
-    local destPlayer, isInstalled = gcPhone.getIdentifierByPhoneNumber(phone_number)
-    local hasAirplane = gcPhone.getAirplaneForUser(destPlayer)
+    local destPlayer, isInstalled = gcPhoneT.getIdentifierByPhoneNumber(phone_number)
+    local hasAirplane = gcPhoneT.getAirplaneForUser(destPlayer)
     local is_valid = destPlayer ~= nil and destPlayer ~= srcIdentifier
 
     Chiamate[indexCall] = {
@@ -772,22 +771,22 @@ function internal_startCall(player, phone_number, rtcOffer, extraData)
         updateMinuti = true
     }
 
-    gcPhone.isAbleToCall(srcIdentifier, function(isAble, useMin, min, message)
+    gcPhoneT.isAbleToCall(srcIdentifier, function(isAble, useMin, min, message)
         Chiamate[indexCall].secondiRimanenti = min
-        segnaleTransmitter = segnaliTelefoniPlayers[gcPhone.getPlayerSegnaleIndex(segnaliTelefoniPlayers, srcIdentifier)]
+        segnaleTransmitter = segnaliTelefoniPlayers[gcPhoneT.getPlayerSegnaleIndex(segnaliTelefoniPlayers, srcIdentifier)]
         Chiamate[indexCall].updateMinuti = useMin
 
-        -- qui controllo se la funzione gcPhone.getIdentifierByPhoneNumber ha tornato un valore valido, che non sto chiamando
+        -- qui controllo se la funzione gcPhoneT.getIdentifierByPhoneNumber ha tornato un valore valido, che non sto chiamando
         -- me stesso, e che la sim sia installata
         if is_valid and isInstalled and not hasAirplane then
-            gcPhone.getSourceFromIdentifier(destPlayer, function(srcTo)
+            gcPhoneT.getSourceFromIdentifier(destPlayer, function(srcTo)
 
                 if playersInCall[srcTo] == nil then
 
                     if segnaleTransmitter ~= nil and segnaleTransmitter.potenzaSegnale > 0 then
 
                         if srcTo ~= nil then
-                            segnaleReceiver = segnaliTelefoniPlayers[gcPhone.getPlayerSegnaleIndex(segnaliTelefoniPlayers, destPlayer)]
+                            segnaleReceiver = segnaliTelefoniPlayers[gcPhoneT.getPlayerSegnaleIndex(segnaliTelefoniPlayers, destPlayer)]
 
                             if segnaleReceiver ~= nil and segnaleReceiver.potenzaSegnale > 0 then
                                 
@@ -935,8 +934,8 @@ end
 
 gcPhoneT.appelsDeleteHistorique = function(number)
     local player = source
-    local identifier = gcPhone.getPlayerID(player)
-    local num = gcPhone.getPhoneNumber(identifier)
+    local identifier = gcPhoneT.getPlayerID(player)
+    local num = gcPhoneT.getPhoneNumber(identifier)
 
     MySQL.Sync.execute("DELETE FROM phone_calls WHERE `owner` = @owner AND `num` = @num", {
         ['@owner'] = num,
@@ -946,8 +945,8 @@ end
 
 gcPhoneT.appelsDeleteAllHistorique = function()
     local player = source
-    local identifier = gcPhone.getPlayerID(player)
-    local num = gcPhone.getPhoneNumber(identifier)
+    local identifier = gcPhoneT.getPlayerID(player)
+    local num = gcPhoneT.getPhoneNumber(identifier)
 
     MySQL.Async.execute("DELETE FROM phone_calls WHERE `owner` = @owner", { ['@owner'] = num })
 end
@@ -968,8 +967,8 @@ AddEventHandler('esx:playerLoaded', function(source, xPlayer)
     local player = tonumber(source)
     if not built_phones then buildPhones() end
 
-    local identifier = gcPhone.getPlayerID(player)
-    local phone_number = gcPhone.getPhoneNumber(identifier)
+    local identifier = gcPhoneT.getPlayerID(player)
+    local phone_number = gcPhoneT.getPhoneNumber(identifier)
 
     TriggerClientEvent("gcPhone:updatePhoneNumber", player, phone_number)
     TriggerClientEvent("gcPhone:contactList", player, getContacts(identifier))
@@ -998,7 +997,7 @@ end)
 
 gcPhoneT.updateAvatarContatto = function(data)
     local player = source
-    local identifier = gcPhone.getPlayerID(player)
+    local identifier = gcPhoneT.getPlayerID(player)
 
     MySQL.Async.execute("UPDATE phone_users_contacts SET icon = '"..data.icon.."' WHERE id = '"..data.id.."'", {})
     SetTimeout(2000, function()
@@ -1067,13 +1066,13 @@ function onCallFixePhone(player, phone_number, rtcOffer, extraData)
         phone_number = string.sub(phone_number, 2)
     end
     
-	local identifier = gcPhone.getPlayerID(player)
+	local identifier = gcPhoneT.getPlayerID(player)
 
     local srcPhone = ''
     if extraData ~= nil and extraData.useNumber ~= nil then
         srcPhone = extraData.useNumber
     else
-        srcPhone = gcPhone.getPhoneNumber(identifier)
+        srcPhone = gcPhoneT.getPhoneNumber(identifier)
     end
 
     local canCall = not isNumberInCall(phone_number)

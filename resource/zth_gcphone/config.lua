@@ -2,13 +2,21 @@ Config = {}
 
 Config.AuthKey = "po82TPxrwlsiEW1GRLMpD6BHfpAmpcUVT3Eb2j2P"
 
+-- for tokovoip addon ask zthundy on discord for a custom version of
+-- the voip
 Config.EnableTokoVoip = false
 Config.EnableSaltyChat = true
+
+-- this is the key used to open the phone
+Config.KeyToOpenPhone = "k"
 
 -- This is the configured key that you'll need to press to
 -- answer a static phone
 Config.KeyTakeCall = 46
 Config.KeyLabel = "~INPUT_CONTEXT~"
+-- If true, the phone will auto generate an iban string
+-- that will be used in the bank app
+Config.ShouldUseIban = false
 -- This is the iban string length generated for
 -- each user on login
 Config.IbanStringLength = 7

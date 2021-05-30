@@ -101,9 +101,9 @@ gcPhoneT.getBourseProfile = function()
     local player = source
 	local xPlayer = ESX.GetPlayerFromId(player)
     
-	local isAble, mbToRemove = gcPhone.isAbleToSurfInternet(xPlayer.identifier, 0.5)
+	local isAble, mbToRemove = gcPhoneT.isAbleToSurfInternet(xPlayer.identifier, 0.5)
     if isAble then
-        gcPhone.usaDatiInternet(xPlayer.identifier, mbToRemove)
+        gcPhoneT.usaDatiInternet(xPlayer.identifier, mbToRemove)
         local firstname, lastname = gcPhoneT.getFirstnameAndLastname(xPlayer.identifier)
     
         return {
@@ -124,11 +124,11 @@ end
 
 gcPhoneT.getMyCrypto = function()
     local player = source
-	local identifier = gcPhone.getPlayerID(player)
+	local identifier = gcPhoneT.getPlayerID(player)
 
-    local isAble, mbToRemove = gcPhone.isAbleToSurfInternet(identifier, 0.5)
+    local isAble, mbToRemove = gcPhoneT.isAbleToSurfInternet(identifier, 0.5)
     if isAble then
-        gcPhone.usaDatiInternet(identifier, mbToRemove)
+        gcPhoneT.usaDatiInternet(identifier, mbToRemove)
         -- print(ESX.DumpTable(CACHED_USER_CRYPTO[identifier]))
         return CACHED_USER_CRYPTO[identifier]
     else
@@ -144,11 +144,11 @@ end
 
 gcPhoneT.requestCryptoValues = function()
     local player = source
-	local identifier = gcPhone.getPlayerID(player)
+	local identifier = gcPhoneT.getPlayerID(player)
 
-	local isAble, mbToRemove = gcPhone.isAbleToSurfInternet(identifier, 0.5)
+	local isAble, mbToRemove = gcPhoneT.isAbleToSurfInternet(identifier, 0.5)
     if isAble then
-        gcPhone.usaDatiInternet(identifier, mbToRemove)
+        gcPhoneT.usaDatiInternet(identifier, mbToRemove)
         return CACHED_CRYPTO
     else
         TriggerClientEvent("gcphone:sendGenericNotification", player, {
@@ -169,9 +169,9 @@ gcPhoneT.buyCrypto = function(data)
     if money >= math.ceil(data.crypto.currentMarket * data.amount) then
         xPlayer.removeAccountMoney("bank", math.ceil(data.crypto.currentMarket * data.amount))
 
-        local isAble, mbToRemove = gcPhone.isAbleToSurfInternet(xPlayer.identifier, 0.5)
+        local isAble, mbToRemove = gcPhoneT.isAbleToSurfInternet(xPlayer.identifier, 0.5)
         if isAble then
-            gcPhone.usaDatiInternet(xPlayer.identifier, mbToRemove)
+            gcPhoneT.usaDatiInternet(xPlayer.identifier, mbToRemove)
 
             if PlayerHasCrypto(xPlayer.identifier, data.crypto.name) then
                 local crypto = GetPlayerCrypto(xPlayer.identifier, data.crypto.name)
@@ -217,9 +217,9 @@ gcPhoneT.sellCrypto = function(data)
     -- print(ESX.DumpTable(data))
 
     if data.crypto.amount >= data.amount then
-        local isAble, mbToRemove = gcPhone.isAbleToSurfInternet(xPlayer.identifier, 0.5)
+        local isAble, mbToRemove = gcPhoneT.isAbleToSurfInternet(xPlayer.identifier, 0.5)
         if isAble then
-            gcPhone.usaDatiInternet(xPlayer.identifier, mbToRemove)
+            gcPhoneT.usaDatiInternet(xPlayer.identifier, mbToRemove)
 
             xPlayer.addAccountMoney("bank", math.floor(data.amount * data.price))
             local crypto = GetPlayerCrypto(xPlayer.identifier, data.crypto.name)

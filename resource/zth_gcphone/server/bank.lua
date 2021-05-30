@@ -1,27 +1,59 @@
 local IBANS = {}
 
-MySQL.ready(function()
-    MySQL.Async.fetchAll("SELECT identifier, iban FROM users", {}, function(r)
-        for _, v in pairs(r) do
-            if v.iban then
-                IBANS[v.identifier] = v.iban
+if Config.ShouldUseIban then
+    MySQL.ready(function()
+        MySQL.Async.fetchAll("SELECT identifier, iban FROM users", {}, function(r)
+            for _, v in pairs(r) do
+                if v.iban then
+                    IBANS[v.identifier] = v.iban
+                end
             end
+        end)
+    end)
+
+    RegisterServerEvent("esx:playerLoaded")
+    AddEventHandler('esx:playerLoaded', function(source, xPlayer)
+        if not IBANS[xPlayer.identifier] then
+            local new_iban = GenerateIBAN(Config.IbanStringLength)
+            IBANS[xPlayer.identifier] = new_iban
+
+            MySQL.Async.execute("UPDATE users SET iban = @iban WHERE identifier = @identifier", {
+                ['@iban'] = new_iban,
+                ['@identifier'] = xPlayer.identifier
+            })
         end
     end)
-end)
 
-RegisterServerEvent("esx:playerLoaded")
-AddEventHandler('esx:playerLoaded', function(source, xPlayer)
-    if not IBANS[xPlayer.identifier] then
-        local new_iban = GenerateIBAN(Config.IbanStringLength)
-        IBANS[xPlayer.identifier] = new_iban
-
-        MySQL.Async.execute("UPDATE users SET iban = @iban WHERE identifier = @identifier", {
-            ['@iban'] = new_iban,
-            ['@identifier'] = xPlayer.identifier
-        })
+    function getUsersIban(identifier)
+        return IBANS[identifier]
     end
-end)
+    
+    function getUserFromIban(iban, cb)
+        for identifier, ibn in pairs(IBANS) do
+            if ibn == iban then
+                return identifier
+            end
+        end
+    
+        return nil
+    end
+else
+    function getUsersIban(identifier)
+        local xPlayer = ESX.GetPlayerFromIdentifier(identifier)
+        if xPlayer then
+            return xPlayer.source
+        end
+        return nil
+    end
+    
+    function getUserFromIban(iban, cb)
+        local xPlayer = ESX.GetPlayerFromId(iban)
+        if xPlayer then
+            return xPlayer.identifier
+        end
+        return nil
+    end
+end
 
 gcPhoneT.sendMoneyToUser = function(data)
     local player = source
@@ -35,7 +67,7 @@ gcPhoneT.sendMoneyToUser = function(data)
     
     local user_identifier = getUserFromIban(iban)
     if user_identifier ~= nil then
-        local isAble, mbToRemove = gcPhone.isAbleToSurfInternet(xPlayer.identifier, 0.5)
+        local isAble, mbToRemove = gcPhoneT.isAbleToSurfInternet(xPlayer.identifier, 0.5)
         if isAble then
             if type(tonumber(data.money)) == "number" then
                 data.money = string.gsub(data.money, "$", "")
@@ -45,6 +77,7 @@ gcPhoneT.sendMoneyToUser = function(data)
                 if c_xPlayer ~= nil and xPlayer ~= nil then
                     if xPlayer.getAccount("bank").money >= amount then
                         local user_iban = getUsersIban(xPlayer.identifier)
+                        local c_user_iban = getUsersIban(c_xPlayer.identifier)
 
                         xPlayer.showNotification("~g~Hai inviato "..amount.."$ all'iban "..iban)
                         c_xPlayer.showNotification("~g~Hai ricevuto un bonifico di "..amount.."$ dall'iban "..user_iban)
@@ -128,25 +161,6 @@ ESX.RegisterServerCallback("gcphone:bank_requestMyFatture", function(source, cb)
         cb(result)
     end)
 end)
-
-function getUsersIban(identifier)
-    return IBANS[identifier]
-    -- return MySQL.Sync.fetchScalar("SELECT iban FROM users WHERE identifier = @identifier", {['@identifier'] = identifier})
-end
-
-function getUserFromIban(iban, cb)
-    for identifier, ibn in pairs(IBANS) do
-        if ibn == iban then
-            return identifier
-        end
-    end
-
-    return nil
-
-    -- MySQL.Async.fetchAll("SELECT identifier FROM users WHERE iban = '"..iban.."'", {}, function(result)
-    --     if result == nil or result[1] == nil then cb(nil) else cb(result[1]) end
-    -- end)
-end
 
 local function GenerateString(length)
     local charset = {}

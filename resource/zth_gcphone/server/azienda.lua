@@ -10,9 +10,9 @@ gcPhoneT.azienda_requestJobInfo = function()
 
     -- print(xPlayer.firstname, xPlayer.lastname)
 
-    local isAble, mbToRemove = gcPhone.isAbleToSurfInternet(xPlayer.identifier, 0.5)
+    local isAble, mbToRemove = gcPhoneT.isAbleToSurfInternet(xPlayer.identifier, 0.5)
     if isAble then
-        gcPhone.usaDatiInternet(xPlayer.identifier, mbToRemove)
+        gcPhoneT.usaDatiInternet(xPlayer.identifier, mbToRemove)
 
         if Config.MinAziendaGrade[xPlayer.job.name] then
             local firstname, lastname = gcPhoneT.getFirstnameAndLastname(xPlayer.identifier)
@@ -44,7 +44,7 @@ gcPhoneT.azienda_requestJobInfo = function()
                         grade = xPlayer.job.grade,
                         gradeName = xPlayer.job.grade_label,
                         name = firstname .. " " .. lastname,
-                        phoneNumber = gcPhone.getPhoneNumber(xPlayer.identifier),
+                        phoneNumber = gcPhoneT.getPhoneNumber(xPlayer.identifier),
                         salary = xPlayer.job.grade_salary,
                         isOnline = true -- to be implemented the false state???? IDK 
                     })
@@ -75,9 +75,9 @@ gcPhoneT.azienda_sendAziendaMessage = function(azienda, number, message)
     local player = source
     local xPlayer = ESX.GetPlayerFromId(player)
 
-    local isAble, mbToRemove = gcPhone.isAbleToSurfInternet(xPlayer.identifier, 0.1)
+    local isAble, mbToRemove = gcPhoneT.isAbleToSurfInternet(xPlayer.identifier, 0.1)
     if isAble then
-        gcPhone.usaDatiInternet(xPlayer.identifier, mbToRemove)
+        gcPhoneT.usaDatiInternet(xPlayer.identifier, mbToRemove)
         local firstname, lastname = gcPhoneT.getFirstnameAndLastname(xPlayer.identifier)
 
         MySQL.Async.insert("INSERT INTO phone_azienda_messages(azienda, authorIdentifier, authorNumber, authorName, message) VALUES(@azienda, @identifier, @number, @name, @message)", {
@@ -88,9 +88,9 @@ gcPhoneT.azienda_sendAziendaMessage = function(azienda, number, message)
             ['@message'] = message
         }, function()
             GetAziendaMessages(player, azienda, function(messages)
-                local isAble, mbToRemove = gcPhone.isAbleToSurfInternet(xPlayer.identifier, #messages * 0.01)
+                local isAble, mbToRemove = gcPhoneT.isAbleToSurfInternet(xPlayer.identifier, #messages * 0.01)
                 if isAble then
-                    gcPhone.usaDatiInternet(xPlayer.identifier, mbToRemove)
+                    gcPhoneT.usaDatiInternet(xPlayer.identifier, mbToRemove)
 
                     for _, xPlayer in pairs(GetPlayersWithJob(azienda)) do
                         TriggerClientEvent("gcphone:azienda_retriveMessages", xPlayer.source, messages)
@@ -124,9 +124,9 @@ gcPhoneT.azienda_employeAction = function(action, employe)
     c_xPlayer.job.grade = tonumber(c_xPlayer.job.grade)
     xPlayer.job.grade = tonumber(xPlayer.job.grade)
 	
-    local isAble, mbToRemove = gcPhone.isAbleToSurfInternet(xPlayer.identifier, 0.5)
+    local isAble, mbToRemove = gcPhoneT.isAbleToSurfInternet(xPlayer.identifier, 0.5)
     if isAble then
-        gcPhone.usaDatiInternet(xPlayer.identifier, mbToRemove)
+        gcPhoneT.usaDatiInternet(xPlayer.identifier, mbToRemove)
         local firstname, lastname = gcPhoneT.getFirstnameAndLastname(c_xPlayer.identifier)
 
         if action == "promote" then
@@ -161,9 +161,9 @@ gcPhoneT.azienda_requestAziendaMessages = function()
     local xPlayer = ESX.GetPlayerFromId(player)
 
     GetAziendaMessages(player, xPlayer.job.name, function(messages)
-        local isAble, mbToRemove = gcPhone.isAbleToSurfInternet(xPlayer.identifier, #messages * 0.01)
+        local isAble, mbToRemove = gcPhoneT.isAbleToSurfInternet(xPlayer.identifier, #messages * 0.01)
         if isAble then
-            gcPhone.usaDatiInternet(xPlayer.identifier, mbToRemove)
+            gcPhoneT.usaDatiInternet(xPlayer.identifier, mbToRemove)
             
             TriggerClientEvent("gcphone:azienda_retriveMessages", player, messages)
         else
@@ -231,7 +231,7 @@ function UpdateAziendaEmployes(azienda, cb)
             grade = xPlayer.job.grade,
             gradeName = xPlayer.job.grade_label,
             name = firstname .. " " .. lastname,
-            phoneNumber = gcPhone.getPhoneNumber(xPlayer.identifier),
+            phoneNumber = gcPhoneT.getPhoneNumber(xPlayer.identifier),
             salary = xPlayer.job.grade_salary,
             isOnline = true -- to be implemented the false state???? IDK 
         })

@@ -1,12 +1,12 @@
 gcPhoneT.darkweb_fetchDarkmessages = function()
     local player = source
-    local identifier = gcPhone.getPlayerID(player)
+    local identifier = gcPhoneT.getPlayerID(player)
     local messages = {}
 
     MySQL.Async.fetchAll("SELECT * FROM phone_darkweb_messages ORDER BY id DESC LIMIT 130", {}, function(r)
-        local isAble, mbToRemove = gcPhone.isAbleToSurfInternet(identifier, 0.01 * #r)
+        local isAble, mbToRemove = gcPhoneT.isAbleToSurfInternet(identifier, 0.01 * #r)
         if isAble then
-            gcPhone.usaDatiInternet(identifier, mbToRemove)
+            gcPhoneT.usaDatiInternet(identifier, mbToRemove)
 
             for i = #r, 1, -1 do
                 i = tonumber(i)
@@ -29,14 +29,14 @@ end
 
 gcPhoneT.darkweb_sendDarkMessage = function(data)
     local player = source
-    local identifier = gcPhone.getPlayerID(player)
+    local identifier = gcPhoneT.getPlayerID(player)
 	
-	local isAble, mbToRemove = gcPhone.isAbleToSurfInternet(identifier, 0.5)
+	local isAble, mbToRemove = gcPhoneT.isAbleToSurfInternet(identifier, 0.5)
     if isAble then
-        gcPhone.usaDatiInternet(identifier, mbToRemove)
+        gcPhoneT.usaDatiInternet(identifier, mbToRemove)
         
         MySQL.Async.insert("INSERT INTO phone_darkweb_messages(author, message) VALUES(@author, @message)", {
-            ['@author'] = identifier,
+            ['@author'] = player,
             ['@message'] = data.message
         })
     else

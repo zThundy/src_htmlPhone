@@ -1,10 +1,10 @@
 gcPhoneT.email_requestMyEmail = function()
     local player = source
-    local identifier = gcPhone.getPlayerID(player)
+    local identifier = gcPhoneT.getPlayerID(player)
 
-    local isAble, mbToRemove = gcPhone.isAbleToSurfInternet(identifier, 0.5)
+    local isAble, mbToRemove = gcPhoneT.isAbleToSurfInternet(identifier, 0.5)
     if isAble then
-        gcPhone.usaDatiInternet(identifier, mbToRemove)
+        gcPhoneT.usaDatiInternet(identifier, mbToRemove)
         
         GetUserEmail(identifier, function(email)
             if not email then email = false end
@@ -24,12 +24,12 @@ end
 
 gcPhoneT.email_sendEmail = function(data)
     local player = source
-    local identifier = gcPhone.getPlayerID(player)
+    local identifier = gcPhoneT.getPlayerID(player)
 
     GetUserEmail(identifier, function(myEmail)
-        local isAble, mbToRemove = gcPhone.isAbleToSurfInternet(identifier, 1.0)
+        local isAble, mbToRemove = gcPhoneT.isAbleToSurfInternet(identifier, 1.0)
         if isAble then
-            gcPhone.usaDatiInternet(identifier, mbToRemove)
+            gcPhoneT.usaDatiInternet(identifier, mbToRemove)
 
             --[[
                 transmitter: this.myEmail,
@@ -61,13 +61,13 @@ end
 
 gcPhoneT.email_requestEmails = function()
     local player = source
-    local identifier = gcPhone.getPlayerID(player)
+    local identifier = gcPhoneT.getPlayerID(player)
 
     GetUserEmail(identifier, function(email)
         FetchAllEmails(email, function(emails)
-            local isAble, mbToRemove = gcPhone.isAbleToSurfInternet(identifier, #emails * 0.05)
+            local isAble, mbToRemove = gcPhoneT.isAbleToSurfInternet(identifier, #emails * 0.05)
             if isAble then
-                gcPhone.usaDatiInternet(identifier, mbToRemove)
+                gcPhoneT.usaDatiInternet(identifier, mbToRemove)
                 TriggerClientEvent("gcphone:email_sendRequestedEmails", player, emails)
             else
                 TriggerClientEvent("gcphone:sendGenericNotification", player, {
@@ -86,13 +86,13 @@ end
 gcPhoneT.email_deleteEmail = function(emailID)
     MySQL.Async.execute("DELETE FROM phone_emails WHERE id = @id", {['@id'] = emailID}, function()
         local player = source
-        local identifier = gcPhone.getPlayerID(player)
+        local identifier = gcPhoneT.getPlayerID(player)
 
         GetUserEmail(identifier, function(email)
             FetchAllEmails(email, function(emails)
-                local isAble, mbToRemove = gcPhone.isAbleToSurfInternet(identifier, #emails * 0.05)
+                local isAble, mbToRemove = gcPhoneT.isAbleToSurfInternet(identifier, #emails * 0.05)
                 if isAble then
-                    gcPhone.usaDatiInternet(identifier, mbToRemove)
+                    gcPhoneT.usaDatiInternet(identifier, mbToRemove)
 
                     TriggerClientEvent("gcphone:email_sendRequestedEmails", player, emails)
                 else
@@ -112,11 +112,11 @@ end
 
 gcPhoneT.email_registerEmail = function(email)
     local player = source
-    local identifier = gcPhone.getPlayerID(player)
+    local identifier = gcPhoneT.getPlayerID(player)
 
-    local isAble, mbToRemove = gcPhone.isAbleToSurfInternet(identifier, 0.5)
+    local isAble, mbToRemove = gcPhoneT.isAbleToSurfInternet(identifier, 0.5)
     if isAble then
-        gcPhone.usaDatiInternet(identifier, mbToRemove)
+        gcPhoneT.usaDatiInternet(identifier, mbToRemove)
         MySQL.Async.insert("INSERT INTO phone_users_emails(identifier, email) VALUES(@identifier, @email)", {
             ['@identifier'] = identifier,
             ['@email'] = email
@@ -135,7 +135,7 @@ end
 
 gcPhoneT.email_requestSentEmails = function(myEmail)
     local player = source
-    local identifier = gcPhone.getPlayerID(player)
+    local identifier = gcPhoneT.getPlayerID(player)
 
     GetUserEmail(identifier, function(email)
         MySQL.Async.fetchAll("SELECT * FROM phone_emails WHERE sender = @sender ORDER BY id DESC LIMIT 50", {
