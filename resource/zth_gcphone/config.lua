@@ -58,6 +58,14 @@ Config.EnsurePropCleanup = false
 -- this will be the coordinates where you'll find the cover
 -- shop for your phone
 Config.CoverShop = vector3(59.89, -1579.18, 29.6)
+-- These are the arguments for the covers shop blip
+Config.CoverShopBlip = {
+    enable = true,
+    name = "Cover shop",
+	sprite = 606,
+	color = 1,
+	scale = 0.8
+}
 
 -- this will be the default cover that your phone will have
 -- on firstlogin of a user. Keep in mind that the prop need to exists in
