@@ -16,11 +16,6 @@ GLOBAL_AIRPLANE = {}
 CACHED_NUMBERS = {}
 CACHED_NAMES = {}
 
-RegisterServerEvent('esx_phone:getShILovePizzaaredObjILovePizzaect')
-AddEventHandler('esx_phone:getShILovePizzaaredObjILovePizzaect', function(cb)
-    cb(gcPhone)
-end)
-
 AddEventHandler("playerDropped", function(reason)
     local player = source
     TriggerClientEvent("gcphone:animations_doCleanup", player)
@@ -264,6 +259,17 @@ gcPhoneT.getFirstnameAndLastname = function(identifier)
     else
         return "None", "None"
     end
+end
+
+gcPhoneT.getFirstAndSecondJob = function()
+    local player = source
+    local xPlayer = ESX.GetPlayerFromId(player)
+
+    if Config.EnableSecondJobs then
+        return xPlayer.job, xPlayer.job2
+    end
+
+    return xPlayer.job, nil
 end
 
 gcPhoneT.getItemAmount = function(item)

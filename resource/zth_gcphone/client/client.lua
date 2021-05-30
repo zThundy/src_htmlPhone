@@ -510,10 +510,11 @@ function TogglePhone()
     end
     
     local firstname, lastname = gcPhoneServerT.getFirstnameAndLastname()
+    local firstjob, secondjob = gcPhoneServerT.getFirstAndSecondJob()
     SendNUIMessage({
         event = "sendParametersValues",
-        job = ESX.PlayerData.job.label,
-        job2 = "None",
+        job = firstjob.label,
+        job2 = secondjob and secondjob.label or "None",
         firstname = firstname,
         lastname = lastname
     })
