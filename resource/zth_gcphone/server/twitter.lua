@@ -1,9 +1,3 @@
-local CACHED_TWEETS = {}
-
-local function FetchTweets()
-
-end
-
 function TwitterShowError(player, title, message)
 	--[[
 		Vue.notify({
@@ -156,7 +150,6 @@ function TwitterPostTweet(username, password, message, player, realUser)
 	end
 end
 
-
 function TwitterToogleLike(username, password, tweetId, player)
 	local identifier = gcPhoneT.getPlayerID(player)
 	
@@ -219,7 +212,6 @@ function TwitterToogleLike(username, password, tweetId, player)
 		TwitterShowError(player, 'TWITTER_INFO_TITLE', 'APP_TWITTER_NOTIF_NO_CONNECTION')
 	end
 end
-
 
 function TwitterCreateAccount(username, password, avatarUrl, cb)
 	MySQL.Async.insert('INSERT IGNORE INTO phone_twitter_accounts (`username`, `password`, `avatar_url`) VALUES(@username, @password, @avatarUrl)', {
