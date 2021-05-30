@@ -1,8 +1,4 @@
-local cachedGroups = {}
-
-MySQL.ready(function()
-    updateCachedGroups()
-end)
+local WHATSAPP_GROUPS = {}
 
 local function WhatsappShowNotificationError(player, titile, message)
 	--[[
@@ -47,10 +43,14 @@ end
 local function updateCachedGroups()
     local r = MySQL.Sync.fetchAll("SELECT * FROM phone_whatsapp_groups", {})
     for k, v in pairs(r) do
-        cachedGroups[tonumber(v.id)] = v
+        WHATSAPP_GROUPS[tonumber(v.id)] = v
     end
-    return cachedGroups
+    return WHATSAPP_GROUPS
 end
+
+MySQL.ready(function()
+    updateCachedGroups()
+end)
 
 function formatTableIndex(table)
     local tb = {}
@@ -116,7 +116,7 @@ gcPhoneT.whatsapp_sendMessage = function(data)
         }, function(id)
             -- print("ho fatto la query. id è", id)
             if id > 0 then
-                local group = cachedGroups[tonumber(data.id)]
+                local group = WHATSAPP_GROUPS[tonumber(data.id)]
 
                 for _, val in pairs(json.decode(group.partecipanti)) do
                     -- print(val.number, "il numero del partecipante è questo")
