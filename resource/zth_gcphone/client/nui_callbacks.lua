@@ -4,7 +4,7 @@ RegisterNUICallback("updateNotifications", function(data, cb)
 end)
 
 RegisterNUICallback("updateAirplane", function(data, cb)
-    enableGlobalAirplane = data
+    GLOBAL_AIRPLANE = data
     gcPhoneServerT.updateAirplaneForUser(data)
     cb("ok")
 end)
@@ -27,8 +27,8 @@ RegisterNUICallback("sendStartupValues", function(data, cb)
         myCover = string.gsub(data.cover.value, ".png", "")
     end
     
-    enableGlobalAirplane = data.airplane
-    gcPhoneServerT.updateAirplaneForUser(enableGlobalAirplane)
+    GLOBAL_AIRPLANE = data.airplane
+    gcPhoneServerT.updateAirplaneForUser(GLOBAL_AIRPLANE)
 
     volume = data.volume
     UpdateGlobalVolume()
@@ -57,7 +57,7 @@ RegisterNUICallback('soundLockscreen', function(data, cb)
 end)
 
 RegisterNUICallback('startCall', function(data, cb)
-    if not enableGlobalAirplane then
+    if not GLOBAL_AIRPLANE then
         if data.rtcOffer == nil then data.rtcOffer = '' end
         gcPhoneServerT.startCall(data.numero, data.rtcOffer, data.extraData)
     else
@@ -126,7 +126,7 @@ RegisterNUICallback('getMessages', function(data, cb)
 end)
 
 RegisterNUICallback('sendMessage', function(data, cb)
-    if not enableGlobalAirplane then
+    if not GLOBAL_AIRPLANE then
         if data.message == '%pos%' then
             local myPos = GetEntityCoords(PlayerPedId())
             data.message = 'GPS: ' .. myPos.x .. ', ' .. myPos.y

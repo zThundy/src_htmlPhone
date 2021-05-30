@@ -12,7 +12,7 @@ playersInCall = {}
 built_phones = false
 phone_loaded = false
 
-enableGlobalAirplane = {}
+GLOBAL_AIRPLANE = {}
 CACHED_NUMBERS = {}
 CACHED_NAMES = {}
 
@@ -106,7 +106,7 @@ end
 gcPhoneT.updateAirplaneForUser = function(bool)
     local player = source
     local identifier = gcPhoneT.getPlayerID(player)
-    enableGlobalAirplane[identifier] = bool
+    GLOBAL_AIRPLANE[identifier] = bool
 end
 
 gcPhoneT.updateSegnaleTelefono = function(potenza)
@@ -134,11 +134,11 @@ gcPhoneT.updateReteWifi = function(connected, rete)
     end
 end
 
-function gcPhoneT.getAirplaneForUser(identifier)
-    return enableGlobalAirplane[identifier]
+gcPhoneT.getAirplaneForUser = function(identifier)
+    return GLOBAL_AIRPLANE[identifier]
 end
 
-function gcPhoneT.getPlayerSegnaleIndex(tabella, identifier)
+gcPhoneT.getPlayerSegnaleIndex = function(tabella, identifier)
 	index = nil
 	
     for i=1, #tabella do
@@ -151,14 +151,14 @@ function gcPhoneT.getPlayerSegnaleIndex(tabella, identifier)
 	return index
 end
 
-function gcPhoneT.usaDatiInternet(identifier, value)
+gcPhoneT.usaDatiInternet = function(identifier, value)
     local phone_number = gcPhoneT.getPhoneNumber(identifier)
 	local dati = GetPianoTariffarioParam(phone_number, "dati")
 
     gcPhoneT.updateParametroTariffa(phone_number, "dati", dati - value)
 end
 
-function gcPhoneT.isAbleToSurfInternet(identifier, neededMB)
+gcPhoneT.isAbleToSurfInternet = function(identifier, neededMB)
 	local phone_number = gcPhoneT.getPhoneNumber(identifier)
 	
 	local iSegnalePlayer = gcPhoneT.getPlayerSegnaleIndex(segnaliTelefoniPlayers, identifier)
@@ -185,7 +185,7 @@ function gcPhoneT.isAbleToSurfInternet(identifier, neededMB)
     end
 end
 
-function gcPhoneT.isAbleToSendMessage(identifier, cb)
+gcPhoneT.isAbleToSendMessage = function(identifier, cb)
 	local phone_number = gcPhoneT.getPhoneNumber(identifier)
 	
     local iSegnalePlayer = gcPhoneT.getPlayerSegnaleIndex(segnaliTelefoniPlayers, identifier)
@@ -207,7 +207,7 @@ function gcPhoneT.isAbleToSendMessage(identifier, cb)
     end
 end
 
-function gcPhoneT.isAbleToCall(identifier, cb)
+gcPhoneT.isAbleToCall = function(identifier, cb)
 	local phone_number = gcPhoneT.getPhoneNumber(identifier)
     local xPlayer = ESX.GetPlayerFromIdentifier(identifier)
     local hasAirplane = gcPhoneT.getAirplaneForUser(identifier)

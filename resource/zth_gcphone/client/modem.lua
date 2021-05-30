@@ -1,10 +1,11 @@
 Citizen.CreateThread(function()
     while ESX == nil do Citizen.Wait(1000) end
 
+	local coords = Config.ModemManagement
     TriggerEvent('gridsystem:registerMarker', {
 		name = "modem_management",
 		type = 20,
-		pos = Config.ModemManagement,
+		pos = coords,
 		color = { r = 55, b = 255, g = 55 },
 		scale = vector3(0.8, 0.8, 0.8),
         action = function()
@@ -12,6 +13,21 @@ Citizen.CreateThread(function()
 		end,
 		msg = "Premi ~INPUT_CONTEXT~ per acquistare un modem",
 	})
+
+	local info = Config.ModemManagementBlip
+	if info.enable then
+		local blip = AddBlipForCoord(coords.x, coords.y, coords.z)
+		SetBlipHighDetail(blip, true)
+		SetBlipSprite(blip, info.sprite)
+		SetBlipColour(blip, info.color)
+		SetBlipScale(blip, info.scale)
+		SetBlipAsShortRange(blip, true)
+		-- SetBlipAlpha(blip, 255)
+
+		BeginTextCommandSetBlipName("STRING")
+		AddTextComponentString(info.name)
+		EndTextCommandSetBlipName(blip)
+	end
 end)
 
 RegisterNetEvent("gcphone:modem_chooseCredentials")

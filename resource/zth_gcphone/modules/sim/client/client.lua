@@ -20,17 +20,19 @@ Citizen.CreateThread(function()
 	})
 
 	local info = Config.TariffsBlip
-	local blip = AddBlipForCoord(coords.x, coords.y, coords.z)
-	SetBlipHighDetail(blip, true)
-	SetBlipSprite(blip, info.sprite)
-	SetBlipColour(blip, info.color)
-	SetBlipScale(blip, info.scale)
-	SetBlipAsShortRange(blip, true)
-	-- SetBlipAlpha(blip, 255)
+	if info.enable then
+		local blip = AddBlipForCoord(coords.x, coords.y, coords.z)
+		SetBlipHighDetail(blip, true)
+		SetBlipSprite(blip, info.sprite)
+		SetBlipColour(blip, info.color)
+		SetBlipScale(blip, info.scale)
+		SetBlipAsShortRange(blip, true)
+		-- SetBlipAlpha(blip, 255)
 
-	BeginTextCommandSetBlipName("STRING")
-	AddTextComponentString(info.name)
-	EndTextCommandSetBlipName(blip)
+		BeginTextCommandSetBlipName("STRING")
+		AddTextComponentString(info.name)
+		EndTextCommandSetBlipName(blip)
+	end
 
 	RegisterKeyMapping('+openSimMenu', 'Menù sim', 'keyboard', Config.SimCardKey)
 	RegisterCommand('+openSimMenu', function() OpenSimMenu() end, false)

@@ -117,6 +117,14 @@ Config.Covers = {
 
 -- These are the coords where the modem shop will be located
 Config.ModemManagement = vector3(68.31, -1569.53, 29.6)
+-- These are the arguments for the modem shop blip
+Config.ModemManagementBlip = {
+    enable = true,
+    name = "Modem shop",
+	sprite = 606,
+	color = 1,
+	scale = 0.8
+}
 
 -- this are self explainatory. But i will do it anyway ;)
 -- BuyModemPrice is the price the user will need to pay to buy a

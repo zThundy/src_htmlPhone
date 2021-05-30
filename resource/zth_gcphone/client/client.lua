@@ -13,7 +13,7 @@ inCall = false
 stoppedPlayingUnreachable = false
 secondiRimanenti = 0
 enableGlobalNotification = true
-enableGlobalAirplane = false
+GLOBAL_AIRPLANE = false
 
 PhoneInCall = {}
 currentPlaySound = false
@@ -179,7 +179,7 @@ AddEventHandler("gcPhone:allMessage", function(allmessages, notReceivedMessages)
     SendNUIMessage({ event = 'updateMessages', messages = allmessages })
     messages = allmessages
 
-    if not enableGlobalAirplane then
+    if not GLOBAL_AIRPLANE then
         if notReceivedMessages ~= nil then
             if notReceivedMessages > 0 then
                 if notReceivedMessages == 1 then
@@ -231,7 +231,7 @@ RegisterNetEvent("gcPhone:receiveMessage")
 AddEventHandler("gcPhone:receiveMessage", function(message)
     if not message then return end
     
-    if not enableGlobalAirplane then
+    if not GLOBAL_AIRPLANE then
         SendNUIMessage({ event = 'newMessage', message = message })
         table.insert(messages, message)
 
