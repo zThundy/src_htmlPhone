@@ -31,10 +31,10 @@ function module(rsc, path) -- load a LUA resource file as module
                 return table.unpack(ar)
             else
                 modules[key] = nil
-                print("~r~[zTH_gcPhone] ~w~Error loading module "..rsc.."/"..path..":"..ar[2])
+                print("^1[ZTH_Phone] ^0Error loading module "..rsc.."/"..path..":"..ar[2])
             end
         else
-            print("~r~[zTH_gcPhone] ~w~Error parsing module "..rsc.."/"..path..":"..err)
+            print("^1[ZTH_Phone] ^0Error parsing module "..rsc.."/"..path..":"..err)
         end
     end
 end

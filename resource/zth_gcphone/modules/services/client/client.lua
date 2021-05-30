@@ -10,6 +10,8 @@ if Config.HasDispatchScript then
     end
 end
 
+local ids = 0
+
 RegisterNetEvent('esx_addons_gcphone:call')
 AddEventHandler('esx_addons_gcphone:call', function(data)
     local coords = data.coords
@@ -33,17 +35,12 @@ AddEventHandler('esx_addons_gcphone:call', function(data)
     end
 
     if Config.HasDispatchScript and number == "police" then
-        math.randomseed(GetCloudTimeAsInt())
-        local template ='xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'
-        local uuid = string.gsub(template, '[xy]', function (c)
-            local v = (c == 'x') and math.random(0, 0xf) or math.random(8, 0xb)
-            return string.format('%x', v)
-        end)
+        ids = ids + 1
 
         TriggerServerEvent("dispatch:svNotify", {
 			code = "911",
 			street = GetStreetAndZone(),
-			id = uuid,
+			id = ids,
 			priority = 3,
 			title = "Chiamata di emergenza",
 			position = {
