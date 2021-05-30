@@ -60,8 +60,8 @@ gcPhoneT.modem_cambiaPassword = function(password)
     local player = source
     local xPlayer = ESX.GetPlayerFromId(player)
 
-    if xPlayer.getAccount("bank").money >= Config.ChangePasswordPoints then
-        xPlayer.removeAccountMoney("bank", Config.ChangePasswordPoints)
+    if xPlayer.getAccount("bank").money >= Config.ChangePasswordPrice then
+        xPlayer.removeAccountMoney("bank", Config.ChangePasswordPrice)
 
         Reti.UpdateReteWifi(player, { password = password }, "password")
         TriggerClientEvent("gcphone:modem_updateMenu", player)
