@@ -40,17 +40,15 @@ function TakePhoto(data, cb)
 	  	elseif IsControlJustPressed(1, 176) then -- TAKE.. PIC
 			takePhoto = false
 			disableCameraMovement = true
-			if data.options == nil then data.options = { width = 800 } end 
-			data.options.headers = {['Authorization'] = string.format('Client-ID %s', Config.ImgurClientId)}
 			
-		  	exports['screenshot-basic']:requestScreenshotUpload(data.url, data.field, { headers = data.options.headers }, function(data)
+		  	exports['screenshot-basic']:requestScreenshotUpload(Config.DiscordWebhook, "files[]", function(data)
 				local resp = json.decode(data)
 				DestroyMobilePhone()
 				CellCamActivate(false, false)
 
-				if resp.data then
-					cb(json.encode({ url = resp.data.link }))
-					SendNUIMessage({ event = "addPhotoToGallery", link = resp.data.link })
+				if resp.attachments and resp.attachments[1] then
+					cb(json.encode({ url = resp.attachments[1].proxy_url }))
+					SendNUIMessage({ event = "addPhotoToGallery", link = resp.attachments[1].proxy_url })
 					
 					DestroyMobilePhone()
 					CellCamActivate(false, false)

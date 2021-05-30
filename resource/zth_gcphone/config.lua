@@ -34,10 +34,8 @@ Config.PhoneItemName = "phone"
 Config.BluetoothRange = 5.0
 Config.MaxSunoeriaDistance = 10.0
 
--- Imgur client id for api
--- If you don't know how to upload images to imgur please visit
--- https://apidocs.imgur.com/
-Config.ImgurClientId = "1a792f246b071c4"
+-- Discord webhook for photo uploading
+Config.DiscordWebhook = "YOUR_WEBHOOK_HERE"
 
 -- ATTENCTION: IF YOU DON'T KNOW WHAT YOU'RE DOING, DO NOT CHANGE THIS VALUE
 -- if enabled and if second jobs are present in the server (as array in jobs named
