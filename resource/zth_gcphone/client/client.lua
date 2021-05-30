@@ -23,8 +23,7 @@ volume = 0.5
 
 segnaleRadio = 0
 retiWifi = {}
-retiConosciute = {}
-tempDataWifi = {}
+WIFI_TEMP_DATA = {}
 isConnected = false
 myPhoneNumber = ''
 
@@ -45,7 +44,8 @@ Citizen.CreateThread(function()
     gcPhoneServerT.allUpdate()
 end)
 
-AddEventHandler('tcm_player:updateDeathStatus',function(_isDead) isDead = _isDead end)
+RegisterNetEvent("esx_ambulancejob:setDeathStatus")
+AddEventHandler('esx_ambulancejob:setDeathStatus', function(_isDead) isDead = _isDead end)
 
 --====================================================================================
 --  
@@ -141,16 +141,13 @@ function PlaySoundJS(sound)
     SendNUIMessage({ event = 'playSound', sound = sound, volume = volume })
 end
 
-
 function SetSoundVolumeJS(sound, vol)
     SendNUIMessage({ event = 'setSoundVolume', sound = sound, volume = vol })
 end
 
-
 function UpdateGlobalVolume()
     SendNUIMessage({ event = 'updateGlobalVolume', volume = volume })
 end
-
 
 function StopSoundJS(sound)
     SendNUIMessage({ event = 'stopSound', sound = sound })
@@ -166,13 +163,11 @@ AddEventHandler("gcPhone:updatePhoneNumber", function(phone_number)
     SendNUIMessage({ event = 'updateMyPhoneNumber', myPhoneNumber = myPhoneNumber })
 end)
 
-
 RegisterNetEvent("gcPhone:contactList")
 AddEventHandler("gcPhone:contactList", function(_contacts)
     contacts = _contacts
     SendNUIMessage({ event = 'updateContacts', contacts = contacts })
 end)
-
 
 RegisterNetEvent("gcPhone:allMessage")
 AddEventHandler("gcPhone:allMessage", function(allmessages, notReceivedMessages)
@@ -206,12 +201,10 @@ end)
     end)
 ]]
 
-
 RegisterNetEvent("gcphone:updateValoriDati")
 AddEventHandler("gcphone:updateValoriDati", function(table)
     SendNUIMessage({ event = "updateDati", data = table })
 end)
-
 
 RegisterNetEvent("gcphone:aggiornameAConnessione")
 AddEventHandler("gcphone:aggiornameAConnessione", function(potenzaSegnale)
@@ -226,7 +219,6 @@ AddEventHandler("gcphone:aggiornameAConnessione", function(potenzaSegnale)
     gcPhoneServerT.updateSegnaleTelefono(potenzaSegnale)
 end)
 
-
 RegisterNetEvent("gcPhone:receiveMessage")
 AddEventHandler("gcPhone:receiveMessage", function(message)
     if not message then return end
@@ -239,11 +231,11 @@ AddEventHandler("gcPhone:receiveMessage", function(message)
             local text = 'Hai ricevuto un messaggio'
 
             if Config.ShowNumberNotification then
-                text = 'Hai ricevuto un messaggio da '..message.transmitter
+                text = 'Hai ricevuto un messaggio da ' .. message.transmitter
 
-                for _,contact in pairs(contacts) do
+                for _, contact in pairs(contacts) do
                     if contact.number == message.transmitter then
-                        text = 'Hai ricevuto un messaggio da '..contact.display
+                        text = 'Hai ricevuto un messaggio da ' .. contact.display
 
                         break
                     end
@@ -264,7 +256,6 @@ end)
 --  Function client | Appels
 --====================================================================================
 
-
 RegisterNetEvent("gcPhone:waitingCall")
 AddEventHandler("gcPhone:waitingCall", function(infoCall, initiator)
     if inCall then return end
@@ -279,7 +270,6 @@ AddEventHandler("gcPhone:waitingCall", function(infoCall, initiator)
         end
     end
 end)
-
 
 RegisterNetEvent("gcPhone:phoneUnreachable")
 AddEventHandler("gcPhone:phoneUnreachable", function(infoCall, initiator)
@@ -313,7 +303,6 @@ AddEventHandler("gcPhone:phoneUnreachable", function(infoCall, initiator)
     end)
 end)
 
-
 RegisterNetEvent("gcPhone:phoneNoSignal")
 AddEventHandler("gcPhone:phoneNoSignal", function(infoCall, initiator)
     secondiRimanenti = infoCall.secondiRimanenti
@@ -346,7 +335,6 @@ AddEventHandler("gcPhone:phoneNoSignal", function(infoCall, initiator)
         end
     end)
 end)
-
 
 -- questo evento viene chiamato dal server quando un giocatore
 -- entra in chiamata con un altro. Questo permette allo script di rimuovere
@@ -410,7 +398,6 @@ AddEventHandler("gcPhone:acceptCall", function(infoCall, initiator)
     SendNUIMessage({event = 'acceptCall', infoCall = infoCall, initiator = initiator})
 end)
 
-
 RegisterNetEvent("gcPhone:rejectCall")
 AddEventHandler("gcPhone:rejectCall", function(infoCall)
     -- print("--------------- call ended")
@@ -449,7 +436,6 @@ AddEventHandler("gcPhone:rejectCall", function(infoCall)
     SendNUIMessage({event = 'rejectCall', infoCall = infoCall})
 end)
 
-
 RegisterNetEvent("gcPhone:historiqueCall")
 AddEventHandler("gcPhone:historiqueCall", function(historique)
     SendNUIMessage({event = 'historiqueCall', historique = historique})
@@ -458,7 +444,6 @@ end)
 --====================================================================================
 --  Event NUI - Appels
 --====================================================================================
-
 
 RegisterNetEvent("gcPhone:sendRequestedOfferta")
 AddEventHandler("gcPhone:sendRequestedOfferta", function(dati, label)
@@ -472,16 +457,14 @@ AddEventHandler("gcPhone:sendRequestedOfferta", function(dati, label)
                 massimo.dati
             }
         }
-        SendNUIMessage({event = "updateOfferta", data = info})
+        SendNUIMessage({ event = "updateOfferta", data = info })
     end, label)
 end)
-
 
 RegisterNetEvent("gcPhone:candidates")
 AddEventHandler("gcPhone:candidates", function(candidates)
     SendNUIMessage({event = 'candidatesAvailable', candidates = candidates})
 end)
-
 
 RegisterNetEvent('gcphone:autoCall')
 AddEventHandler('gcphone:autoCall', function(number, extraData)
@@ -489,7 +472,6 @@ AddEventHandler('gcphone:autoCall', function(number, extraData)
         SendNUIMessage({ event = "autoStartCall", number = number, extraData = extraData})
     end
 end)
-
 
 RegisterNetEvent('gcphone:autoCallNumber')
 AddEventHandler('gcphone:autoCallNumber', function(data)
@@ -516,14 +498,6 @@ function GetResponseText(d)
 
     return text
 end
-
---====================================================================================
---  Event - Messages
---====================================================================================
-
---====================================================================================
---  Contatti
---====================================================================================
 
 function TogglePhone()
     ESX.PlayerData = ESX.GetPlayerData()
@@ -588,8 +562,8 @@ function StartWifiRangeCheck()
             if isConnected then
                 -- print("sei connesso")
                 for k, v in pairs(retiWifi) do
-                    -- print(v.label, tempDataWifi.label, v.password, tempDataWifi.password)
-                    if v.label == tempDataWifi.label and v.password == tempDataWifi.password then
+                    -- print(v.label, WIFI_TEMP_DATA.label, v.password, WIFI_TEMP_DATA.password)
+                    if v.label == WIFI_TEMP_DATA.label and v.password == WIFI_TEMP_DATA.password then
                         found = true
                         -- print("rete trovata")
                         break
@@ -598,7 +572,7 @@ function StartWifiRangeCheck()
                 -- print(found)
                 if not found then
                     isConnected = false
-                    tempDataWifi = {}
+                    WIFI_TEMP_DATA = {}
                     gcPhoneServerT.updateReteWifi(isConnected, nil)
                 end
             else
@@ -650,13 +624,14 @@ Citizen.CreateThread(function()
     local mod = 0
     local inRangeToActivePhone = false
     local inRangedist = 0
+    local dist = 0
 
     while true do
         if #PhoneInCall > 0 then
             local coords = GetEntityCoords(GetPlayerPed(-1))
 
-            for i, v in pairs(PhoneInCall) do 
-                local dist = GetDistanceBetweenCoords(v.coords.x, v.coords.y, v.coords.z, coords, true)
+            for i, v in pairs(PhoneInCall) do
+                dist = GetDistanceBetweenCoords(v.coords.x, v.coords.y, v.coords.z, coords, true)
 
                 if dist <= soundDistanceMax then
                     inRangeToActivePhone = true
@@ -678,16 +653,16 @@ Citizen.CreateThread(function()
                 end
             end
 
-            if inRangeToActivePhone == true and currentPlaySound == false then
+            if inRangeToActivePhone and not currentPlaySound then
                 PlaySoundJS('ring2.ogg', 0.2 + (inRangedist - soundDistanceMax) / - (soundDistanceMax * 0.8) )
                 currentPlaySound = true
-            elseif inRangeToActivePhone == true then
+            elseif inRangeToActivePhone then
                 mod = mod + 1
                 if mod == 15 then
                     mod = 0
                     SetSoundVolumeJS('ring2.ogg', 0.2 + (inRangedist - soundDistanceMax) / - (soundDistanceMax * 0.8) )
                 end
-            elseif inRangeToActivePhone == false and currentPlaySound == true then
+            elseif not inRangeToActivePhone and currentPlaySound then
                 currentPlaySound = false
                 StopSoundJS('ring2.ogg')
             end

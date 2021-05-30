@@ -963,7 +963,7 @@ end
 RegisterServerEvent("esx:playerLoaded")
 AddEventHandler('esx:playerLoaded', function(source, xPlayer)
     local player = tonumber(source)
-    if not built_phones then buildPhones() end
+    -- if not built_phones then buildPhones() end
 
     local identifier = gcPhoneT.getPlayerID(player)
     local phone_number = gcPhoneT.getPhoneNumber(identifier)
@@ -997,7 +997,7 @@ gcPhoneT.updateAvatarContatto = function(data)
     local player = source
     local identifier = gcPhoneT.getPlayerID(player)
 
-    MySQL.Async.execute("UPDATE phone_users_contacts SET icon = '"..data.icon.."' WHERE id = '"..data.id.."'", {})
+    MySQL.Async.execute("UPDATE phone_users_contacts SET icon = '" .. data.icon .. "' WHERE id = '" .. data.id .. "'", {})
     SetTimeout(2000, function()
         TriggerClientEvent("gcPhone:contactList", player, getContacts(identifier))
     end)
@@ -1014,41 +1014,6 @@ function getUnreceivedMessages(identifier)
     end
 
     return notReceivedMessages
-end
-
---====================================================================================
---  App bourse
---====================================================================================
---[[
-    local result = {
-        {
-            libelle = 'Google',
-            price = 125.2,
-            difference =  -12.1
-        },
-        {
-            libelle = 'Microsoft',
-            price = 132.2,
-            difference = 3.1
-        },
-        {
-            libelle = 'Amazon',
-            price = 120,
-            difference = 0
-        }
-    }
-]]
-
-function getInfoBorsa()
-    local tavola = {}
-
-    table.insert(tavola, {
-        libelle = "Google",
-        price = 200,
-        difference = -10
-    })
-    
-    return tavola
 end
 
 --====================================================================================
