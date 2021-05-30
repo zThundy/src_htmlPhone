@@ -1,5 +1,5 @@
 -- --------------------------------------------------------
--- Host:                         45.14.185.32
+-- Host:                         127.0.0.1
 -- Versione server:              5.7.32-log - MySQL Community Server (GPL)
 -- S.O. server:                  Win64
 -- HeidiSQL Versione:            10.3.0.5771
@@ -13,7 +13,7 @@
 
 
 -- Dump della struttura del database esfx
-CREATE DATABASE IF NOT EXISTS `esfx` /*!40100 DEFAULT CHARACTER SET utf8mb4 */;
+CREATE DATABASE IF NOT EXISTS `esfx` /*!40100 DEFAULT CHARACTER SET utf8 */;
 USE `esfx`;
 
 SELECT COUNT(*)
@@ -40,6 +40,67 @@ INSERT INTO `items` (`name`, `label`, `weigth`) VALUES
   ('phone', 'Phone', 1),
   ('sim', 'Sim', 1),
   ('modem', 'Modem', 1);
+
+-- Dump della struttura di tabella esfx.phone_app_chat
+CREATE TABLE IF NOT EXISTS `phone_app_chat` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `channel` varchar(20) NOT NULL,
+  `message` varchar(255) NOT NULL,
+  `time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- Dump dei dati della tabella esfx.phone_app_chat: ~0 rows (circa)
+DELETE FROM `phone_app_chat`;
+/*!40000 ALTER TABLE `phone_app_chat` DISABLE KEYS */;
+/*!40000 ALTER TABLE `phone_app_chat` ENABLE KEYS */;
+
+-- Dump della struttura di tabella esfx.phone_azienda_messages
+CREATE TABLE IF NOT EXISTS `phone_azienda_messages` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `azienda` varchar(255) DEFAULT NULL,
+  `authorIdentifier` varchar(255) DEFAULT NULL,
+  `authorName` varchar(255) DEFAULT NULL,
+  `authorNumber` varchar(255) DEFAULT NULL,
+  `message` varchar(255) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- Dump dei dati della tabella esfx.phone_azienda_messages: ~0 rows (circa)
+DELETE FROM `phone_azienda_messages`;
+/*!40000 ALTER TABLE `phone_azienda_messages` DISABLE KEYS */;
+/*!40000 ALTER TABLE `phone_azienda_messages` ENABLE KEYS */;
+
+-- Dump della struttura di tabella esfx.phone_bank_movements
+CREATE TABLE IF NOT EXISTS `phone_bank_movements` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `amount` bigint(20) NOT NULL DEFAULT '0',
+  `type` varchar(255) DEFAULT NULL,
+  `to` varchar(255) DEFAULT NULL,
+  `from` varchar(255) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+-- Dump dei dati della tabella esfx.phone_bank_movements: ~0 rows (circa)
+DELETE FROM `phone_bank_movements`;
+/*!40000 ALTER TABLE `phone_bank_movements` DISABLE KEYS */;
+/*!40000 ALTER TABLE `phone_bank_movements` ENABLE KEYS */;
+
+-- Dump della struttura di tabella esfx.phone_calls
+CREATE TABLE IF NOT EXISTS `phone_calls` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `owner` varchar(10) NOT NULL COMMENT 'Num tel proprio',
+  `num` varchar(10) NOT NULL COMMENT 'Num reférence du contact',
+  `incoming` int(11) NOT NULL COMMENT 'Défini si on est à l''origine de l''appels',
+  `time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `accepts` int(11) NOT NULL COMMENT 'Appels accepter ou pas',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- Dump dei dati della tabella esfx.phone_calls: ~0 rows (circa)
+DELETE FROM `phone_calls`;
+/*!40000 ALTER TABLE `phone_calls` DISABLE KEYS */;
+/*!40000 ALTER TABLE `phone_calls` ENABLE KEYS */;
 
 -- Dump della struttura di tabella esfx.phone_cell_towers
 CREATE TABLE IF NOT EXISTS `phone_cell_towers` (
@@ -104,98 +165,23 @@ INSERT INTO `phone_cell_towers` (`id`, `tower_label`, `x`, `y`, `broken`) VALUES
 	(47, 'torre47', -2191.29, 4276.4, 0);
 /*!40000 ALTER TABLE `phone_cell_towers` ENABLE KEYS */;
 
--- Dump della struttura di tabella esfx.phone_wifi_nets
-CREATE TABLE IF NOT EXISTS `phone_wifi_nets` (
-  `steam_id` varchar(50) NOT NULL DEFAULT '',
-  `label` varchar(32) NOT NULL DEFAULT '',
-  `password` varchar(32) NOT NULL DEFAULT '',
-  `x` double NOT NULL,
-  `y` double NOT NULL,
-  `z` double NOT NULL,
-  `created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `due_date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `not_expire` int(11) NOT NULL DEFAULT '0',
-  PRIMARY KEY (`steam_id`),
-  UNIQUE KEY `coordinate` (`x`,`y`,`z`)
+-- Dump della struttura di tabella esfx.phone_crypto_market
+CREATE TABLE IF NOT EXISTS `phone_crypto_market` (
+  `name` varchar(50) NOT NULL DEFAULT 'BTC',
+  `price` double NOT NULL DEFAULT '0',
+  `old_price` double NOT NULL DEFAULT '0',
+  `last_fluctuation` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`name`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
--- Dump dei dati della tabella esfx.phone_wifi_nets: ~11 rows (circa)
-DELETE FROM `phone_wifi_nets`;
-/*!40000 ALTER TABLE `phone_wifi_nets` DISABLE KEYS */;
-INSERT INTO `phone_wifi_nets` (`steam_id`, `label`, `password`, `x`, `y`, `z`, `created`, `due_date`, `not_expire`) VALUES
-	('1696', 'Agenzia Immobiliare', 'pancettadivina', -72.955, -815.827, 243.386, '2021-01-12 17:46:28', '2021-02-11 16:02:28', 0),
-	('2181', 'HouseSaint', 'housesaint', -1346.24, 445.33, 100.55, '2021-01-06 15:07:59', '2021-02-05 14:02:59', 0),
-	('2410', 'aArmeriAa', 'SantiagoTop', 15.702, -1105.764, 29.797, '2020-12-29 05:10:20', '2021-01-28 04:01:20', 0),
-	('2427', 'YellowJack', 'YellowJack', 1987.937, 3050.767, 47.215, '2021-01-06 17:25:43', '2021-02-05 16:02:43', 0),
-	('2596', 'Liquify', '3casse', -479.063, 629.674, 144.182, '2021-01-17 03:00:27', '2021-02-16 02:02:27', 0),
-	('2861', 'BurgerShot', 'taverLello', -1190.953, -892.216, 14.86, '2021-01-09 20:36:45', '2021-02-08 19:02:45', 0),
-	('2940', 'Th-001', '', -1083.495, -249.195, 37.763, '2021-01-22 23:45:42', '2021-02-21 22:02:42', 0),
-	('845', 'Viandante', 'Viandante', 1397.005, 1146.49, 114.336, '2020-12-25 03:00:37', '2021-01-24 02:01:37', 0),
-	('846', 'VANILLA', 'CUBALIBRE', 119.328, -1286.555, 28.271, '2021-01-05 21:30:59', '2021-02-04 20:02:59', 0),
-	('lifeinvader', 'Life Invader', 'llifeinvader', -1075.832, -248.41, 37.763, '2020-12-18 21:11:10', '2020-12-18 21:11:25', 1),
-	('polizia', 'Centrale', 'policeenforce', 447.118, -985.24, 30.69, '2020-12-18 21:11:10', '2020-12-18 21:11:25', 1);
-/*!40000 ALTER TABLE `phone_wifi_nets` ENABLE KEYS */;
-
--- Dump della struttura di tabella esfx.phone_app_chat
-CREATE TABLE IF NOT EXISTS `phone_app_chat` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `channel` varchar(20) NOT NULL,
-  `message` varchar(255) NOT NULL,
-  `time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
--- Dump dei dati della tabella esfx.phone_app_chat: ~0 rows (circa)
-DELETE FROM `phone_app_chat`;
-/*!40000 ALTER TABLE `phone_app_chat` DISABLE KEYS */;
-/*!40000 ALTER TABLE `phone_app_chat` ENABLE KEYS */;
-
--- Dump della struttura di tabella esfx.phone_azienda_messages
-CREATE TABLE IF NOT EXISTS `phone_azienda_messages` (
-  `id` bigint(20) NOT NULL AUTO_INCREMENT,
-  `azienda` varchar(255) DEFAULT NULL,
-  `authorIdentifier` varchar(255) DEFAULT NULL,
-  `authorName` varchar(255) DEFAULT NULL,
-  `authorNumber` varchar(255) DEFAULT NULL,
-  `message` varchar(255) DEFAULT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
--- Dump dei dati della tabella esfx.phone_azienda_messages: ~0 rows (circa)
-DELETE FROM `phone_azienda_messages`;
-/*!40000 ALTER TABLE `phone_azienda_messages` DISABLE KEYS */;
-/*!40000 ALTER TABLE `phone_azienda_messages` ENABLE KEYS */;
-
--- Dump della struttura di tabella esfx.phone_bank_movements
-CREATE TABLE IF NOT EXISTS `phone_bank_movements` (
-  `id` bigint(20) NOT NULL AUTO_INCREMENT,
-  `amount` bigint(20) NOT NULL DEFAULT '0',
-  `type` varchar(255) DEFAULT NULL,
-  `to` varchar(255) DEFAULT NULL,
-  `from` varchar(255) DEFAULT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-
--- Dump dei dati della tabella esfx.phone_bank_movements: ~0 rows (circa)
-DELETE FROM `phone_bank_movements`;
-/*!40000 ALTER TABLE `phone_bank_movements` DISABLE KEYS */;
-/*!40000 ALTER TABLE `phone_bank_movements` ENABLE KEYS */;
-
--- Dump della struttura di tabella esfx.phone_calls
-CREATE TABLE IF NOT EXISTS `phone_calls` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `owner` varchar(10) NOT NULL COMMENT 'Num tel proprio',
-  `num` varchar(10) NOT NULL COMMENT 'Num reférence du contact',
-  `incoming` int(11) NOT NULL COMMENT 'Défini si on est à l''origine de l''appels',
-  `time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `accepts` int(11) NOT NULL COMMENT 'Appels accepter ou pas',
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
--- Dump dei dati della tabella esfx.phone_calls: ~0 rows (circa)
-DELETE FROM `phone_calls`;
-/*!40000 ALTER TABLE `phone_calls` DISABLE KEYS */;
-/*!40000 ALTER TABLE `phone_calls` ENABLE KEYS */;
+-- Dump dei dati della tabella esfx.phone_crypto_market: ~3 rows (circa)
+DELETE FROM `phone_crypto_market`;
+/*!40000 ALTER TABLE `phone_crypto_market` DISABLE KEYS */;
+INSERT INTO `phone_crypto_market` (`name`, `price`, `old_price`, `last_fluctuation`) VALUES
+	('BTC', 11.489, 17.863, '2021-05-29 16:13:55'),
+	('DODGE', 37.063, 3.663, '2021-05-29 16:13:55'),
+	('HTR', 1.153, 29.763, '2021-05-29 16:13:55');
+/*!40000 ALTER TABLE `phone_crypto_market` ENABLE KEYS */;
 
 -- Dump della struttura di tabella esfx.phone_darkweb_messages
 CREATE TABLE IF NOT EXISTS `phone_darkweb_messages` (
@@ -272,7 +258,7 @@ CREATE TABLE IF NOT EXISTS `phone_instagram_posts` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
--- Dump dei dati della tabella esfx.phone_instagram_posts: ~0 rows (circa)
+-- Dump dei dati della tabella esfx.phone_instagram_posts: ~1 rows (circa)
 DELETE FROM `phone_instagram_posts`;
 /*!40000 ALTER TABLE `phone_instagram_posts` DISABLE KEYS */;
 /*!40000 ALTER TABLE `phone_instagram_posts` ENABLE KEYS */;
@@ -310,94 +296,6 @@ CREATE TABLE IF NOT EXISTS `phone_news` (
 DELETE FROM `phone_news`;
 /*!40000 ALTER TABLE `phone_news` DISABLE KEYS */;
 /*!40000 ALTER TABLE `phone_news` ENABLE KEYS */;
-
--- Dump della struttura di tabella esfx.phone_users_contacts
-CREATE TABLE IF NOT EXISTS `phone_users_contacts` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `identifier` varchar(60) CHARACTER SET utf8mb4 DEFAULT NULL,
-  `number` varchar(10) CHARACTER SET utf8mb4 DEFAULT NULL,
-  `display` varchar(64) CHARACTER SET utf8mb4 DEFAULT NULL,
-  `icon` varchar(50) DEFAULT NULL,
-  `email` varchar(255) DEFAULT NULL,
-  PRIMARY KEY (`id`),
-  KEY `Indice 2` (`identifier`,`number`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
-
--- Dump dei dati della tabella esfx.phone_users_contacts: 0 rows
-DELETE FROM `phone_users_contacts`;
-/*!40000 ALTER TABLE `phone_users_contacts` DISABLE KEYS */;
-/*!40000 ALTER TABLE `phone_users_contacts` ENABLE KEYS */;
-
--- Dump della struttura di tabella esfx.phone_users_emails
-CREATE TABLE IF NOT EXISTS `phone_users_emails` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `identifier` varchar(255) DEFAULT NULL,
-  `email` varchar(255) DEFAULT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-
--- Dump dei dati della tabella esfx.phone_users_emails: ~0 rows (circa)
-DELETE FROM `phone_users_emails`;
-/*!40000 ALTER TABLE `phone_users_emails` DISABLE KEYS */;
-/*!40000 ALTER TABLE `phone_users_emails` ENABLE KEYS */;
-
--- Dump della struttura di tabella esfx.phone_user_covers
-CREATE TABLE IF NOT EXISTS `phone_user_covers` (
-  `id` bigint(20) NOT NULL AUTO_INCREMENT,
-  `identifier` varchar(50) NOT NULL DEFAULT '0',
-  `cover` varchar(250) DEFAULT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-
--- Dump dei dati della tabella esfx.phone_user_covers: ~0 rows (circa)
-DELETE FROM `phone_user_covers`;
-/*!40000 ALTER TABLE `phone_user_covers` DISABLE KEYS */;
-/*!40000 ALTER TABLE `phone_user_covers` ENABLE KEYS */;
-
--- Dump della struttura di tabella esfx.phone_whatsapp_groups
-CREATE TABLE IF NOT EXISTS `phone_whatsapp_groups` (
-  `id` bigint(255) NOT NULL AUTO_INCREMENT,
-  `icona` varchar(50) NOT NULL,
-  `gruppo` varchar(255) NOT NULL DEFAULT 'Nessun nome',
-  `partecipanti` longtext NOT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-
--- Dump dei dati della tabella esfx.phone_whatsapp_groups: ~0 rows (circa)
-DELETE FROM `phone_whatsapp_groups`;
-/*!40000 ALTER TABLE `phone_whatsapp_groups` DISABLE KEYS */;
-/*!40000 ALTER TABLE `phone_whatsapp_groups` ENABLE KEYS */;
-
--- Dump della struttura di tabella esfx.phone_whatsapp_messages
-CREATE TABLE IF NOT EXISTS `phone_whatsapp_messages` (
-  `id` bigint(255) NOT NULL AUTO_INCREMENT,
-  `idgruppo` bigint(255) NOT NULL DEFAULT '0',
-  `sender` varchar(255) DEFAULT NULL,
-  `message` varchar(255) DEFAULT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-
--- Dump dei dati della tabella esfx.phone_whatsapp_messages: ~0 rows (circa)
-DELETE FROM `phone_whatsapp_messages`;
-/*!40000 ALTER TABLE `phone_whatsapp_messages` DISABLE KEYS */;
-/*!40000 ALTER TABLE `phone_whatsapp_messages` ENABLE KEYS */;
-
--- Dump della struttura di tabella esfx.sim
-CREATE TABLE IF NOT EXISTS `sim` (
-  `identifier` varchar(50) NOT NULL,
-  `phone_number` varchar(10) DEFAULT NULL,
-  `piano_tariffario` varchar(16) DEFAULT NULL,
-  `minuti` int(11) DEFAULT NULL,
-  `messaggi` int(11) DEFAULT NULL,
-  `dati` int(11) DEFAULT NULL,
-  `nome_sim` varchar(10) DEFAULT '',
-  UNIQUE KEY `phone_number` (`phone_number`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
-
--- Dump dei dati della tabella esfx.sim: 0 rows
-DELETE FROM `sim`;
-/*!40000 ALTER TABLE `sim` DISABLE KEYS */;
-/*!40000 ALTER TABLE `sim` ENABLE KEYS */;
 
 -- Dump della struttura di tabella esfx.phone_twitter_accounts
 CREATE TABLE IF NOT EXISTS `phone_twitter_accounts` (
@@ -448,6 +346,132 @@ CREATE TABLE IF NOT EXISTS `phone_twitter_tweets` (
 DELETE FROM `phone_twitter_tweets`;
 /*!40000 ALTER TABLE `phone_twitter_tweets` DISABLE KEYS */;
 /*!40000 ALTER TABLE `phone_twitter_tweets` ENABLE KEYS */;
+
+-- Dump della struttura di tabella esfx.phone_users_contacts
+CREATE TABLE IF NOT EXISTS `phone_users_contacts` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `identifier` varchar(60) CHARACTER SET utf8mb4 DEFAULT NULL,
+  `number` varchar(10) CHARACTER SET utf8mb4 DEFAULT NULL,
+  `display` varchar(64) CHARACTER SET utf8mb4 DEFAULT NULL,
+  `icon` varchar(50) DEFAULT NULL,
+  `email` varchar(255) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `Indice 2` (`identifier`,`number`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+
+-- Dump dei dati della tabella esfx.phone_users_contacts: 0 rows
+DELETE FROM `phone_users_contacts`;
+/*!40000 ALTER TABLE `phone_users_contacts` DISABLE KEYS */;
+/*!40000 ALTER TABLE `phone_users_contacts` ENABLE KEYS */;
+
+-- Dump della struttura di tabella esfx.phone_users_emails
+CREATE TABLE IF NOT EXISTS `phone_users_emails` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `identifier` varchar(255) DEFAULT NULL,
+  `email` varchar(255) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+-- Dump dei dati della tabella esfx.phone_users_emails: ~0 rows (circa)
+DELETE FROM `phone_users_emails`;
+/*!40000 ALTER TABLE `phone_users_emails` DISABLE KEYS */;
+/*!40000 ALTER TABLE `phone_users_emails` ENABLE KEYS */;
+
+-- Dump della struttura di tabella esfx.phone_user_covers
+CREATE TABLE IF NOT EXISTS `phone_user_covers` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `identifier` varchar(50) NOT NULL DEFAULT '0',
+  `cover` varchar(250) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+-- Dump dei dati della tabella esfx.phone_user_covers: ~0 rows (circa)
+DELETE FROM `phone_user_covers`;
+/*!40000 ALTER TABLE `phone_user_covers` DISABLE KEYS */;
+/*!40000 ALTER TABLE `phone_user_covers` ENABLE KEYS */;
+
+-- Dump della struttura di tabella esfx.phone_user_crypto
+CREATE TABLE IF NOT EXISTS `phone_user_crypto` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `identifier` varchar(255) DEFAULT NULL,
+  `name` varchar(255) DEFAULT NULL,
+  `amount` int(11) NOT NULL DEFAULT '0',
+  `price` double NOT NULL DEFAULT '0',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+-- Dump dei dati della tabella esfx.phone_user_crypto: ~0 rows (circa)
+DELETE FROM `phone_user_crypto`;
+/*!40000 ALTER TABLE `phone_user_crypto` DISABLE KEYS */;
+/*!40000 ALTER TABLE `phone_user_crypto` ENABLE KEYS */;
+
+-- Dump della struttura di tabella esfx.phone_whatsapp_groups
+CREATE TABLE IF NOT EXISTS `phone_whatsapp_groups` (
+  `id` bigint(255) NOT NULL AUTO_INCREMENT,
+  `icona` varchar(50) NOT NULL,
+  `gruppo` varchar(255) NOT NULL DEFAULT 'Nessun nome',
+  `partecipanti` longtext NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+-- Dump dei dati della tabella esfx.phone_whatsapp_groups: ~0 rows (circa)
+DELETE FROM `phone_whatsapp_groups`;
+/*!40000 ALTER TABLE `phone_whatsapp_groups` DISABLE KEYS */;
+/*!40000 ALTER TABLE `phone_whatsapp_groups` ENABLE KEYS */;
+
+-- Dump della struttura di tabella esfx.phone_whatsapp_messages
+CREATE TABLE IF NOT EXISTS `phone_whatsapp_messages` (
+  `id` bigint(255) NOT NULL AUTO_INCREMENT,
+  `idgruppo` bigint(255) NOT NULL DEFAULT '0',
+  `sender` varchar(255) DEFAULT NULL,
+  `message` varchar(255) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+-- Dump dei dati della tabella esfx.phone_whatsapp_messages: ~0 rows (circa)
+DELETE FROM `phone_whatsapp_messages`;
+/*!40000 ALTER TABLE `phone_whatsapp_messages` DISABLE KEYS */;
+/*!40000 ALTER TABLE `phone_whatsapp_messages` ENABLE KEYS */;
+
+-- Dump della struttura di tabella esfx.phone_wifi_nets
+CREATE TABLE IF NOT EXISTS `phone_wifi_nets` (
+  `steam_id` varchar(50) NOT NULL DEFAULT '',
+  `label` varchar(32) NOT NULL DEFAULT '',
+  `password` varchar(32) NOT NULL DEFAULT '',
+  `x` double NOT NULL,
+  `y` double NOT NULL,
+  `z` double NOT NULL,
+  `created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `due_date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `not_expire` int(11) NOT NULL DEFAULT '0',
+  PRIMARY KEY (`steam_id`),
+  UNIQUE KEY `coordinate` (`x`,`y`,`z`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+-- Dump dei dati della tabella esfx.phone_wifi_nets: ~2 rows (circa)
+DELETE FROM `phone_wifi_nets`;
+/*!40000 ALTER TABLE `phone_wifi_nets` DISABLE KEYS */;
+INSERT INTO `phone_wifi_nets` (`steam_id`, `label`, `password`, `x`, `y`, `z`, `created`, `due_date`, `not_expire`) VALUES
+	('lifeinvader', 'Life Invader', 'llifeinvader', -1075.832, -248.41, 37.763, '2020-12-18 21:11:10', '2020-12-18 21:11:25', 1),
+	('polizia', 'Centrale', 'policeenforce', 447.118, -985.24, 30.69, '2020-12-18 21:11:10', '2020-12-18 21:11:25', 1);
+/*!40000 ALTER TABLE `phone_wifi_nets` ENABLE KEYS */;
+
+-- Dump della struttura di tabella esfx.sim
+CREATE TABLE IF NOT EXISTS `sim` (
+  `identifier` varchar(50) NOT NULL,
+  `phone_number` varchar(10) DEFAULT NULL,
+  `piano_tariffario` varchar(16) DEFAULT NULL,
+  `minuti` int(11) DEFAULT NULL,
+  `messaggi` int(11) DEFAULT NULL,
+  `dati` int(11) DEFAULT NULL,
+  `nome_sim` varchar(10) DEFAULT '',
+  UNIQUE KEY `phone_number` (`phone_number`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+
+-- Dump dei dati della tabella esfx.sim: 0 rows
+DELETE FROM `sim`;
+/*!40000 ALTER TABLE `sim` DISABLE KEYS */;
+/*!40000 ALTER TABLE `sim` ENABLE KEYS */;
 
 /*!40101 SET SQL_MODE=IFNULL(@OLD_SQL_MODE, '') */;
 /*!40014 SET FOREIGN_KEY_CHECKS=IF(@OLD_FOREIGN_KEY_CHECKS IS NULL, 1, @OLD_FOREIGN_KEY_CHECKS) */;
