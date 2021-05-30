@@ -1,5 +1,5 @@
 radioTowers = nil
-GLOBAL_WIFI_MODEMS = {}
+retiWifi = {}
 
 -- non utilizzate per il momento
 utentiTorriRadio = {}
@@ -9,7 +9,7 @@ Citizen.CreateThread(function()
 	radioTowers = Reti.loadTorriRadio()
 	Reti.Debug("Finished loading towers from database")
 
-	GLOBAL_WIFI_MODEMS = Reti.loadRetiWifi()
+	retiWifi = Reti.loadRetiWifi()
 	Reti.Debug("Finished loading routers from database")
 
 	Reti.CheckDueDate()
@@ -19,10 +19,10 @@ Citizen.CreateThread(function()
 			Citizen.Wait(Config.SyncThreadWait * 1000)
 
 			radioTowers = Reti.loadTorriRadio()
-			GLOBAL_WIFI_MODEMS = Reti.loadRetiWifi()
+			retiWifi = Reti.loadRetiWifi()
 
 			TriggerClientEvent('esx_wifi:riceviTorriRadio', -1, radioTowers)
-			TriggerClientEvent('esx_wifi:riceviRetiWifi', -1, GLOBAL_WIFI_MODEMS)
+			TriggerClientEvent('esx_wifi:riceviRetiWifi', -1, retiWifi)
 
 			Reti.Debug("SyncThread: towers and wifi synced")
 		end
@@ -35,8 +35,8 @@ gcPhoneT.richiediTorriRadio = function()
 end
 
 gcPhoneT.richiediRetiWifi = function()
-	while GLOBAL_WIFI_MODEMS == nil do Citizen.Wait(500) end
-	return GLOBAL_WIFI_MODEMS
+	while retiWifi == nil do Citizen.Wait(500) end
+	return retiWifi
 end
 
 --[[
@@ -51,9 +51,9 @@ end
 	RegisterServerEvent('esx_wifi:richiediRetiWifi')
 	AddEventHandler('esx_wifi:richiediRetiWifi', function()
 		local player = source
-		while GLOBAL_WIFI_MODEMS == nil do Citizen.Wait(500) end
+		while retiWifi == nil do Citizen.Wait(500) end
 
-		TriggerClientEvent('esx_wifi:riceviRetiWifi', player, GLOBAL_WIFI_MODEMS)
+		TriggerClientEvent('esx_wifi:riceviRetiWifi', player, retiWifi)
 	end)
 ]]
 

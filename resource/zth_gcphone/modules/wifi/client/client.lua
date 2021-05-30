@@ -1,5 +1,5 @@
 torriRadio = {}, {}
-GLOBAL_WIFI_MODEMS = {}
+retiWifi = {}
 blips = {}
 blips_radius = {}
 
@@ -25,7 +25,7 @@ end)
 
 -- used only on startup
 RegisterNetEvent('esx_wifi:riceviRetiWifi')
-AddEventHandler('esx_wifi:riceviRetiWifi', function(retiWifiServer) GLOBAL_WIFI_MODEMS = retiWifiServer end)
+AddEventHandler('esx_wifi:riceviRetiWifi', function(retiWifiServer) retiWifi = retiWifiServer end)
 
 RegisterNetEvent('esx:playerLoaded')
 AddEventHandler('esx:playerLoaded', function(source) playerCaricato = true end)
@@ -103,7 +103,7 @@ function Reti:InitScript()
 
 			if Config.EnableSyncThread then
 				-- TriggerServerEvent('esx_wifi:richiediTorriRadio')
-				GLOBAL_WIFI_MODEMS = gcPhoneServerT.richiediTorriRadio()
+				retiWifi = gcPhoneServerT.richiediTorriRadio()
 			end
 
 			TriggerEvent('gcphone:aggiornameAConnessione', self.potenzaSegnale)
@@ -113,7 +113,7 @@ function Reti:InitScript()
 	-- thread per controllo distanza reti wifi
 	Citizen.CreateThread(function()
 		-- TriggerServerEvent('esx_wifi:richiediRetiWifi')
-		GLOBAL_WIFI_MODEMS = gcPhoneServerT.richiediRetiWifi()
+		retiWifi = gcPhoneServerT.richiediRetiWifi()
 		local distanza = 0
 
 		while true do
@@ -121,34 +121,34 @@ function Reti:InitScript()
 
 			self.retiWifiVicine = {}
 
-			for i = 1, #GLOBAL_WIFI_MODEMS do
-				distanza = Vdist(GLOBAL_WIFI_MODEMS[i].x, GLOBAL_WIFI_MODEMS[i].y, GLOBAL_WIFI_MODEMS[i].z, self.p_coords.x, self.p_coords.y, self.p_coords.z)
+			for i = 1, #retiWifi do
+				distanza = Vdist(retiWifi[i].x, retiWifi[i].y, retiWifi[i].z, self.p_coords.x, self.p_coords.y, self.p_coords.z)
 
 				if distanza < Config.RaggioWifi then
 					if #self.retiWifiVicine > 0 then
 						for reverseI = #self.retiWifiVicine, 1, -1 do
 							if distanza > self.retiWifiVicine[reverseI].distanza then
-								GLOBAL_WIFI_MODEMS[i].distanza = distanza
-								table.insert(self.retiWifiVicine, GLOBAL_WIFI_MODEMS[i])
+								retiWifi[i].distanza = distanza
+								table.insert(self.retiWifiVicine, retiWifi[i])
 								break
 							else
 								if reverseI == #self.retiWifiVicine - 1 then
-									GLOBAL_WIFI_MODEMS[i].distanza = distanza
-									table.insert(self.retiWifiVicine, reverseI, GLOBAL_WIFI_MODEMS[i])
+									retiWifi[i].distanza = distanza
+									table.insert(self.retiWifiVicine, reverseI, retiWifi[i])
 									break
 								end
 							end
 						end
 					else
-						GLOBAL_WIFI_MODEMS[i].distanza = distanza
-						table.insert(self.retiWifiVicine, GLOBAL_WIFI_MODEMS[i])
+						retiWifi[i].distanza = distanza
+						table.insert(self.retiWifiVicine, retiWifi[i])
 					end
 				end
 			end
 
 			if Config.EnableSyncThread then
 				-- TriggerServerEvent('esx_wifi:richiediRetiWifi')
-				GLOBAL_WIFI_MODEMS = gcPhoneServerT.richiediRetiWifi()
+				retiWifi = gcPhoneServerT.richiediRetiWifi()
 				Reti.RefreshBlips()
 			end
 
@@ -164,7 +164,7 @@ if Config.EnableBreakWifiTowers then
 
 		while true do
 			if ESX.PlayerData.job.name == Config.BreakRadioTowersJob then
-				for _, v in pairs(GLOBAL_WIFI_MODEMS) do
+				for _, v in pairs(retiWifi) do
 					if v.broken then
 						if GetDistanceBetweenCoords(GetEntityCoords(GetPlayerPed(-1)), v.x, v.y, 1.0, false) <= 5.0 then
 							ESX.ShowHelpNotification("Premi ~INPUT_CONTEXT~ per riparare la torre radio")

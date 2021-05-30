@@ -6,10 +6,10 @@ function Reti.loadRetiWifi()
 	return MySQL.Sync.fetchAll('SELECT * FROM phone_wifi_nets', {})
 end
 
-function Reti.doesReteExist(GLOBAL_WIFI_MODEMS, owner_id)
+function Reti.doesReteExist(retiWifi, owner_id)
 	local rete = nil
-	for i=1, #GLOBAL_WIFI_MODEMS do
-		rete = GLOBAL_WIFI_MODEMS[i]
+	for i=1, #retiWifi do
+		rete = retiWifi[i]
 		if rete.steam_id == owner_id then
 			return true
 		end
@@ -45,7 +45,7 @@ function Reti.AddReteWifi(source, rete, cb)
 		if rowsChanged > 0 then
 			xPlayer.showNotification("~g~Rete creata con successo!")
 
-			GLOBAL_WIFI_MODEMS = Reti.loadRetiWifi()
+			retiWifi = Reti.loadRetiWifi()
 			Reti.Debug("Wifi modems updated succesfully")
 
 			if cb ~= nil then cb(true) end
@@ -65,7 +65,7 @@ function Reti.RemoveReteWifi(source, rete)
 		if rowsChanged > 0 then
 			xPlayer.showNotification("~g~Rete rimossa con successo!")
 
-			GLOBAL_WIFI_MODEMS = Reti.loadRetiWifi()
+			retiWifi = Reti.loadRetiWifi()
 			Reti.Debug("Wifi modems updated succesfully")
 		else
 			xPlayer.showNotification("~r~Impossibile rimuovere la rete!")
@@ -83,7 +83,7 @@ function Reti.UpdateReteWifi(source, rete, param)
 		if rowsChanged > 0 then
 			xPlayer.showNotification("~g~Rete aggiornata con successo!")
 
-			GLOBAL_WIFI_MODEMS = Reti.loadRetiWifi()
+			retiWifi = Reti.loadRetiWifi()
 			Reti.Debug("Wifi modems updated succesfully")
 		else
 			xPlayer.showNotification("~r~Impossibile aggiornare la rete!")
@@ -156,7 +156,7 @@ end
 function Reti.CheckDueDate()
 	Reti.Debug("Checking expired routers")
 	
-	for index, rete in pairs(GLOBAL_WIFI_MODEMS) do
+	for index, rete in pairs(retiWifi) do
 		if rete.not_expire == 0 then
 			local due_date = math.floor(rete.due_date / 1000)
 			local created = math.floor(rete.created / 1000)
