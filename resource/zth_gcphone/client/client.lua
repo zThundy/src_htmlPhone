@@ -576,7 +576,8 @@ AddEventHandler("gcphone:updateWifi", function(connected, rete)
 end)
 
 -- funzione che controlla se sei nel range o no
-function startCheck()
+-- quando ti connetti al wifi
+function StartWifiRangeCheck()
     local found = false
 
     Citizen.CreateThread(function()

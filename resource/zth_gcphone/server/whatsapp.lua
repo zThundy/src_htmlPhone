@@ -52,7 +52,7 @@ MySQL.ready(function()
     updateCachedGroups()
 end)
 
-function formatTableIndex(table)
+local function formatTableIndex(table)
     local tb = {}
     for k, v in pairs(table) do
         if k ~= "creator" then

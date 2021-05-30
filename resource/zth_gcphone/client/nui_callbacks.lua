@@ -45,7 +45,7 @@ RegisterNUICallback('connettiAllaRete', function(data, cb)
     ESX.ShowNotification("Password corretta!", "success")
 
     TriggerEvent("gcphone:updateWifi", true, tempDataWifi)
-    startCheck()
+    StartWifiRangeCheck()
     cb("ok")
 end)
 
