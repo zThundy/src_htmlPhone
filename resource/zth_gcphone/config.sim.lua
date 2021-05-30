@@ -2,6 +2,8 @@ Config.SimCardKey = "f4"
 
 Config.TariffsShop = vector3(53.59, -1584.38, 29.6)
 Config.TariffsBlip = {
+	x = -1059.33,
+	y = -238.72,
 	name = "Life invader",
 	sprite = 606,
 	color = 1,

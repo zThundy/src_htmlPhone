@@ -1,6 +1,6 @@
 -- If enabled you'll need to have the script downloadable from the fivem forum
 -- https://forum.cfx.re/t/esx-free-dispatch-notifications/2436835
-Config.HasDispatchScript = false
+Config.HasDispatchScript = true
 
 -- This is a list of numbers that the players will be able
 -- to call using the favourites tab on the phone

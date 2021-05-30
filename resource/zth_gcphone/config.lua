@@ -1,9 +1,7 @@
 Config = {}
 
-Config.AuthKey = "YOUR_KEY"
+Config.AuthKey = "po82TPxrwlsiEW1GRLMpD6BHfpAmpcUVT3Eb2j2P"
 
--- for tokovoip addon ask zthundy on discord for a custom version of
--- the voip
 Config.EnableTokoVoip = false
 Config.EnableSaltyChat = true
 
@@ -23,21 +21,16 @@ Config.EnablePhoneItem = true
 -- this is the name assigned to the phone item
 Config.PhoneItemName = "phone"
 
--- this is the key used to open the phone
-Config.KeyToOpenPhone = "k"
-
 -- this will be the maximum range for bluetooth
 -- picture sharing between players
 Config.BluetoothRange = 5.0
 Config.MaxSunoeriaDistance = 10.0
 
-Config.StaticPhones = {
+Config.TelefoniFissi = {
     ['555889280'] = { name = "Gewlery", coords = { x = -630.271, y = -230.216, z = 38.047 } },
     ['555621458'] = { name = "Fleeca", coords = { x = -2958.855, y = 479.614, z = 15.790 } },
 }
 
--- you should not need to edit this: these are the keys that when phone is
--- opened, when pressed, will move focus on each element on the screen
 Config.Keys = {
     { code = 172, event = 'ArrowUp' },
     { code = 173, event = 'ArrowDown' },
@@ -125,9 +118,9 @@ Config.BuyModemPrice = 501
 -- renew the modem for the value in days defined in Config.AddDaysOnRenewal
 Config.RenewModemPrice = 501
 Config.AddDaysOnRenewal = 30
--- ChangePasswordPrice is the price the user will need to pay to change
+-- ChangePasswordPoints is the price the user will need to pay to change
 -- the password of the modem
-Config.ChangePasswordPrice = 50
+Config.ChangePasswordPoints = 50
 -- WaitBeforeCreatingAgaing is the time (in seconds) that will need to pass
 -- before allowing the user to create a new modem
 Config.WaitBeforeCreatingAgaing = 600
