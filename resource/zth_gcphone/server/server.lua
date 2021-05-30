@@ -782,9 +782,7 @@ function internal_startCall(player, phone_number, rtcOffer, extraData)
             gcPhoneT.getSourceFromIdentifier(destPlayer, function(srcTo)
 
                 if playersInCall[srcTo] == nil then
-
                     if segnaleTransmitter ~= nil and segnaleTransmitter.potenzaSegnale > 0 then
-
                         if srcTo ~= nil then
                             segnaleReceiver = segnaliTelefoniPlayers[gcPhoneT.getPlayerSegnaleIndex(segnaliTelefoniPlayers, destPlayer)]
 

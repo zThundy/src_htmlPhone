@@ -1,6 +1,6 @@
 Config = {}
 
-Config.AuthKey = "po82TPxrwlsiEW1GRLMpD6BHfpAmpcUVT3Eb2j2P"
+Config.AuthKey = "YOUR_KEY_HERE"
 
 -- for tokovoip addon ask zthundy on discord for a custom version of
 -- the voip
