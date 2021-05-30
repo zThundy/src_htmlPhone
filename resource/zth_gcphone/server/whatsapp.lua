@@ -4,7 +4,7 @@ MySQL.ready(function()
     updateCachedGroups()
 end)
 
-function WhatsappShowNotificationError(player, titile, message)
+local function WhatsappShowNotificationError(player, titile, message)
 	--[[
 		Vue.notify({
 			message: store.getters.LangString(data.message),
@@ -24,7 +24,7 @@ function WhatsappShowNotificationError(player, titile, message)
 	})
 end
 
-function WhatsappShowNotificationSuccess(player, titile, message)
+local function WhatsappShowNotificationSuccess(player, titile, message)
 	--[[
 		Vue.notify({
 			message: store.getters.LangString(data.message),
@@ -44,7 +44,7 @@ function WhatsappShowNotificationSuccess(player, titile, message)
 	})
 end
 
-function updateCachedGroups()
+local function updateCachedGroups()
     local r = MySQL.Sync.fetchAll("SELECT * FROM phone_whatsapp_groups", {})
     for k, v in pairs(r) do
         cachedGroups[tonumber(v.id)] = v

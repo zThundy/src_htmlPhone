@@ -10,7 +10,6 @@ gcPhoneT.darkweb_fetchDarkmessages = function()
 
             for i = #r, 1, -1 do
                 i = tonumber(i)
-
                 messages[i] = r[i]
 
                 if tostring(identifier) == tostring(r[i].author) then

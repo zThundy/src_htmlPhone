@@ -1,24 +1,24 @@
 -- da implementare sistema cache per non sovraccaricare di richieste il databse
-local covers = {}
+local CACHED_COVERS = {}
 
 ESX.RegisterServerCallback("gcphone:cover_requestCovers", function(source, cb)
     local xPlayer = ESX.GetPlayerFromId(source)
-    if covers[xPlayer.identifier] == nil then covers[xPlayer.identifier] = {} end
+    if CACHED_COVERS[xPlayer.identifier] == nil then CACHED_COVERS[xPlayer.identifier] = {} end
 
     if xPlayer ~= nil then
         MySQL.Async.fetchAll("SELECT * FROM phone_user_covers WHERE identifier = @identifier", {['@identifier'] = xPlayer.identifier}, function(result)
-            covers[xPlayer.identifier] = {}
+            CACHED_COVERS[xPlayer.identifier] = {}
 
             -- lo ho fatto hardcoded in vue
-            -- covers[xPlayer.identifier][Config.BaseCover.label] = {label = Config.BaseCover.label, value = "base.png"}
+            -- CACHED_COVERS[xPlayer.identifier][Config.BaseCover.label] = {label = Config.BaseCover.label, value = "base.png"}
             for index, val in pairs(result) do
                 local name = string.gsub(val.cover, ".png", "")
                 local cfg = Config.Covers[name]
 
-                covers[xPlayer.identifier][cfg.label] = {label = cfg.label, value = val.cover}
+                CACHED_COVERS[xPlayer.identifier][cfg.label] = {label = cfg.label, value = val.cover}
             end
 
-            cb(covers[xPlayer.identifier])
+            cb(CACHED_COVERS[xPlayer.identifier])
         end)
     end
 end)

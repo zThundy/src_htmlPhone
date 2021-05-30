@@ -1,10 +1,10 @@
-local creationTimeout = {}
+local MODEM_TIMEOUT = {}
 
 gcPhoneT.modem_createModem = function(label, password, coords)
     local player = source
     local xPlayer = ESX.GetPlayerFromId(player)
 
-    if creationTimeout[player] == nil or not creationTimeout[player] then
+    if MODEM_TIMEOUT[player] == nil or not MODEM_TIMEOUT[player] then
         local day = 86400
         local days = day * Config.AddDaysOnRenewal
         local currentTime = os.time(os.date("!*t"))
@@ -18,13 +18,13 @@ gcPhoneT.modem_createModem = function(label, password, coords)
             if ok then xPlayer.removeInventoryItem("modem", 1) end
         end)
 
-        creationTimeout[player] = true
+        MODEM_TIMEOUT[player] = true
 
         Citizen.CreateThreadNow(function()
             local cachedPlayer = player
     
             SetTimeout(Config.WaitBeforeCreatingAgaing * 1000, function()
-                creationTimeout[cachedPlayer] = nil
+                MODEM_TIMEOUT[cachedPlayer] = nil
             end)
         end)
     else

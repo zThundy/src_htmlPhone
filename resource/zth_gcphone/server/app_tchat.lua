@@ -1,4 +1,4 @@
-function TchatGetMessageChannel(identifier, channel, cb)
+local function TchatGetMessageChannel(identifier, channel, cb)
 	local isAble, mbToRemove = gcPhoneT.isAbleToSurfInternet(identifier, 2)
 	if isAble then
 		gcPhoneT.usaDatiInternet(identifier, mbToRemove)
@@ -9,7 +9,7 @@ function TchatGetMessageChannel(identifier, channel, cb)
 	end
 end
 
-function TchatAddMessage(channel, message)
+local function TchatAddMessage(channel, message)
 	MySQL.Async.insert("INSERT INTO phone_app_chat (`channel`, `message`) VALUES(@channel, @message)", {
 		['@channel'] = channel,
 		['@message'] = message

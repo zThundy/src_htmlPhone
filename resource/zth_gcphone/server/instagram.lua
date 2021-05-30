@@ -6,7 +6,7 @@
 -- SEZIONE FUNZIONI PER INSTAGRAM
 --===============================
 
-function InstagramShowError(player, title, message)
+local function InstagramShowError(player, title, message)
 	--[[
 		Vue.notify({
 			message: store.getters.LangString(data.message),
@@ -27,7 +27,7 @@ function InstagramShowError(player, title, message)
 	-- TriggerClientEvent('gcPhone:instagram_showError', player, title, message)
 end
 
-function InstagramShowSuccess(player, title, message)
+local function InstagramShowSuccess(player, title, message)
 	TriggerClientEvent("gcphone:sendGenericNotification", player, {
 		message = message,
 		title = title,
@@ -39,7 +39,7 @@ function InstagramShowSuccess(player, title, message)
 	-- TriggerClientEvent('gcPhone:instagram_showSuccess', player, title, message)
 end
 
-function InstagramGetPosts(accountId, cb)
+local function InstagramGetPosts(accountId, cb)
 	if accountId == nil then
 		MySQL.Async.fetchAll([===[
 			SELECT phone_instagram_posts.*,
@@ -66,13 +66,15 @@ function InstagramGetPosts(accountId, cb)
 	end
 end
 
-function instagramGetPosts(data, cb)
-	MySQL.Async.fetchAll("SELECT * FROM phone_instagram_posts", {}, function(result)
-		cb(result)
-	end)
-end
+--[[
+	local function instagramGetPosts(data, cb)
+		MySQL.Async.fetchAll("SELECT * FROM phone_instagram_posts", {}, function(result)
+			cb(result)
+		end)
+	end
+]]
 
-function getInstagramUser(username, password, cb)
+local function getInstagramUser(username, password, cb)
 	MySQL.Async.fetchAll("SELECT * FROM phone_instagram_accounts WHERE username = @username AND password = @password", {['@username'] = username, ['@password'] = password}, function(data)
 		if #data > 0 then
 			-- print(ESX.DumpTable(data[1]))
@@ -83,7 +85,7 @@ function getInstagramUser(username, password, cb)
 	end)
 end
 
-function createNewInstagramAccount(username, password, avatarUrl, cb)
+local function createNewInstagramAccount(username, password, avatarUrl, cb)
 	MySQL.Async.insert('INSERT IGNORE INTO phone_instagram_accounts(`username`, `password`) VALUES(@username, @password)', {
 	  ['@username'] = username,
 	  ['@password'] = password

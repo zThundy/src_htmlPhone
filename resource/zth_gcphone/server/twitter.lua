@@ -1,4 +1,4 @@
-function TwitterShowError(player, title, message)
+local function TwitterShowError(player, title, message)
 	--[[
 		Vue.notify({
 			message: store.getters.LangString(data.message),
@@ -18,7 +18,7 @@ function TwitterShowError(player, title, message)
 	-- TriggerClientEvent('gcPhone:twitter_showError', player, title, message)
 end
 
-function TwitterShowSuccess(player, title, message)
+local function TwitterShowSuccess(player, title, message)
 	TriggerClientEvent("gcphone:sendGenericNotification", player, {
 		message = message,
 		title = title,
@@ -29,7 +29,7 @@ function TwitterShowSuccess(player, title, message)
 	-- TriggerClientEvent('gcPhone:twitter_showSuccess', player, title, message)
 end
 
-function TwitterGetTweets(accountId, cb)
+local function TwitterGetTweets(accountId, cb)
 	if accountId == nil then
 		MySQL.Async.fetchAll([===[
 			SELECT phone_twitter_tweets.*,
@@ -56,7 +56,7 @@ function TwitterGetTweets(accountId, cb)
 	end
 end
 
-function TwitterGetFavotireTweets (accountId, cb)
+local function TwitterGetFavotireTweets(accountId, cb)
 	if accountId == nil then
 		MySQL.Async.fetchAll([===[
 			SELECT phone_twitter_tweets.*,
@@ -85,7 +85,7 @@ function TwitterGetFavotireTweets (accountId, cb)
 	end
 end
 
-function getTwiterUserAccount(username, password, cb)
+local function getTwiterUserAccount(username, password, cb)
 	MySQL.Async.fetchAll("SELECT id, username as author, avatar_url as authorIcon FROM phone_twitter_accounts WHERE phone_twitter_accounts.username = @username AND phone_twitter_accounts.password = @password", {
 		['@username'] = username,
 		['@password'] = password
@@ -98,7 +98,7 @@ function getTwiterUserAccount(username, password, cb)
 	end)
 end
 
-function TwitterPostTweet(username, password, message, player, realUser)
+local function TwitterPostTweet(username, password, message, player, realUser)
 	local identifier = gcPhoneT.getPlayerID(player)
 
 	if not message then
@@ -145,7 +145,7 @@ function TwitterPostTweet(username, password, message, player, realUser)
 	end
 end
 
-function TwitterToogleLike(username, password, tweetId, player)
+local function TwitterToogleLike(username, password, tweetId, player)
 	local identifier = gcPhoneT.getPlayerID(player)
 	
 	local isAble, mbToRemove = gcPhoneT.isAbleToSurfInternet(identifier, 0.02)
@@ -208,7 +208,7 @@ function TwitterToogleLike(username, password, tweetId, player)
 	end
 end
 
-function TwitterCreateAccount(username, password, avatarUrl, cb)
+local function TwitterCreateAccount(username, password, avatarUrl, cb)
 	MySQL.Async.insert('INSERT IGNORE INTO phone_twitter_accounts (`username`, `password`, `avatar_url`) VALUES(@username, @password, @avatarUrl)', {
 		['username'] = username,
 		['password'] = password,

@@ -1,3 +1,94 @@
+local function GetMaxGradeForJob(job)
+    local result = MySQL.Sync.fetchAll("SELECT grade FROM job_grades WHERE job_name = @job", {['@job'] = job})
+    if result then
+        local lastGrade = 0
+        for _, v in pairs(result) do
+            v.grade = tonumber(v.grade)
+            if v.grade > lastGrade then lastGrade = v.grade end
+        end
+        return lastGrade
+    end
+end
+
+local function GetButtons(job_name, grade)
+    local buttons = {}
+    for _, button in pairs(Config.MinAziendaGrade[job_name][grade]) do
+        buttons[button] = true
+    end
+    return buttons
+end
+
+local function GetAziendaMessages(source, azienda, cb)
+    local xPlayer = ESX.GetPlayerFromId(source)
+    MySQL.Async.fetchAll("SELECT * FROM phone_azienda_messages WHERE azienda = @azienda ORDER BY id DESC LIMIT 30", {
+        ['@azienda'] = azienda
+    }, function(result)
+        if result and result[1] then
+            local messages = {}
+            local v, index = {}, 0
+            
+            for i = #result, 1, -1 do
+                v = result[i]
+                index = index + 1
+                table.insert(messages, {
+                    id = index,
+                    message = v.message,
+                    author = v.authorName,
+                    authorPhone = v.authorNumber,
+                    mine = tonumber(xPlayer.identifier) == tonumber(v.authorIdentifier),
+                    isRead = 0
+                })
+            end
+            cb(messages)
+        end
+    end)
+end
+
+local function UpdateAziendaEmployes(azienda, cb)
+    local jobPlayers = GetPlayersWithJob(azienda)
+    local xPlayer = {}
+    local employes = {}
+    local firstname, lastname
+
+    for _, xPlayer in pairs(jobPlayers) do
+        firstname, lastname = gcPhoneT.getFirstnameAndLastname(xPlayer.identifier)
+        table.insert(employes, {
+            steamid = xPlayer.identifier,
+            grade = xPlayer.job.grade,
+            gradeName = xPlayer.job.grade_label,
+            name = firstname .. " " .. lastname,
+            phoneNumber = gcPhoneT.getPhoneNumber(xPlayer.identifier),
+            salary = xPlayer.job.grade_salary,
+            isOnline = true -- to be implemented the false state???? IDK 
+        })
+    end
+
+    for _, src in pairs(jobPlayers) do
+        TriggerClientEvent("gcphone:azienda_updateEmployes", src, employes)
+    end
+end
+
+local function AziendaShowNotification(player, title, message)
+    TriggerClientEvent("gcphone:sendGenericNotification", player, {
+		message = message,
+		title = title,
+		icon = "briefcase",
+		color = "rgb(255, 180, 89)",
+		appName = "Azienda"
+	})
+end
+
+local function GetPlayersWithJob(job)
+    local xPlayers = {}
+    for _, source in pairs(ESX.GetPlayers()) do
+        local xPlayer = ESX.GetPlayerFromId(source)
+        if xPlayer and xPlayer.job.name == job then
+            table.insert(xPlayers, xPlayer)
+        end
+    end
+    return xPlayers
+end
+
 gcPhoneT.azienda_requestJobInfo = function()
     local player = source
     local xPlayer = ESX.GetPlayerFromId(source)
@@ -170,95 +261,4 @@ gcPhoneT.azienda_requestAziendaMessages = function()
             AziendaShowNotification(player, 'AZIENDA_INFO_TITLE', 'APP_AZIENDA_NOTIF_NO_CONNECTION')
         end
     end)
-end
-
-function GetMaxGradeForJob(job)
-    local result = MySQL.Sync.fetchAll("SELECT grade FROM job_grades WHERE job_name = @job", {['@job'] = job})
-    if result then
-        local lastGrade = 0
-        for _, v in pairs(result) do
-            v.grade = tonumber(v.grade)
-            if v.grade > lastGrade then lastGrade = v.grade end
-        end
-        return lastGrade
-    end
-end
-
-function GetButtons(job_name, grade)
-    local buttons = {}
-    for _, button in pairs(Config.MinAziendaGrade[job_name][grade]) do
-        buttons[button] = true
-    end
-    return buttons
-end
-
-function GetAziendaMessages(source, azienda, cb)
-    local xPlayer = ESX.GetPlayerFromId(source)
-    MySQL.Async.fetchAll("SELECT * FROM phone_azienda_messages WHERE azienda = @azienda ORDER BY id DESC LIMIT 30", {
-        ['@azienda'] = azienda
-    }, function(result)
-        if result and result[1] then
-            local messages = {}
-            local v, index = {}, 0
-            
-            for i = #result, 1, -1 do
-                v = result[i]
-                index = index + 1
-                table.insert(messages, {
-                    id = index,
-                    message = v.message,
-                    author = v.authorName,
-                    authorPhone = v.authorNumber,
-                    mine = tonumber(xPlayer.identifier) == tonumber(v.authorIdentifier),
-                    isRead = 0
-                })
-            end
-            cb(messages)
-        end
-    end)
-end
-
-function UpdateAziendaEmployes(azienda, cb)
-    local jobPlayers = GetPlayersWithJob(azienda)
-    local xPlayer = {}
-    local employes = {}
-    local firstname, lastname
-
-    for _, xPlayer in pairs(jobPlayers) do
-        firstname, lastname = gcPhoneT.getFirstnameAndLastname(xPlayer.identifier)
-        table.insert(employes, {
-            steamid = xPlayer.identifier,
-            grade = xPlayer.job.grade,
-            gradeName = xPlayer.job.grade_label,
-            name = firstname .. " " .. lastname,
-            phoneNumber = gcPhoneT.getPhoneNumber(xPlayer.identifier),
-            salary = xPlayer.job.grade_salary,
-            isOnline = true -- to be implemented the false state???? IDK 
-        })
-    end
-
-    for _, src in pairs(jobPlayers) do
-        TriggerClientEvent("gcphone:azienda_updateEmployes", src, employes)
-    end
-end
-
-function AziendaShowNotification(player, title, message)
-    TriggerClientEvent("gcphone:sendGenericNotification", player, {
-		message = message,
-		title = title,
-		icon = "briefcase",
-		color = "rgb(255, 180, 89)",
-		appName = "Azienda"
-	})
-end
-
-function GetPlayersWithJob(job)
-    local xPlayers = {}
-    for _, source in pairs(ESX.GetPlayers()) do
-        local xPlayer = ESX.GetPlayerFromId(source)
-        if xPlayer and xPlayer.job.name == job then
-            table.insert(xPlayers, xPlayer)
-        end
-    end
-    return xPlayers
 end
