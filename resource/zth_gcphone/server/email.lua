@@ -1,3 +1,28 @@
+local function FetchAllEmails(email, cb)
+    if email then
+        MySQL.Async.fetchAll("SELECT * FROM phone_emails WHERE receiver = @email ORDER BY id DESC LIMIT 50", {
+            ['@email'] = email
+        }, function(r)
+            local temp = {}
+            for k, v in pairs(r) do table.insert(temp, v) end
+
+            cb(temp)
+        end)
+    end
+end
+
+local function GetUserEmail(identifier, cb)
+    if identifier then
+        MySQL.Async.fetchAll("SELECT email FROM phone_users_emails WHERE identifier = @identifier", {['@identifier'] = identifier}, function(result)
+            if #result == 0 or result[1] == nil then
+                cb(nil)
+            else
+                cb(result[1].email)
+            end
+        end)
+    end
+end
+
 gcPhoneT.email_requestMyEmail = function()
     local player = source
     local identifier = gcPhoneT.getPlayerID(player)
@@ -147,29 +172,4 @@ gcPhoneT.email_requestSentEmails = function(myEmail)
             TriggerClientEvent("gcphone:email_sendRequestedSentEmails", player, temp)
         end)
     end)
-end
-
-function FetchAllEmails(email, cb)
-    if email then
-        MySQL.Async.fetchAll("SELECT * FROM phone_emails WHERE receiver = @email ORDER BY id DESC LIMIT 50", {
-            ['@email'] = email
-        }, function(r)
-            local temp = {}
-            for k, v in pairs(r) do table.insert(temp, v) end
-
-            cb(temp)
-        end)
-    end
-end
-
-function GetUserEmail(identifier, cb)
-    if identifier then
-        MySQL.Async.fetchAll("SELECT email FROM phone_users_emails WHERE identifier = @identifier", {['@identifier'] = identifier}, function(result)
-            if #result == 0 or result[1] == nil then
-                cb(nil)
-            else
-                cb(result[1].email)
-            end
-        end)
-    end
 end

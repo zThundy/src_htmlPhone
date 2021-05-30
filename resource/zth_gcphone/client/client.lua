@@ -621,6 +621,7 @@ AddEventHandler('gcPhone:register_FixePhone', function(phone_number, data)
     Config.TelefoniFissi[phone_number] = data
 end)
 
+--[[
 Citizen.CreateThread(function()
     local mod = 0
     local inRangeToActivePhone = false
@@ -668,12 +669,13 @@ Citizen.CreateThread(function()
                 StopSoundJS('ring2.ogg')
             end
         else
-            Citizen.Wait(2000)
+            Citizen.Wait(5000)
         end
 
         Citizen.Wait(1)
     end
 end)
+]]
 
 AddEventHandler("gcPhone:phoneBoxActions", function(functionName, params)
     if functionName == 'startFixeCall' then

@@ -54,7 +54,7 @@ MySQL.ready(function()
     end)
 end)
 
-function GetPianoTariffarioParam(phone_number, param)
+local function GetPianoTariffarioParam(phone_number, param)
     local result = MySQL.Sync.fetchScalar("SELECT " .. param .. " FROM sim WHERE phone_number = @phone_number", {
         ['@phone_number'] = phone_number
     })
@@ -63,7 +63,7 @@ function GetPianoTariffarioParam(phone_number, param)
     return result and result or 0
 end
 
-function UpdatePianoTariffario(phone_number, param, value)
+local function UpdatePianoTariffario(phone_number, param, value)
     if phone_number ~= nil and param ~= nil and value ~= nil then
 		MySQL.Async.execute('UPDATE sim SET '..param..' = @'..param..' WHERE phone_number = @phone_number', {
 			['@phone_number'] = phone_number,
@@ -229,10 +229,6 @@ gcPhoneT.updateParametroTariffa = function(phone_number, param, value)
 	UpdatePianoTariffario(phone_number, param, value)
 end
 
---==================================================================================================================
--------- 
---==================================================================================================================
-
 gcPhoneT.getFirstnameAndLastname = function(identifier)
     if not identifier then
         gcPhone.debug("Error getting firstname and lastname, identifier not specified: using source insted")
@@ -343,12 +339,12 @@ gcPhoneT.updateCachedNumber = function(number, identifier, isChanging)
     end
 end
 
-function gcPhoneT.getSourceFromIdentifier(identifier, cb)
+gcPhoneT.getSourceFromIdentifier = function(identifier, cb)
     local xPlayer = ESX.GetPlayerFromIdentifier(identifier)
     if xPlayer ~= nil then cb(xPlayer.source) else cb(nil) end
 end
 
-function gcPhoneT.getPhoneNumber(identifier)
+gcPhoneT.getPhoneNumber = function(identifier)
     --[[
         local result = MySQL.Sync.fetchAll("SELECT * FROM users WHERE identifier = @identifier", {['@identifier'] = identifier })
         if #result > 0 then return result[1].phone_number end
@@ -365,7 +361,7 @@ function gcPhoneT.getPhoneNumber(identifier)
     return nil
 end
 
-function gcPhoneT.getIdentifierByPhoneNumber(phone_number)
+gcPhoneT.getIdentifierByPhoneNumber = function(phone_number)
     --[[
         local result = MySQL.Sync.fetchAll("SELECT identifier FROM users WHERE phone_number = @phone_number", {['@phone_number'] = phone_number })
         local isInstalled = true
@@ -383,7 +379,7 @@ function gcPhoneT.getIdentifierByPhoneNumber(phone_number)
     return CACHED_NUMBERS[phone_number].identifier, CACHED_NUMBERS[phone_number].inUse
 end
 
-function gcPhoneT.getSourceFromPhoneNumber(phone_number)
+gcPhoneT.getSourceFromPhoneNumber = function(phone_number)
     local identifier, _ = gcPhoneT.getIdentifierByPhoneNumber(phone_number)
     local xPlayer = ESX.GetPlayerFromIdentifier(identifier)
     if xPlayer == nil then return nil end
@@ -391,7 +387,7 @@ function gcPhoneT.getSourceFromPhoneNumber(phone_number)
     return xPlayer.source
 end
 
-function gcPhoneT.getPlayerID(source)
+gcPhoneT.getPlayerID = function(source)
     local xPlayer = ESX.GetPlayerFromId(source)
     if xPlayer == nil then return nil end
     

@@ -1,6 +1,4 @@
 {
-  "authKey": "cnjOl7UrYnhgzgBVIgr78bZMTRSyG57xTBUa7Di4",
-
   "operator_title": "ThundyPhone",
   "email_suffix": "@phone.com",
   "themeColor": "#3399FF",
@@ -47,8 +45,6 @@
   },
 
   "enableTakePhoto": true,
-  "fileUploadService_Url": "https://api.imgur.com/3/upload",
-  "fileUploadService_Field": "image",
 
   "background": {
     "Apple": "apple.png",
