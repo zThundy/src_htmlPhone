@@ -18,7 +18,6 @@ function TwitterShowError(player, title, message)
 	-- TriggerClientEvent('gcPhone:twitter_showError', player, title, message)
 end
 
-
 function TwitterShowSuccess(player, title, message)
 	TriggerClientEvent("gcphone:sendGenericNotification", player, {
 		message = message,
@@ -29,7 +28,6 @@ function TwitterShowSuccess(player, title, message)
 	})
 	-- TriggerClientEvent('gcPhone:twitter_showSuccess', player, title, message)
 end
-
 
 function TwitterGetTweets(accountId, cb)
 	if accountId == nil then
@@ -57,7 +55,6 @@ function TwitterGetTweets(accountId, cb)
 		]===], { ['@accountId'] = accountId }, cb)
 	end
 end
-
 
 function TwitterGetFavotireTweets (accountId, cb)
 	if accountId == nil then
@@ -88,7 +85,6 @@ function TwitterGetFavotireTweets (accountId, cb)
 	end
 end
 
-
 function getTwiterUserAccount(username, password, cb)
 	MySQL.Async.fetchAll("SELECT id, username as author, avatar_url as authorIcon FROM phone_twitter_accounts WHERE phone_twitter_accounts.username = @username AND phone_twitter_accounts.password = @password", {
 		['@username'] = username,
@@ -101,7 +97,6 @@ function getTwiterUserAccount(username, password, cb)
 		end
 	end)
 end
-
 
 function TwitterPostTweet(username, password, message, player, realUser)
 	local identifier = gcPhoneT.getPlayerID(player)
@@ -149,7 +144,6 @@ function TwitterPostTweet(username, password, message, player, realUser)
 		TwitterShowError(player, 'TWITTER_INFO_TITLE', 'APP_TWITTER_NOTIF_NO_CONNECTION')
 	end
 end
-
 
 function TwitterToogleLike(username, password, tweetId, player)
 	local identifier = gcPhoneT.getPlayerID(player)
@@ -213,7 +207,6 @@ function TwitterToogleLike(username, password, tweetId, player)
 		TwitterShowError(player, 'TWITTER_INFO_TITLE', 'APP_TWITTER_NOTIF_NO_CONNECTION')
 	end
 end
-
 
 function TwitterCreateAccount(username, password, avatarUrl, cb)
 	MySQL.Async.insert('INSERT IGNORE INTO phone_twitter_accounts (`username`, `password`, `avatar_url`) VALUES(@username, @password, @avatarUrl)', {
