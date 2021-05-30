@@ -460,10 +460,10 @@ INSERT INTO `phone_wifi_nets` (`steam_id`, `label`, `password`, `x`, `y`, `z`, `
 CREATE TABLE IF NOT EXISTS `sim` (
   `identifier` varchar(50) NOT NULL,
   `phone_number` varchar(10) DEFAULT NULL,
-  `piano_tariffario` varchar(16) DEFAULT NULL,
-  `minuti` int(11) DEFAULT NULL,
-  `messaggi` int(11) DEFAULT NULL,
-  `dati` int(11) DEFAULT NULL,
+  `piano_tariffario` varchar(16) DEFAULT 'nessuno',
+  `minuti` int(11) DEFAULT '0',
+  `messaggi` int(11) DEFAULT '0',
+  `dati` int(11) DEFAULT '0',
   `nome_sim` varchar(10) DEFAULT '',
   UNIQUE KEY `phone_number` (`phone_number`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
