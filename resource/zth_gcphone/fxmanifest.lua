@@ -105,4 +105,6 @@ server_script {
 	"modules/services/server/*.lua",
 }
 
+dependency 'gridsystem'
+
 data_file 'DLC_ITYP_REQUEST' 'stream/bk_phone.ytyp'
