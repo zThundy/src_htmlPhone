@@ -16,15 +16,16 @@ Citizen.CreateThread(function()
 
 	if Config.EnableSyncThread then
 		while true do
-			Citizen.Wait(Config.SyncThreadWait * 1000)
-
 			radioTowers = Reti.loadTorriRadio()
 			retiWifi = Reti.loadRetiWifi()
 
+			-- print(DumpTable(retiWifi))
 			TriggerClientEvent('esx_wifi:riceviTorriRadio', -1, radioTowers)
 			TriggerClientEvent('esx_wifi:riceviRetiWifi', -1, retiWifi)
 
 			Reti.Debug("SyncThread: towers and wifi synced")
+
+			Citizen.Wait(Config.SyncThreadWait * 1000)
 		end
 	end
 end)

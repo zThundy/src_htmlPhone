@@ -27,7 +27,7 @@ const mutations = {
     if (data.type === 'description') {
       state.tempNews.description = data.text
     } else if (data.type === 'pic') {
-      if (!state.tempNews.pics) { state.tempNews.pics = {} }
+      if (!state.tempNews.pics) { state.tempNews.pics = [] }
       state.tempNews.pics.push(data.text)
     } else if (data.type === 'clear') {
       state.tempNews = []

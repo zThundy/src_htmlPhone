@@ -228,20 +228,7 @@ export default {
     }
   },
   methods: {
-    ...mapActions([
-      'getIntlString',
-      'setZoom',
-      'setBackground',
-      'setCurrentCover',
-      'setsuoneria',
-      'setVolume',
-      'setLanguage',
-      'toggleNotifications',
-      'toggleAirplane',
-      'updateWifiString',
-      'toggleWifi',
-      'toggleBluetooth'
-    ]),
+    ...mapActions(['getIntlString', 'setZoom', 'setBackground', 'setCurrentCover', 'setsuoneria', 'setVolume', 'setLanguage', 'toggleNotifications', 'toggleAirplane', 'updateWifiString', 'toggleWifi', 'toggleBluetooth']),
     scrollIntoView: function () {
       this.$nextTick(() => {
         document.querySelector('.select').scrollIntoView({ behavior: 'smooth', block: 'start', inline: 'nearest' })
@@ -252,11 +239,11 @@ export default {
       this.retiWifiRender = []
       if (this.isWifiOn) {
         for (var i in this.retiWifi) {
-          this.retiWifiRender[this.retiWifi[i].label] = {id: i, icons: 'fa-wifi', label: this.retiWifi[i].label, password: this.retiWifi[i].password, value: this.retiWifi[i].password}
+          this.retiWifiRender[this.retiWifi[i].label] = { id: i, icons: 'fa-wifi', label: this.retiWifi[i].label, password: this.retiWifi[i].password, value: this.retiWifi[i].password }
         }
-        this.retiWifiRender['Annulla'] = {icons: 'fa-undo', label: 'Annulla', value: 'cancel', color: 'red'}
+        this.retiWifiRender['Annulla'] = { icons: 'fa-undo', label: 'Annulla', value: 'cancel', color: 'red' }
       } else {
-        this.retiWifiRender['Wifi spento'] = {icons: 'fa-ban', label: 'Wifi spento', value: 'cancel', color: 'red'}
+        this.retiWifiRender['Wifi spento'] = { icons: 'fa-ban', label: 'Wifi spento', value: 'cancel', color: 'red' }
       }
       return this.retiWifiRender
     },

@@ -1,4 +1,4 @@
-torriRadio = {}, {}
+torriRadio = {}
 retiWifi = {}
 blips = {}
 blips_radius = {}
@@ -39,10 +39,9 @@ function Reti:InitScript()
 	-- thread per salvataggio coordinate
 	Citizen.CreateThread(function()
 		while true do
-			Citizen.Wait(1000)
-
 			self.ped = GetPlayerPed(-1)
 			self.p_coords = GetEntityCoords(self.ped)
+			Citizen.Wait(1000)
 		end
 	end)
 
@@ -67,8 +66,6 @@ function Reti:InitScript()
 		while not blipCaricati do Citizen.Wait(500) end
 
 		while true do
-			Citizen.Wait(Config.CheckDistanceWaitTowers * 1000)
-
 			self.torrePiuVicina, distanza = Reti.getLowestDistanceTIndex(self.p_coords)
 
 			if self.torrePiuVicina ~= 0 then
@@ -101,12 +98,16 @@ function Reti:InitScript()
 				end
 			end
 
-			if Config.EnableSyncThread then
-				-- TriggerServerEvent('esx_wifi:richiediTorriRadio')
-				retiWifi = gcPhoneServerT.richiediTorriRadio()
-			end
+			--[[
+				if Config.EnableSyncThread then
+					-- TriggerServerEvent('esx_wifi:richiediTorriRadio')
+					torriRadio = gcPhoneServerT.richiediTorriRadio()
+				end
+			]]
 
 			TriggerEvent('gcphone:aggiornameAConnessione', self.potenzaSegnale)
+
+			Citizen.Wait(Config.CheckDistanceWaitTowers * 1000)
 		end
 	end)
 
@@ -117,12 +118,12 @@ function Reti:InitScript()
 		local distanza = 0
 
 		while true do
-			Citizen.Wait(Config.CheckDistanceWaitWifi * 1000)
-
 			self.retiWifiVicine = {}
 
 			for i = 1, #retiWifi do
 				distanza = Vdist(retiWifi[i].x, retiWifi[i].y, retiWifi[i].z, self.p_coords.x, self.p_coords.y, self.p_coords.z)
+				-- print("retiWifi[i].x, retiWifi[i].y, retiWifi[i].z", retiWifi[i].x, retiWifi[i].y, retiWifi[i].z)
+				-- print("distanza", distanza)
 
 				if distanza < Config.RaggioWifi then
 					if #self.retiWifiVicine > 0 then
@@ -146,13 +147,20 @@ function Reti:InitScript()
 				end
 			end
 
-			if Config.EnableSyncThread then
-				-- TriggerServerEvent('esx_wifi:richiediRetiWifi')
-				retiWifi = gcPhoneServerT.richiediRetiWifi()
-				Reti.RefreshBlips()
-			end
+			--[[
+				if Config.EnableSyncThread then
+					-- TriggerServerEvent('esx_wifi:richiediRetiWifi')
+					retiWifi = gcPhoneServerT.richiediRetiWifi()
+					Reti.RefreshBlips()
+				end
+			]]
 
+			-- print(DumpTable(self.retiWifiVicine))
+			-- print("---------------------------------")
+			-- print(DumpTable(retiWifi))
 			TriggerEvent('gcphone:aggiornaRetiWifi', self.retiWifiVicine)
+
+			Citizen.Wait(Config.CheckDistanceWaitWifi * 1000)
 		end
 	end)
 end
