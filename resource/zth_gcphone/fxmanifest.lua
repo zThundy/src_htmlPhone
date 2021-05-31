@@ -1,4 +1,4 @@
-fx_version "bodacius"
+fx_version "cerulean"
 
 game "gta5"
 
