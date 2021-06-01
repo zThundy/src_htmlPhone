@@ -1,9 +1,9 @@
-radioTowers = nil
+radioTowers = {}
 retiWifi = {}
 
 -- non utilizzate per il momento
-utentiTorriRadio = {}
-utentiRetiWifi = {}
+-- utentiTorriRadio = {}
+-- utentiRetiWifi = {}
 
 Citizen.CreateThread(function()
 	radioTowers = Reti.loadTorriRadio()
@@ -58,52 +58,52 @@ end
 	end)
 ]]
 
-RegisterServerEvent('esx_wifi:connettiAllaTorre')
-AddEventHandler('esx_wifi:connettiAllaTorre', function(player, labelTorreRadio, potenza)
-	-- table.insert(utentiTorriRadio, {player, labelTorreRadio, potenza})
-	utentiTorriRadio[player] = {player, labelTorreRadio, potenza}
+--[[
+	DEPRECATED
 
-	TriggerClientEvent('gcphone:aggiornameAConnessione', player, potenza)
-end)
+	RegisterServerEvent('esx_wifi:connettiAllaTorre')
+	AddEventHandler('esx_wifi:connettiAllaTorre', function(player, labelTorreRadio, potenza)
+		-- table.insert(utentiTorriRadio, {player, labelTorreRadio, potenza})
+		utentiTorriRadio[player] = {player, labelTorreRadio, potenza}
 
-RegisterServerEvent('esx_wifi:cambiaTorreRadio')
-AddEventHandler('esx_wifi:cambiaTorreRadio', function(player, labelTorreRadio, potenza)
-	utentiTorriRadio[player].labelTorreRadio = labelTorreRadio
-	utentiTorriRadio[player].potenza = potenza
+		TriggerClientEvent('gcphone:aggiornameAConnessione', player, potenza)
+	end)
 
-	--[[
-		for k, info in pairs(utentiTorriRadio) do
-			if info.source == player then
-				info.labelTorreRadio = labelTorreRadio
-				info.potenza = potenza 
-				break
-			end
-		end
-	]]
+	RegisterServerEvent('esx_wifi:cambiaTorreRadio')
+	AddEventHandler('esx_wifi:cambiaTorreRadio', function(player, labelTorreRadio, potenza)
+		utentiTorriRadio[player].labelTorreRadio = labelTorreRadio
+		utentiTorriRadio[player].potenza = potenza
 
-	TriggerClientEvent('gcphone:aggiornameAConnessione', player, potenza)
-end)
+		-- for k, info in pairs(utentiTorriRadio) do
+		-- 	if info.source == player then
+		-- 		info.labelTorreRadio = labelTorreRadio
+		-- 		info.potenza = potenza 
+		-- 		break
+		-- 	end
+		-- end
+
+		TriggerClientEvent('gcphone:aggiornameAConnessione', player, potenza)
+	end)
+
+	RegisterServerEvent('esx_wifi:disconnettiDallaTorre')
+	AddEventHandler('esx_wifi:disconnettiDallaTorre', function(player)
+		utentiTorriRadio[player] = nil
+		
+		-- local utente = nil
+		-- for i=1, #utentiTorriRadio do
+		-- 	utente = utentiTorriRadio[i]
+		-- 	if utente.source == player then
+		-- 		table.remove(utentiTorriRadio, i)
+		-- 		break
+		-- 	end
+		-- end
+
+		TriggerClientEvent('gcphone:aggiornameAConnessione', player, 0)
+	end)
+]]
 
 RegisterServerEvent('esx_wifi:repairRadioTower')
 AddEventHandler('esx_wifi:repairRadioTower', function(tower) Reti.updateCellTower(tower) end)
-
-RegisterServerEvent('esx_wifi:disconnettiDallaTorre')
-AddEventHandler('esx_wifi:disconnettiDallaTorre', function(player)
-	utentiTorriRadio[player] = nil
-	
-	--[[
-		local utente = nil
-		for i=1, #utentiTorriRadio do
-			utente = utentiTorriRadio[i]
-			if utente.source == player then
-				table.remove(utentiTorriRadio, i)
-				break
-			end
-		end
-	]]
-
-	TriggerClientEvent('gcphone:aggiornameAConnessione', player, 0)
-end)
 
 if Config.EnableBreakWifiTowers then
 	Citizen.CreateThreadNow(function()

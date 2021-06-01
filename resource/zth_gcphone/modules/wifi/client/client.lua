@@ -121,7 +121,7 @@ function Reti:InitScript()
 			self.retiWifiVicine = {}
 
 			for i = 1, #retiWifi do
-				distanza = Vdist(retiWifi[i].x, retiWifi[i].y, retiWifi[i].z, self.p_coords.x, self.p_coords.y, self.p_coords.z)
+				distanza = vector3(retiWifi[i].x, retiWifi[i].y, retiWifi[i].z) - self.p_coords
 				-- print("retiWifi[i].x, retiWifi[i].y, retiWifi[i].z", retiWifi[i].x, retiWifi[i].y, retiWifi[i].z)
 				-- print("distanza", distanza)
 
@@ -158,7 +158,7 @@ function Reti:InitScript()
 			-- print(DumpTable(self.retiWifiVicine))
 			-- print("---------------------------------")
 			-- print(DumpTable(retiWifi))
-			TriggerEvent('gcphone:aggiornaRetiWifi', self.retiWifiVicine)
+			AggiornaRetiWifi(self.retiWifiVicine)
 
 			Citizen.Wait(Config.CheckDistanceWaitWifi * 1000)
 		end

@@ -7,7 +7,7 @@ function Reti.getLowestDistanceTIndex(coords)
 
 	for i = 1, #torriRadio do
 		torre = torriRadio[i]
-		tempDistanza = Vdist(tonumber(torre.x) * 1.0, tonumber(torre.y) * 1.0, coords.z, coords.x, coords.y, coords.z)
+		tempDistanza = vector3(tonumber(torre.x) * 1.0, tonumber(torre.y) * 1.0, coords.z) - coords
 
 		if tempDistanza < Config.RaggioTorri then
 			if lowestDistance == 0 then
@@ -26,17 +26,15 @@ function Reti.getLowestDistanceTIndex(coords)
 end
 
 function Reti.getPotenzaSegnale(curr_distance)
-	local RaggioTorri = Config.RaggioTorri
-
 	if curr_distance == nil then return 4 end
 
-	if curr_distance < RaggioTorri / 8 then
+	if curr_distance < Config.RaggioTorri / 8 then
 		return 4
-	elseif curr_distance < RaggioTorri / 1.5 then
+	elseif curr_distance < Config.RaggioTorri / 1.5 then
 		return 3
-	elseif curr_distance < RaggioTorri / 1.125 then
+	elseif curr_distance < Config.RaggioTorri / 1.125 then
 		return 2
-	elseif curr_distance < RaggioTorri then
+	elseif curr_distance < Config.RaggioTorri then
 		return 1
 	else
 		return 0

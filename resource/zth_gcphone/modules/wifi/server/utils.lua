@@ -6,18 +6,6 @@ function Reti.loadRetiWifi()
 	return MySQL.Sync.fetchAll('SELECT * FROM phone_wifi_nets', {})
 end
 
-function Reti.doesReteExist(retiWifi, owner_id)
-	local rete = nil
-	for i=1, #retiWifi do
-		rete = retiWifi[i]
-		if rete.steam_id == owner_id then
-			return true
-		end
-	end
-
-	return false
-end
-
 function Reti.updateCellTower(tower)
 	if tower then
 		MySQL.Async.execute("UPDATE phone_cell_towers SET tower_label = @label, x = @x, y = @y, broken = @broken WHERE id = @id", {
@@ -91,67 +79,79 @@ function Reti.UpdateReteWifi(source, rete, param)
 	end)
 end
 
-function Reti.getRandomWiFiSSID()
-	ssid = Config.DefaultRandomSSID
-	
-	for i = 1, 8 do
-		ssid = ssid..tostring(math.random(0,9))
+--[[
+	function Reti.doesReteExist(retiWifi, owner_id)
+		local rete = nil
+		for i=1, #retiWifi do
+			rete = retiWifi[i]
+			if rete.steam_id == owner_id then
+				return true
+			end
+		end
+
+		return false
 	end
-	
-	return ssid
-end
 
-function Reti.getRandomChar()
-	randomChar = nil
-	
-	charValue = 0
-	charRangeIndex = math.random(1, 3)
-	
-	if charRangeIndex == 1 then
-		randomChar = string.char(math.random(48, 57))
-	elseif charRangeIndex == 2 then
-		randomChar = string.char(math.random(65, 90))
-	elseif charRangeIndex == 3 then
-		randomChar = string.char(math.random(97, 122))
+	function Reti.getRandomWiFiSSID()
+		ssid = Config.DefaultRandomSSID
+		
+		for i = 1, 8 do
+			ssid = ssid..tostring(math.random(0,9))
+		end
+		
+		return ssid
 	end
-	
-	return randomChar
-end
 
-
-function Reti.getRandomWiFiPassword()
-	password = ""
-	
-	for i = 1, 8 do
-		password = password .. Reti.getRandomChar()
+	function Reti.getRandomChar()
+		randomChar = nil
+		
+		charValue = 0
+		charRangeIndex = math.random(1, 3)
+		
+		if charRangeIndex == 1 then
+			randomChar = string.char(math.random(48, 57))
+		elseif charRangeIndex == 2 then
+			randomChar = string.char(math.random(65, 90))
+		elseif charRangeIndex == 3 then
+			randomChar = string.char(math.random(97, 122))
+		end
+		
+		return randomChar
 	end
-	
-	return password
-end
 
 
-function Reti.creaReteWifi(identifier, x, y)
-	rete = {}
-	
-	math.randomseed(os.time())
-	
-	rete.owner_id = identifier
-	rete.ssid = Reti.getRandomWiFiSSID()
-	rete.password = Reti.getRandomWiFiPassword()
-	rete.x = x
-	rete.y = y
-	
-	return rete
-end
+	function Reti.getRandomWiFiPassword()
+		password = ""
+		
+		for i = 1, 8 do
+			password = password .. Reti.getRandomChar()
+		end
+		
+		return password
+	end
 
 
-function Reti.RinnovaRete(startingDate)
-	local day = 86400
-    local days = day * Config.AddDaysOnRenewal
+	function Reti.creaReteWifi(identifier, x, y)
+		rete = {}
+		
+		math.randomseed(os.time())
+		
+		rete.owner_id = identifier
+		rete.ssid = Reti.getRandomWiFiSSID()
+		rete.password = Reti.getRandomWiFiPassword()
+		rete.x = x
+		rete.y = y
+		
+		return rete
+	end
 
-    return os.time(os.date('*t', startingDate)) + days
-end
+	function Reti.RinnovaRete(startingDate)
+		local day = 86400
+		local days = day * Config.AddDaysOnRenewal
 
+		return os.time(os.date('*t', startingDate)) + days
+	end
+]]
 
 function Reti.CheckDueDate()
 	Reti.Debug("Checking expired routers")
