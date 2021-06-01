@@ -166,7 +166,7 @@ end)
 RegisterNUICallback('setReadMessageNumber', function(data, cb)
     gcPhoneServerT.setReadMessageNumber(data.number)
 
-    for k, v in ipairs(messages) do 
+    for k, v in ipairs(messages) do
         if v.transmitter == data.number then
             v.isRead = 1
         end

@@ -16,6 +16,7 @@ GLOBAL_AIRPLANE = {}
 CACHED_NUMBERS = {}
 CACHED_NAMES = {}
 CACHED_CONTACTS = {}
+CACHED_MESSAGES = {}
 
 AddEventHandler("playerDropped", function(reason)
     local player = source
@@ -49,17 +50,26 @@ MySQL.ready(function()
             ]]
         end
 
+        gcPhone.debug("Numbers cache loaded from sim database")
         MySQL.Async.fetchAll("SELECT * FROM phone_users_contacts", {}, function(contacts)
             for id, contact in pairs(contacts) do
                 -- print(DumpTable(contact))
                 if not CACHED_CONTACTS[contact.identifier] then CACHED_CONTACTS[contact.identifier] = {} end
-
                 table.insert(CACHED_CONTACTS[contact.identifier], contact)
             end
 
-            phone_loaded = true
-            gcPhone.debug("Numbers cache loaded from sim database")
-            gcPhone.debug("Phone initialized")
+            gcPhone.debug("Contacts cache loaded from phone contacts database")
+            MySQL.Async.fetchAll("SELECT * FROM phone_messages", {}, function(messages)
+                for id, message in pairs(messages) do
+                    print(DumpTable(message))
+                    if not CACHED_MESSAGES[message.receiver] then CACHED_MESSAGES[message.receiver] = {} end
+                    table.insert(CACHED_MESSAGES[message.receiver], message)
+                end
+
+                gcPhone.debug("Messages cache loaded from phone messages database")
+                gcPhone.debug("Phone initialized")
+                phone_loaded = true
+            end)
         end)
     end)
 end)
@@ -90,17 +100,17 @@ gcPhoneT.allUpdate = function()
         while not phone_loaded do Citizen.Wait(100) end
 
         local identifier = gcPhoneT.getPlayerID(player)
-        local num = gcPhoneT.getPhoneNumber(identifier)
+        local phone_number = gcPhoneT.getPhoneNumber(identifier)
 
-        TriggerClientEvent("gcPhone:updatePhoneNumber", player, num)
+        TriggerClientEvent("gcPhone:updatePhoneNumber", player, phone_number)
         TriggerClientEvent("gcPhone:contactList", player, getContacts(identifier))
 
         local notReceivedMessages = getUnreceivedMessages(identifier)
         -- if notReceivedMessages > 0 then setMessagesReceived(num) end
 
-        TriggerClientEvent("gcPhone:allMessage", player, getMessages(identifier), notReceivedMessages)
+        TriggerClientEvent("gcPhone:allMessage", player, getMessages(phone_number), notReceivedMessages)
 
-        sendHistoriqueCall(player, num)
+        sendHistoriqueCall(player, phone_number)
     end)
 end
 
@@ -507,8 +517,10 @@ end
 -------- Eventi e Funzioni dei Messaggi
 --==================================================================================================================
 
-function getMessages(identifier)
-    return MySQL.Sync.fetchAll("SELECT phone_messages.* FROM phone_messages LEFT JOIN users ON users.identifier = @identifier WHERE phone_messages.receiver = users.phone_number", { ['@identifier'] = identifier })
+function getMessages(number)
+    -- return MySQL.Sync.fetchAll("SELECT phone_messages.* FROM phone_messages LEFT JOIN users ON users.identifier = @identifier WHERE phone_messages.receiver = users.phone_number", { ['@identifier'] = identifier })
+    if not CACHED_MESSAGES[number] then CACHED_MESSAGES[number] = {} end
+    return CACHED_MESSAGES[number]
 end
 
 function addMessage(source, identifier, phone_number, message)
@@ -588,6 +600,7 @@ gcPhoneT.internalAddMessage = function(transmitter, receiver, message, owner)
 end
 
 function _internalAddMessage(transmitter, receiver, message, owner)
+    if not CACHED_MESSAGES[receiver] then CACHED_MESSAGES[receiver] = {} end
     local id = MySQL.Sync.insert("INSERT INTO phone_messages (`transmitter`, `receiver`,`message`, `isRead`, `owner`) VALUES(@transmitter, @receiver, @message, @isRead, @owner)", {
         ['@transmitter'] = transmitter,
         ['@receiver'] = receiver,
@@ -596,7 +609,19 @@ function _internalAddMessage(transmitter, receiver, message, owner)
         ['@owner'] = owner
     })
 
-    return MySQL.Sync.fetchAll('SELECT * from phone_messages WHERE `id` = @id', {['@id'] = id})[1]
+    local message = {
+        id = id,
+        transmitter = transmitter,
+        receiver = receiver,
+        message = message,
+        time = os.time(),
+        isRead = owner,
+        owner = owner,
+        received = 0
+    }
+
+    table.insert(CACHED_MESSAGES[receiver], message)
+    return message
 end
 
 -- RegisterServerEvent('gcPhone:_internalAddMessage')
@@ -604,45 +629,91 @@ end
 --     cb(_internalAddMessage(transmitter, receiver, message, owner))
 -- end)
 
-gcPhoneT.setReadMessageNumber = function(num)
+gcPhoneT.setReadMessageNumber = function(transmitter_number)
     local player = source
     local identifier = gcPhoneT.getPlayerID(player)
-    local mePhoneNumber = gcPhoneT.getPhoneNumber(identifier)
+    local receiver_number = gcPhoneT.getPhoneNumber(identifier)
 
-    MySQL.Sync.execute("UPDATE phone_messages SET phone_messages.isRead = 1 WHERE phone_messages.receiver = @receiver AND phone_messages.transmitter = @transmitter", {
-        ['@receiver'] = mePhoneNumber,
-        ['@transmitter'] = num
+    for _, message in pairs(CACHED_MESSAGES[receiver_number]) do
+        if message.transmitter == transmitter_number and message.receiver == receiver_number then
+            message.isRead = 1
+            break
+        end
+    end
+
+    MySQL.Async.execute("UPDATE phone_messages SET isRead = 1 WHERE receiver = @receiver AND transmitter = @transmitter", {
+        ['@receiver'] = receiver_number,
+        ['@transmitter'] = transmitter_number
     })
 end
 
-function setMessageReceived(phone_number, num)
-    MySQL.Sync.execute("UPDATE phone_messages SET phone_messages.received = 1 WHERE phone_messages.receiver = @receiver AND phone_messages.transmitter = @transmitter", {
-        ['@receiver'] = phone_number,
-        ['@transmitter'] = num
+function setMessageReceived(receiver_number, transmitter_number)
+    for _, message in pairs(CACHED_MESSAGES[receiver_number]) do
+        if message.transmitter == transmitter_number and message.receiver == receiver_number then
+            message.received = 1
+            break
+        end
+    end
+
+    MySQL.Sync.execute("UPDATE phone_messages SET received = 1 WHERE receiver = @receiver AND transmitter = @transmitter", {
+        ['@receiver'] = receiver_number,
+        ['@transmitter'] = transmitter_number
     })
 end
 
-function setMessagesReceived(phone_number)
-    MySQL.Sync.execute("UPDATE phone_messages SET phone_messages.received = 1 WHERE phone_messages.receiver = @receiver", {
-        ['@receiver'] = phone_number
+function setMessagesReceived(receiver_number)
+    for _, message in pairs(CACHED_MESSAGES[receiver_number]) do
+        if message.receiver == receiver_number then
+            message.received = 1
+        end
+    end
+
+    MySQL.Async.execute("UPDATE phone_messages SET received = 1 WHERE receiver = @receiver", {
+        ['@receiver'] = receiver_number
     })
 end
 
 gcPhoneT.deleteMessage = function(id)
+    local player = source
+    local identifier = gcPhoneT.getPlayerID(player)
+    local phone_number = gcPhoneT.getPhoneNumber(identifier)
+
+    for table_index, message in pairs(CACHED_MESSAGES[phone_number]) do
+        if message.id == id then
+            table.remove(CACHED_MESSAGES[phone_number], table_index)
+            break
+        end
+    end
+
     MySQL.Async.execute("DELETE FROM phone_messages WHERE `id` = @id", { ['@id'] = id })
 end
 
-gcPhoneT.deleteMessageNumber = function(number)
+gcPhoneT.deleteMessageNumber = function(transmitter_number)
     local player = source
     local identifier = gcPhoneT.getPlayerID(player)
+    local receiver_number = gcPhoneT.getPhoneNumber(identifier)
+
+    for table_index, message in pairs(CACHED_MESSAGES[receiver_number]) do
+        if message.transmitter == transmitter_number and message.receiver == receiver_number then
+            table.remove(CACHED_MESSAGES[receiver_number], table_index)
+            break
+        end
+    end
+
     MySQL.Async.execute("DELETE FROM phone_messages WHERE `receiver` = @receiver and `transmitter` = @transmitter", { 
-        ['@receiver'] = gcPhoneT.getPhoneNumber(identifier), 
-        ['@transmitter'] = number 
+        ['@receiver'] = receiver_number, 
+        ['@transmitter'] = transmitter_number 
     })
 end
 
-function gcPhoneT.deleteReceivedMessages(identifier)
-    MySQL.Async.execute("DELETE FROM phone_messages WHERE `receiver` = @receiver", { ['@receiver'] = gcPhoneT.getPhoneNumber(identifier) })
+gcPhoneT.deleteReceivedMessages = function(identifier)
+    local receiver_number = gcPhoneT.getPhoneNumber(identifier)
+    CACHED_MESSAGES[receiver_number] = {}
+    -- need to choose the clean table or the complete delete of table
+    -- maybe i'll leave the empty table
+    -- CACHED_MESSAGES[receiver_number] = nil
+
+    MySQL.Async.execute("DELETE FROM phone_messages WHERE `receiver` = @receiver", { ['@receiver'] = receiver_number })
 end
 
 gcPhoneT.deleteAllMessage = function()
@@ -1016,7 +1087,7 @@ AddEventHandler('esx:playerLoaded', function(source, xPlayer)
    	local notReceivedMessages = getUnreceivedMessages(identifier)
     if notReceivedMessages > 0 then setMessagesReceived(phone_number) end
 
-    TriggerClientEvent("gcPhone:allMessage", player, getMessages(identifier), notReceivedMessages)
+    TriggerClientEvent("gcPhone:allMessage", player, getMessages(phone_number), notReceivedMessages)
 
     local r = MySQL.Sync.fetchAll("SELECT firstname, lastname FROM users WHERE identifier = @identifier", {['@identifier'] = identifier})
     if (r and r[1]) and (r[1].firstname and r[1].lastname) then
@@ -1036,7 +1107,8 @@ AddEventHandler('esx:playerLoaded', function(source, xPlayer)
 end)
 
 function getUnreceivedMessages(identifier)
-    local messages = getMessages(identifier)
+    local phone_number = gcPhoneT.getPhoneNumber(identifier)
+    local messages = getMessages(phone_number)
     local notReceivedMessages = 0
 
     for k, message in pairs(messages) do
