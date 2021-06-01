@@ -519,6 +519,7 @@ end
 
 function getMessages(number)
     -- return MySQL.Sync.fetchAll("SELECT phone_messages.* FROM phone_messages LEFT JOIN users ON users.identifier = @identifier WHERE phone_messages.receiver = users.phone_number", { ['@identifier'] = identifier })
+    if not number then return {} end
     if not CACHED_MESSAGES[number] then CACHED_MESSAGES[number] = {} end
     return CACHED_MESSAGES[number]
 end
@@ -609,12 +610,13 @@ function _internalAddMessage(transmitter, receiver, message, owner)
         ['@owner'] = owner
     })
 
+    -- print(os.time())
     local message = {
         id = id,
         transmitter = transmitter,
         receiver = receiver,
         message = message,
-        time = os.time(),
+        time = os.time() * 1000,
         isRead = owner,
         owner = owner,
         received = 0
@@ -623,11 +625,6 @@ function _internalAddMessage(transmitter, receiver, message, owner)
     table.insert(CACHED_MESSAGES[receiver], message)
     return message
 end
-
--- RegisterServerEvent('gcPhone:_internalAddMessage')
--- AddEventHandler('gcPhone:_internalAddMessage', function(transmitter, receiver, message, owner, cb)
---     cb(_internalAddMessage(transmitter, receiver, message, owner))
--- end)
 
 gcPhoneT.setReadMessageNumber = function(transmitter_number)
     local player = source
