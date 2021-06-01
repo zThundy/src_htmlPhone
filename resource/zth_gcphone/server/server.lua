@@ -15,6 +15,7 @@ phone_loaded = false
 GLOBAL_AIRPLANE = {}
 CACHED_NUMBERS = {}
 CACHED_NAMES = {}
+CACHED_CONTACTS = {}
 
 AddEventHandler("playerDropped", function(reason)
     local player = source
@@ -48,9 +49,17 @@ MySQL.ready(function()
             ]]
         end
 
-        phone_loaded = true
-        gcPhone.debug("Numbers cache loaded from sim database")
-        gcPhone.debug("Phone initialized")
+        MySQL.Async.fetchAll("SELECT * FROM phone_users_contacts", {}, function(r)
+            for id, contact in pairs(r) do
+                if not CACHED_CONTACTS[contact.identifier] then CACHED_CONTACTS[contact.identifier] = {} end
+
+                table.insert(CACHED_CONTACTS[contact.identifier], v)
+            end
+
+            phone_loaded = true
+            gcPhone.debug("Numbers cache loaded from sim database")
+            gcPhone.debug("Phone initialized")
+        end)
     end)
 end)
 
@@ -399,8 +408,10 @@ end
 --==================================================================================================================
 
 function getContacts(identifier)
-    local result = MySQL.Sync.fetchAll("SELECT * FROM phone_users_contacts WHERE phone_users_contacts.identifier = @identifier", { ['@identifier'] = identifier })
-    return result
+    if CACHED_CONTACTS[identifier] then
+        return CACHED_CONTACTS[identifier]
+    end
+    return nil
 end
 
 function addContact(source, identifier, number, display, email)
@@ -410,7 +421,16 @@ function addContact(source, identifier, number, display, email)
             ['@number'] = number,
             ['@display'] = display,
             ['@email'] = email
-        }, function()
+        }, function(id)
+            table.insert(CACHED_CONTACTS[identifier], {
+                id = id,
+                identifier = identifier,
+                number = number,
+                display = display,
+                icon = nil,
+                email = email
+            })
+
             notifyContactChange(source, identifier)
         end)
     else
@@ -419,12 +439,21 @@ function addContact(source, identifier, number, display, email)
 end
 
 function updateContact(source, identifier, id, number, display, email)
-    MySQL.Async.insert("UPDATE phone_users_contacts SET number = @number, display = @display, email = @email WHERE id = @id", { 
+    MySQL.Async.execute("UPDATE phone_users_contacts SET number = @number, display = @display, email = @email WHERE id = @id", { 
         ['@number'] = number,
         ['@display'] = display,
         ['@id'] = id,
         ['@email'] = email
     },function()
+        for _, contact in pairs(CACHED_CONTACTS[identifier]) do
+            if contact.id == id then
+                contact.number = number
+                contact.display = display
+                contact.email = email
+                break
+            end
+        end
+
         notifyContactChange(source, identifier)
     end)
 end
@@ -434,6 +463,9 @@ function deleteContact(source, identifier, id)
         ['@identifier'] = identifier,
         ['@id'] = id,
     })
+    
+    table.remove(CACHED_CONTACTS[identifier], id)
+
     notifyContactChange(source, identifier)
 end
 

@@ -2,6 +2,8 @@ fx_version "cerulean"
 
 game "gta5"
 
+version "1.2.2"
+
 ui_page 'html/index.html'
 
 files {
