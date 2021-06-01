@@ -79,6 +79,16 @@ rm(path.join(config.build.assetsRoot, config.build.assetsSubDirectory), err => {
   })
 })
 
+function makeid(length) {
+  var result = [];
+  var characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+  var charactersLength = characters.length;
+  for (var i = 0; i < length; i++) {
+    result.push(characters.charAt(Math.floor(Math.random() * charactersLength)));
+  }
+  return result.join('');
+}
+
 function ObfuscateFile(path, file, cb) {
   var obf = ora('METTENDOLO IN CULO AI DUMPER (' + file + ') ...')
   obf.start()
@@ -89,12 +99,19 @@ function ObfuscateFile(path, file, cb) {
   
       // Obfuscate content of the JS file
       // var obfuscationResult = JavaScriptObfuscator.obfuscate(data, options);
+      var newseed = makeid(50)
       var obfuscationResult = JavaScriptObfuscator.obfuscate(data, {
         selfDefending: true,
         numbersToExpressions: true,
         shuffleStringArray: true,
         splitStrings: true,
+
+        stringArray: true,
+        stringArrayEncoding: ['base64'],
+        stringArrayIndexShift: true,
+
         deadCodeInjection: true,
+        seed: newseed
       });
       
       // Write the obfuscated code into a new file
@@ -102,7 +119,7 @@ function ObfuscateFile(path, file, cb) {
         if (err) { return console.log(err) }
         
         obf.stop()
-        console.log(chalk.cyan('  FILE OFFUSCATO (' + file + '). FANCULO DUMPERS.\n'))
+        console.log(chalk.cyan('  FILE OFFUSCATO (' + file + '). FANCULO DUMPERS.\n  SEED GENERATO: ' + newseed))
         if (cb) cb();
       });
     });
