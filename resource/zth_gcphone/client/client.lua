@@ -530,17 +530,16 @@ end
 -- CALLBACK DELLE RETI WIFI
 ---------------------------------------------------------------------------------
 
-RegisterNetEvent("gcphone:aggiornaRetiWifi")
-AddEventHandler("gcphone:aggiornaRetiWifi", function(retiWifiServer)
+function AggiornaRetiWifi(r)
     -- print("sto aggiornando retiwifi")
     -- print(json.encode(retiWifiServer))
-    retiWifi = retiWifiServer
+    retiWifi = r
 
     -- aggiorna la lista del wifi
     SendNUIMessage({event = "updateRetiWifi", data = retiWifi})
     -- aggiorna l'icona del wifi
     SendNUIMessage({event = "updateWifi", data = { hasWifi = isConnected }})
-end)
+end
 
 RegisterNetEvent("gcphone:updateWifi")
 AddEventHandler("gcphone:updateWifi", function(connected, rete)
