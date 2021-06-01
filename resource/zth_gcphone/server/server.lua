@@ -414,7 +414,29 @@ function getContacts(identifier)
     return CACHED_CONTACTS[identifier]
 end
 
-function addContact(source, identifier, number, display, email)
+gcPhoneT.updateAvatarContatto = function(data)
+    local player = source
+    local identifier = gcPhoneT.getPlayerID(player)
+
+    MySQL.Async.execute("UPDATE phone_users_contacts SET icon = @icon WHERE id = @id", {
+        ['@icon'] = data.icon,
+        ['@id'] = data.id
+    }, function()
+        for _, contact in pairs(CACHED_CONTACTS[identifier]) do
+            if contact.id == data.id then
+                contact.icon = data.icon
+                break
+            end
+        end
+        
+        TriggerClientEvent("gcPhone:contactList", player, getContacts(identifier))
+    end)
+end
+
+gcPhoneT.addContact = function(display, number, email)
+    local player = source
+    local identifier = gcPhoneT.getPlayerID(player)
+    
     if not CACHED_CONTACTS[identifier] then CACHED_CONTACTS[identifier] = {} end
     if identifier ~= nil and number ~= nil and display ~= nil then
         MySQL.Async.insert("INSERT INTO phone_users_contacts(`identifier`, `number`, `display`, `email`) VALUES(@identifier, @number, @display, @email)", {
@@ -432,14 +454,17 @@ function addContact(source, identifier, number, display, email)
                 email = email
             })
 
-            notifyContactChange(source, identifier)
+            TriggerClientEvent("gcPhone:contactList", source, getContacts(identifier))
         end)
     else
         TriggerClientEvent("esx:showNotification", source, "~r~Devi inserire un numero e un titolo validi!")
     end
 end
 
-function updateContact(source, identifier, id, number, display, email)
+gcPhoneT.updateContact = function(id, display, number, email)
+    local player = source
+    local identifier = gcPhoneT.getPlayerID(player)
+    
     MySQL.Async.execute("UPDATE phone_users_contacts SET number = @number, display = @display, email = @email WHERE id = @id", { 
         ['@number'] = number,
         ['@display'] = display,
@@ -455,11 +480,14 @@ function updateContact(source, identifier, id, number, display, email)
             end
         end
 
-        notifyContactChange(source, identifier)
+        TriggerClientEvent("gcPhone:contactList", player, getContacts(identifier))
     end)
 end
 
-function deleteContact(source, identifier, id)
+gcPhoneT.deleteContact = function(id)
+    local player = source
+    local identifier = gcPhoneT.getPlayerID(player)
+    
     MySQL.Async.execute("DELETE FROM phone_users_contacts WHERE `identifier` = @identifier AND `id` = @id", {
         ['@identifier'] = identifier,
         ['@id'] = id,
@@ -471,34 +499,8 @@ function deleteContact(source, identifier, id)
             end
         end
     
-        notifyContactChange(source, identifier)
-    end)
-end
-
-function notifyContactChange(source, identifier)
-    local player = tonumber(source)
-
-    if player ~= nil then 
         TriggerClientEvent("gcPhone:contactList", player, getContacts(identifier))
-    end
-end
-
-gcPhoneT.addContact = function(display, phoneNumber, email)
-    local player = source
-    local identifier = gcPhoneT.getPlayerID(player)
-    addContact(player, identifier, phoneNumber, display, email)
-end
-
-gcPhoneT.updateContact = function(id, display, phoneNumber, email)
-    local player = source
-    local identifier = gcPhoneT.getPlayerID(player)
-    updateContact(player, identifier, id, phoneNumber, display, email)
-end
-
-gcPhoneT.deleteContact = function(id)
-    local player = source
-    local identifier = gcPhoneT.getPlayerID(player)
-    deleteContact(player, identifier, id)
+    end)
 end
 
 --==================================================================================================================
@@ -1032,16 +1034,6 @@ AddEventHandler('esx:playerLoaded', function(source, xPlayer)
     --     end
     -- end)
 end)
-
-gcPhoneT.updateAvatarContatto = function(data)
-    local player = source
-    local identifier = gcPhoneT.getPlayerID(player)
-
-    MySQL.Async.execute("UPDATE phone_users_contacts SET icon = '" .. data.icon .. "' WHERE id = '" .. data.id .. "'", {})
-    SetTimeout(2000, function()
-        TriggerClientEvent("gcPhone:contactList", player, getContacts(identifier))
-    end)
-end
 
 function getUnreceivedMessages(identifier)
     local messages = getMessages(identifier)
