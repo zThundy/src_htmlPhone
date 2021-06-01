@@ -31,8 +31,8 @@ MySQL.ready(function()
 
     gcPhone.debug("Caching members. Lag expected")
 
-    MySQL.Async.fetchAll("SELECT phone_number, identifier FROM sim", {}, function(r)
-        for _, v in pairs(r) do
+    MySQL.Async.fetchAll("SELECT phone_number, identifier FROM sim", {}, function(numbers)
+        for _, v in pairs(numbers) do
             CACHED_NUMBERS[tostring(v.phone_number)] = {identifier = v.identifier, inUse = false}
 
             --[[
@@ -49,11 +49,12 @@ MySQL.ready(function()
             ]]
         end
 
-        MySQL.Async.fetchAll("SELECT * FROM phone_users_contacts", {}, function(r)
-            for id, contact in pairs(r) do
+        MySQL.Async.fetchAll("SELECT * FROM phone_users_contacts", {}, function(contacts)
+            for id, contact in pairs(contacts) do
+                -- print(DumpTable(contact))
                 if not CACHED_CONTACTS[contact.identifier] then CACHED_CONTACTS[contact.identifier] = {} end
 
-                table.insert(CACHED_CONTACTS[contact.identifier], v)
+                table.insert(CACHED_CONTACTS[contact.identifier], contact)
             end
 
             phone_loaded = true
@@ -408,13 +409,13 @@ end
 --==================================================================================================================
 
 function getContacts(identifier)
-    if CACHED_CONTACTS[identifier] then
-        return CACHED_CONTACTS[identifier]
-    end
-    return nil
+    -- print(DumpTable(CACHED_CONTACTS))
+    if not CACHED_CONTACTS[identifier] then CACHED_CONTACTS[identifier] = {} end
+    return CACHED_CONTACTS[identifier]
 end
 
 function addContact(source, identifier, number, display, email)
+    if not CACHED_CONTACTS[identifier] then CACHED_CONTACTS[identifier] = {} end
     if identifier ~= nil and number ~= nil and display ~= nil then
         MySQL.Async.insert("INSERT INTO phone_users_contacts(`identifier`, `number`, `display`, `email`) VALUES(@identifier, @number, @display, @email)", {
             ['@identifier'] = identifier,
@@ -459,14 +460,19 @@ function updateContact(source, identifier, id, number, display, email)
 end
 
 function deleteContact(source, identifier, id)
-    MySQL.Sync.execute("DELETE FROM phone_users_contacts WHERE `identifier` = @identifier AND `id` = @id", {
+    MySQL.Async.execute("DELETE FROM phone_users_contacts WHERE `identifier` = @identifier AND `id` = @id", {
         ['@identifier'] = identifier,
         ['@id'] = id,
-    })
+    }, function()
+        for table_index, contact in pairs(CACHED_CONTACTS[identifier]) do
+            if contact.id == id then
+                table.remove(CACHED_CONTACTS[identifier], table_index)
+                break
+            end
+        end
     
-    table.remove(CACHED_CONTACTS[identifier], id)
-
-    notifyContactChange(source, identifier)
+        notifyContactChange(source, identifier)
+    end)
 end
 
 function notifyContactChange(source, identifier)

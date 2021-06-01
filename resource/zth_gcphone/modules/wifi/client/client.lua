@@ -121,7 +121,7 @@ function Reti:InitScript()
 			self.retiWifiVicine = {}
 
 			for i = 1, #retiWifi do
-				distanza = vector3(retiWifi[i].x, retiWifi[i].y, retiWifi[i].z) - self.p_coords
+				distanza = Vdist(retiWifi[i].x, retiWifi[i].y, retiWifi[i].z, self.p_coords.x, self.p_coords.y, self.p_coords.z)
 				-- print("retiWifi[i].x, retiWifi[i].y, retiWifi[i].z", retiWifi[i].x, retiWifi[i].y, retiWifi[i].z)
 				-- print("distanza", distanza)
 
