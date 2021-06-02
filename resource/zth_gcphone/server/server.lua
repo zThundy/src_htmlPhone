@@ -61,7 +61,7 @@ MySQL.ready(function()
             gcPhone.debug("Contacts cache loaded from phone contacts database")
             MySQL.Async.fetchAll("SELECT * FROM phone_messages", {}, function(messages)
                 for id, message in pairs(messages) do
-                    print(DumpTable(message))
+                    -- print(DumpTable(message))
                     if not CACHED_MESSAGES[message.receiver] then CACHED_MESSAGES[message.receiver] = {} end
                     table.insert(CACHED_MESSAGES[message.receiver], message)
                 end
@@ -105,7 +105,7 @@ gcPhoneT.allUpdate = function()
         TriggerClientEvent("gcPhone:updatePhoneNumber", player, phone_number)
         TriggerClientEvent("gcPhone:contactList", player, getContacts(identifier))
 
-        local notReceivedMessages = getUnreceivedMessages(identifier)
+        local notReceivedMessages = getUnreceivedMessages(phone_number)
         -- if notReceivedMessages > 0 then setMessagesReceived(num) end
 
         TriggerClientEvent("gcPhone:allMessage", player, getMessages(phone_number), notReceivedMessages)
@@ -1081,7 +1081,7 @@ AddEventHandler('esx:playerLoaded', function(source, xPlayer)
     TriggerClientEvent("gcPhone:updatePhoneNumber", player, phone_number)
     TriggerClientEvent("gcPhone:contactList", player, getContacts(identifier))
 
-   	local notReceivedMessages = getUnreceivedMessages(identifier)
+   	local notReceivedMessages = getUnreceivedMessages(phone_number)
     if notReceivedMessages > 0 then setMessagesReceived(phone_number) end
 
     TriggerClientEvent("gcPhone:allMessage", player, getMessages(phone_number), notReceivedMessages)
@@ -1103,8 +1103,8 @@ AddEventHandler('esx:playerLoaded', function(source, xPlayer)
     -- end)
 end)
 
-function getUnreceivedMessages(identifier)
-    local phone_number = gcPhoneT.getPhoneNumber(identifier)
+function getUnreceivedMessages(phone_number)
+    -- local phone_number = gcPhoneT.getPhoneNumber(identifier)
     local messages = getMessages(phone_number)
     local notReceivedMessages = 0
 
