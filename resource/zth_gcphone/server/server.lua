@@ -464,10 +464,10 @@ gcPhoneT.addContact = function(display, number, email)
                 email = email
             })
 
-            TriggerClientEvent("gcPhone:contactList", source, getContacts(identifier))
+            TriggerClientEvent("gcPhone:contactList", player, getContacts(identifier))
         end)
     else
-        TriggerClientEvent("esx:showNotification", source, "~r~Devi inserire un numero e un titolo validi!")
+        TriggerClientEvent("esx:showNotification", player, "~r~Devi inserire un numero e un titolo validi!")
     end
 end
 
