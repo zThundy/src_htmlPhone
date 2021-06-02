@@ -8,7 +8,7 @@ import emoji from './emoji.json'
 const keyEmoji = Object.keys(emoji)
 
 let USE_VOICE_RTC = false
-const BASE_URL = 'https://zth_gcphone/'
+const BASE_URL = 'http://zth_gcphone/'
 
 /* eslint-disable camelcase */
 class PhoneAPI {

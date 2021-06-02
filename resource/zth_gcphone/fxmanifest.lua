@@ -1,8 +1,8 @@
-fx_version "cerulean"
+fx_version "bodacius"
 
 game "gta5"
 
-version "1.2.2"
+version "1.3.2"
 
 ui_page 'html/index.html'
 
