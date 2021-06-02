@@ -408,7 +408,7 @@ DELETE FROM `phone_user_crypto`;
 -- Dump della struttura di tabella esfx.phone_whatsapp_groups
 CREATE TABLE IF NOT EXISTS `phone_whatsapp_groups` (
   `id` bigint(255) NOT NULL AUTO_INCREMENT,
-  `icona` varchar(50) NOT NULL,
+  `icona` varchar(255) NOT NULL,
   `gruppo` varchar(255) NOT NULL DEFAULT 'Nessun nome',
   `partecipanti` longtext NOT NULL,
   PRIMARY KEY (`id`)

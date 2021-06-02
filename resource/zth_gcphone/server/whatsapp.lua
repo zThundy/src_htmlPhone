@@ -40,12 +40,12 @@ local function WhatsappShowNotificationSuccess(player, titile, message)
 	})
 end
 
+-- to be optimized
 local function UpdateGroupsCache()
     local r = MySQL.Sync.fetchAll("SELECT * FROM phone_whatsapp_groups", {})
     for k, v in pairs(r) do
         WHATSAPP_GROUPS[tonumber(v.id)] = v
     end
-    return WHATSAPP_GROUPS
 end
 
 MySQL.ready(function()
@@ -86,14 +86,13 @@ local function UpdateGroupLabels(source)
             -- print(member.number)
             local contact = GetContact(identifier, member.number)
             if contact then
-                print(DumpTable(contact))
+                -- print(DumpTable(contact))
                 member.display = contact.display
             end
         end
     end
 
-    print(DumpTable(WHATSAPP_GROUPS))
-
+    -- print(DumpTable(WHATSAPP_GROUPS))
     TriggerClientEvent("gcphone:whatsapp_updateGruppi", source, WHATSAPP_GROUPS, number)
 end
 
@@ -132,7 +131,7 @@ gcPhoneT.getAllGroups = function()
 end
 
 gcPhoneT.whatsapp_sendMessage = function(data)
-    print("should be sending messages", json.encode(data))
+    -- print("should be sending messages", json.encode(data))
     local player = source
     local identifier = gcPhoneT.getPlayerID(player)
 
@@ -148,12 +147,10 @@ gcPhoneT.whatsapp_sendMessage = function(data)
             -- print("ho fatto la query. id è", id)
             if id > 0 then
                 local group = WHATSAPP_GROUPS[tonumber(data.id)]
-
                 for _, val in pairs(json.decode(group.partecipanti)) do
                     -- print(val.number, "il numero del partecipante è questo")
                     local g_source = gcPhoneT.getSourceFromPhoneNumber(val.number)
                     -- print(g_source, "ho ricevuto la source")
-
                     if g_source ~= nil then
                         -- message, label, sender, id | sender, label, message, id
                         TriggerClientEvent("gcphone:whatsapp_sendNotificationToMembers", g_source, data.phoneNumber, group.gruppo, data.messaggio, data.id)
@@ -260,7 +257,6 @@ gcPhoneT.whatsapp_leaveGroup = function(group)
 
         MySQL.Async.fetchAll("SELECT * FROM phone_whatsapp_groups WHERE id = @id", {['@id'] = group.id}, function(r)
             if r[1] == nil then return end
-
             local partecipanti = formatTableIndex(json.decode(r[1].partecipanti))
 
             -- print(ESX.DumpTable(partecipanti))
@@ -378,6 +374,8 @@ ESX.RegisterServerCallback("gcphone:whatsapp_editGroup", function(source, cb, gr
             ['@icona'] = group.icona,
             ['@id'] = group.id
         }, function(rowsChanged)
+            UpdateGroupsCache()
+            UpdateGroupLabels(player)
             if rowsChanged > 0 then cb(true) else cb(false) end
         end)
     else
