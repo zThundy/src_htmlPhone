@@ -10,7 +10,7 @@
         <div v-if="elem.keyDesc === undefined || elem.keyDesc === ''" class="elem-title">{{ formatEmoji(elem[keyDispay]) }}</div>
         <div v-if="elem.keyDesc !== undefined && elem.keyDesc !== ''" class="elem-title-has-desc">
           {{ formatEmoji(elem[keyDispay]) }}
-          <div v-if="elem.keyDesc !== undefined && elem.keyDesc !== ''" class="elem-description">{{ formatEmoji(elem.keyDesc) }}</div>
+          <div v-if="elem.keyDesc !== undefined && elem.keyDesc !== ''" class="elem-description">{{ formatEmoji(isSMSImage(elem.keyDesc)) }}</div>
         </div>
       
       </div>
@@ -27,7 +27,7 @@ import { mapGetters } from 'vuex'
 export default {
   name: 'List',
   components: { PhoneTitle, InfoBare },
-  data: function () {
+  data () {
     return {
       currentSelect: 0
     }
@@ -83,6 +83,13 @@ export default {
     ...mapGetters([])
   },
   methods: {
+    isSMSImage (mess) {
+      var pattern = new RegExp('^(https?:\\/\\/)?' + '((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|' + '((\\d{1,3}\\.){3}\\d{1,3}))' + '(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*' + '(\\?[;&a-z\\d%_.~+=-]*)?' + '(\\#[-a-z\\d_]*)?$', 'i')
+      if (pattern.test(mess)) {
+        return 'Immagine'
+      }
+      return mess
+    },
     formatEmoji (message) {
       return this.$phoneAPI.convertEmoji(message)
     },
