@@ -353,7 +353,7 @@ CREATE TABLE IF NOT EXISTS `phone_users_contacts` (
   `identifier` varchar(60) CHARACTER SET utf8mb4 DEFAULT NULL,
   `number` varchar(10) CHARACTER SET utf8mb4 DEFAULT NULL,
   `display` varchar(64) CHARACTER SET utf8mb4 DEFAULT NULL,
-  `icon` varchar(50) DEFAULT NULL,
+  `icon` varchar(255) DEFAULT NULL,
   `email` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `Indice 2` (`identifier`,`number`)
