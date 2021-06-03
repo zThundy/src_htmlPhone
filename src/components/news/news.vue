@@ -133,7 +133,7 @@ export default {
     async onEnter () {
       if (this.ignoreControl) return
       if (this.currentModule === 0) {
-        if (this.news[this.currentSelect].pics && this.news[this.currentSelect].pics.length > 0) {
+        if (this.news[this.currentSelect] && this.news[this.currentSelect].pics && this.news[this.currentSelect].pics.length > 0) {
           this.imgZoom = this.news[this.currentSelect].pics[this.currentPicIndex]
           this.CHANGE_BRIGHTNESS_STATE(false)
         }
@@ -180,7 +180,7 @@ export default {
           })
         } else if (this.currentSelect === 2) {
           // posta news
-          if (this.tempPics.length > 0 || this.tempDescription !== '') {
+          if (this.tempNews.pics.length > 0 || this.tempDescription !== '') {
             this.$phoneAPI.postNews(this.tempNews.pics, this.tempNews.description)
             this.UPDATE_TEMP_INFO({ type: 'clear' })
           } else {

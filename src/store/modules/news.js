@@ -3,7 +3,10 @@
 
 const state = {
   news: JSON.parse(window.localStorage['gc_savednews'] || null),
-  tempNews: [],
+  tempNews: {
+    pics: [],
+    description: ''
+  },
   job: null
 }
 
