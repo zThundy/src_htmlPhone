@@ -149,7 +149,7 @@ export default {
           Modal.CreateModal({ choix: options }).then(resp => {
             switch (resp.id) {
               case 1:
-                Modal.CreateTextModal({ text: 'https://i.imgur.com/' }).then(value => {
+                Modal.CreateTextModal({ title: 'Inserisci un link', text: 'https://i.imgur.com/' }).then(value => {
                   if (value.text !== '' && value.text !== undefined && value.text !== null && value.text !== 'https://i.imgur.com/') {
                     // this.tempPics.push(value.text)
                     this.UPDATE_TEMP_INFO({ type: 'pic', text: value.text })
@@ -171,7 +171,7 @@ export default {
           })
         } else if (this.currentSelect === 1) {
           // scrivi descrizione
-          Modal.CreateTextModal({ text: '' }).then(value => {
+          Modal.CreateTextModal({ title: 'Inserisci un testo', text: '' }).then(value => {
             if (value.text !== '' && value.text !== undefined && value.text !== null) {
               // this.tempDescription = value.text
               this.UPDATE_TEMP_INFO({ type: 'description', text: value.text })

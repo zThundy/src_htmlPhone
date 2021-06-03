@@ -1,5 +1,4 @@
 <template>
-
   <div style="width: 100%; height: 100%;" class="phone_app">
     <PhoneTitle class="decor-border" :backgroundColor="'white'" :title="LangString('APP_PHOTO_TITLE')" />
 
@@ -14,11 +13,18 @@
 
 <script>
 import { mapGetters } from 'vuex'
+import PhoneTitle from './../PhoneTitle'
+import Modal from '@/components/Modal/index'
+
+// import recordScreen from 'record-screen'
 
 export default {
+  name: 'photo',
+  components: { PhoneTitle },
   data () {
     return {
-      ignoreControls: false
+      ignoreControls: false,
+      recording: null
     }
   },
   computed: {
@@ -27,11 +33,36 @@ export default {
   methods: {
     // ...mapActions(['addPhoto'])
     async onEnter () {
-      const resp = await this.$phoneAPI.takePhoto()
-      // this.addPhoto({ link: resp.url })
-      if (resp) {
-        this.$router.push({ name: 'galleria.splash', params: resp })
-      }
+      if (this.ignoreControl) return
+      this.ignoreControl = true
+      var options = [
+        { id: 1, title: this.LangString('APP_PHOTO_TAKE_PICTURE'), icons: 'fa-camera' },
+        // { id: 2, title: this.LangString('APP_PHOTO_RECORD_VIDEO'), icons: 'fa-video-camera' },
+        { id: -1, title: this.LangString('CANCEL'), icons: 'fa-undo', color: 'red' }
+      ]
+      Modal.CreateModal({ choix: options }).then(async resp => {
+        switch (resp.id) {
+          case 1:
+            const resp = await this.$phoneAPI.takePhoto()
+            // this.addPhoto({ link: resp.url })
+            if (resp) {
+              this.$router.push({ name: 'galleria.splash', params: resp })
+            }
+            break
+          case 2:
+            // if (this.recording) return
+            // this.recording = recordScreen('/tmp/video.mp4', { resolution: '1280x720' })
+            // this.recording.promise.then(result => {
+            //   process.stdout.write(result.stdout)
+            //   process.stderr.write(result.stderr)
+            // }).catch(error => { console.error(error) })
+            // setTimeout(() => this.recording.stop(), 5000)
+            break
+          case -1:
+            this.ignoreControl = false
+            break
+        }
+      })
     },
     onBack () {
       if (this.ignoreControls) {
