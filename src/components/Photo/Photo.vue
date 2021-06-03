@@ -1,20 +1,28 @@
 <template>
-  <div class="general-container">
-    <div class="picture-snap-cyrcle-contaniner">
-      <div class="picture-snap-cyrcle-ext"></div>
-      <div class="picture-snap-cyrcle-int"></div>
+
+  <div style="width: 100%; height: 100%;" class="phone_app">
+    <PhoneTitle class="decor-border" :backgroundColor="'white'" :title="LangString('APP_PHOTO_TITLE')" />
+
+    <div class="general-container">
+      <div class="picture-snap-cyrcle-contaniner">
+        <div class="picture-snap-cyrcle-ext"></div>
+        <div class="picture-snap-cyrcle-int"></div>
+      </div>
     </div>
   </div>
 </template>
 
 <script>
-// import { mapActions } from 'vuex'
+import { mapGetters } from 'vuex'
 
 export default {
   data () {
     return {
       ignoreControls: false
     }
+  },
+  computed: {
+    ...mapGetters(['LangString'])
   },
   methods: {
     // ...mapActions(['addPhoto'])
