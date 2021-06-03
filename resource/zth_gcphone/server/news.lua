@@ -2,6 +2,8 @@ local function GetFetchedNews(cb)
     MySQL.Async.fetchAll("SELECT * FROM phone_news ORDER BY id DESC LIMIT 50", {}, function(result)
         for k, v in pairs(result) do
             v.pics = json.decode(v.pics)
+            v.description = v.message
+            v.message = nil
         end
 
         cb(result)
