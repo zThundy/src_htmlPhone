@@ -36,6 +36,11 @@ end
 gcPhoneT.news_sendNewPost = function(data)
     local player = source
 
+    if data.message == "" or #data.pics == 0 then
+        NewsShowSuccess(player, "APP_NEWS_POST_ERROR_TITLE", "APP_NEWS_POST_ERROR_DESCRIPTION")
+        return
+    end
+
     MySQL.Async.execute("INSERT INTO phone_news(message, pics) VALUES(@message, @pics)", {
         ['@message'] = data.message,
         ['@pics'] = json.encode(data.pics)

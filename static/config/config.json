@@ -674,6 +674,8 @@
       "APP_NEWS_SEND_POST": "Invia post",
       "APP_NEWS_NEW_POST_TITLE": "Nuovo post aggiunto",
       "APP_NEWS_NEW_POST_DESCRIPTION": "Un nuovo post è stato pubblicato sull'app delle news. Corri a leggerlo!",
+      "APP_NEWS_POST_ERROR_TITLE": "Errore nella creazione",
+      "APP_NEWS_POST_ERROR_DESCRIPTION": "Per poter creare un post devi aggiungere almeno una descrizione o una immagine al post",
       "APP_AZIENDA_TITLE": "Azienda",
       "AZIENDA_INFO_TITLE": "Azienda info",
       "APP_AZIENDA_NOTIF_NO_CONNECTION": "Nessuna connessione a internet",
