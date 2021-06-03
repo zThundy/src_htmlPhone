@@ -3,7 +3,11 @@ function Reti.loadTorriRadio()
 end
 
 function Reti.loadRetiWifi()
-	return MySQL.Sync.fetchAll('SELECT * FROM phone_wifi_nets', {})
+	local reti = MySQL.Sync.fetchAll('SELECT * FROM phone_wifi_nets', {})
+	for i = 1, #reti do
+		reti[i].pos = vector3(reti[i].x, reti[i].y, reti[i].z)
+	end
+	return reti
 end
 
 function Reti.updateCellTower(tower)
