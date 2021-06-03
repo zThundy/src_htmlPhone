@@ -67,6 +67,11 @@ gcPhoneT.sendMoneyToUser = function(data)
     
     local user_identifier = getUserFromIban(iban)
     if user_identifier ~= nil then
+        if user_identifier == xPlayer.identifier then
+            xPlayer.showNotification("~r~Non puoi inviare soldi a te stesso")
+            return
+        end
+
         local isAble, mbToRemove = gcPhoneT.isAbleToSurfInternet(xPlayer.identifier, 0.5)
         if isAble then
             if type(tonumber(data.money)) == "number" then
