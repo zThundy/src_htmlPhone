@@ -2,6 +2,10 @@
   <div class="phone_app">
     <PhoneTitle :title="LangString('APP_GALLERIA_TITLE')" backgroundColor="rgb(217, 122, 81)" :titleColor="'black'" />
 
+    <div class="phone_fullscreen_img" v-if="imgZoom !== undefined">
+      <img :src="imgZoom" />
+    </div>
+
     <div class="div_immagini">
       
       <div class='immagini'
@@ -18,7 +22,7 @@
 
 <script>
 import PhoneTitle from '@/components/PhoneTitle'
-import { mapGetters, mapActions } from 'vuex'
+import { mapGetters, mapActions, mapMutations } from 'vuex'
 import Modal from '@/components/Modal/index.js'
 
 export default {
@@ -27,7 +31,8 @@ export default {
   data () {
     return {
       currentSelect: 1,
-      ignoredControls: false
+      ignoredControls: false,
+      imgZoom: undefined
     }
   },
   computed: {
@@ -35,6 +40,7 @@ export default {
   },
   methods: {
     ...mapActions(['setBackground', 'clearGallery']),
+    ...mapMutations(['CHANGE_BRIGHTNESS_STATE']),
     scrollIntoView: function () {
       this.$nextTick(() => {
         var elem = this.$el.querySelector('.select')
@@ -67,6 +73,11 @@ export default {
       this.scrollIntoView()
     },
     onBackspace () {
+      if (this.imgZoom) {
+        this.imgZoom = undefined
+        this.CHANGE_BRIGHTNESS_STATE(true)
+        return
+      }
       if (this.ignoredControls) return
       this.$router.push({ name: 'menu' })
     },
@@ -77,6 +88,7 @@ export default {
       this.ignoredControls = true
       try {
         let choix = [
+          { id: 0, title: this.LangString('APP_GALLERIA_ZOOM'), icons: 'fa-search' },
           { id: 1, title: this.LangString('APP_GALLERIA_SET_WALLPAPER'), icons: 'fa-mobile' },
           { id: 2, title: this.LangString('APP_GALLERIA_INOLTRA'), icons: 'fa-paper-plane' },
           { id: 4, title: this.LangString('APP_GALLERIA_SEND_BLUETOOTH'), icons: 'fa-share-square' },
@@ -85,6 +97,10 @@ export default {
         ]
         const data = await Modal.CreateModal({ choix })
         switch (data.id) {
+          case 0:
+            this.imgZoom = foto.link
+            this.CHANGE_BRIGHTNESS_STATE(false)
+            break
           case 1:
             this.setBackground({ label: 'Personalizzato', value: foto.link })
             this.ignoredControls = false
