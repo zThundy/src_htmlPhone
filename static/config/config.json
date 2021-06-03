@@ -672,6 +672,8 @@
       "APP_NEWS_UPLOAD_PICTURE": "Carica immagine",
       "APP_NEWS_WRITE_MESSAGE": "Scrivi descrizione",
       "APP_NEWS_SEND_POST": "Invia post",
+      "APP_NEWS_NEW_POST_TITLE": "Nuovo post aggiunto",
+      "APP_NEWS_NEW_POST_DESCRIPTION": "Un nuovo post è stato pubblicato sull'app delle news. Corri a leggerlo!",
       "APP_AZIENDA_TITLE": "Azienda",
       "AZIENDA_INFO_TITLE": "Azienda info",
       "APP_AZIENDA_NOTIF_NO_CONNECTION": "Nessuna connessione a internet",

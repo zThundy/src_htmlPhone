@@ -186,6 +186,7 @@ export default {
           } else {
             this.$phoneAPI.sendErrorMessage('Devi compilare almeno un campo per poter postare una news')
           }
+          this.$phoneAPI.fetchNews()
         }
       }
     },
