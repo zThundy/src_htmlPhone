@@ -59,11 +59,7 @@ ESX.RegisterServerCallback("gcphone:cover_buyCover", function(source, cb, cover)
                         xPlayer.removeAccountMoney("bank", Config.Covers[cover].price)
                     end
                     local cfg = Config.Covers[cover]
-                    CACHED_COVERS[xPlayer.identifier][cfg.label] = {
-                        id = id,
-                        identifier = xPlayer.identifier,
-                        cover = cover .. ".png"
-                    }
+                    CACHED_COVERS[xPlayer.identifier][cfg.label] = { label = cfg.label, value = cover .. ".png" }
                     cb(true)
                 end
             end)

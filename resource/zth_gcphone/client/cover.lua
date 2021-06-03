@@ -1,11 +1,16 @@
 myCover = nil
 -- local isMenuOpened = false
 
-local function requestCovers()
+local function RefreshCovers()
     local covers = gcPhoneServerT.cover_requestCovers()
     -- ESX.TriggerServerCallback("gcphone:cover_requestCovers", function(covers)
     SendNUIMessage({ event = "receiveCovers", covers = covers })
     -- end)
+end
+
+local function ChangeCover(label, cover)
+    cover = cover..".png"
+    SendNUIMessage({ event = "changePhoneCover", cover = cover, label = label })
 end
 
 Citizen.CreateThread(function()
@@ -64,7 +69,7 @@ end)
 ]]
 
 RegisterNUICallback("requestMyCovers", function(data, cb)
-    requestCovers()
+    RefreshCovers()
     cb("ok")
 end)
 
@@ -77,6 +82,7 @@ end)
 
 function openShopMenu(myCovers)
     local elements = {}
+    -- print(DumpTable(myCovers))
     -- isMenuOpened = true
 
     -- Citizen.CreateThread(function()
@@ -103,6 +109,7 @@ function openShopMenu(myCovers)
 
     -- onMenuSelect
     onMenuSelect = function(data, _)
+        -- print(DumpTable(data))
         if data.current.value == nil then return end
         local value = data.current.value
         local name = data.current.name
@@ -110,7 +117,7 @@ function openShopMenu(myCovers)
         ESX.TriggerServerCallback("gcphone:cover_buyCover", function(ok)
             if ok then
                 ESX.ShowNotification("~g~Cover comprata con successo")
-                requestCovers()
+                RefreshCovers()
             else
                 ESX.ShowNotification("~r~Non hai abbastanza soldi per comprare una cover")
             end
@@ -143,9 +150,4 @@ function openShopMenu(myCovers)
         title = "Negozio di cover",
         elements = elements
     }, onMenuSelect, onMenuClose, onMenuChangeIndex)
-end
-
-function ChangeCover(label, cover)
-    cover = cover..".png"
-    SendNUIMessage({ event = "changePhoneCover", cover = cover, label = label })
 end
