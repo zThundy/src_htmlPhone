@@ -58,7 +58,8 @@ ESX.RegisterServerCallback("gcphone:cover_buyCover", function(source, cb, cover)
                     if Config.Covers[cover].price ~= 0 then
                         xPlayer.removeAccountMoney("bank", Config.Covers[cover].price)
                     end
-                    CACHED_COVERS[xPlayer.identifier][cover] = {
+                    local cfg = Config.Covers[cover]
+                    CACHED_COVERS[xPlayer.identifier][cfg.label] = {
                         id = id,
                         identifier = xPlayer.identifier,
                         cover = cover .. ".png"
