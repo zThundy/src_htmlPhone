@@ -1,5 +1,12 @@
 myCover = nil
-local isMenuOpened = false
+-- local isMenuOpened = false
+
+local function requestCovers()
+    local covers = gcPhoneServerT.cover_requestCovers()
+    -- ESX.TriggerServerCallback("gcphone:cover_requestCovers", function(covers)
+    SendNUIMessage({ event = "receiveCovers", covers = covers })
+    -- end)
+end
 
 Citizen.CreateThread(function()
     while ESX == nil do Citizen.Wait(100) end
@@ -12,10 +19,20 @@ Citizen.CreateThread(function()
 		color = { r = 55, g = 255, b = 55 },
 		scale = vector3(0.8, 0.8, 0.8),
         action = function()
-            ESX.TriggerServerCallback("gcphone:cover_requestCovers", function(covers)
-                openShopMenu(covers)
-            end)
+            local covers = gcPhoneServerT.cover_requestCovers()
+            -- ESX.TriggerServerCallback("gcphone:cover_requestCovers", function(covers)
+            openShopMenu(covers)
+            -- end)
 		end,
+        onExit = function()
+            ESX.UI.Menu.CloseAll()
+            ChangeCover("Nessuna cover", "base")
+            SendNUIMessage({ show = false })
+        end,
+        -- need to think about this cause idk if i like this
+        -- onEnter = function()
+        --     SendNUIMessage({ show = true })
+        -- end,
 		msg = "Premi ~INPUT_CONTEXT~ per acquistare una cover",
 	})
 
@@ -35,20 +52,16 @@ Citizen.CreateThread(function()
 	end
 end)
 
-AddEventHandler("gridsystem:hasExitedMarker", function(marker)
-    if marker == nil then return end
-    if marker.name == "negozio_cover" then
-        ESX.UI.Menu.CloseAll()
-        ChangeCover("Nessuna cover", "base")
-        SendNUIMessage({ show = false })
-    end
-end)
-
-function requestCovers()
-    ESX.TriggerServerCallback("gcphone:cover_requestCovers", function(covers)
-        SendNUIMessage({ event = "receiveCovers", covers = covers })
+--[[
+    AddEventHandler("gridsystem:hasExitedMarker", function(marker)
+        if marker == nil then return end
+        if marker.name == "negozio_cover" then
+            ESX.UI.Menu.CloseAll()
+            ChangeCover("Nessuna cover", "base")
+            SendNUIMessage({ show = false })
+        end
     end)
-end
+]]
 
 RegisterNUICallback("requestMyCovers", function(data, cb)
     requestCovers()
@@ -64,20 +77,19 @@ end)
 
 function openShopMenu(myCovers)
     local elements = {}
-    isMenuOpened = true
+    -- isMenuOpened = true
 
-    Citizen.CreateThread(function()
-        while isMenuOpened do
-            if GetDistanceBetweenCoords(GetEntityCoords(GetPlayerPed(-1)), Config.CoverShop, true) >= 5.0 then
-                isMenuOpened = false
-                ESX.UI.Menu.CloseAll()
-                ChangeCover("Nessuna cover", "base")
-                SendNUIMessage({ show = false })
-            end
-
-            Citizen.Wait(1000)
-        end
-    end)
+    -- Citizen.CreateThread(function()
+    --     while isMenuOpened do
+    --         if GetDistanceBetweenCoords(GetEntityCoords(GetPlayerPed(-1)), Config.CoverShop, true) >= 5.0 then
+    --             isMenuOpened = false
+    --             ESX.UI.Menu.CloseAll()
+    --             ChangeCover("Nessuna cover", "base")
+    --             SendNUIMessage({ show = false })
+    --         end
+    --         Citizen.Wait(1000)
+    --     end
+    -- end)
 
     -- qui mi preparo la table per controllare quale cover ho già e quali no
     local tempCovers = {}

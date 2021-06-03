@@ -1,8 +1,7 @@
 fx_version "bodacius"
-
 game "gta5"
-
-version "1.3.2"
+version "1.3.4"
+author "zThundy__"
 
 ui_page 'html/index.html'
 
@@ -71,6 +70,7 @@ client_script {
 	"client/news.lua",
 	"client/azienda.lua",
 	"client/bourse.lua",
+	"client/phonebox.lua",
 
 	-- modules
 	"modules/tokovoip.lua",
@@ -99,6 +99,7 @@ server_script {
 	"server/news.lua",
 	"server/azienda.lua",
 	"server/bourse.lua",
+	"server/phonebox.lua",
 
 	-- modules
 	"modules/saltychat.lua",
@@ -107,6 +108,10 @@ server_script {
 	"modules/services/server/*.lua",
 }
 
-dependency 'gridsystem'
+dependencies {
+	'es_extended',
+	'gridsystem',
+	'screenshot-basic'
+}
 
 data_file 'DLC_ITYP_REQUEST' 'stream/bk_phone.ytyp'
