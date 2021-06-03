@@ -352,8 +352,12 @@ gcPhoneT.whatsapp_creaNuovoGruppo = function(data)
             ['@gruppo'] = data.groupTitle,
             ['@partecipanti'] = json.encode(partecipanti)
         }, function(id)
-            UpdateGroupsCache()
-            UpdateGroupLabels(player)
+            if id then
+                UpdateGroupsCache()
+                UpdateGroupLabels(player)
+            else
+                WhatsappShowNotificationError(player, "WHATSAPP_INFO_TITLE", "WHATSAPP_ERROR_CREATING_GROUP")
+            end
             -- TriggerClientEvent("gcphone:whatsapp_updateGruppi", player, UpdateGroupsCache(), phone_number)
         end)
     else
