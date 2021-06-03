@@ -11,6 +11,9 @@ Citizen.CreateThread(function()
         action = function()
             OpenModemManagement()
 		end,
+		onExit = function()
+			ESX.UI.Menu.CloseAll()
+		end,
 		msg = "Premi ~INPUT_CONTEXT~ per acquistare un modem",
 	})
 
@@ -79,8 +82,3 @@ function OpenModemManagement()
 		}, onMenuSelect, onMenuClose)
 	end)
 end
-
-AddEventHandler("gridsystem:hasExitedMarker", function(marker)
-    if marker == nil then return end
-    if marker.name == "modem_management" then ESX.UI.Menu.CloseAll() end
-end)

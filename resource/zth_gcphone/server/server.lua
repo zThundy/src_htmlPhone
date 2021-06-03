@@ -6,10 +6,13 @@ local tunnel = module("modules/TunnelV2")
 gcPhoneT = {}
 tunnel.bindInterface("gcphone_server_t", gcPhoneT)
 
+Chiamate = {}
+CALL_INDEX = 10
+
 segnaliTelefoniPlayers = {}
 wifiConnectedPlayers = {}
 playersInCall = {}
-built_phones = false
+-- built_phones = false
 phone_loaded = false
 
 GLOBAL_AIRPLANE = {}
@@ -736,10 +739,6 @@ end
 -------- Eventi e Funzioni delle chiamate
 --==================================================================================================================
 
-Chiamate = {}
-local PhoneFixeInfo = {}
-local lastIndexCall = 10
-
 function getHistoriqueCall(num)
     local result = MySQL.Sync.fetchAll("SELECT * FROM phone_calls WHERE phone_calls.owner = @num ORDER BY time DESC LIMIT 120", { ['@num'] = num })
     return result
@@ -823,16 +822,10 @@ gcPhoneT.startCall = function(phone_number, rtcOffer, extraData)
     internal_startCall(player, phone_number, rtcOffer, extraData)
 end
 
-RegisterServerEvent('gcPhone:register_FixePhone')
-AddEventHandler('gcPhone:register_FixePhone', function(phone_number, coords)
-	Config.TelefoniFissi[phone_number] = {name = "TEST"..phone_number, coords = {x = coords.x, y = coords.y, z = coords.z}}
-	TriggerClientEvent('gcPhone:register_FixePhone', -1, phone_number, Config.TelefoniFissi[phone_number])
-end)
-
 -- evento che controlla le chiamate tra giocatori
 -- e giocatori e telefoni fissi
 function internal_startCall(player, phone_number, rtcOffer, extraData)
-    if Config.TelefoniFissi[phone_number] ~= nil then
+    if Config.PhoneBoxes[phone_number] ~= nil then
         onCallFixePhone(player, phone_number, rtcOffer, extraData)
         return
     end
@@ -849,8 +842,8 @@ function internal_startCall(player, phone_number, rtcOffer, extraData)
     if hidden == true then phone_number = string.sub(phone_number, 2) end
     -- phone_number è il numero di telefono di chi riceve la chiamata
 
-    local indexCall = lastIndexCall
-    lastIndexCall = lastIndexCall + 1
+    local indexCall = CALL_INDEX
+    CALL_INDEX = CALL_INDEX + 1
 
     local srcPhone = ''
     if extraData ~= nil and extraData.useNumber ~= nil then
@@ -973,7 +966,7 @@ gcPhoneT.acceptCall = function(infoCall, rtcAnswer)
 
     if Chiamate[id] ~= nil then
         -- print(ESX.DumpTable(Chiamate[id]))
-        if PhoneFixeInfo[id] ~= nil then
+        if FIXED_PHONES_INFO[id] ~= nil then
             onAcceptFixePhone(player, infoCall, rtcAnswer)
             return
         end
@@ -1018,7 +1011,7 @@ gcPhoneT.rejectCall = function(infoCall)
             playersInCall[Chiamate[id].receiver_src] = nil
         end
 
-        if PhoneFixeInfo[id] ~= nil then
+        if FIXED_PHONES_INFO[id] ~= nil then
             onRejectFixePhone(player, infoCall)
             return
         end
@@ -1063,12 +1056,12 @@ end
 -------- Funzioni e Eventi chiamati al load della risorsa e al caricamento di un player
 --==================================================================================================================
 
-function buildPhones()
-    for telefono, info_telefono in pairs(Config.TelefoniFissi) do
-        TriggerClientEvent("esx:spawnObjectAtCoords", -1, info_telefono.coords, "prop_cs_phone_01", false)
-    end
-    built_phones = true
-end
+-- function buildPhones()
+--     for telefono, info_telefono in pairs(Config.PhoneBoxes) do
+--         TriggerClientEvent("gcphone:spawnObjectAtCoords", -1, info_telefono.coords, "prop_cs_phone_01", false)
+--     end
+--     built_phones = true
+-- end
 
 RegisterServerEvent("esx:playerLoaded")
 AddEventHandler('esx:playerLoaded', function(source, xPlayer)
@@ -1115,98 +1108,4 @@ function getUnreceivedMessages(phone_number)
     end
 
     return notReceivedMessages
-end
-
---====================================================================================
---  Telefoni Fissi
---====================================================================================
-
-function onCallFixePhone(player, phone_number, rtcOffer, extraData)
-    local indexCall = lastIndexCall
-    lastIndexCall = lastIndexCall + 1
-
-    local hidden = string.sub(phone_number, 1, 1) == '#'
-    if hidden == true then
-        phone_number = string.sub(phone_number, 2)
-    end
-    
-	local identifier = gcPhoneT.getPlayerID(player)
-
-    local srcPhone = ''
-    if extraData ~= nil and extraData.useNumber ~= nil then
-        srcPhone = extraData.useNumber
-    else
-        srcPhone = gcPhoneT.getPhoneNumber(identifier)
-    end
-
-    local canCall = not isNumberInCall(phone_number)
-
-    if canCall then
-        Chiamate[indexCall] = {
-            id = indexCall,
-            transmitter_src = player,
-            transmitter_num = srcPhone,
-            receiver_src = nil,
-            receiver_num = phone_number,
-            is_valid = false,
-            is_accepts = false,
-            hidden = hidden,
-            rtcOffer = rtcOffer,
-            extraData = extraData,
-            coords = Config.TelefoniFissi[phone_number].coords
-        }
-        
-        PhoneFixeInfo[indexCall] = Chiamate[indexCall]
-
-        TriggerClientEvent('gcPhone:notifyFixePhoneChange', -1, PhoneFixeInfo)
-        TriggerClientEvent('gcPhone:waitingCall', player, Chiamate[indexCall], true)
-    else
-        TriggerClientEvent("esx:showNotification", player, "~r~Il telefono è occupato")
-        -- xPlayer.showNotification("Il telefono è occupato", "error")
-    end
-end
-
-function isNumberInCall(phone_number)
-    for k, infoCall in pairs(Chiamate) do
-        if infoCall.receiver_num == phone_number then return true end
-    end
-
-    return false
-end
-
-function onAcceptFixePhone(player, infoCall, rtcAnswer)
-    local id = infoCall.id
-    if Chiamate[id] ~= nil then
-        Chiamate[id].receiver_src = player
-
-        playersInCall[Chiamate[id].transmitter_src] = true
-        playersInCall[Chiamate[id].receiver_src] = true
-
-        if Chiamate[id].transmitter_src ~= nil and Chiamate[id].receiver_src ~= nil then
-            Chiamate[id].is_accepts = true
-            Chiamate[id].forceSaveAfter = true
-            Chiamate[id].rtcAnswer = rtcAnswer
-            PhoneFixeInfo[id] = nil
-            TriggerClientEvent('gcPhone:notifyFixePhoneChange', -1, PhoneFixeInfo)
-
-            TriggerClientEvent('gcPhone:acceptCall', Chiamate[id].transmitter_src, Chiamate[id], true)
-
-            if Chiamate[id] ~= nil then
-                SetTimeout(0, function() TriggerClientEvent('gcPhone:acceptCall', Chiamate[id].receiver_src, Chiamate[id], false) end)
-            end
-
-            salvaChiamata(Chiamate[id])
-        end
-    end
-end
-
-function onRejectFixePhone(player, infoCall, rtcAnswer)
-    local id = infoCall.id
-    PhoneFixeInfo[id] = nil
-    TriggerClientEvent('gcPhone:notifyFixePhoneChange', -1, PhoneFixeInfo)
-
-    TriggerClientEvent('gcPhone:rejectCall', Chiamate[id].transmitter_src, "TEST")
-    if Chiamate[id].is_accepts == false then salvaChiamata(Chiamate[id]) end
-
-    Chiamate[id] = nil 
 end

@@ -15,8 +15,8 @@ RegisterNUICallback("sendErrorMessage", function(data, cb)
 end)
 
 RegisterNUICallback("updateVolume", function(data, cb)
-    volume = data.volume
-    UpdateGlobalVolume()
+    -- volume = data.volume
+    UpdateGlobalVolume(data.volume)
     cb("ok")
 end)
 
@@ -30,8 +30,8 @@ RegisterNUICallback("sendStartupValues", function(data, cb)
     GLOBAL_AIRPLANE = data.airplane
     gcPhoneServerT.updateAirplaneForUser(GLOBAL_AIRPLANE)
 
-    volume = data.volume
-    UpdateGlobalVolume()
+    -- volume = data.volume
+    UpdateGlobalVolume(data.volume)
     cb("ok")
 end)
 

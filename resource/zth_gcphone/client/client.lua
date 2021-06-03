@@ -15,14 +15,12 @@ secondiRimanenti = 0
 enableGlobalNotification = true
 GLOBAL_AIRPLANE = false
 
-PhoneInCall = {}
 currentPlaySound = false
-soundDistanceMax = 8.0
 
 volume = 0.5
 
 segnaleRadio = 0
-retiWifi = {}
+CAHES_WIFI_MODEMS = {}
 WIFI_TEMP_DATA = {}
 isConnected = false
 myPhoneNumber = ''
@@ -40,7 +38,6 @@ Citizen.CreateThread(function()
     end
 
     ESX.PlayerData = ESX.GetPlayerData()
-
     gcPhoneServerT.allUpdate()
 end)
 
@@ -136,16 +133,19 @@ end)
 --------  Funzioni per i suoni
 --==================================================================================================================
 
-function PlaySoundJS(sound)
-    -- print("riproduco suono", sound, volume)
-    SendNUIMessage({ event = 'playSound', sound = sound, volume = volume })
+function PlaySoundJS(sound, v)
+    local _volume = v and v or volume
+    -- print("riproduco suono", sound, _volume)
+    SendNUIMessage({ event = 'playSound', sound = sound, volume = _volume })
 end
 
-function SetSoundVolumeJS(sound, vol)
-    SendNUIMessage({ event = 'setSoundVolume', sound = sound, volume = vol })
+function SetSoundVolumeJS(sound, v)
+    local _volume = v and v or volume
+    SendNUIMessage({ event = 'setSoundVolume', sound = sound, volume = _volume })
 end
 
-function UpdateGlobalVolume()
+function UpdateGlobalVolume(v)
+    volume = v
     SendNUIMessage({ event = 'updateGlobalVolume', volume = volume })
 end
 
@@ -222,17 +222,14 @@ end)
 RegisterNetEvent("gcPhone:receiveMessage")
 AddEventHandler("gcPhone:receiveMessage", function(message)
     if not message then return end
-    
     if not GLOBAL_AIRPLANE then
         SendNUIMessage({ event = 'newMessage', message = message })
         table.insert(messages, message)
 
         if message.owner == 0 then
             local text = 'Hai ricevuto un messaggio'
-
             if Config.ShowNumberNotification then
                 text = 'Hai ricevuto un messaggio da ' .. message.transmitter
-
                 for _, contact in pairs(contacts) do
                     if contact.number == message.transmitter then
                         text = 'Hai ricevuto un messaggio da ' .. contact.display
@@ -259,12 +256,10 @@ end)
 RegisterNetEvent("gcPhone:waitingCall")
 AddEventHandler("gcPhone:waitingCall", function(infoCall, initiator)
     if inCall then return end
-
     SendNUIMessage({ event = 'waitingCall', infoCall = infoCall, initiator = initiator })
 
     if initiator == true then
         PhonePlayCall()
-
         if menuIsOpen == false then
             TogglePhone()
         end
@@ -346,7 +341,6 @@ AddEventHandler("gcPhone:acceptCall", function(infoCall, initiator)
 
         Citizen.CreateThread(function()
             local coords, distance = nil, nil
-
             secondiRimanenti = infoCall.secondiRimanenti
             if not infoCall.updateMinuti then secondiRimanenti = 1000000 end
             -- print("Accetto la chiamata chicco, infoCall.updateMinuti", infoCall.updateMinuti, "secondiRimanenti", secondiRimanenti)
@@ -361,7 +355,7 @@ AddEventHandler("gcPhone:acceptCall", function(infoCall, initiator)
                     end
                 end
 
-                if Config.TelefoniFissi[infoCall.receiver_num] then
+                if Config.PhoneBoxes[infoCall.receiver_num] then
                     if not initiator then
                         coords = GetEntityCoords(GetPlayerPed(-1))
                         distance = Vdist(infoCall.coords.x, infoCall.coords.y, infoCall.coords.z, coords.x, coords.y, coords.z)
@@ -395,7 +389,7 @@ AddEventHandler("gcPhone:acceptCall", function(infoCall, initiator)
     end
 
     PhonePlayCall()
-    SendNUIMessage({event = 'acceptCall', infoCall = infoCall, initiator = initiator})
+    SendNUIMessage({ event = 'acceptCall', infoCall = infoCall, initiator = initiator })
 end)
 
 RegisterNetEvent("gcPhone:rejectCall")
@@ -433,12 +427,12 @@ AddEventHandler("gcPhone:rejectCall", function(infoCall)
     end
 
     PhonePlayText()
-    SendNUIMessage({event = 'rejectCall', infoCall = infoCall})
+    SendNUIMessage({ event = 'rejectCall', infoCall = infoCall })
 end)
 
 RegisterNetEvent("gcPhone:historiqueCall")
 AddEventHandler("gcPhone:historiqueCall", function(historique)
-    SendNUIMessage({event = 'historiqueCall', historique = historique})
+    SendNUIMessage({ event = 'historiqueCall', historique = historique })
 end)
 
 --====================================================================================
@@ -463,19 +457,7 @@ end)
 
 RegisterNetEvent("gcPhone:candidates")
 AddEventHandler("gcPhone:candidates", function(candidates)
-    SendNUIMessage({event = 'candidatesAvailable', candidates = candidates})
-end)
-
-RegisterNetEvent('gcphone:autoCall')
-AddEventHandler('gcphone:autoCall', function(number, extraData)
-    if number ~= nil then
-        SendNUIMessage({ event = "autoStartCall", number = number, extraData = extraData})
-    end
-end)
-
-RegisterNetEvent('gcphone:autoCallNumber')
-AddEventHandler('gcphone:autoCallNumber', function(data)
-    TriggerEvent('gcphone:autoCall', data.number)
+    SendNUIMessage({ event = 'candidatesAvailable', candidates = candidates })
 end)
 
 function GetResponseText(d)
@@ -533,19 +515,19 @@ end
 function AggiornaRetiWifi(r)
     -- print("sto aggiornando retiwifi")
     -- print(json.encode(retiWifiServer))
-    retiWifi = r
+    CAHES_WIFI_MODEMS = r
 
     -- aggiorna la lista del wifi
-    SendNUIMessage({event = "updateRetiWifi", data = retiWifi})
+    SendNUIMessage({ event = "updateRetiWifi", data = CAHES_WIFI_MODEMS })
     -- aggiorna l'icona del wifi
-    SendNUIMessage({event = "updateWifi", data = { hasWifi = isConnected }})
+    SendNUIMessage({ event = "updateWifi", data = { hasWifi = isConnected } })
 end
 
 RegisterNetEvent("gcphone:updateWifi")
 AddEventHandler("gcphone:updateWifi", function(connected, rete)
     -- print("updating isConnected")
     isConnected = connected
-    SendNUIMessage({event = "updateWifi", data = {hasWifi = isConnected}})
+    SendNUIMessage({ event = "updateWifi", data = {hasWifi = isConnected} })
     gcPhoneServerT.updateReteWifi(isConnected, rete)
 end)
 
@@ -561,7 +543,7 @@ function StartWifiRangeCheck()
 
             if isConnected then
                 -- print("sei connesso")
-                for k, v in pairs(retiWifi) do
+                for k, v in pairs(CAHES_WIFI_MODEMS) do
                     -- print(v.label, WIFI_TEMP_DATA.label, v.password, WIFI_TEMP_DATA.password)
                     if v.label == WIFI_TEMP_DATA.label and v.password == WIFI_TEMP_DATA.password then
                         found = true
@@ -580,134 +562,4 @@ function StartWifiRangeCheck()
             end
         end
     end)
-end
-
----------------------------------------------------------------------------------
--- TELEFONI FISSI
----------------------------------------------------------------------------------
-
-function startFixeCall(fixeNumber)
-    local number = ''
-    DisplayOnscreenKeyboard(1, "FMMC_MPM_NA", "", "", "", "", "", 10)
-    while UpdateOnscreenKeyboard() == 0 do
-        DisableAllControlActions(0)
-        Wait(0)
-    end
-
-    if GetOnscreenKeyboardResult() then
-        number =  GetOnscreenKeyboardResult()
-    end
-
-    if number ~= '' then
-        TriggerEvent('gcphone:autoCall', number, { useNumber = fixeNumber })
-        PhonePlayCall(true)
-    end
-end
-
-function TakeAppel(infoCall)
-    TogglePhone()
-    SendNUIMessage({ event = 'waitingCall', infoCall = infoCall, initiator = initiator })
-    gcPhoneServerT.acceptCall(infoCall, nil)
-end
-
-RegisterNetEvent("gcPhone:notifyFixePhoneChange")
-AddEventHandler("gcPhone:notifyFixePhoneChange", function(_PhoneInCall)
-    PhoneInCall = _PhoneInCall
-end)
-
-RegisterNetEvent('gcPhone:register_FixePhone')
-AddEventHandler('gcPhone:register_FixePhone', function(phone_number, data)
-    Config.TelefoniFissi[phone_number] = data
-end)
-
---[[
-Citizen.CreateThread(function()
-    local mod = 0
-    local inRangeToActivePhone = false
-    local inRangedist = 0
-    local dist = 0
-
-    while true do
-        if #PhoneInCall > 0 then
-            local coords = GetEntityCoords(GetPlayerPed(-1))
-
-            for i, v in pairs(PhoneInCall) do
-                dist = GetDistanceBetweenCoords(v.coords.x, v.coords.y, v.coords.z, coords, true)
-
-                if dist <= soundDistanceMax then
-                    inRangeToActivePhone = true
-                    inRangedist = dist
-
-                    if dist <= 1.0 then 
-                        SetTextComponentFormat("STRING")
-                        AddTextComponentString("Premi " .. Config.KeyLabel .. " per rispondere al telefono")
-                        DisplayHelpTextFromStringLabel(0, 0, 1, -1)
-
-                        if IsControlJustPressed(1, Config.KeyTakeCall) then
-                            TakeAppel(PhoneInCall[i])
-                            PhoneInCall[i] = {}
-                            StopSoundJS('ring2.ogg')
-                        end
-                    end
-
-                    break
-                end
-            end
-
-            if inRangeToActivePhone and not currentPlaySound then
-                PlaySoundJS('ring2.ogg', 0.2 + (inRangedist - soundDistanceMax) / - (soundDistanceMax * 0.8) )
-                currentPlaySound = true
-            elseif inRangeToActivePhone then
-                mod = mod + 1
-                if mod == 15 then
-                    mod = 0
-                    SetSoundVolumeJS('ring2.ogg', 0.2 + (inRangedist - soundDistanceMax) / - (soundDistanceMax * 0.8) )
-                end
-            elseif not inRangeToActivePhone and currentPlaySound then
-                currentPlaySound = false
-                StopSoundJS('ring2.ogg')
-            end
-        else
-            Citizen.Wait(5000)
-        end
-
-        Citizen.Wait(1)
-    end
-end)
-]]
-
-AddEventHandler("gcPhone:phoneBoxActions", function(functionName, params)
-    if functionName == 'startFixeCall' then
-        if params and params.currentModel then
-            local pedPos = GetEntityCoords(GetPlayerPed(-1), false)
-            local phoneboxnumber = getPhoneBoxNumber(GetEntityCoords(GetClosestObjectOfType(pedPos.x, pedPos.y, pedPos.z, 1.0, params.currentModel, false, 1, 1)))
-
-            startFixeCall(phoneboxnumber, params.currentModel)
-        else
-            startFixeCall()
-        end
-    elseif functionName == 'showFixePhoneNumber' then
-        showFixePhoneNumber(params)
-    end
-end)
-
-function getPhoneBoxNumber(coords)
-    local x, y, z = "0", "0", "0"
-
-    if coords.x < 0 then
-        x = "1"
-    end
-
-    x = x .. string.format("%04d", tostring(math.ceil(math.abs(coords.x))))
-    if coords.y < 0 then
-        y = "1"
-    end
-
-    y = y .. string.format("%04d", tostring(math.ceil(math.abs(coords.y))))
-    if coords.z < 0 then
-        z = "1"
-    end
-
-    z = z .. string.format("%04d", tostring(math.ceil(math.abs(coords.z))))
-    return  x .. y .. z
 end

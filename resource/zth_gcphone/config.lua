@@ -10,10 +10,6 @@ Config.EnableSaltyChat = true
 -- this is the key used to open the phone
 Config.KeyToOpenPhone = "k"
 
--- This is the configured key that you'll need to press to
--- answer a static phone
-Config.KeyTakeCall = 46
-Config.KeyLabel = "~INPUT_CONTEXT~"
 -- If true, the phone will auto generate an iban string
 -- that will be used in the bank app
 Config.ShouldUseIban = false
@@ -42,10 +38,30 @@ Config.DiscordWebhook = "YOUR_WEBHOOK_HERE"
 -- job2.<varius info>) then this will show the second job in the settings app
 Config.EnableSecondJobs = false
 
-Config.TelefoniFissi = {
-    ['555889280'] = { name = "Gewlery", coords = { x = -630.271, y = -230.216, z = 38.047 } },
-    ['555621458'] = { name = "Fleeca", coords = { x = -2958.855, y = 479.614, z = 15.790 } },
+-- if this is enabled, the script will spawn a prop representic the
+-- static phones configured in the array down here
+-- ATTENCTION: a loop in a thread created to check if the phoneboxes are beeing called
+-- will start and this may cause lag if a lot of them are used at the same time
+Config.EnablePhoneBoxes = true
+-- this is the array representing all static phones created in the server
+-- [@phone_number] is the phone number that will be assinged to the phone box
+--                 try using more than 5 number (or create a string of number not
+--                 starting with 555) to make the phone box unique from the sim numbers
+-- @name is the name of the phone box (unused by the scirpt logic) this is just a label
+-- @coords MUST be a vector3 and is used by the script to check distance and coords for the
+-- phone
+Config.PhoneBoxes = {
+    ['555889280'] = { name = "Gewlery", coords = vector3(-630.271, -230.216, 38.047) },
+    ['555621458'] = { name = "Fleeca", coords = vector3(-2958.855, 479.614, 15.790) },
 }
+-- this is the max range where the ring of the static phone can be heard by anyone
+Config.MaxPhoneBoxesRingRange = 8.0
+-- This is the configured key that you'll need to press to
+-- answer a fixed phone
+Config.KeyTakeCall = 46
+Config.KeyLabel = "~INPUT_CONTEXT~"
+-- this is the prop name for the fixed phone
+Config.PhonePropModel = "prop_cs_phone_01"
 
 Config.Keys = {
     { code = 172, event = 'ArrowUp' },
