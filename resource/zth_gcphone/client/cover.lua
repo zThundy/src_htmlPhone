@@ -31,14 +31,14 @@ Citizen.CreateThread(function()
 		end,
         onExit = function()
             ESX.UI.Menu.CloseAll()
-            ChangeCover("Nessuna cover", "base")
+            ChangeCover(Config.Language["NO_COVER_LABEL"], "base")
             SendNUIMessage({ show = false })
         end,
         -- need to think about this cause idk if i like this
         -- onEnter = function()
         --     SendNUIMessage({ show = true })
         -- end,
-		msg = "Premi ~INPUT_CONTEXT~ per acquistare una cover",
+		msg = Config.Language["HELPNOTIFICATION_COVER_SHOP_LABEL"],
 	})
 
     local info = Config.CoverShopBlip
@@ -62,7 +62,7 @@ end)
         if marker == nil then return end
         if marker.name == "negozio_cover" then
             ESX.UI.Menu.CloseAll()
-            ChangeCover("Nessuna cover", "base")
+            ChangeCover(Config.Language["NO_COVER_LABEL"], "base")
             SendNUIMessage({ show = false })
         end
     end)
@@ -90,7 +90,7 @@ function openShopMenu(myCovers)
     --         if GetDistanceBetweenCoords(GetEntityCoords(GetPlayerPed(-1)), Config.CoverShop, true) >= 5.0 then
     --             isMenuOpened = false
     --             ESX.UI.Menu.CloseAll()
-    --             ChangeCover("Nessuna cover", "base")
+    --             ChangeCover(Config.Language["NO_COVER_LABEL"], "base")
     --             SendNUIMessage({ show = false })
     --         end
     --         Citizen.Wait(1000)
@@ -116,10 +116,10 @@ function openShopMenu(myCovers)
 
         ESX.TriggerServerCallback("gcphone:cover_buyCover", function(ok)
             if ok then
-                ESX.ShowNotification("~g~Cover comprata con successo")
+                ESX.ShowNotification(Config.Language["COVER_BOUGHT_OK"])
                 RefreshCovers()
             else
-                ESX.ShowNotification("~r~Non hai abbastanza soldi per comprare una cover")
+                ESX.ShowNotification(Config.Language["COVER_BOUGHT_ERROR"])
             end
 
             ESX.UI.Menu.CloseAll()
@@ -139,7 +139,7 @@ function openShopMenu(myCovers)
     -- onMenuClose
     onMenuClose = function(data, _)
         ESX.UI.Menu.CloseAll()
-        ChangeCover("Nessuna cover", "base")
+        ChangeCover(Config.Language["NO_COVER_LABEL"], "base")
         SendNUIMessage({ show = false })
     end
 
@@ -147,7 +147,7 @@ function openShopMenu(myCovers)
     SendNUIMessage({ show = true })
 
     ESX.UI.Menu.Open('default', GetCurrentResourceName(), 'negozio_cover', {
-        title = "Negozio di cover",
+        title = Config.Language["COVER_SHOP_TITLE"],
         elements = elements
     }, onMenuSelect, onMenuClose, onMenuChangeIndex)
 end

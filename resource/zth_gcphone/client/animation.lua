@@ -91,7 +91,7 @@ function doCleanup()
 	end
 
 	CACHED_PROPS = {}
-	gcPhone.debug("Cleared extra props for restart or overflow")
+	gcPhone.debug(Config.Language["ANIMATIONS_CLEANUP_DEBUG_1"])
 end
 
 

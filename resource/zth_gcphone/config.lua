@@ -24,6 +24,10 @@ Config.PhoneDebug = false
 Config.EnablePhoneItem = true
 -- this is the name assigned to the phone item
 Config.PhoneItemName = "phone"
+-- this is the name assigned to the sim item
+Config.SimItemName = "sim"
+-- this is the name assigned to the modem item
+Config.ModemItemName = "modem"
 
 -- this will be the maximum range for bluetooth
 -- picture sharing between players

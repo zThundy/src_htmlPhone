@@ -1,6 +1,6 @@
 fx_version "bodacius"
 game "gta5"
-version "1.4.4"
+version "1.5.4"
 author "zThundy__"
 
 ui_page 'html/index.html'
@@ -42,6 +42,7 @@ files {
 shared_scripts {
 	"modules/utils.lua",
 	"config.lua",
+	"config.language.lua",
 	"config.wifi.lua",
 	"config.sim.lua",
 	"config.services.lua",

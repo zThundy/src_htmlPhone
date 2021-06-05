@@ -30,6 +30,6 @@ AddEventHandler("gcphone:bluetooth_receivePic", function(link)
     if bluetooth then
         SendNUIMessage({ event = "addPicToGallery", link = link })
     else
-        ESX.ShowNotification("~r~Impossibile ricevere l'immagine, bluetooth spento")
+        ESX.ShowNotification(Config.Language["BLUETOOTH_CANNOT_GET_IMAGE"])
     end
 end)

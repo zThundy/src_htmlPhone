@@ -21,7 +21,13 @@ gcPhoneT.darkweb_fetchDarkmessages = function()
 
             TriggerClientEvent("gcphone:darkweb_sendMessages", player, messages)
         else
-            TriggerClientEvent("esx:showNotification", player, "~r~Non hai abbastanza giga per poter inviare un messaggio o non c'è linea")
+            TriggerClientEvent("gcphone:sendGenericNotification", player, {
+                message = "APP_DARKWEB_ENOUGH_GIGA",
+                title = "APP_DARKWEB_TITLE",
+                icon = "user-secret",
+                color = "#606060",
+                appName = "DarkWeb"
+            })
         end
     end)
 end
@@ -39,6 +45,12 @@ gcPhoneT.darkweb_sendDarkMessage = function(data)
             ['@message'] = data.message
         })
     else
-        TriggerClientEvent("esx:showNotification", player, "~r~Non hai abbastanza giga per poter inviare un messaggio o non c'è linea")
+        TriggerClientEvent("gcphone:sendGenericNotification", player, {
+            message = "APP_DARKWEB_ENOUGH_GIGA",
+            title = "APP_DARKWEB_TITLE",
+            icon = "user-secret",
+            color = "#606060",
+            appName = "DarkWeb"
+        })
     end
 end

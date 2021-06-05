@@ -1,5 +1,9 @@
 local MODEM_TIMEOUT = {}
 
+ESX.RegisterUsableItem(Config.ModemItemName, function(source)
+    TriggerClientEvent("gcphone:modem_chooseCredentials", source)
+end)
+
 gcPhoneT.modem_createModem = function(label, password, coords)
     local player = source
     local xPlayer = ESX.GetPlayerFromId(player)
@@ -15,7 +19,7 @@ gcPhoneT.modem_createModem = function(label, password, coords)
             coords = coords,
             due_date = os.time(os.date('*t', currentTime)) + days
         }, function(ok)
-            if ok then xPlayer.removeInventoryItem("modem", 1) end
+            if ok then xPlayer.removeInventoryItem(Config.ModemItemName, 1) end
         end)
 
         MODEM_TIMEOUT[player] = true
@@ -28,7 +32,7 @@ gcPhoneT.modem_createModem = function(label, password, coords)
             end)
         end)
     else
-        xPlayer.showNotification("~r~Devi aspettare almeno "..Config.WaitBeforeCreatingAgaing.." secondi prima di creare una rete")
+        xPlayer.showNotification(Config.Language["MODEM_CREATION_TIMEOUT_MESSAGE"]:format(Config.WaitBeforeCreatingAgaing))
     end
 end
 
@@ -52,7 +56,7 @@ gcPhoneT.modem_rinnovaModem = function()
             end
         end)
     else
-        xPlayer.showNotification("~r~Non hai abbastanza soldi")
+        xPlayer.showNotification(Config.Language["MODEM_CREATION_NOT_ENOUGH_MONEY"])
     end
 end
 
@@ -66,7 +70,7 @@ gcPhoneT.modem_cambiaPassword = function(password)
         Reti.UpdateReteWifi(player, { password = password }, "password")
         TriggerClientEvent("gcphone:modem_updateMenu", player)
     else
-        xPlayer.showNotification("~r~Non hai abbastanza soldi")
+        xPlayer.showNotification(Config.Language["MODEM_CREATION_NOT_ENOUGH_MONEY"])
     end
 end
 
@@ -75,13 +79,13 @@ gcPhoneT.modem_compraModem = function()
     local xPlayer = ESX.GetPlayerFromId(player)
 
     if xPlayer.getAccount("bank").money >= Config.BuyModemPrice then
-        xPlayer.addInventoryItem("modem", 1)
-        xPlayer.showNotification("~g~Hai comprato un modem nuovo di zecca")
+        xPlayer.addInventoryItem(Config.ModemItemName, 1)
+        xPlayer.showNotification(Config.Language["MODEM_BOUGHT_OK"])
 
         xPlayer.removeAccountMoney("bank", Config.BuyModemPrice)
         TriggerClientEvent("gcphone:modem_updateMenu", player)
     else
-        xPlayer.showNotification("~r~Non hai abbastanza soldi per poter comprare un modem")
+        xPlayer.showNotification(Config.Language["MODEM_CREATION_NOT_ENOUGH_MONEY"])
     end
 end
 
@@ -95,28 +99,24 @@ ESX.RegisterServerCallback("gcphone:modem_getMenuInfo", function(source, cb)
         if #result > 0 then
             local createdString = os.date("%d/%m/%Y - %X", math.floor(result[1].created / 1000))
             local dueString = os.date("%d/%m/%Y - %X", math.floor(result[1].due_date / 1000))
-            table.insert(elements, { label = "Comprato il "..createdString })
+            table.insert(elements, { label = Config.Language["MODEM_MENU_ARGS_1"]:format(createdString) })
             if result[1].not_expire == 1 then
-                table.insert(elements, { label = "Il tuo modem non scadrà" })
+                table.insert(elements, { label = Config.Language["MODEM_MENU_ARGS_2"] })
             else
-                table.insert(elements, { label = "Scade il "..dueString })
+                table.insert(elements, { label = Config.Language["MODEM_MENU_ARGS_3"]:format(dueString) })
             end
 
             local password = result[1].password
             local label = result[1].label
-            table.insert(elements, { label = "SSID "..label })
-            table.insert(elements, { label = "Password "..password, value = "aggiorna_password" })
+            table.insert(elements, { label = Config.Language["MODEM_MENU_ARGS_4"]:format(label) })
+            table.insert(elements, { label = Config.Language["MODEM_MENU_ARGS_5"]:format(password), value = "aggiorna_password" })
 
-            table.insert(elements, { label = "Rinnova il modem per "..Config.RenewModemPrice.."$", value = "rinnova_modem" })
+            table.insert(elements, { label = Config.Language["MODEM_MENU_ARGS_6"]:format(Config.RenewModemPrice), value = "rinnova_modem" })
         else
-            table.insert(elements, { label = "Non hai acquistato un modem" })
-            table.insert(elements, { label = "Compra un modem per "..Config.BuyModemPrice.."$", value = "buy_modem" })
+            table.insert(elements, { label = Config.Language["MODEM_MENU_ARGS_7"] })
+            table.insert(elements, { label = Config.Language["MODEM_MENU_ARGS_8"]:format(Config.BuyModemPrice), value = "buy_modem" })
         end
 
         cb(elements)
     end)
-end)
-
-ESX.RegisterUsableItem("modem", function(source)
-    TriggerClientEvent("gcphone:modem_chooseCredentials", source)
 end)

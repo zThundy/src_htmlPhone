@@ -84,7 +84,7 @@ if Config.EnablePhoneBoxes then
                         inRangedist = dist
 
                         if dist <= 1.0 then 
-                            ESX.ShowHelpNotification("Premi " .. Config.KeyLabel .. " per rispondere al telefono")
+                            ESX.ShowHelpNotification(Config.Language["HELPNOTIFICATION_PHONE_BOXES_ANSWER"]:format(Config.KeyLabel))
 
                             if IsControlJustPressed(1, Config.KeyTakeCall) then
                                 AnswerPhone(PHONE_BOXES_STATUS[i])
@@ -138,7 +138,7 @@ if Config.EnablePhoneBoxes then
                         end
 
                         if dist <= 2.0 then
-                            ESX.ShowHelpNotification("Premi " .. Config.KeyLabel .. " per avviare una telefonata")
+                            ESX.ShowHelpNotification(Config.Language["HELPNOTIFICATION_PHONE_BOXES_CALL"]:format(Config.KeyLabel))
 
                             if IsControlJustPressed(0, Config.KeyTakeCall) then
                                 if not number then

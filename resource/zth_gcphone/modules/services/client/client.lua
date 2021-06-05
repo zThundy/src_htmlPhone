@@ -20,6 +20,8 @@ AddEventHandler('esx_addons_gcphone:call', function(data)
     end
     
     local message = data.testo
+    if not message then message = data.text end
+
     local number = data.type.number
 
     if message == nil then
@@ -38,22 +40,22 @@ AddEventHandler('esx_addons_gcphone:call', function(data)
         ids = ids + 1
 
         TriggerServerEvent("dispatch:svNotify", {
-			code = "911",
+			code = Config.Language["EMERGENCY_CALL_CODE"],
 			street = GetStreetAndZone(),
 			id = ids,
 			priority = 3,
-			title = "Chiamata di emergenza",
+			title = Config.Language["EMERGENCY_CALL_LABEL"],
 			position = {
 				x = coords.x,
 				y = coords.y,
 				z = coords.z
 			},
-            blipname = "Emergenza",
+            blipname = Config.Language["EMERGENCY_CALL_BLIP_LABEL"],
             color = 2,
             sprite = 304,
             fadeOut = 30,
             duration = 10000,
-            officer = "Ufficio 911"
+            officer = Config.Language["EMERGENCY_CALL_CALLER_LABEL"]
 		})
     end
 

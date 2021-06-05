@@ -16,7 +16,7 @@ Citizen.CreateThread(function()
 		action = function()
 			openOfferteMenu()
 		end,
-		msg = "Premi ~INPUT_CONTEXT~ per acquistare un piano tariffario",
+		msg = Config.Language["HELPNOTIFICATION_SIM_SHOP_LABEL"],
 	})
 
 	local info = Config.TariffsBlip
@@ -34,7 +34,7 @@ Citizen.CreateThread(function()
 		EndTextCommandSetBlipName(blip)
 	end
 
-	RegisterKeyMapping('+openSimMenu', 'Menù sim', 'keyboard', Config.SimCardKey)
+	RegisterKeyMapping('+openSimMenu', Config.Language["SETTINGS_KEY_LABEL"], 'keyboard', Config.SimCardKey)
 	RegisterCommand('+openSimMenu', function() OpenSimMenu() end, false)
 	RegisterCommand('-openSimMenu', function() end, false)
 end)
@@ -52,16 +52,16 @@ function OpenSimMenu()
 		end
 		
 		ESX.UI.Menu.Open('default', GetCurrentResourceName(), 'phone_change', {
-			title = 'Carte SIM',
+			title = Config.Language["SIM_SHOP_TITLE"],
 			elements = elements,
 		}, function(data, menu)
 		  	ESX.UI.Menu.Open('default', GetCurrentResourceName(), 'sim_change', {
 				title = tostring(data.current.value.number),
 				elements = {
-					{ label = 'Usa', value = 'sim_use' },
-					{ label = 'Dai', value = 'sim_give' },
-					{ label = 'Rinomina', value = 'sim_rename' },
-					{ label = 'Cancella', value = 'sim_delete' }
+					{ label = Config.Language["SIM_MENU_CHOICE_1"], value = 'sim_use' },
+					{ label = Config.Language["SIM_MENU_CHOICE_2"], value = 'sim_give' },
+					{ label = Config.Language["SIM_MENU_CHOICE_3"], value = 'sim_rename' },
+					{ label = Config.Language["SIM_MENU_CHOICE_4"], value = 'sim_delete' }
 				},
 		  	}, function(data2, menu2)
 
@@ -69,7 +69,7 @@ function OpenSimMenu()
 					ESX.UI.Menu.CloseAll()
 					cartesimServerT.usaSim({ number = data.current.value.number, piano_tariffario = data.current.piano_tariffario })
 					-- TriggerServerEvent('esx_cartesim:sim_use', {number = data.current.value.number, piano_tariffario = data.current.piano_tariffario})
-					ESX.ShowNotification("Hai usato la carta SIM "..data.current.value.number)
+					ESX.ShowNotification(Config.Language["SIM_USED_MESSAGE_OK"]:format(data.current.value.number))
 					Citizen.Wait(2000)
 					gcPhoneServerT.allUpdate()
 				end
@@ -78,7 +78,7 @@ function OpenSimMenu()
 					ESX.UI.Menu.CloseAll()
 					local closestPlayer, closestDistance = ESX.Game.GetClosestPlayer()
 					if closestPlayer == -1 or closestDistance > 3.0 then
-						ESX.ShowNotification('Nessun giocatore nelle vicinanze')
+						ESX.ShowNotification(Config.Language["SIM_NO_PLAYER_NEARBY"])
 					else
 						cartesimServerT.daiSim(data.current.value.number, GetPlayerServerId(closestPlayer))
 						-- TriggerServerEvent('esx_cartesim:sim_give', data.current.value.number, GetPlayerServerId(closestPlayer))
@@ -92,25 +92,25 @@ function OpenSimMenu()
                     local numero = data.current.value.number
 
                     ESX.UI.Menu.Open('dialog', GetCurrentResourceName(), 'usate_dialog_money', {
-                        title = "Inserisci un nome, massimo 10 caratteri"
+                        title = Config.Language["SIM_RENAME_MENU_LABEL"]
                     }, function(data3, menu3)
                         local sim_name = tostring(data3.value)
     
-                        if #sim_name > 10 then
-                            ESX.ShowNotification("Il nome non può superare i 10 caratteri", "error")
+                        if #sim_name > 20 then
+                            ESX.ShowNotification(Config.Language["SIM_RENAME_ERROR"])
                             menu3.close()
                             return
                         end
 
 						cartesimServerT.rinominaSim(numero, sim_name)
                         -- TriggerServerEvent('esx_cartesim:sim_rename', numero, sim_name)
-						ESX.ShowNotification("Sim Rinominata", "success")
+						ESX.ShowNotification(Config.Language["SIM_RENAME_OK"])
 
 						ESX.UI.Menu.CloseAll()
                     end, function(data3, menu3)
                         menu3.close()
     
-                        ESX.ShowNotification("Compilazione annullata", "error")
+                        ESX.ShowNotification(Config.Language["SIM_RENAME_CANCEL"])
                     end)
                 end
 
@@ -118,7 +118,7 @@ function OpenSimMenu()
 					ESX.UI.Menu.CloseAll()
 					cartesimServerT.eliminaSim(data.current.value.number)
 					-- TriggerServerEvent('esx_cartesim:sim_delete', data.current.value.number)
-					ESX.ShowNotification("Hai distrutto la SIM "..data.current.value.number)
+					ESX.ShowNotification(Config.Language["SIM_DESTROY_OK"]:format(data.current.value.number))
 					Citizen.Wait(2000)
 					gcPhoneServerT.allUpdate()
 				end
@@ -146,25 +146,25 @@ function openOfferteMenu()
 		end
 
 		ESX.UI.Menu.Open('default', GetCurrentResourceName(), 'sim_listasim_numeri', {
-			title = "Offerte telefoniche",
+			title = Config.Language["SIM_TARIFFS_SHOP_TITLE"],
 			elements = elementi
 		  }, function(data, menu)
 			ESX.TriggerServerCallback("esx_cartesim:GetOffertaByNumber", function(offerta)
 				if offerta.piano_tariffario == "nessuno" then
 					elementi2 = {
-						{label = "Offerta: Nessun'offerta"},
-						{label = "Scegli un'offerta", value = "scegli_offerta", icon = 22}
+						{label = Config.Language["SIM_TARIFFS_SHOP_NO_OFFER"]},
+						{label = Config.Language["SIM_TARIFFS_SHOP_CHOOSE_OFFER"], value = "scegli_offerta", icon = 22}
 					}
 				else
 					for k, v in pairs(Config.Tariffs) do
 						if v.label == offerta.piano_tariffario then
 							elementi2 = {
-								{label = "Offerta: "..v.label},
-								{label = "Minuti: "..v.minuti.." m"},
-								{label = "Messaggi: "..v.messaggi.." sms"},
-								{label = "Internet: "..v.dati.." mb"},
-								{label = "Cambia offerta", value = "scegli_offerta", icon = 22},
-								{label = "Rinnova offerta", value = "rinnova_offerta", icon = 22}
+								{label = Config.Language["SIM_TARIFFS_OFFER_LABEL_1"]:format(v.label)},
+								{label = Config.Language["SIM_TARIFFS_OFFER_LABEL_2"]:format(v.minuti)},
+								{label = Config.Language["SIM_TARIFFS_OFFER_LABEL_3"]:format(v.messaggi)},
+								{label = Config.Language["SIM_TARIFFS_OFFER_LABEL_4"]:format(v.dati)},
+								{label = Config.Language["SIM_TARIFFS_OFFER_LABEL_5"], value = "scegli_offerta", icon = 22},
+								{label = Config.Language["SIM_TARIFFS_OFFER_LABEL_6"], value = "rinnova_offerta", icon = 22}
 							}
 						end
 					end
@@ -181,9 +181,9 @@ function openOfferteMenu()
 					if data2.current.value == "rinnova_offerta" then
 						ESX.TriggerServerCallback("esx_cartesim:rinnovaOfferta", function(ok)
 							if ok then
-								ESX.ShowNotification("Offerta rinnovata con successo!", "success")
+								ESX.ShowNotification(Config.Language["SIM_TARIFFS_RENEWED_OK"])
 							else
-								ESX.ShowNotification("Non hai abbastanza soldi per rinnovare l'offerta", "error")
+								ESX.ShowNotification(Config.Language["SIM_TARIFFS_RENEWED_ERROR"])
 								openOfferteMenu()
 							end
 						end, offerta.piano_tariffario, data.current.value.number)
@@ -215,19 +215,19 @@ function openListaOfferte(number)
 		ESX.UI.Menu.Open('default', GetCurrentResourceName(), 'sim_compra_piano', {
 			title = number,
 			elements = {
-				{label = "Minuti: "..val.minuti.." s"},
-				{label = "Messaggi: "..val.messaggi.." sms"},
-				{label = "Internet: "..val.dati.." mb"},
-				{label = "Prezzo: "..val.price.."$"},
-				{label = "Acquista l'offerta", value = "acquista"}
+				{label = Config.Language["SIM_TARIFFS_OFFER_LABEL_2"]:format(v.minuti)},
+				{label = Config.Language["SIM_TARIFFS_OFFER_LABEL_3"]:format(v.messaggi)},
+				{label = Config.Language["SIM_TARIFFS_OFFER_LABEL_4"]:format(v.dati)},
+				{label = Config.Language["SIM_TARIFFS_OFFER_LABEL_7"]:format(v.price)},
+				{label = Config.Language["SIM_TARIFFS_OFFER_LABEL_BUY"], value = "acquista"}
 			}
 		  }, function(data2, menu2)
 			if data2.current.value == "acquista" then
 				ESX.TriggerServerCallback("esx_cartesim:acquistaOffertaCheckSoldi", function(ok)
 					if ok then
-						ESX.ShowNotification("~g~Offerta comprata con successo!")
+						ESX.ShowNotification(Config.Language["SIM_TARIFFS_BUY_OK"])
 					else
-						ESX.ShowNotification("~r~Non hai abbatsanza soldi per completare l'acquisto")
+						ESX.ShowNotification(Config.Language["SIM_TARIFFS_BUY_ERROR"])
 						openListaOfferte(number)
 					end
 					

@@ -2,10 +2,10 @@ cartesimT = {}
 local tunnel = module("zth_gcphone", "modules/TunnelV2")
 tunnel.bindInterface("cartesim_server_t", cartesimT)
 
-ESX.RegisterUsableItem("sim", function(source)
+ESX.RegisterUsableItem(Config.SimItemName, function(source)
 	local xPlayer = ESX.GetPlayerFromId(source)
 	
-	xPlayer.removeInventoryItem('sim', 1)
+	xPlayer.removeInventoryItem(Config.SimItemName, 1)
 	NewSim(source)
 end)
 
@@ -13,7 +13,7 @@ end)
 -- AddEventHandler("esx_cartesim:createNewSim", function()
 -- 	local player = source
 -- 	local xPlayer = ESX.GetPlayerFromId(player)
--- 	xPlayer.removeInventoryItem('sim', 1)
+-- 	xPlayer.removeInventoryItem(Config.SimItemName, 1)
 -- 	NewSim(player)
 -- end)
 
@@ -57,19 +57,19 @@ AddEventHandler('esx:playerLoaded', function(source, xPlayer)
 										current = tonumber(math.floor(sim[1].minuti / 60)),
 										max = tonumber(v.minuti),
 										icon = "phone",
-										suffix = "Minuti"
+										suffix = Config.Language["PHONE_TARIFFS_APP_LABEL_1"]
 									},
 									{
 										current = tonumber(sim[1].messaggi),
 										max = tonumber(v.messaggi),
 										icon = "message",
-										suffix = "Messaggi"
+										suffix = Config.Language["PHONE_TARIFFS_APP_LABEL_2"]
 									},
 									{
 										current = tonumber(sim[1].dati),
 										max = tonumber(v.dati),
 										icon = "discovery",
-										suffix = "Gigabyte"
+										suffix = Config.Language["PHONE_TARIFFS_APP_LABEL_3"]
 									}
 								})
 								return
@@ -100,13 +100,11 @@ function NewSim(source)
 				['@messaggi'] = 0,
 				['@dati'] = 0
 			}, function (r)
-				xPlayer.showNotification("~g~Sim creata con successo")
-				-- TriggerClientEvent('esx:showNotification', source, "~g~La sim è stata registrata con successo")
-
+				xPlayer.showNotification(Config.Language["SIM_CREATED_MESSAGE_OK"])
 				gcPhoneT.updateCachedNumber(phoneNumber, xPlayer.identifier, false)
 			end)
 		else
-			xPlayer.showNotification("~r~Creazione della sim non riuscita")
+			xPlayer.showNotification(Config.Language["SIM_CREATED_MESSAGE_ERROR"])
 		end
 	end)
 end
@@ -121,8 +119,8 @@ cartesimT.daiSim = function(number, c_id)
 	local xPlayer2 = ESX.GetPlayerFromId(c_id)
 			
 	if number ~= nil then
-		xPlayer.showNotification("Hai dato la scheda sim " .. number)
-		xPlayer2.showNotification("Hai ottenuto la sim " .. number)
+		xPlayer.showNotification(Config.Language["SIM_GIVEN_MESSAGE_1"]:format(number))
+		xPlayer2.showNotification(Config.Language["SIM_GIVEN_MESSAGE_2"]:format(number))
 		-- TriggerClientEvent('esx:showNotification', player, "Hai dato la scheda sim " .. number)
 		-- TriggerClientEvent('esx:showNotification', c_id, "Hai ottenuto una sim " .. number)
 

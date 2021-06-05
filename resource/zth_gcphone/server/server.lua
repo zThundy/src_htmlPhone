@@ -25,15 +25,13 @@ AddEventHandler("playerDropped", function(reason)
     local player = source
     TriggerClientEvent("gcphone:animations_doCleanup", player)
 
-    gcPhone.debug("User " .. player .. " dropping. Doing cleanup")
+    gcPhone.debug(Config.Language["ANIMATIONS_CLEANUP_DEBUG_2"])
 end)
 
 MySQL.ready(function()
     MySQL.Async.execute("DELETE FROM phone_messages WHERE (DATEDIFF(CURRENT_DATE, time) > 15)", {})
     MySQL.Async.execute("DELETE FROM phone_twitter_tweets WHERE (DATEDIFF(CURRENT_DATE, time) > 20)", {})
     MySQL.Async.execute("DELETE FROM phone_calls WHERE (DATEDIFF(CURRENT_DATE, time) > 15)", {})
-
-    gcPhone.debug("Caching members. Lag expected")
 
     MySQL.Async.fetchAll("SELECT phone_number, identifier FROM sim", {}, function(numbers)
         for _, v in pairs(numbers) do
@@ -53,7 +51,7 @@ MySQL.ready(function()
             ]]
         end
 
-        gcPhone.debug("Numbers cache loaded from sim database")
+        gcPhone.debug(Config.Language["CACHING_STARTUP_1"])
         MySQL.Async.fetchAll("SELECT * FROM phone_users_contacts", {}, function(contacts)
             for id, contact in pairs(contacts) do
                 -- print(DumpTable(contact))
@@ -61,7 +59,7 @@ MySQL.ready(function()
                 table.insert(CACHED_CONTACTS[contact.identifier], contact)
             end
 
-            gcPhone.debug("Contacts cache loaded from phone contacts database")
+            gcPhone.debug(Config.Language["CACHING_STARTUP_2"])
             MySQL.Async.fetchAll("SELECT * FROM phone_messages", {}, function(messages)
                 for id, message in pairs(messages) do
                     -- print(DumpTable(message))
@@ -69,8 +67,8 @@ MySQL.ready(function()
                     table.insert(CACHED_MESSAGES[message.receiver], message)
                 end
 
-                gcPhone.debug("Messages cache loaded from phone messages database")
-                gcPhone.debug("Phone initialized")
+                gcPhone.debug(Config.Language["CACHING_STARTUP_3"])
+                gcPhone.debug(Config.Language["CACHING_STARTUP_4"])
                 phone_loaded = true
             end)
         end)
@@ -235,16 +233,16 @@ gcPhoneT.isAbleToCall = function(identifier, cb)
         if Config.IgnoredPlanJobs[xPlayer.job.name] then return cb(true, false, min) end
 
         if min == nil then
-            cb(false, true, 0, "~r~Non hai un piano tariffario!")
+            cb(false, true, 0, Config.Language["PHONE_TARIFFS_NO_TARIFF"])
         else
             if min > 0 then
                 cb(true, true, min)
             else
-                cb(false, true, 0, "~r~Hai finito i minuti previsti dalla tua offerta!")
+                cb(false, true, 0, Config.Language["PHONE_TARIFFS_NO_MINUTES"])
             end
         end
     else
-        cb(false, true, 0, "~r~Non puoi chiamare con la modalità aereo")
+        cb(false, true, 0, Config.Language["PHONE_TARIFFS_AIRPLANEMODE_ERROR"])
     end
 end
 
@@ -254,7 +252,7 @@ end
 
 gcPhoneT.getFirstnameAndLastname = function(identifier)
     if not identifier then
-        gcPhone.debug("Error getting firstname and lastname, identifier not specified: using source insted")
+        gcPhone.debug(Config.Language["FIRSTNAME_LASTNAME_ERROR"])
         local player = source
         local xPlayer = ESX.GetPlayerFromId(player)
         identifier = xPlayer.identifier
@@ -276,7 +274,7 @@ gcPhoneT.getFirstnameAndLastname = function(identifier)
     if CACHED_NAMES[identifier] then
         return CACHED_NAMES[identifier].firstname, CACHED_NAMES[identifier].lastname
     else
-        return "None", "None"
+        return Config.Language["EMPTY_FIELD_LABEL"], Config.Language["EMPTY_FIELD_LABEL"]
     end
 end
 
@@ -313,9 +311,9 @@ gcPhoneT.updateCachedNumber = function(number, identifier, isChanging)
     identifier = identifier
 
     if identifier then
-        gcPhone.debug("Updated number " .. number .. " for identifier " .. identifier)
+        gcPhone.debug(Config.Language["CACHE_NUMBERS_1"]:format(number, identifier))
     else
-        gcPhone.debug("Removed number " .. number .. " from CACHED_NUMBERS")
+        gcPhone.debug(Config.Language["CACHE_NUMBERS_2"]:format(number))
     end
 
     local oldNumber = gcPhoneT.getPhoneNumber(identifier)
@@ -330,7 +328,7 @@ gcPhoneT.updateCachedNumber = function(number, identifier, isChanging)
                 CACHED_NUMBERS[number].inUse = true
             else
                 -- da esx_cartesim al login del player
-                gcPhone.debug("User " .. identifier .. " is joining, registering " .. number .. " as 'inUse' number")
+                gcPhone.debug(Config.Language["CACHE_NUMBERS_3"]:format(identifier, number))
                 -- print("Registrando numero al login", number, identifier)
                 CACHED_NUMBERS[number].inUse = true
             end
@@ -470,7 +468,7 @@ gcPhoneT.addContact = function(display, number, email)
             TriggerClientEvent("gcPhone:contactList", player, getContacts(identifier))
         end)
     else
-        TriggerClientEvent("esx:showNotification", player, "~r~Devi inserire un numero e un titolo validi!")
+        TriggerClientEvent("esx:showNotification", player, Config.Language["ADD_CONTACT_ERROR"])
     end
 end
 
@@ -580,15 +578,15 @@ function addMessage(source, identifier, phone_number, message)
                     end
                 end)
             else
-                TriggerClientEvent("esx:showNotification", player, "~r~Hai finito i messaggi previsti dal tuo piano tariffario")
+                TriggerClientEvent("esx:showNotification", player, Config.Language["ADD_MESSAGE_ERROR_1"])
                 -- xPlayer.showNotification("Hai finito i messaggi previsti dal tuo piano tariffario", "error")
             end
         else
-            TriggerClientEvent("esx:showNotification", player, "~r~Non c'è segnale per mandare un messaggio")
+            TriggerClientEvent("esx:showNotification", player, Config.Language["ADD_MESSAGE_ERROR_2"])
         	-- xPlayer.showNotification("Non c'è segnale per mandare un messaggio", "error")
         end
     else
-        TriggerClientEvent("esx:showNotification", player, "~r~Impossibile mandare il messaggio, il numero selezionato non esiste")
+        TriggerClientEvent("esx:showNotification", player, Config.Language["ADD_MESSAGE_ERROR_3"])
         -- xPlayer.showNotification("Impossibile mandare il messaggio, il numero selezionato non esiste", "error")
     end 
 end
@@ -909,13 +907,11 @@ function internal_startCall(player, phone_number, rtcOffer, extraData)
                         end
                     else
                         playNoSignal(player, Chiamate[indexCall])
-                        TriggerClientEvent("esx:showNotification", player, "~r~Non c'è segnale per effettuare una telefonata")
-                        -- xPlayer.showNotification("~r~Non c'è segnale per effettuare una telefonata")
+                        TriggerClientEvent("esx:showNotification", player, Config.Language["STARTCALL_MESSAGE_ERROR_1"])
                     end
                 else
                     playNoSignal(player, Chiamate[indexCall])
-                    TriggerClientEvent("esx:showNotification", player, "~r~Il telefono è occupato")
-                    -- xPlayer.showNotification("~r~Il telefono è occupato")
+                    TriggerClientEvent("esx:showNotification", player, Config.Language["STARTCALL_MESSAGE_ERROR_2"])
                 end
             end)
         else
@@ -923,7 +919,7 @@ function internal_startCall(player, phone_number, rtcOffer, extraData)
                 playUnreachable(player, Chiamate[indexCall])
             else
                 playNoSignal(player, Chiamate[indexCall])
-                TriggerClientEvent("esx:showNotification", player, "~r~Non c'è segnale per effettuare una telefonata")
+                TriggerClientEvent("esx:showNotification", player, Config.Language["STARTCALL_MESSAGE_ERROR_3"])
                 -- xPlayer.showNotification("~r~Non c'è segnale per effettuare una telefonata")
             end
         end

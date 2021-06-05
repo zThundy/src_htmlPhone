@@ -7,10 +7,10 @@ retiWifi = {}
 
 Citizen.CreateThread(function()
 	radioTowers = Reti.loadTorriRadio()
-	Reti.Debug("Finished loading towers from database")
+	Reti.Debug(Config.Language["WIFI_LOAD_DEBUG_1"])
 
 	retiWifi = Reti.loadRetiWifi()
-	Reti.Debug("Finished loading routers from database")
+	Reti.Debug(Config.Language["WIFI_LOAD_DEBUG_2"])
 
 	Reti.CheckDueDate()
 
@@ -23,7 +23,7 @@ Citizen.CreateThread(function()
 			TriggerClientEvent('esx_wifi:riceviTorriRadio', -1, radioTowers)
 			TriggerClientEvent('esx_wifi:riceviRetiWifi', -1, retiWifi)
 
-			Reti.Debug("SyncThread: towers and wifi synced")
+			Reti.Debug(Config.Language["WIFI_LOAD_DEBUG_3"])
 
 			Citizen.Wait(Config.SyncThreadWait * 1000)
 		end

@@ -223,21 +223,21 @@ gcPhoneT.azienda_employeAction = function(action, employe)
         if action == "promote" then
             if c_xPlayer.job.grade < tonumber(maxGrade) then
                 c_xPlayer.setJob(xPlayer.job.name, c_xPlayer.job.grade + 1)
-                xPlayer.showNotification("~g~" .. firstname .. " " .. lastname .. " promosso al grado "..c_xPlayer.job.grade_label.." ["..c_xPlayer.job.grade.."]")
+                xPlayer.showNotification(Config.Language["AZIENDA_PROMOTE_PLAYER_OK"]:format(firstname, lastname, c_xPlayer.job.grade_label, c_xPlayer.job.grade))
             else
-                xPlayer.showNotification("~r~Non puoi eseguire questa azione")
+                xPlayer.showNotification(Config.Language["AZIENDA_PROMOTE_PLAYER_ERROR"])
             end
         elseif action == "demote" then
             if xPlayer.job.grade > c_xPlayer.job.grade then
                 if c_xPlayer.job.grade ~= 0 then
                     c_xPlayer.setJob(xPlayer.job.name, c_xPlayer.job.grade - 1)
-                    xPlayer.showNotification("~g~" .. firstname .. " " .. lastname .. " degradato al grado "..c_xPlayer.job.grade_label.." ["..c_xPlayer.job.grade.."]")
+                    xPlayer.showNotification(Config.Language["AZIENDA_DEMOTE_PLAYER_OK_1"]:format(firstname, lastname, c_xPlayer.job.grade_label, c_xPlayer.job.grade))
                 else
-                    xPlayer.showNotification("~g~" .. firstname .. " " .. lastname .. " licenziato")
+                    xPlayer.showNotification(Config.Language["AZIENDA_DEMOTE_PLAYER_OK_2"]:format(firstname, lastname))
                     c_xPlayer.setJob("unemployed", 0)
                 end
             else
-                xPlayer.showNotification("~r~Non puoi eseguire questa azione")
+                xPlayer.showNotification(Config.Language["AZIENDA_DEMOTE_PLAYER_ERROR"])
             end
         end
     else

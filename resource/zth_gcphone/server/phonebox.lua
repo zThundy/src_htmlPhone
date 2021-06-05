@@ -52,7 +52,7 @@ function onCallFixePhone(player, phone_number, rtcOffer, extraData)
         TriggerClientEvent('gcPhone:notifyFixePhoneChange', -1, FIXED_PHONES_INFO)
         TriggerClientEvent('gcPhone:waitingCall', player, Chiamate[indexCall], true)
     else
-        TriggerClientEvent("esx:showNotification", player, "~r~Il telefono è occupato")
+        TriggerClientEvent("esx:showNotification", player, Config.Language["PHONEBOX_PHONE_OCCUPIED"])
         -- xPlayer.showNotification("Il telefono è occupato", "error")
     end
 end

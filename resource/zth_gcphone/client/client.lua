@@ -12,7 +12,7 @@ hasFocus = false
 inCall = false
 stoppedPlayingUnreachable = false
 secondiRimanenti = 0
-enableGlobalNotification = true
+NOTIFICATIONS_ENABLED = true
 GLOBAL_AIRPLANE = false
 
 currentPlaySound = false
@@ -48,20 +48,20 @@ AddEventHandler('esx_ambulancejob:setDeathStatus', function(_isDead) isDead = _i
 --  
 --====================================================================================
 Citizen.CreateThread(function()
-    RegisterKeyMapping('+openPhone', 'Apri telefono', 'keyboard', Config.KeyToOpenPhone)
+    RegisterKeyMapping('+openPhone', Config.Language["SETTINGS_KEY_LABEL"], 'keyboard', Config.KeyToOpenPhone)
     RegisterCommand('+openPhone', function()
         if not IsEntityPlayingAnim(GetPlayerPed(-1), 'mp_arresting', 'idle', 3) then
             if not isDead then
                 if gcPhoneServerT.getItemAmount(Config.PhoneItemName) > 0 then
                     TogglePhone()
                 else
-                    ESX.ShowNotification("~r~Non hai un telefono con te")
+                    ESX.ShowNotification(Config.Language["NO_PHONE_ITEM"])
                 end
             else
-                ESX.ShowNotification("~r~Non puoi usare il telefono da morto")
+                ESX.ShowNotification(Config.Language["NO_PHONE_WHILE_DEAD"])
             end
         else
-            ESX.ShowNotification("~r~Non puoi usare il telefono da ammanettato")
+            ESX.ShowNotification(Config.Language["NO_PHONE_WHILE_ARRESTED"])
         end
     end, false)
     RegisterCommand('-openPhone', function() end, false)
@@ -178,12 +178,12 @@ AddEventHandler("gcPhone:allMessage", function(allmessages, notReceivedMessages)
         if notReceivedMessages ~= nil then
             if notReceivedMessages > 0 then
                 if notReceivedMessages == 1 then
-                    ESX.ShowNotification("Hai " .. notReceivedMessages .. " nuovo messaggo")
+                    ESX.ShowNotification(Config.Language["SINGLE_UNREAD_MESSAGE_NOTIFICATION"]:format(notReceivedMessages))
                 else
-                    ESX.ShowNotification("Hai " .. notReceivedMessages .. " nuovi messaggi")
+                    ESX.ShowNotification(Config.Language["MULTIPLE_UNREAD_MESSAGES_NOTIFICATION"]:format(notReceivedMessages))
                 end
 
-                if enableGlobalNotification then
+                if NOTIFICATIONS_ENABLED then
                     DrawNotification(false, false)
                     PlaySoundJS('msgnotify.ogg')
                     Citizen.Wait(3000)
@@ -227,20 +227,20 @@ AddEventHandler("gcPhone:receiveMessage", function(message)
         table.insert(messages, message)
 
         if message.owner == 0 then
-            local text = 'Hai ricevuto un messaggio'
+            local text = Config.Language["MESSAGE_NOTIFICATION_NO_TRANSMITTER"]
             if Config.ShowNumberNotification then
-                text = 'Hai ricevuto un messaggio da ' .. message.transmitter
+                text = Config.Language["MESSAGE_NOTIFICATION_TRANSMITTER"]:format(message.transmitter)
+
                 for _, contact in pairs(contacts) do
                     if contact.number == message.transmitter then
-                        text = 'Hai ricevuto un messaggio da ' .. contact.display
-
+                        text = Config.Language["MESSAGE_NOTIFICATION_TRANSMITTER"]:format(contact.display)
                         break
                     end
                 end
             end
 
             ESX.ShowNotification(text)
-            if enableGlobalNotification then
+            if NOTIFICATIONS_ENABLED then
                 PlaySoundJS('msgnotify.ogg')
                 Citizen.Wait(3000)
                 StopSoundJS('msgnotify.ogg')

@@ -114,7 +114,7 @@ gcPhoneT.getBourseProfile = function()
     else
         TriggerClientEvent("gcphone:sendGenericNotification", player, {
             message = "APP_BOURSE_ERROR_INTERNET",
-            title = "Borsa",
+            title = "APP_BOURSE_TITLE",
             icon = "money",
             color = "rgb(0, 204, 0)",
             appName = "Borsa"
@@ -134,7 +134,7 @@ gcPhoneT.getMyCrypto = function()
     else
         TriggerClientEvent("gcphone:sendGenericNotification", player, {
             message = "APP_BOURSE_ERROR_INTERNET",
-            title = "Borsa",
+            title = "APP_BOURSE_TITLE",
             icon = "money",
             color = "rgb(0, 204, 0)",
             appName = "Borsa"
@@ -153,7 +153,7 @@ gcPhoneT.requestCryptoValues = function()
     else
         TriggerClientEvent("gcphone:sendGenericNotification", player, {
             message = "APP_BOURSE_ERROR_INTERNET",
-            title = "Borsa",
+            title = "APP_BOURSE_TITLE",
             icon = "money",
             color = "rgb(0, 204, 0)",
             appName = "Borsa"
@@ -200,7 +200,7 @@ gcPhoneT.buyCrypto = function(data)
         else
             TriggerClientEvent("gcphone:sendGenericNotification", player, {
                 message = "APP_BOURSE_ERROR_INTERNET",
-                title = "Borsa",
+                title = "APP_BOURSE_TITLE",
                 icon = "money",
                 color = "rgb(0, 204, 0)",
                 appName = "Borsa"
@@ -263,7 +263,7 @@ gcPhoneT.sellCrypto = function(data)
         else
             TriggerClientEvent("gcphone:sendGenericNotification", player, {
                 message = "APP_BOURSE_ERROR_INTERNET",
-                title = "Borsa",
+                title = "APP_BOURSE_TITLE",
                 icon = "money",
                 color = "rgb(0, 204, 0)",
                 appName = "Borsa"

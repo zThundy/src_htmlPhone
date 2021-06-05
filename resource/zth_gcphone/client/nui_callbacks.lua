@@ -1,5 +1,5 @@
 RegisterNUICallback("updateNotifications", function(data, cb)
-    enableGlobalNotification = data
+    NOTIFICATIONS_ENABLED = data
     cb("ok")
 end)
 
@@ -21,7 +21,7 @@ RegisterNUICallback("updateVolume", function(data, cb)
 end)
 
 RegisterNUICallback("sendStartupValues", function(data, cb)
-    enableGlobalNotification = data.notification
+    NOTIFICATIONS_ENABLED = data.notification
 
     if data.cover ~= nil then
         myCover = string.gsub(data.cover.value, ".png", "")
@@ -37,12 +37,12 @@ end)
 
 RegisterNUICallback('connettiAllaRete', function(data, cb)
     if data == false then
-        ESX.ShowNotification("Password errata!", "error")
+        ESX.ShowNotification(Config.Language["MODEM_WRONG_PASSWORD"])
         return
     end
 
     WIFI_TEMP_DATA = { label = data.label, password = data.password }
-    ESX.ShowNotification("Password corretta!", "success")
+    ESX.ShowNotification(Config.Language["MODEM_CORRECT_PASSWORD"])
 
     TriggerEvent("gcphone:updateWifi", true, WIFI_TEMP_DATA)
     StartWifiRangeCheck()
@@ -61,7 +61,7 @@ RegisterNUICallback('startCall', function(data, cb)
         if data.rtcOffer == nil then data.rtcOffer = '' end
         gcPhoneServerT.startCall(data.numero, data.rtcOffer, data.extraData)
     else
-        ESX.ShowNotification("~r~Non puoi effetturare chiamate con la modalità aereo")
+        ESX.ShowNotification(Config.Language["PHONECALLS_AEREO_MODE_ERROR"])
     end
     cb("ok")
 end)
@@ -134,7 +134,7 @@ RegisterNUICallback('sendMessage', function(data, cb)
 
         gcPhoneServerT.sendMessage(data.phoneNumber, data.message)
     else
-        ESX.ShowNotification("~r~Non puoi inviare messaggi con la modalità aereo")
+        ESX.ShowNotification(Config.Language["MESSAGES_AEREO_MODE_ERROR"])
     end
     cb("ok")
 end)

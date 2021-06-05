@@ -48,7 +48,6 @@ function Reti.RefreshBlips()
 
 	for player, info in pairs(torriRadio) do
 		local blip = AddBlipForCoord(info.x, info.y, 1.0)
-
 		SetBlipHighDetail(blip, true)
 		SetBlipSprite(blip, 459)
 		SetBlipScale(blip, 0.5)
@@ -56,24 +55,20 @@ function Reti.RefreshBlips()
 
 		if info.broken then
 			SetBlipColour(blip, 1)
-
 			BeginTextCommandSetBlipName("STRING")
-			AddTextComponentString("Torre radio (rotta)")
+			AddTextComponentString(Config.Language["WIFI_BROKEN_RADIO_TOWER_BLIP"])
 			EndTextCommandSetBlipName(blip)
 		else
 			SetBlipColour(blip, 3)
-
 			BeginTextCommandSetBlipName("STRING")
-			AddTextComponentString("Torre radio")
+			AddTextComponentString(Config.Language["WIFI_RADIO_TOWER_BLIP"])
 			EndTextCommandSetBlipName(blip)
 		end
 
 		if Config.DebugRadiusTowers then
 			local radius = AddBlipForRadius(info.x, info.y, 1.0, Config.RaggioTorri)
-
 			SetBlipColour(radius, 1)
 			SetBlipAlpha(radius, 75)
-
 			table.insert(blips_radius, radius)
 		end
 

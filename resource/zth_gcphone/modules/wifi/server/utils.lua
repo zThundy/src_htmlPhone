@@ -35,14 +35,14 @@ function Reti.AddReteWifi(source, rete, cb)
 		['@due_date'] = os.date("%Y-%m-%d %H:%m:%S", rete.due_date)
 	}, function(rowsChanged)
 		if rowsChanged > 0 then
-			xPlayer.showNotification("~g~Rete creata con successo!")
+			xPlayer.showNotification(Config.Language["WIFI_MODEM_CREATED_OK"])
 
 			retiWifi = Reti.loadRetiWifi()
-			Reti.Debug("Wifi modems updated succesfully")
+			Reti.Debug(Config.Language["WIFI_LOAD_DEBUG_4"])
 
 			if cb ~= nil then cb(true) end
 		else
-			xPlayer.showNotification("~r~Impossibile creare la rete. Ne hai già una a tuo nome!")
+			xPlayer.showNotification(Config.Language["WIFI_MODEM_CREATED_ERROR"])
 			if cb ~= nil then cb(false) end
 		end
 	end)
@@ -55,12 +55,12 @@ function Reti.RemoveReteWifi(source, rete)
 		['@steam_id'] = rete.owner_id
 	}, function(rowsChanged)
 		if rowsChanged > 0 then
-			xPlayer.showNotification("~g~Rete rimossa con successo!")
+			xPlayer.showNotification(Config.Language["WIFI_MODEM_DELETE_OK"])
 
 			retiWifi = Reti.loadRetiWifi()
-			Reti.Debug("Wifi modems updated succesfully")
+			Reti.Debug(Config.Language["WIFI_LOAD_DEBUG_4"])
 		else
-			xPlayer.showNotification("~r~Impossibile rimuovere la rete!")
+			xPlayer.showNotification(Config.Language["WIFI_MODEM_DELETE_ERROR"])
 		end
 	end)
 end
@@ -73,12 +73,12 @@ function Reti.UpdateReteWifi(source, rete, param)
 		['@'..param] = rete[param]
 	}, function(rowsChanged)
 		if rowsChanged > 0 then
-			xPlayer.showNotification("~g~Rete aggiornata con successo!")
+			xPlayer.showNotification(Config.Language["WIFI_MODEM_UPDATE_OK"])
 
 			retiWifi = Reti.loadRetiWifi()
-			Reti.Debug("Wifi modems updated succesfully")
+			Reti.Debug(Config.Language["WIFI_LOAD_DEBUG_4"])
 		else
-			xPlayer.showNotification("~r~Impossibile aggiornare la rete!")
+			xPlayer.showNotification(Config.Language["WIFI_MODEM_UPDATE_ERROR"])
 		end
 	end)
 end
@@ -158,7 +158,7 @@ end
 ]]
 
 function Reti.CheckDueDate()
-	Reti.Debug("Checking expired routers")
+	Reti.Debug(Config.Language["WIFI_LOAD_DEBUG_5"])
 	
 	for index, rete in pairs(retiWifi) do
 		if rete.not_expire == 0 then
@@ -166,7 +166,7 @@ function Reti.CheckDueDate()
 			local created = math.floor(rete.created / 1000)
 
 			if os.difftime(created, due_date) >= 0 then
-				Reti.Debug("Modem owned by "..rete.steam_id.." has expired. Removing it from databse")
+				Reti.Debug(Config.Language["WIFI_LOAD_DEBUG_6"]:format(rete.steam_id))
 
 				MySQL.Async.execute("DELETE FROM phone_wifi_nets WHERE steam_id = @steam_id AND label = @label", {
 					['@steam_id'] = rete.steam_id,
@@ -174,7 +174,7 @@ function Reti.CheckDueDate()
 				})
 			end
 		else
-			Reti.Debug("Modem owned by "..rete.steam_id.." cannot expire")
+			Reti.Debug(Config.Language["WIFI_LOAD_DEBUG_7"]:format(rete.steam_id))
 		end
 	end
 end
