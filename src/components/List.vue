@@ -93,12 +93,12 @@ export default {
     formatEmoji (message) {
       return this.$phoneAPI.convertEmoji(message)
     },
-    styleTitle: function () {
-      return {
-        color: this.color,
-        backgroundColor: this.backgroundColor
-      }
-    },
+    // styleTitle: function () {
+    //   return {
+    //     color: this.color,
+    //     backgroundColor: this.backgroundColor
+    //   }
+    // },
     stylePuce (data) {
       data = data || {}
       if (data.icon !== undefined) {
@@ -122,12 +122,12 @@ export default {
         document.querySelector('.select').scrollIntoView({ behavior: 'smooth', block: 'start', inline: 'nearest' })
       })
     },
-    onUp: function () {
+    onUp () {
       if (this.disable === true) return
       this.currentSelect = this.currentSelect === 0 ? this.list.length - 1 : this.currentSelect - 1
       this.scrollIntoView()
     },
-    onDown: function () {
+    onDown () {
       if (this.disable === true) return
       this.currentSelect = this.currentSelect === this.list.length - 1 ? 0 : this.currentSelect + 1
       this.scrollIntoView()

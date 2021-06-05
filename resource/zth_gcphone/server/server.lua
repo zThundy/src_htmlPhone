@@ -444,24 +444,26 @@ gcPhoneT.updateAvatarContatto = function(data)
     end)
 end
 
-gcPhoneT.addContact = function(display, number, email)
+gcPhoneT.addContact = function(display, number, email, icon)
     local player = source
     local identifier = gcPhoneT.getPlayerID(player)
+    if icon == "" then icon = nil end
     
     if not CACHED_CONTACTS[identifier] then CACHED_CONTACTS[identifier] = {} end
     if identifier ~= nil and number ~= nil and display ~= nil then
-        MySQL.Async.insert("INSERT INTO phone_users_contacts(`identifier`, `number`, `display`, `email`) VALUES(@identifier, @number, @display, @email)", {
+        MySQL.Async.insert("INSERT INTO phone_users_contacts(`identifier`, `number`, `display`, `email`, `icon`) VALUES(@identifier, @number, @display, @email, @icon)", {
             ['@identifier'] = identifier,
             ['@number'] = number,
             ['@display'] = display,
-            ['@email'] = email
+            ['@email'] = email,
+            ['@icon'] = icon
         }, function(id)
             table.insert(CACHED_CONTACTS[identifier], {
                 id = id,
                 identifier = identifier,
                 number = number,
                 display = display,
-                icon = nil,
+                icon = icon,
                 email = email
             })
 

@@ -42,6 +42,12 @@ export default {
   },
   created () {
     if (this.$route.params.message) { this.tempMessage = this.$route.params.message }
+    if (this.$route.params.contact) {
+      // console.log(this.$route.params.contact)
+      var contact = this.$route.params.contact
+      this.tempMessage = '[CONTACT]%' + contact.number + '%' + contact.display + '%' + contact.email + '%' + contact.icon
+      // console.log(this.tempMessage)
+    }
     this.$bus.$on('keyUpBackspace', this.back)
   },
   beforeDestroy () {

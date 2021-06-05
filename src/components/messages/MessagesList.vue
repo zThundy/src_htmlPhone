@@ -26,7 +26,7 @@ export default {
         this.$router.push({name: 'messages.view', params: data})
       }
     },
-    onOption: function (data) {
+    onOption (data) {
       if (data.number === undefined) return
       this.disableList = true
       Modal.CreateModal({
@@ -65,7 +65,7 @@ export default {
   },
   computed: {
     ...mapGetters(['LangString', 'contacts', 'messages']),
-    messagesData: function () {
+    messagesData () {
       let messages = this.messages
       let contacts = this.contacts
       let messGroup = messages.reduce((rv, x) => {

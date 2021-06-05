@@ -210,7 +210,7 @@ function openListaOfferte(number)
 		title = number,
 		elements = elementi
 	  }, function(data, menu)
-		local val = data.current.value
+		local v = data.current.value
 
 		ESX.UI.Menu.Open('default', GetCurrentResourceName(), 'sim_compra_piano', {
 			title = number,
@@ -232,7 +232,7 @@ function openListaOfferte(number)
 					end
 					
 					ESX.UI.Menu.CloseAll()
-				end, val, number)
+				end, v, number)
 			end
 		end, function(data2, menu2)
 			menu2.close()

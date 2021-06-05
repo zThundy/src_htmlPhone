@@ -175,7 +175,7 @@ RegisterNUICallback('setReadMessageNumber', function(data, cb)
 end)
 
 RegisterNUICallback('addContact', function(data, cb)
-    gcPhoneServerT.addContact(data.display, data.phoneNumber, data.email) 
+    gcPhoneServerT.addContact(data.display, data.phoneNumber, data.email, data.icon) 
     cb("ok")
 end)
 

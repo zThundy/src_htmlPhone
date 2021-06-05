@@ -21,8 +21,25 @@
         </div>
 
         <span class='sms_message sms_me' v-bind:class="{ sms_other : mess.owner === 0 }">
-          
-          <img v-if="isSMSImage(mess.message)" class="sms-img" :src="mess.message">
+          <img v-if="isSMSImage(mess.message)" class="sms-img" :src="mess.message"/>
+          <div class="contact-forward-container" v-else-if="isSMSContact(mess.message)">
+            <div class="contact-forward-background">
+              <div class="contact-forward-pic" :style="stylePuce(mess)">{{ getSMSContactInfo(mess.message).letter }}</div>
+              <!-- <img class="contact-forward-pic" :src="getSMSContactInfo(mess.message).pic"> -->
+              <div class="contact-forward-info-container">
+                <span class="contact-forward-number">{{ getSMSContactInfo(mess.message).number }}</span>
+                <span class="contact-forward-name">{{ formatEmoji(getSMSContactInfo(mess.message).name) }}</span>
+              </div>
+            </div>
+            <div class="contact-forward-buttons-container">
+              <div style="border-right: 1px solid grey;" class="contact-forward-button">
+                <span class="contact-forward-button-text">{{ LangString("APP_MESSAGE_FORWARDED_CONTACT_ADD") }}</span>
+              </div>
+              <div class="contact-forward-button">
+                <span class="contact-forward-button-text">{{ LangString("APP_MESSAGE_FORWARDED_CONTACT_MESSAGE") }}</span>
+              </div>
+            </div>
+          </div>
           <!--
             <div v-if="mess.message.includes('%CONTACT%')">
               {{ mess.message.split(':').pop() }}
@@ -30,7 +47,6 @@
             </div>
           -->
           <span v-else class="sms_message">{{ formatEmoji(mess.message) }}</span>
-            
             <!-- <span style="color: white; font-size: 17px; margin: 24px;" @click.stop="onActionMessage(mess)"><timeago class="sms_time" :since='mess.time' :auto-update="20"></timeago></span> -->
         </span>
 
@@ -38,18 +54,13 @@
     </div>
 
     <div style="width: 306px;" id='sms_write'>
-
       <input type="text" v-model="message" :placeholder="LangString('APP_MESSAGE_PLACEHOLDER_ENTER_MESSAGE')">
-      
       <div class="sms_send">
-
         <svg height="24" viewBox="0 0 24 24" width="24">
           <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/>
           <path d="M0 0h24v24H0z" fill="none"/>
         </svg>
-
       </div>
-
     </div>
   </div>
 </template>
@@ -98,7 +109,7 @@ export default {
       // this.$router.push({path: '/messages'})
       this.$router.go(-1)
     },
-    onUp: function () {
+    onUp () {
       if (this.ignoreControls === true) return
       if (this.selectMessage === -1) {
         this.selectMessage = this.messagesListApp.length - 1
@@ -136,7 +147,48 @@ export default {
       this.sendMessage({ phoneNumber: this.phoneNumber, message })
     },
     isSMSImage (mess) {
-      return /^https?:\/\/.*\.(png|jpg|jpeg|gif)/.test(mess)
+      var pattern = new RegExp('^(https?:\\/\\/)?' + '((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|' + '((\\d{1,3}\\.){3}\\d{1,3}))' + '(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*' + '(\\?[;&a-z\\d%_.~+=-]*)?' + '(\\#[-a-z\\d_]*)?$', 'i')
+      return !!pattern.test(mess)
+    },
+    isSMSContact (mess) {
+      // console.log(mess.indexOf('%CONTACT%'))
+      // console.log(mess)
+      return mess.indexOf('[CONTACT]') === 0
+    },
+    getSMSContactInfo (mess) {
+      var obj = mess.split('%')
+      // console.log(obj[2])
+      // if (obj[4] === '' || obj[4] === undefined) {
+      //   obj[4] === null
+      // }
+      return {
+        name: obj[2],
+        number: obj[1],
+        email: obj[3],
+        icon: obj[4],
+        letter: obj[2][0]
+      }
+    },
+    stylePuce (data) {
+      data = data || {}
+      // console.log(data)
+      data.icon = this.getSMSContactInfo(data.message).icon
+      // console.log(data.icon)
+      if (data.icon !== 'undefined' && data.icon !== undefined && data.icon !== null && data.icon !== '') {
+        return {
+          backgroundImage: `url(${data.icon})`,
+          'background-position': 'center',
+          backgroundSize: 'cover',
+          color: 'rgba(0,0,0,0)',
+          borderRadius: '50%',
+          'object-fit': 'fill'
+        }
+      }
+      return {
+        color: 'black',
+        backgroundColor: this.color,
+        borderRadius: '50%'
+      }
     },
     getContactIcon () {
       for (var key in this.contacts) {
@@ -158,6 +210,7 @@ export default {
         let isGPS = /(-?\d+(\.\d+)?), (-?\d+(\.\d+)?)/.test(message.message)
         let hasNumber = /#([0-9]+)/.test(message.message)
         let isSMSImage = this.isSMSImage(message.message)
+        let c = this.getSMSContactInfo(message.message)
         let choix = [
           {
             id: 'inoltra',
@@ -182,6 +235,18 @@ export default {
             title: this.LangString('APP_MESSAGE_SET_GPS'),
             icons: 'fa-location-arrow'
           }, ...choix]
+        }
+        if (this.isSMSContact(message.message)) {
+          choix = [{
+            id: 'add_contact',
+            title: this.LangString('APP_MESSAGE_ADD_CONTACT'),
+            icons: 'fa-plus'
+          }, ...choix]
+          // {
+          //   id: 'message_contact',
+          //   title: this.LangString('APP_MESSAGE_MESSAGE_CONTACT'),
+          //   icons: 'fa-comment'
+          // }, ...choix]
         }
         if (hasNumber === true) {
           const num = message.message.match(/#([0-9-]*)/)[1]
@@ -216,6 +281,10 @@ export default {
         } else if (data.id === 'inoltra') {
           this.$router.push({ name: 'messages.chooseinoltra', params: { message: message.message } })
           // this.sendMessage({ phoneNumber: this.phoneNumber, message })
+        } else if (data.id === 'add_contact') {
+          this.$router.push({ name: 'contacts.view', params: { id: -1, isForwarded: true, number: c.number, display: c.name, email: c.email, icon: c.icon } })
+        } else if (data.id === 'message_contact') {
+          this.$router.push({ name: 'messages.view', params: { number: c.number, display: c.name } })
         }
       } catch (e) {
       } finally {
@@ -434,15 +503,15 @@ export default {
 
 .sms-img {
   width: 100%;
-  height: auto;
-  padding-top: 12px;
-  border-radius: 19px;
+  height: 100%;
+  margin-top: 10px;
+  border-radius: 5px;
 }
 
 .sms_me {
   float: right;
   background-color: #e9e9eb;
-  border-radius: 7px;
+  border-radius: 6px;
   padding: 5px 10px;
   max-width: 90%;
   margin-right: 5%;
@@ -451,7 +520,7 @@ export default {
 
 .sms_other {
   background-color: #0b81ff;
-  border-radius: 7px;
+  border-radius: 6px;
   color:white;
   float: left;
   padding: 5px 10px;
@@ -561,5 +630,89 @@ export default {
   align-content: center;
   justify-content: center;
   align-items: center;
+}
+
+/* CONTACT FORWARD SECTION */
+.contact-forward-container {
+  width: 250px;
+  height: 110px;
+}
+
+.contact-forward-background {
+  border-radius: 5px;
+  background-color: rgb(240, 240, 240);
+  margin-top: 8px;
+  width: 97%;
+  height: 98%;
+  display: flex;
+  flex-direction: row;
+  border: 1px solid grey;
+  overflow: hidden;
+}
+
+.contact-forward-pic {
+  margin-top: 5px;
+  margin-left: 5px;
+  height: 60px;
+  width: 60px;
+  border-radius: 50px;
+  overflow: hidden;
+  object-fit: cover;
+
+  text-align: center;
+  line-height: 58px;
+  font-size: 20px;
+}
+
+.contact-forward-text-info {
+  width: 78%;
+  height: 100%;
+}
+
+.contact-forward-info-container {
+  width: 74%;
+  height: 90%;
+}
+
+.contact-forward-number {
+  top: 5px;
+  position: relative;
+  margin-left: 10px;
+  color: rgb(0, 119, 255);
+  font-weight: bold;
+  font-size: 20px;
+  display: block;
+}
+
+.contact-forward-name {
+  top: 7px;
+  position: relative;
+  margin-left: 10px;
+  color: rgb(0, 119, 255);
+  font-size: 10px;
+  display: block;
+}
+
+.contact-forward-buttons-container {
+  position: relative;
+  width: 242px;
+  /* bottom: 20px; */
+  margin-top: -30px;
+  height: 30px;
+  display: -ms-flexbox;
+  display: flex;
+}
+
+.contact-forward-button {
+  width: 100%;
+  height: 100%;
+  border-top: 1px solid grey;
+  text-align-last: center;
+}
+
+.contact-forward-button-text {
+  color: rgb(0, 119, 255);
+  font-weight: bold;
+  font-size: 14px;
 }
 </style>

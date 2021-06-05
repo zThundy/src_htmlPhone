@@ -47,8 +47,8 @@ export default {
       var choix = [
           {id: 1, title: this.LangString('APP_CONTACT_EDIT'), icons: 'fa-user-circle', color: 'orange'},
           {id: 2, title: this.LangString('APP_CONTACT_ADD_PICTURE'), icons: 'fa-camera'},
-          // {id: 5, title: this.LangString('APP_CONTACT_SHARE_CONTACT'), icons: 'fa-address-book'},
-          {id: 4, title: this.LangString('CANCEL'), icons: 'fa-undo', color: 'red'}
+          {id: 4, title: this.LangString('APP_CONTACT_SHARE_CONTACT'), icons: 'fa-address-book'},
+          {id: 5, title: this.LangString('CANCEL'), icons: 'fa-undo', color: 'red'}
       ]
       if (isValid === true) { choix = [{id: 3, title: this.LangString('APP_PHONE_CALL'), icons: 'fa-phone'}, ...choix] }
       const resp = await Modal.CreateModal({ choix: choix })
@@ -70,10 +70,10 @@ export default {
           this.disableList = false
           break
         case 4:
-          this.disableList = false
+          this.$router.push({ name: 'messages.chooseinoltra', params: { contact: contact } })
           break
         case 5:
-          this.$router.push({ name: 'contacts.chooseinoltra', params: { contact: contact } })
+          this.disableList = false
           // this.$phoneAPI.shareContact(contact)
           break
       }

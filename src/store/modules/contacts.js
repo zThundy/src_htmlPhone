@@ -10,14 +10,14 @@ const getters = {
 }
 
 const actions = {
-  updateContactPicture ({ commit }, {id, display, number, icon}) {
+  updateContactPicture ({ commit }, { id, display, number, icon }) {
     PhoneAPI.updateContactAvatar(id, display, number, icon)
   },
-  updateContact (context, {id, display, number, email}) {
-    PhoneAPI.updateContact(id, display, number, email)
+  updateContact (context, { id, display, number, email, icon }) {
+    PhoneAPI.updateContact(id, display, number, email, icon)
   },
-  addContact (context, {display, number, email}) {
-    PhoneAPI.addContact(display, number, email)
+  addContact (context, { display, number, email, icon }) {
+    PhoneAPI.addContact(display, number, email, icon)
   },
   deleteContact (context, {id}) {
     PhoneAPI.deleteContact(id)

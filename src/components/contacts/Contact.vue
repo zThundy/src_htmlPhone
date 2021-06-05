@@ -57,7 +57,8 @@ export default {
         display: '',
         number: '',
         email: '',
-        id: -1
+        id: -1,
+        icon: ''
       }
     }
   },
@@ -118,9 +119,9 @@ export default {
     },
     save () {
       if (this.id === -1 || this.id === 0) {
-        this.addContact({ display: this.contact.display, number: this.contact.number, email: this.contact.email })
+        this.addContact({ display: this.contact.display, number: this.contact.number, email: this.contact.email, icon: this.contact.icon })
       } else {
-        this.updateContact({ id: this.id, display: this.contact.display, number: this.contact.number, email: this.contact.email })
+        this.updateContact({ id: this.id, display: this.contact.display, number: this.contact.number, email: this.contact.email, icon: this.contact.icon })
       }
       history.back()
     },
@@ -157,12 +158,24 @@ export default {
     if (this.id !== -1) {
       const c = this.contacts.find(e => e.id === this.id)
       if (c !== undefined) {
+        // console.log(c.icon)
         this.contact = {
           id: c.id,
           display: c.display,
           number: c.number,
-          email: c.email
+          email: c.email,
+          icon: c.icon
         }
+      }
+    }
+    if (this.$route.params.isForwarded === true) {
+      // console.log(JSON.stringify(this.$route.params))
+      this.contact = {
+        id: this.id,
+        display: this.$route.params.display,
+        number: this.$route.params.number,
+        email: this.$route.params.email,
+        icon: this.$route.params.icon
       }
     }
     this.$bus.$on('keyUpArrowDown', this.onDown)
