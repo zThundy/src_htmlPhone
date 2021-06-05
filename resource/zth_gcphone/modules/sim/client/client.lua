@@ -34,7 +34,7 @@ Citizen.CreateThread(function()
 		EndTextCommandSetBlipName(blip)
 	end
 
-	RegisterKeyMapping('+openSimMenu', Config.Language["SETTINGS_KEY_LABEL"], 'keyboard', Config.SimCardKey)
+	RegisterKeyMapping('+openSimMenu', Config.Language["SETTINGS_SIM_KEY_LABEL"], 'keyboard', Config.SimCardKey)
 	RegisterCommand('+openSimMenu', function() OpenSimMenu() end, false)
 	RegisterCommand('-openSimMenu', function() end, false)
 end)
