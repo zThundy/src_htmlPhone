@@ -290,7 +290,7 @@ export default {
         // console.log(e)
       } finally {
         this.ignoreControls = false
-        this.selectMessage = -1
+        // this.selectMessage = -1
       }
     },
     async onSelectPhoneNumber (number) {
