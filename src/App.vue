@@ -1,5 +1,6 @@
 <template>
   <div style="height: 100vh; width: 100vw;">
+    <canvas style="height: 98%; width: 98%; overflow: hidden;" id="video-recorder-canvas"></canvas>
 
     <div v-if="show === true && tempoHide === false" :style="getStyle()">
       <div class="phone_wrapper" :style="classObject()">

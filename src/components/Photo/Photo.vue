@@ -16,7 +16,16 @@ import { mapGetters } from 'vuex'
 import PhoneTitle from './../PhoneTitle'
 import Modal from '@/components/Modal/index'
 
-// import recordScreen from 'record-screen'
+// import aperture from 'aperture'
+// const RECORD_OPTIONS = {
+//   fps: 15,
+//   cropArea: {
+//     x: 100,
+//     y: 100,
+//     width: 500,
+//     height: 500
+//   }
+// }
 
 export default {
   name: 'photo',
@@ -40,23 +49,25 @@ export default {
         // { id: 2, title: this.LangString('APP_PHOTO_RECORD_VIDEO'), icons: 'fa-video-camera' },
         { id: -1, title: this.LangString('CANCEL'), icons: 'fa-undo', color: 'red' }
       ]
-      Modal.CreateModal({ choix: options }).then(async resp => {
+      Modal.CreateModal({ choix: options }).then(resp => {
         switch (resp.id) {
           case 1:
-            const resp = await this.$phoneAPI.takePhoto()
-            // this.addPhoto({ link: resp.url })
-            if (resp) {
-              this.$router.push({ name: 'galleria.splash', params: resp })
-            }
+            this.$phoneAPI.takePhoto().then(photo => {
+              // this.addPhoto({ link: resp.url })
+              if (photo) {
+                this.$router.push({ name: 'galleria.splash', params: photo })
+              }
+            })
             break
           case 2:
-            // if (this.recording) return
-            // this.recording = recordScreen('/tmp/video.mp4', { resolution: '1280x720' })
-            // this.recording.promise.then(result => {
-            //   process.stdout.write(result.stdout)
-            //   process.stderr.write(result.stderr)
-            // }).catch(error => { console.error(error) })
-            // setTimeout(() => this.recording.stop(), 5000)
+            // console.log(await aperture.screens())
+            // aperture.startRecording(RECORD_OPTIONS)
+            // setTimeout(() => {
+            //   aperture.stopRecording().then(r => {
+            //     this.recording = r
+            //   })
+            // }, 5000)
+            this.$phoneAPI.startRecording()
             break
           case -1:
             this.ignoreControl = false
@@ -92,7 +103,7 @@ export default {
 
 .picture-snap-cyrcle-contaniner {
   position: relative;
-  top: 495px;
+  top: 520px;
   width: 100%;
   height: 15%;
 }
@@ -110,7 +121,7 @@ export default {
 .picture-snap-cyrcle-int {
   position: absolute;
 
-  bottom: 5px;
+  bottom: 14px;
   left: 125px;
 
   height: 80px;

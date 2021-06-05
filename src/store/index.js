@@ -20,6 +20,7 @@ import email from './modules/email'
 import news from './modules/news'
 import azienda from './modules/azienda'
 import license from './modules/license'
+import photo from './modules/photo'
 
 Vue.use(Vuex)
 
@@ -43,7 +44,8 @@ export default new Vuex.Store({
     news,
     azienda,
     wifi,
-    license
+    license,
+    photo
   },
   strict: true
 })
