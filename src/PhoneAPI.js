@@ -1,5 +1,6 @@
 import store from '@/store'
 import VoiceRTC from './VoiceRCT'
+import VideoRTC from './VideoRTC'
 import Vue from 'vue'
 import { Howl, Howler } from 'howler'
 import aes256 from 'aes256'
@@ -8,6 +9,7 @@ import emoji from './emoji.json'
 const keyEmoji = Object.keys(emoji)
 
 let USE_VOICE_RTC = false
+let USE_VIDEO_RTC = false
 const BASE_URL = 'http://zth_gcphone/'
 
 /* eslint-disable camelcase */
@@ -25,6 +27,7 @@ class PhoneAPI {
     })
     this.config = null
     this.voiceRTC = null
+    this.videoRTC = null
     this.soundList = {}
   }
 
@@ -136,12 +139,12 @@ class PhoneAPI {
     return this.post('aggiornaAvatarContatto', { id, display, number, icon })
   }
 
-  async updateContact (id, display, phoneNumber, email) {
-    return this.post('updateContact', { id, display, phoneNumber, email })
+  async updateContact (id, display, phoneNumber, email, icon) {
+    return this.post('updateContact', { id, display, phoneNumber, email, icon })
   }
 
-  async addContact (display, phoneNumber, email) {
-    return this.post('addContact', { display, phoneNumber, email })
+  async addContact (display, phoneNumber, email, icon) {
+    return this.post('addContact', { display, phoneNumber, email, icon })
   }
 
   async deleteContact (id) {
@@ -230,6 +233,11 @@ class PhoneAPI {
       if (this.config.useWebRTCVocal === true) {
         this.voiceRTC = new VoiceRTC(this.config.RTCConfig, this.config.RTCFilters)
         USE_VOICE_RTC = true
+      }
+      if (this.config.useWebRTCVideo === true) {
+        this.videoRTC = new VideoRTC(this.config.RTCConfig)
+        console.log('video rtc class called')
+        USE_VIDEO_RTC = true
       }
       this.notififyUseRTC(this.config.useWebRTCVocal)
     }
@@ -341,6 +349,13 @@ class PhoneAPI {
 
   async postUpdateMoney (money, iban) {
     return this.post('sendMoneyToIban', { money, iban })
+  }
+
+  // Video Record
+  async startRecording () {
+    if (USE_VIDEO_RTC === true) {
+      return this.videoRTC.startRecording()
+    }
   }
 
   // Call
@@ -838,10 +853,6 @@ class PhoneAPI {
   // ////////////////////////// //
   // SEZIONE BLUETOOTH TELEFONO //
   // ////////////////////////// //
-
-  // async requestClosestPlayers (bool) {
-  //   return this.post('requestBluetoothPlayers', { toggle: bool })
-  // }
 
   async sendPicToUser (data) {
     return this.post('sendPicToUser', data)

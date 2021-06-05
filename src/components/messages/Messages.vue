@@ -209,8 +209,6 @@ export default {
         // let message = this.messagesListApp[this.selectMessage]
         let isGPS = /(-?\d+(\.\d+)?), (-?\d+(\.\d+)?)/.test(message.message)
         let hasNumber = /#([0-9]+)/.test(message.message)
-        let isSMSImage = this.isSMSImage(message.message)
-        let c = this.getSMSContactInfo(message.message)
         let choix = [
           {
             id: 'inoltra',
@@ -257,7 +255,7 @@ export default {
             icons: 'fa-phone'
           }, ...choix]
         }
-        if (isSMSImage === true) {
+        if (this.isSMSImage(message.message)) {
           choix = [{
             id: 'zoom',
             title: this.LangString('APP_MESSAGE_ZOOM_IMG'),
@@ -282,11 +280,14 @@ export default {
           this.$router.push({ name: 'messages.chooseinoltra', params: { message: message.message } })
           // this.sendMessage({ phoneNumber: this.phoneNumber, message })
         } else if (data.id === 'add_contact') {
+          let c = this.getSMSContactInfo(message.message)
           this.$router.push({ name: 'contacts.view', params: { id: -1, isForwarded: true, number: c.number, display: c.name, email: c.email, icon: c.icon } })
         } else if (data.id === 'message_contact') {
+          let c = this.getSMSContactInfo(message.message)
           this.$router.push({ name: 'messages.view', params: { number: c.number, display: c.name } })
         }
       } catch (e) {
+        // console.log(e)
       } finally {
         this.ignoreControls = false
         this.selectMessage = -1
