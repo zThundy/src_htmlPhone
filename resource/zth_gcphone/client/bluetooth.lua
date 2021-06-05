@@ -4,12 +4,14 @@ RegisterNUICallback("getClosestPlayers", function(data, cb)
     -- gcPhoneServerT.bluetooth_changeEnabledState(bluetooth)
     local players = {}
     local tempPlayers = ESX.Game.GetPlayersInArea(GetEntityCoords(GetPlayerPed(-1)), Config.BluetoothRange + 0.1)
+    -- print(DumpTable(tempPlayers))
     for _, c_source in pairs(tempPlayers) do
         table.insert(players, {
             userid = GetPlayerServerId(c_source),
             name = GetPlayerName(c_source)
         })
     end
+    -- print(DumpTable(players))
     cb(players)
     -- gcPhoneServerT.bluetooth_changeEnabledState(bluetooth)
 end)

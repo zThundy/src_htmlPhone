@@ -119,7 +119,8 @@ export default {
                 this.ignoredControls = true
                 let choix = []
                 var cancel = { id: -1, title: this.LangString('CANCEL'), icons: 'fa-undo', color: 'red' }
-                var closestPlayers = this.$phoneAPI.getClosestPlayers()
+                var closestPlayers = await this.$phoneAPI.getClosestPlayers()
+                // console.log(JSON.stringify(closestPlayers))
                 for (var i in closestPlayers) { choix.push({ id: closestPlayers[i].id, label: closestPlayers[i].name, title: closestPlayers[i].name, icons: 'fa-share-square' }) }
                 choix.push(cancel)
                 const data = await Modal.CreateModal({ choix })

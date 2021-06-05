@@ -52,7 +52,7 @@ function OpenSimMenu()
 		end
 		
 		ESX.UI.Menu.Open('default', GetCurrentResourceName(), 'phone_change', {
-			title = Config.Language["SIM_SHOP_TITLE"],
+			title = Config.Language["SIM_MENU_TITLE"],
 			elements = elements,
 		}, function(data, menu)
 		  	ESX.UI.Menu.Open('default', GetCurrentResourceName(), 'sim_change', {
