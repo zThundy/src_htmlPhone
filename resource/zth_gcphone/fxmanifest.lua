@@ -42,7 +42,7 @@ files {
 shared_scripts {
 	"modules/utils.lua",
 	"config.lua",
-	"config.language.lua",
+	"config.lang.lua",
 	"config.wifi.lua",
 	"config.sim.lua",
 	"config.services.lua",
