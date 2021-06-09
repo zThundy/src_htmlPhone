@@ -55,8 +55,8 @@ MySQL.ready(function()
         MySQL.Async.fetchAll("SELECT * FROM phone_users_contacts", {}, function(contacts)
             for id, contact in pairs(contacts) do
                 -- print(DumpTable(contact))
-                if not CACHED_CONTACTS[contact.identifier] then CACHED_CONTACTS[contact.identifier] = {} end
-                table.insert(CACHED_CONTACTS[contact.identifier], contact)
+                if not CACHED_CONTACTS[tostring(contact.identifier)] then CACHED_CONTACTS[tostring(contact.identifier)] = {} end
+                table.insert(CACHED_CONTACTS[tostring(contact.identifier)], contact)
             end
 
             gcPhone.debug(Config.Language["CACHING_STARTUP_2"])
@@ -421,8 +421,8 @@ end
 
 function getContacts(identifier)
     -- print(DumpTable(CACHED_CONTACTS))
-    if not CACHED_CONTACTS[identifier] then CACHED_CONTACTS[identifier] = {} end
-    return CACHED_CONTACTS[identifier]
+    if not CACHED_CONTACTS[tostring(identifier)] then CACHED_CONTACTS[tostring(identifier)] = {} end
+    return CACHED_CONTACTS[tostring(identifier)]
 end
 
 gcPhoneT.updateAvatarContatto = function(data)
@@ -433,7 +433,7 @@ gcPhoneT.updateAvatarContatto = function(data)
         ['@icon'] = data.icon,
         ['@id'] = data.id
     }, function()
-        for _, contact in pairs(CACHED_CONTACTS[identifier]) do
+        for _, contact in pairs(CACHED_CONTACTS[tostring(identifier)]) do
             if contact.id == data.id then
                 contact.icon = data.icon
                 break
@@ -449,7 +449,7 @@ gcPhoneT.addContact = function(display, number, email, icon)
     local identifier = gcPhoneT.getPlayerID(player)
     if icon == "" then icon = nil end
     
-    if not CACHED_CONTACTS[identifier] then CACHED_CONTACTS[identifier] = {} end
+    if not CACHED_CONTACTS[tostring(identifier)] then CACHED_CONTACTS[tostring(identifier)] = {} end
     if identifier ~= nil and number ~= nil and display ~= nil then
         MySQL.Async.insert("INSERT INTO phone_users_contacts(`identifier`, `number`, `display`, `email`, `icon`) VALUES(@identifier, @number, @display, @email, @icon)", {
             ['@identifier'] = identifier,
@@ -458,7 +458,7 @@ gcPhoneT.addContact = function(display, number, email, icon)
             ['@email'] = email,
             ['@icon'] = icon
         }, function(id)
-            table.insert(CACHED_CONTACTS[identifier], {
+            table.insert(CACHED_CONTACTS[tostring(identifier)], {
                 id = id,
                 identifier = identifier,
                 number = number,
@@ -484,7 +484,7 @@ gcPhoneT.updateContact = function(id, display, number, email)
         ['@id'] = id,
         ['@email'] = email
     },function()
-        for _, contact in pairs(CACHED_CONTACTS[identifier]) do
+        for _, contact in pairs(CACHED_CONTACTS[tostring(identifier)]) do
             if contact.id == id then
                 contact.number = number
                 contact.display = display
@@ -505,9 +505,9 @@ gcPhoneT.deleteContact = function(id)
         ['@identifier'] = identifier,
         ['@id'] = id,
     }, function()
-        for table_index, contact in pairs(CACHED_CONTACTS[identifier]) do
+        for table_index, contact in pairs(CACHED_CONTACTS[tostring(identifier)]) do
             if contact.id == id then
-                table.remove(CACHED_CONTACTS[identifier], table_index)
+                table.remove(CACHED_CONTACTS[tostring(identifier)], table_index)
                 break
             end
         end

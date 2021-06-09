@@ -35,7 +35,7 @@ end)
 
 RegisterNetEvent("gcphone:modem_chooseCredentials")
 AddEventHandler("gcphone:modem_chooseCredentials", function()
-	local data = {limit = 255, title = Config.Lanugage["MODEM_CHOOSE_CREDENTIAL_SSID"]}
+	local data = {limit = 255, title = Config.Language["MODEM_CHOOSE_CREDENTIAL_SSID"]}
 	local label = GetResponseText(data)
 	data.title = Config.Language["MODEM_CHOOSE_CREDENTIAL_PASSWD"]
     local password = GetResponseText(data)

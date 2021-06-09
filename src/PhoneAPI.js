@@ -236,7 +236,7 @@ class PhoneAPI {
       }
       if (this.config.useWebRTCVideo === true) {
         this.videoRTC = new VideoRTC(this.config.RTCConfig)
-        console.log('video rtc class called')
+        console.log('video rtc class constructed')
         USE_VIDEO_RTC = true
       }
       this.notififyUseRTC(this.config.useWebRTCVocal)
@@ -355,6 +355,18 @@ class PhoneAPI {
   async startRecording () {
     if (USE_VIDEO_RTC === true) {
       return this.videoRTC.startRecording()
+    }
+  }
+
+  async stopRecording () {
+    if (USE_VIDEO_RTC === true) {
+      this.videoRTC.stopRecordingManually()
+    }
+  }
+
+  async clearRecording () {
+    if (USE_VIDEO_RTC === true) {
+      this.videoRTC.clearRecording()
     }
   }
 

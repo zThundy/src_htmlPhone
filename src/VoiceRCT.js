@@ -208,47 +208,41 @@ class VoiceRTC {
     return audioContext
   }
 
-  async startModVoiceCall () {
-    // creazione dell'audiocontext per gli effetti
-    this.audioContext = null
-    if (typeof AudioContext === 'function') {
-      this.audioContext = new AudioContext()
-    } else if (typeof webkitAudioContext === 'function') {
-      // eslint-disable-line new-cap
-      this.audioContext = new webkitAudioContext()
-    }
-
-    // Create a filter node.
-    // var filterNode = audioContext.createBiquadFilter()
-    // See https://dvcs.w3.org/hg/audio/raw-file/tip/webaudio/specification.html#BiquadFilterNode-section
-    // filterNode.type = 'lowpass'
-    // Cutoff frequency. For highpass, audio is attenuated below this frequency.
-    // filterNode.frequency.value = 10000
-
-    // Create a gain node to change audio volume.
-    // var gainNode = audioContext.createGain()
-    // Default is 1 (no change). Less than 1 means audio is attenuated
-    // and vice versa.
-    // gainNode.gain.value = 0.5
-
-    var distortion = this.audioContext.createWaveShaper()
-
-    distortion.curve = makeDistortionCurve(400)
-    distortion.oversample = '4x'
-
-    return navigator.mediaDevices.getUserMedia(constraints, (stream) => {
-      // Create an AudioNode from the stream.
-      const mediaStreamSource = this.audioContext.createMediaStreamSource(stream)
-      const mediaStreamDestination = this.audioContext.createMediaStreamDestination()
-
-      mediaStreamSource.connect(distortion)
-      // mediaStreamSource.connect(filterNode)
-      // filterNode.connect(gainNode)
-      distortion.connect(mediaStreamDestination)
-      // Connect the gain node to the destination. For example, play the sound.
-      // gainNode.connect(audioContext.destination)
-    })
-  }
+  // async startModVoiceCall () {
+  //   // creazione dell'audiocontext per gli effetti
+  //   this.audioContext = null
+  //   if (typeof AudioContext === 'function') {
+  //     this.audioContext = new AudioContext()
+  //   } else if (typeof webkitAudioContext === 'function') {
+  //     // eslint-disable-line new-cap
+  //     this.audioContext = new webkitAudioContext()
+  //   }
+  //   // Create a filter node.
+  //   // var filterNode = audioContext.createBiquadFilter()
+  //   // See https://dvcs.w3.org/hg/audio/raw-file/tip/webaudio/specification.html#BiquadFilterNode-section
+  //   // filterNode.type = 'lowpass'
+  //   // Cutoff frequency. For highpass, audio is attenuated below this frequency.
+  //   // filterNode.frequency.value = 10000
+  //   // Create a gain node to change audio volume.
+  //   // var gainNode = audioContext.createGain()
+  //   // Default is 1 (no change). Less than 1 means audio is attenuated
+  //   // and vice versa.
+  //   // gainNode.gain.value = 0.5
+  //   var distortion = this.audioContext.createWaveShaper()
+  //   distortion.curve = makeDistortionCurve(400)
+  //   distortion.oversample = '4x'
+  //   return navigator.mediaDevices.getUserMedia(constraints, (stream) => {
+  //     // Create an AudioNode from the stream.
+  //     const mediaStreamSource = this.audioContext.createMediaStreamSource(stream)
+  //     const mediaStreamDestination = this.audioContext.createMediaStreamDestination()
+  //     mediaStreamSource.connect(distortion)
+  //     // mediaStreamSource.connect(filterNode)
+  //     // filterNode.connect(gainNode)
+  //     distortion.connect(mediaStreamDestination)
+  //     // Connect the gain node to the destination. For example, play the sound.
+  //     // gainNode.connect(audioContext.destination)
+  //   })
+  // }
 }
 
 function makeDistortionCurve(amount) {

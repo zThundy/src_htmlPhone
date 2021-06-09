@@ -136,13 +136,13 @@ export default {
       if (this.ignoreControls) return
       if (this.currentPage === 0) return
       this.currentPage -= 1
-      this.currentSelect = 0
+      this.currentSelect = -1
     },
     onRight () {
       if (this.ignoreControls) return
       if (this.currentPage === 1) return
       this.currentPage += 1
-      this.currentSelect = 0
+      this.currentSelect = -1
     },
     onEnter () {
       if (this.ignoreControls) return

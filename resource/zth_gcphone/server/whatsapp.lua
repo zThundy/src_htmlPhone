@@ -65,7 +65,7 @@ local function formatTableIndex(table)
 end
 
 local function GetContact(identifier, number)
-    for _, contact in pairs(CACHED_CONTACTS[identifier]) do
+    for _, contact in pairs(CACHED_CONTACTS[tostring(identifier)]) do
         -- print(contact.number, number)
         if contact.number == number then
             -- print(DumpTable(contact))
