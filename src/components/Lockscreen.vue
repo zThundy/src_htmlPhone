@@ -96,8 +96,8 @@ export default {
       this.hasPressed = true
       this.$phoneAPI.postPlayUnlockSound()
       setTimeout(() => {
-        // this.$router.push({ name: 'home' })
-        this.$router.push({ name: 'photo' })
+        this.$router.push({ name: 'home' })
+        // this.$router.push({ name: 'photo' })
       }, 450)
     },
     onBack () {
