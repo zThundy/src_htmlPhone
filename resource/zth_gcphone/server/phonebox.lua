@@ -78,7 +78,7 @@ function onAcceptFixePhone(player, infoCall, rtcAnswer)
                 SetTimeout(0, function() TriggerClientEvent('gcPhone:acceptCall', Chiamate[id].receiver_src, Chiamate[id], false) end)
             end
 
-            salvaChiamata(Chiamate[id])
+            SavePhoneCall(Chiamate[id])
         end
     end
 end
@@ -89,7 +89,7 @@ function onRejectFixePhone(player, infoCall, rtcAnswer)
     TriggerClientEvent('gcPhone:notifyFixePhoneChange', -1, FIXED_PHONES_INFO)
 
     TriggerClientEvent('gcPhone:rejectCall', Chiamate[id].transmitter_src, "TEST")
-    if Chiamate[id].is_accepts == false then salvaChiamata(Chiamate[id]) end
+    if Chiamate[id].is_accepts == false then SavePhoneCall(Chiamate[id]) end
 
     Chiamate[id] = nil 
 end

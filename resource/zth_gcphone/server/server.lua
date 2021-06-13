@@ -20,6 +20,7 @@ CACHED_NUMBERS = {}
 CACHED_NAMES = {}
 CACHED_CONTACTS = {}
 CACHED_MESSAGES = {}
+CACHED_CALLS = {}
 
 AddEventHandler("playerDropped", function(reason)
     local player = source
@@ -66,9 +67,16 @@ MySQL.ready(function()
                     table.insert(CACHED_MESSAGES[message.receiver], message)
                 end
 
-                gcPhone.debug(Config.Language["CACHING_STARTUP_3"])
-                gcPhone.debug(Config.Language["CACHING_STARTUP_4"])
-                phone_loaded = true
+                MySQL.Async.fetchAll("SELECT * FROM phone_calls", {}, function(calls)
+                    -- CACHED_CALLS = calls
+                    for _, call in pairs(calls) do
+                        CACHED_CALLS[call.owner] = call
+                    end
+
+                    gcPhone.debug(Config.Language["CACHING_STARTUP_3"])
+                    gcPhone.debug(Config.Language["CACHING_STARTUP_4"])
+                    phone_loaded = true
+                end)
             end)
         end)
     end)
@@ -110,7 +118,7 @@ gcPhoneT.allUpdate = function()
 
         TriggerClientEvent("gcPhone:allMessage", player, getMessages(phone_number), notReceivedMessages)
 
-        sendHistoriqueCall(player, phone_number)
+        SyncCallHistory(player, phone_number)
     end)
 end
 
@@ -738,42 +746,57 @@ end
 -------- Eventi e Funzioni delle chiamate
 --==================================================================================================================
 
-function getHistoriqueCall(num)
-    local result = MySQL.Sync.fetchAll("SELECT * FROM phone_calls WHERE phone_calls.owner = @num ORDER BY time DESC LIMIT 120", { ['@num'] = num })
-    return result
+function GetCallsHistory(num)
+    -- local result = MySQL.Sync.fetchAll("SELECT * FROM phone_calls WHERE phone_calls.owner = @num ORDER BY time DESC LIMIT 120", { ['@num'] = num })
+    -- return result
+    return CACHED_CALLS[num]
 end
 
-function sendHistoriqueCall(src, num) 
-    local histo = getHistoriqueCall(num)
-    TriggerClientEvent('gcPhone:historiqueCall', src, histo)
+function SyncCallHistory(player, num)
+    local histo = GetCallsHistory(num)
+    TriggerClientEvent('gcPhone:historiqueCall', player, histo)
 end
 
-function salvaChiamata(appelInfo)
-    if appelInfo.extraData == nil or appelInfo.extraData.useNumber == nil then
+function SavePhoneCall(callData)
+    if not callData.extraData or not callData.extraData.useNumber then
         MySQL.Async.insert("INSERT INTO phone_calls (`owner`, `num`,`incoming`, `accepts`) VALUES(@owner, @num, @incoming, @accepts)", {
-            ['@owner'] = appelInfo.transmitter_num,
-            ['@num'] = appelInfo.receiver_num,
+            ['@owner'] = callData.transmitter_num,
+            ['@num'] = callData.receiver_num,
             ['@incoming'] = 1,
-            ['@accepts'] = appelInfo.is_accepts
-        }, function()
-            sendHistoriqueCall(appelInfo.transmitter_src, appelInfo.transmitter_num)
+            ['@accepts'] = callData.is_accepts
+        }, function(id)
+            table.insert(CACHED_CALLS[callData.transmitter_num], {
+                owner = callData.transmitter_num,
+                num = callData.receiver_num,
+                incoming = 1,
+                accepts = callData.is_accepts
+            })
+
+            SyncCallHistory(callData.transmitter_src, callData.transmitter_num)
         end)
     end
 
-    if appelInfo.is_valid == true then
-        local num = appelInfo.transmitter_num
-        if appelInfo.hidden == true then
+    if callData.is_valid then
+        local num = callData.transmitter_num
+        if callData.hidden then
             num = "555#####"
         end
 
         MySQL.Async.insert("INSERT INTO phone_calls(`owner`, `num`,`incoming`, `accepts`) VALUES(@owner, @num, @incoming, @accepts)", {
-            ['@owner'] = appelInfo.receiver_num,
+            ['@owner'] = callData.receiver_num,
             ['@num'] = num,
             ['@incoming'] = 0,
-            ['@accepts'] = appelInfo.is_accepts
-        }, function()
-            if appelInfo.receiver_src ~= nil then
-                sendHistoriqueCall(appelInfo.receiver_src, appelInfo.receiver_num)
+            ['@accepts'] = callData.is_accepts
+        }, function(id)
+            if callData.receiver_src ~= nil then
+                table.insert(CACHED_CALLS[callData.receiver_num], {
+                    owner = callData.transmitter_num,
+                    num = num,
+                    incoming = 0,
+                    accepts = callData.is_accepts
+                })
+
+                SyncCallHistory(callData.receiver_src, callData.receiver_num)
             end
         end)
     end
@@ -782,13 +805,13 @@ end
 --[[
     USELESS
 
-    RegisterServerEvent('gcPhone:getHistoriqueCall')
-    AddEventHandler('gcPhone:getHistoriqueCall', function()
+    RegisterServerEvent('gcPhone:GetCallsHistory')
+    AddEventHandler('gcPhone:GetCallsHistory', function()
         local player = tonumber(source)
         local identifier = gcPhoneT.getPlayerID(player)
         local num = gcPhoneT.getPhoneNumber(identifier)
 
-        sendHistoriqueCall(player, num)
+        SyncCallHistory(player, num)
     end)
 ]]
 
@@ -882,16 +905,12 @@ function internal_startCall(player, phone_number, rtcOffer, extraData)
         -- me stesso, e che la sim sia installata
         if is_valid and isInstalled and not hasAirplane then
             gcPhoneT.getSourceFromIdentifier(destPlayer, function(srcTo)
-
                 if playersInCall[srcTo] == nil then
                     if segnaleTransmitter ~= nil and segnaleTransmitter.potenzaSegnale > 0 then
                         if srcTo ~= nil then
                             segnaleReceiver = segnaliTelefoniPlayers[gcPhoneT.getPlayerSegnaleIndex(segnaliTelefoniPlayers, destPlayer)]
-
                             if segnaleReceiver ~= nil and segnaleReceiver.potenzaSegnale > 0 then
-                                
                                 if isAble then
-
                                     Chiamate[indexCall].receiver_src = srcTo
                                     TriggerEvent('gcPhone:addCall', Chiamate[indexCall])
                                     TriggerClientEvent('gcPhone:waitingCall', player, Chiamate[indexCall], true)
@@ -901,25 +920,25 @@ function internal_startCall(player, phone_number, rtcOffer, extraData)
                                     -- xPlayer.showNotification("~r~"..message)
                                 end
                             else
-                                playUnreachable(player, Chiamate[indexCall])
+                                PlayUnreachable(player, Chiamate[indexCall])
                             end
                         else
-                            playUnreachable(player, Chiamate[indexCall])
+                            PlayUnreachable(player, Chiamate[indexCall])
                         end
                     else
-                        playNoSignal(player, Chiamate[indexCall])
+                        PlayNoSignal(player, Chiamate[indexCall])
                         TriggerClientEvent("esx:showNotification", player, Config.Language["STARTCALL_MESSAGE_ERROR_1"])
                     end
                 else
-                    playNoSignal(player, Chiamate[indexCall])
+                    PlayNoSignal(player, Chiamate[indexCall])
                     TriggerClientEvent("esx:showNotification", player, Config.Language["STARTCALL_MESSAGE_ERROR_2"])
                 end
             end)
         else
             if segnaleTransmitter ~= nil and segnaleTransmitter.potenzaSegnale > 0 then
-                playUnreachable(player, Chiamate[indexCall])
+                PlayUnreachable(player, Chiamate[indexCall])
             else
-                playNoSignal(player, Chiamate[indexCall])
+                PlayNoSignal(player, Chiamate[indexCall])
                 TriggerClientEvent("esx:showNotification", player, Config.Language["STARTCALL_MESSAGE_ERROR_3"])
                 -- xPlayer.showNotification("~r~Non c'è segnale per effettuare una telefonata")
             end
@@ -927,7 +946,7 @@ function internal_startCall(player, phone_number, rtcOffer, extraData)
     end)
 end
 
-function playUnreachable(player, infoCall)
+function PlayUnreachable(player, infoCall)
     infoCall.updateMinuti = false
 
     TriggerEvent('gcPhone:addCall', infoCall)
@@ -935,7 +954,7 @@ function playUnreachable(player, infoCall)
     TriggerClientEvent('gcPhone:phoneUnreachable', player, infoCall, true)
 end
 
-function playNoSignal(player, infoCall)
+function PlayNoSignal(player, infoCall)
     infoCall.updateMinuti = false
 
     TriggerEvent('gcPhone:addCall', infoCall)
@@ -986,7 +1005,7 @@ gcPhoneT.acceptCall = function(infoCall, rtcAnswer)
                     end
                 end)
             end
-            salvaChiamata(Chiamate[id])
+            SavePhoneCall(Chiamate[id])
         end
     end
 end
@@ -1022,7 +1041,7 @@ gcPhoneT.rejectCall = function(infoCall)
         end
 
         if Chiamate[id].is_accepts == false then 
-            salvaChiamata(Chiamate[id])
+            SavePhoneCall(Chiamate[id])
         end
 
         -- TriggerEvent('gcPhone:removeCall', Chiamate)
