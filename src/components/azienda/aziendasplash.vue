@@ -7,6 +7,8 @@
 <script>
 export default {
   created: function () {
+    this.setupUnreadAziendaMessages()
+    this.$phoneAPI.requestAziendaMessages()
     setTimeout(() => {
       this.$router.push({ name: 'azienda' })
     }, 700)

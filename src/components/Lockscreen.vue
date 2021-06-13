@@ -111,12 +111,9 @@ export default {
   created () {
     // this.$phoneAPI.requestInfoOfGroups()
     this.$phoneAPI.requestOfferta()
-    this.$phoneAPI.requestAziendaMessages()
     this.setupUnreadMessages()
-    this.setupUnreadAziendaMessages()
     // this.$phoneAPI.requestMyCovers()
     this.sendStartupValues()
-    this.$phoneAPI.requestBourseCrypto()
     /*
     for (var key in this.messages) {
       if (this.messages[key].isRead === 0) {

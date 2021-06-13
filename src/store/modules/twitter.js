@@ -117,14 +117,14 @@ const mutations = {
       state.favoriteTweets[tweetIndexFav].likes = likes
     }
   },
-  UPDATE_TWEET_ISLIKE (state, { tweetId, isLikes }) {
+  UPDATE_TWEET_ISLIKE (state, { tweetId, has_like }) {
     const tweetIndex = state.tweets.findIndex(t => t.id === tweetId)
     if (tweetIndex !== -1) {
-      Vue.set(state.tweets[tweetIndex], 'isLikes', isLikes)
+      Vue.set(state.tweets[tweetIndex], 'has_like', has_like)
     }
     const tweetIndexFav = state.favoriteTweets.findIndex(t => t.id === tweetId)
     if (tweetIndexFav !== -1) {
-      Vue.set(state.favoriteTweets[tweetIndexFav], 'isLikes', isLikes)
+      Vue.set(state.favoriteTweets[tweetIndexFav], 'has_like', has_like)
     }
   }
 }
@@ -146,7 +146,7 @@ if (process.env.NODE_ENV !== 'production') {
     author: 'Gannon',
     time: new Date(),
     likes: 3,
-    isLikes: 60
+    has_like: 60
   }, {
     id: 2,
     message: 'Borderlands 3 arrives on Xbox One, PS4, and PC on September 13, 2019! Tune in to the Gameplay Reveal Event on May 1st, where we’ll debut the first hands-on looks! Pre-order now to get the Gold Weapon Skins Pack! ➜ https://borderlands.com  ',
@@ -208,7 +208,7 @@ if (process.env.NODE_ENV !== 'production') {
   //   author: 'Gannon',
   //   time: new Date(),
   //   likes: 3,
-  //   isLikes: 60
+  //   has_like: 60
   // }, {
   //   id: 2,
   //   message: 'Borderlands 3 arrives on Xbox One, PS4, and PC on September 13, 2019! Tune in to the Gameplay Reveal Event on May 1st, where we’ll debut the first hands-on looks! Pre-order now to get the Gold Weapon Skins Pack! ➜ https://borderlands.com  ',

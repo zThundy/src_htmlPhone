@@ -92,6 +92,17 @@ function DumpTable(table, nb)
 	end
 end
 
+function DuplicateTable(tb)
+    if type(obj) ~= 'table' then return obj end
+    -- if seen and seen[obj] then return seen[obj] end
+    -- local s = seen or {}
+    local s = {}
+    local res = setmetatable({}, getmetatable(obj))
+    s[obj] = res
+    for k, v in pairs(obj) do res[DuplicateTable(k, s)] = DuplicateTable(v, s) end
+    return res
+end
+
 function areturn(self, ...)
     self.r = {...}
     self.p:resolve(self.r)

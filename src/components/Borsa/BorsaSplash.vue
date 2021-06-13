@@ -7,6 +7,7 @@
 <script>
 export default {
   created: function () {
+    this.$phoneAPI.requestBourseCrypto()
     setTimeout(() => {
       this.$router.push({ name: 'borsa' })
     }, 700)

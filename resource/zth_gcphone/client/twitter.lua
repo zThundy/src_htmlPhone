@@ -43,8 +43,8 @@ end)
 ]]
 
 RegisterNetEvent("gcPhone:twitter_setTweetLikes")
-AddEventHandler("gcPhone:twitter_setTweetLikes", function(tweetId, isLikes)
-    SendNUIMessage({event = 'twitter_setTweetLikes', tweetId = tweetId, isLikes = isLikes})
+AddEventHandler("gcPhone:twitter_setTweetLikes", function(tweetId, has_like)
+    SendNUIMessage({event = 'twitter_setTweetLikes', tweetId = tweetId, has_like = has_like})
 end)
 
 RegisterNUICallback('twitter_login', function(data, cb)

@@ -30,7 +30,6 @@ end)
 
 MySQL.ready(function()
     MySQL.Async.execute("DELETE FROM phone_messages WHERE (DATEDIFF(CURRENT_DATE, time) > 15)", {})
-    MySQL.Async.execute("DELETE FROM phone_twitter_tweets WHERE (DATEDIFF(CURRENT_DATE, time) > 20)", {})
     MySQL.Async.execute("DELETE FROM phone_calls WHERE (DATEDIFF(CURRENT_DATE, time) > 15)", {})
 
     MySQL.Async.fetchAll("SELECT phone_number, identifier FROM sim", {}, function(numbers)
