@@ -66,7 +66,7 @@ end
 		-- table.insert(utentiTorriRadio, {player, labelTorreRadio, potenza})
 		utentiTorriRadio[player] = {player, labelTorreRadio, potenza}
 
-		TriggerClientEvent('gcphone:aggiornameAConnessione', player, potenza)
+		TriggerClientEvent('gcphone:updateRadioSignal', player, potenza)
 	end)
 
 	RegisterServerEvent('esx_wifi:cambiaTorreRadio')
@@ -82,7 +82,7 @@ end
 		-- 	end
 		-- end
 
-		TriggerClientEvent('gcphone:aggiornameAConnessione', player, potenza)
+		TriggerClientEvent('gcphone:updateRadioSignal', player, potenza)
 	end)
 
 	RegisterServerEvent('esx_wifi:disconnettiDallaTorre')
@@ -98,7 +98,7 @@ end
 		-- 	end
 		-- end
 
-		TriggerClientEvent('gcphone:aggiornameAConnessione', player, 0)
+		TriggerClientEvent('gcphone:updateRadioSignal', player, 0)
 	end)
 ]]
 

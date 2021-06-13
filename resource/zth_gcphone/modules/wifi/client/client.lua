@@ -105,7 +105,7 @@ function Reti:InitScript()
 				end
 			]]
 
-			TriggerEvent('gcphone:aggiornameAConnessione', self.potenzaSegnale)
+			TriggerEvent('gcphone:updateRadioSignal', self.potenzaSegnale)
 
 			Citizen.Wait(Config.CheckDistanceWaitTowers * 1000)
 		end

@@ -19,7 +19,7 @@ currentPlaySound = false
 
 volume = 0.5
 
-segnaleRadio = 0
+radioPower = 0
 CAHES_WIFI_MODEMS = {}
 WIFI_TEMP_DATA = {}
 isConnected = false
@@ -206,17 +206,17 @@ AddEventHandler("gcphone:updateValoriDati", function(table)
     SendNUIMessage({ event = "updateDati", data = table })
 end)
 
-RegisterNetEvent("gcphone:aggiornameAConnessione")
-AddEventHandler("gcphone:aggiornameAConnessione", function(potenzaSegnale)
-    if segnaleRadio == 0 and segnaleRadio ~= potenzaSegnale then
+RegisterNetEvent("gcphone:updateRadioSignal")
+AddEventHandler("gcphone:updateRadioSignal", function(s_radioPower)
+    if radioPower == 0 and radioPower ~= s_radioPower then
         gcPhoneServerT.allUpdate()
     end
 
-    segnaleRadio = potenzaSegnale
-    local data = { potenza = potenzaSegnale }
+    radioPower = s_radioPower
+    local data = { potenza = s_radioPower }
     SendNUIMessage({ event = "updateSegnale", data = data })
     
-    gcPhoneServerT.updateSegnaleTelefono(potenzaSegnale)
+    gcPhoneServerT.updateSegnaleTelefono(s_radioPower)
 end)
 
 RegisterNetEvent("gcPhone:receiveMessage")
@@ -362,7 +362,7 @@ AddEventHandler("gcPhone:acceptCall", function(infoCall, initiator)
                         if distance > 1.0 then gcPhoneServerT.rejectCall(infoCall) end
                     end
                 else
-                    if segnaleRadio == 0 then
+                    if radioPower == 0 then
                         gcPhoneServerT.rejectCall(infoCall)
                     end
                 end

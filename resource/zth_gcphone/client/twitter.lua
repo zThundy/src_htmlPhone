@@ -10,9 +10,7 @@ end)
 
 RegisterNetEvent("gcPhone:twitter_newTweets")
 AddEventHandler("gcPhone:twitter_newTweets", function(tweet)
-	if segnaleRadio > 0 then
-		SendNUIMessage({event = 'twitter_newTweet', tweet = tweet})
-	end
+	SendNUIMessage({event = 'twitter_newTweet', tweet = tweet})
 end)
 
 RegisterNetEvent("gcPhone:twitter_updateTweetLikes")

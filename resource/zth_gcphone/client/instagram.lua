@@ -30,9 +30,7 @@ end)
 
 RegisterNetEvent("gcPhone:instagram_updatePosts")
 AddEventHandler("gcPhone:instagram_updatePosts", function(posts)
-    if segnaleRadio > 0 then
-        SendNUIMessage({event = 'instagramRecivePosts', posts = posts})
-    end
+    SendNUIMessage({event = 'instagramRecivePosts', posts = posts})
 end)
 
 RegisterNetEvent("gcPhone:instagram_newPostToNUI")

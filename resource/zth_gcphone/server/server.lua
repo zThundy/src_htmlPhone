@@ -70,7 +70,8 @@ MySQL.ready(function()
                 MySQL.Async.fetchAll("SELECT * FROM phone_calls", {}, function(calls)
                     -- CACHED_CALLS = calls
                     for _, call in pairs(calls) do
-                        CACHED_CALLS[call.owner] = call
+                        if not CACHED_CALLS[call.owner] then CACHED_CALLS[call.owner] = {} end
+                        table.insert(CACHED_CALLS[call.owner], call)
                     end
 
                     gcPhone.debug(Config.Language["CACHING_STARTUP_3"])
@@ -749,12 +750,27 @@ end
 function GetCallsHistory(num)
     -- local result = MySQL.Sync.fetchAll("SELECT * FROM phone_calls WHERE phone_calls.owner = @num ORDER BY time DESC LIMIT 120", { ['@num'] = num })
     -- return result
-    return CACHED_CALLS[num]
+    -- print(DumpTable(CACHED_CALLS[num]))
+    -- print("------------------------------")
+    -- print(DumpTable(CACHED_CALLS))
+    -- print(num)
+    if CACHED_CALLS[num] then
+        table.sort(CACHED_CALLS[num], function(a, b)
+            if not a.time then a.time = os.time() * 1000 end
+            if not b.time then b.time = os.time() * 1000 end
+
+            return a.time > b.time
+        end)
+        return CACHED_CALLS[num]
+    end
+    return false
 end
 
 function SyncCallHistory(player, num)
     local histo = GetCallsHistory(num)
-    TriggerClientEvent('gcPhone:historiqueCall', player, histo)
+    if histo then
+        TriggerClientEvent('gcPhone:historiqueCall', player, histo)
+    end
 end
 
 function SavePhoneCall(callData)
