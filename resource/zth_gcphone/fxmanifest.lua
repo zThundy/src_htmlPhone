@@ -1,6 +1,6 @@
 fx_version "bodacious"
 game "gta5"
-version "1.6.6"
+version "2.6.6"
 author "zThundy__"
 
 ui_page 'html/index.html'
