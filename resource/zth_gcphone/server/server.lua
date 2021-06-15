@@ -270,13 +270,14 @@ gcPhoneT.getFirstnameAndLastname = function(identifier)
     if not CACHED_NAMES[identifier] then
         -- this needs to be syncronus cause return :)
         -- print(identifier)
-        local r = MySQL.Sync.fetchAll("SELECT firstname, lastname FROM users WHERE identifier = @identifier", {['@identifier'] = identifier})
-        if (r and r[1]) and (r[1].firstname and r[1].lastname) then
-            CACHED_NAMES[identifier] = {
-                firstname = r[1].firstname,
-                lastname = r[1].lastname
-            }
-        end
+        MySQL.Async.fetchAll("SELECT firstname, lastname FROM users WHERE identifier = @identifier", {['@identifier'] = identifier}, function(r)
+            if (r and r[1]) and (r[1].firstname and r[1].lastname) then
+                CACHED_NAMES[identifier] = {
+                    firstname = r[1].firstname,
+                    lastname = r[1].lastname
+                }
+            end
+        end)
     end
 
     if CACHED_NAMES[identifier] then
@@ -554,38 +555,40 @@ function addMessage(source, identifier, phone_number, message)
             if messaggi > 0 then
                 UpdatePianoTariffario(myPhone, "messaggi", messaggi - 1)
 
-                local memess = _internalAddMessage(phone_number, myPhone, message, 1)
-                TriggerClientEvent("gcPhone:receiveMessage", player, memess)
-                -- print(ESX.DumpTable(memess))
-                
-                local tomess = _internalAddMessage(myPhone, phone_number, message, 0)
-                -- print(ESX.DumpTable(tomess))
-
-                gcPhoneT.getSourceFromIdentifier(otherIdentifier, function(target_source)
-                    target_source = tonumber(target_source)
-
-                    if target_source ~= nil then
-                        
-                        -- qui controllo se la sim a cui stai mandando il
-                        -- messaggio è installata o no
-                        if isInstalled and not hasAirplane then
-                            -- print("sim installata")
-                            -- se la sim è installata allora mando il telefono e gli mando la notifica
-                            -- local retIndex = gcPhoneT.getPlayerSegnaleIndex(segnaliTelefoniPlayers, otherIdentifier)
-                            -- print(retIndex)
-                            segnaleReceiver = segnaliTelefoniPlayers[gcPhoneT.getPlayerSegnaleIndex(segnaliTelefoniPlayers, otherIdentifier)]
-                            -- print(ESX.DumpTable(segnaleReceiver), ESX.DumpTable(segnaliTelefoniPlayers))
-                            if segnaleReceiver ~= nil and segnaleReceiver.potenzaSegnale > 0 then
-                                TriggerClientEvent("gcPhone:receiveMessage", target_source, tomess)
-                                setMessageReceived(phone_number, myPhone)
+                _internalAddMessage(phone_number, myPhone, message, 1, function(memess)
+                    TriggerClientEvent("gcPhone:receiveMessage", player, memess)
+                    -- print(ESX.DumpTable(memess))
+                    
+                    _internalAddMessage(myPhone, phone_number, message, 0, function(tomess)
+                        -- print(ESX.DumpTable(tomess))
+        
+                        gcPhoneT.getSourceFromIdentifier(otherIdentifier, function(target_source)
+                            target_source = tonumber(target_source)
+        
+                            if target_source ~= nil then
+                                
+                                -- qui controllo se la sim a cui stai mandando il
+                                -- messaggio è installata o no
+                                if isInstalled and not hasAirplane then
+                                    -- print("sim installata")
+                                    -- se la sim è installata allora mando il telefono e gli mando la notifica
+                                    -- local retIndex = gcPhoneT.getPlayerSegnaleIndex(segnaliTelefoniPlayers, otherIdentifier)
+                                    -- print(retIndex)
+                                    segnaleReceiver = segnaliTelefoniPlayers[gcPhoneT.getPlayerSegnaleIndex(segnaliTelefoniPlayers, otherIdentifier)]
+                                    -- print(ESX.DumpTable(segnaleReceiver), ESX.DumpTable(segnaliTelefoniPlayers))
+                                    if segnaleReceiver ~= nil and segnaleReceiver.potenzaSegnale > 0 then
+                                        TriggerClientEvent("gcPhone:receiveMessage", target_source, tomess)
+                                        setMessageReceived(phone_number, myPhone)
+                                    end
+                                else
+                                    -- questo è l'evento che ti fa il bing quando invii il messaggio
+                                    -- lo ho tolto così non fa la notifica
+                                    -- TriggerClientEvent("gcPhone:receiveMessage", tonumber(target_source), tomess)
+                                    setMessageReceived(phone_number, myPhone)
+                                end
                             end
-                        else
-                            -- questo è l'evento che ti fa il bing quando invii il messaggio
-                            -- lo ho tolto così non fa la notifica
-                            -- TriggerClientEvent("gcPhone:receiveMessage", tonumber(target_source), tomess)
-                            setMessageReceived(phone_number, myPhone)
-                        end
-                    end
+                        end)
+                    end)
                 end)
             else
                 TriggerClientEvent("esx:showNotification", player, Config.Language["ADD_MESSAGE_ERROR_1"])
@@ -607,34 +610,31 @@ gcPhoneT.sendMessage = function(phoneNumber, message)
     addMessage(player, identifier, phoneNumber, message)
 end
 
-gcPhoneT.internalAddMessage = function(transmitter, receiver, message, owner)
-    return _internalAddMessage(transmitter, receiver, message, owner)
-end
-
-function _internalAddMessage(transmitter, receiver, message, owner)
+function _internalAddMessage(transmitter, receiver, message, owner, cb)
     if not CACHED_MESSAGES[receiver] then CACHED_MESSAGES[receiver] = {} end
-    local id = MySQL.Sync.insert("INSERT INTO phone_messages (`transmitter`, `receiver`,`message`, `isRead`, `owner`) VALUES(@transmitter, @receiver, @message, @isRead, @owner)", {
+    MySQL.Async.insert("INSERT INTO phone_messages (`transmitter`, `receiver`,`message`, `isRead`, `owner`) VALUES(@transmitter, @receiver, @message, @isRead, @owner)", {
         ['@transmitter'] = transmitter,
         ['@receiver'] = receiver,
         ['@message'] = message,
         ['@isRead'] = owner,
         ['@owner'] = owner
-    })
-
-    -- print(os.time())
-    local message = {
-        id = id,
-        transmitter = transmitter,
-        receiver = receiver,
-        message = message,
-        time = os.time() * 1000,
-        isRead = owner,
-        owner = owner,
-        received = 0
-    }
-
-    table.insert(CACHED_MESSAGES[receiver], message)
-    return message
+    }, function(id)
+        -- print(os.time())
+        local message = {
+            id = id,
+            transmitter = transmitter,
+            receiver = receiver,
+            message = message,
+            time = os.time() * 1000,
+            isRead = owner,
+            owner = owner,
+            received = 0
+        }
+    
+        table.insert(CACHED_MESSAGES[receiver], message)
+        cb(message)
+    end)
+    -- return message
 end
 
 gcPhoneT.setReadMessageNumber = function(transmitter_number)
@@ -663,7 +663,7 @@ function setMessageReceived(receiver_number, transmitter_number)
         end
     end
 
-    MySQL.Sync.execute("UPDATE phone_messages SET received = 1 WHERE receiver = @receiver AND transmitter = @transmitter", {
+    MySQL.Async.execute("UPDATE phone_messages SET received = 1 WHERE receiver = @receiver AND transmitter = @transmitter", {
         ['@receiver'] = receiver_number,
         ['@transmitter'] = transmitter_number
     })
@@ -775,7 +775,7 @@ end
 
 function SavePhoneCall(callData)
     if not callData.extraData or not callData.extraData.useNumber then
-        MySQL.Async.insert("INSERT INTO phone_calls (`owner`, `num`,`incoming`, `accepts`) VALUES(@owner, @num, @incoming, @accepts)", {
+        MySQL.Async.insert("INSERT INTO phone_calls (`owner`, `num`, `incoming`, `accepts`) VALUES(@owner, @num, @incoming, @accepts)", {
             ['@owner'] = callData.transmitter_num,
             ['@num'] = callData.receiver_num,
             ['@incoming'] = 1,
@@ -1070,7 +1070,7 @@ gcPhoneT.appelsDeleteHistorique = function(number)
     local identifier = gcPhoneT.getPlayerID(player)
     local num = gcPhoneT.getPhoneNumber(identifier)
 
-    MySQL.Sync.execute("DELETE FROM phone_calls WHERE `owner` = @owner AND `num` = @num", {
+    MySQL.Async.execute("DELETE FROM phone_calls WHERE `owner` = @owner AND `num` = @num", {
         ['@owner'] = num,
         ['@num'] = number
     })
@@ -1111,13 +1111,14 @@ AddEventHandler('esx:playerLoaded', function(source, xPlayer)
 
     TriggerClientEvent("gcPhone:allMessage", player, getMessages(phone_number), notReceivedMessages)
 
-    local r = MySQL.Sync.fetchAll("SELECT firstname, lastname FROM users WHERE identifier = @identifier", {['@identifier'] = identifier})
-    if (r and r[1]) and (r[1].firstname and r[1].lastname) then
-        CACHED_NAMES[identifier] = {
-            firstname = r[1].firstname,
-            lastname = r[1].lastname
-        }
-    end
+    MySQL.Async.fetchAll("SELECT firstname, lastname FROM users WHERE identifier = @identifier", {['@identifier'] = identifier}, function(r)
+        if (r and r[1]) and (r[1].firstname and r[1].lastname) then
+            CACHED_NAMES[identifier] = {
+                firstname = r[1].firstname,
+                lastname = r[1].lastname
+            }
+        end
+    end)
     -- MySQL.Async.fetchAll("SELECT firstname, lastname FROM users WHERE identifier = @identifier", {['@identifier'] = xPlayer.identifier}, function(r)
     --     if r[1] and r[1].firstname and r[2].lastname then
     --         CACHED_NAMES[xPlayer.identifier] = {

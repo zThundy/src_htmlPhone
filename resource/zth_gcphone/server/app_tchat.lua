@@ -3,7 +3,7 @@ local function TchatGetMessageChannel(identifier, channel, cb)
 	if isAble then
 		gcPhoneT.usaDatiInternet(identifier, mbToRemove)
 
-		MySQL.Sync.fetchAll("SELECT * FROM phone_app_chat WHERE channel = @channel ORDER BY time DESC LIMIT 100", { 
+		MySQL.Async.fetchAll("SELECT * FROM phone_app_chat WHERE channel = @channel ORDER BY time DESC LIMIT 100", { 
 			['@channel'] = channel
 		}, cb)
 	end

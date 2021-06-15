@@ -21,8 +21,10 @@ function notifyAlertSMS(number, alert, listSrc)
 
 			if phone_number ~= nil then
 				if Config.ServicesNames[number] then
-					local message = gcPhoneT.internalAddMessage(Config.ServicesNames[number], phone_number, mess, 0)
-					TriggerClientEvent("gcPhone:receiveMessage", source, message)
+					_internalAddMessage(Config.ServicesNames[number], phone_number, mess, 0, function(message)
+						-- local message = gcPhoneT.internalAddMessage(Config.ServicesNames[number], phone_number, mess, 0)
+						TriggerClientEvent("gcPhone:receiveMessage", source, message)
+					end)
 				else
 					xPlayer.showNotification(Config.Language["EMERGENCY_CALL_MESSAGE_ERROR"])
 				end
