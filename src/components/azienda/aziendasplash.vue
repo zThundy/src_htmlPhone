@@ -5,10 +5,14 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
 export default {
+  methods: {
+    ...mapGetters(['setupUnreadAziendaMessages'])
+  },
   created: function () {
-    this.setupUnreadAziendaMessages()
     this.$phoneAPI.requestAziendaMessages()
+    this.setupUnreadAziendaMessages()
     setTimeout(() => {
       this.$router.push({ name: 'azienda' })
     }, 700)

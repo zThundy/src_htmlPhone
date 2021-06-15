@@ -75,8 +75,7 @@ export default {
       'closePhone',
       'setupUnreadMessages',
       'resetUnreadMessages',
-      'sendStartupValues',
-      'setupUnreadAziendaMessages'
+      'sendStartupValues'
     ]),
     formatEmoji (message) {
       return this.$phoneAPI.convertEmoji(message)
