@@ -36,6 +36,8 @@ function Reti:InitScript()
 	self.p_coords = nil
 	self.idPlayer = GetPlayerServerId(PlayerId())
 
+	torriRadio, retiWifi = gcPhoneServerT.requestServerInfo()
+
 	-- thread per salvataggio coordinate
 	Citizen.CreateThread(function()
 		while true do
@@ -55,9 +57,6 @@ function Reti:InitScript()
 		self.connectedTorreIndex = nil
 		self.agganciato = false
 		self.vecchiaPotenzaSegnale = 0
-
-		torriRadio = gcPhoneServerT.richiediTorriRadio()
-		-- TriggerServerEvent('esx_wifi:richiediTorriRadio')
 
 		while #torriRadio == 0 do Citizen.Wait(100) end
 		blipCaricati = self.RefreshBlips()
@@ -98,13 +97,6 @@ function Reti:InitScript()
 				end
 			end
 
-			--[[
-				if Config.EnableSyncThread then
-					-- TriggerServerEvent('esx_wifi:richiediTorriRadio')
-					torriRadio = gcPhoneServerT.richiediTorriRadio()
-				end
-			]]
-
 			TriggerEvent('gcphone:updateRadioSignal', self.potenzaSegnale)
 
 			Citizen.Wait(Config.CheckDistanceWaitTowers * 1000)
@@ -113,8 +105,6 @@ function Reti:InitScript()
 
 	-- thread per controllo distanza reti wifi
 	Citizen.CreateThread(function()
-		-- TriggerServerEvent('esx_wifi:richiediRetiWifi')
-		retiWifi = gcPhoneServerT.richiediRetiWifi()
 		local distanza = 0
 
 		while true do
@@ -146,14 +136,6 @@ function Reti:InitScript()
 					end
 				end
 			end
-
-			--[[
-				if Config.EnableSyncThread then
-					-- TriggerServerEvent('esx_wifi:richiediRetiWifi')
-					retiWifi = gcPhoneServerT.richiediRetiWifi()
-					Reti.RefreshBlips()
-				end
-			]]
 
 			-- print(DumpTable(self.retiWifiVicine))
 			-- print("---------------------------------")

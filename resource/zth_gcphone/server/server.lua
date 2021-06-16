@@ -9,8 +9,8 @@ tunnel.bindInterface("gcphone_server_t", gcPhoneT)
 Chiamate = {}
 CALL_INDEX = 10
 
-segnaliTelefoniPlayers = {}
-wifiConnectedPlayers = {}
+local PLAYERS_PHONE_SIGNALS = {}
+local PLAYERS_PHONE_WIFI = {}
 playersInCall = {}
 -- built_phones = false
 phone_loaded = false
@@ -133,28 +133,29 @@ gcPhoneT.updateAirplaneForUser = function(bool)
     GLOBAL_AIRPLANE[identifier] = bool
 end
 
+-- maybe create asyncronus event and remove this function
 gcPhoneT.updateSegnaleTelefono = function(potenza)
     local player = source
     local identifier = gcPhoneT.getPlayerID(player)
-    local iSegnalePlayer = gcPhoneT.getPlayerSegnaleIndex(segnaliTelefoniPlayers, identifier)
+    local iSegnalePlayer = gcPhoneT.getPlayerSegnaleIndex(PLAYERS_PHONE_SIGNALS, identifier)
 
     if iSegnalePlayer == nil then
-    	table.insert(segnaliTelefoniPlayers, {identifier = identifier, potenzaSegnale = potenza})
+    	table.insert(PLAYERS_PHONE_SIGNALS, {identifier = identifier, potenzaSegnale = potenza})
     else
-		segnaliTelefoniPlayers[iSegnalePlayer].potenzaSegnale = potenza
+		PLAYERS_PHONE_SIGNALS[iSegnalePlayer].potenzaSegnale = potenza
     end
 end
 
 gcPhoneT.updateReteWifi = function(connected, rete)
     local player = source
     local identifier = gcPhoneT.getPlayerID(player)
-    local iSegnalePlayer = gcPhoneT.getPlayerSegnaleIndex(wifiConnectedPlayers, identifier)
+    local iSegnalePlayer = gcPhoneT.getPlayerSegnaleIndex(PLAYERS_PHONE_WIFI, identifier)
     
     if iSegnalePlayer == nil then
-    	table.insert(wifiConnectedPlayers, {identifier = identifier, connected = connected, rete = rete})
+    	table.insert(PLAYERS_PHONE_WIFI, {identifier = identifier, connected = connected, rete = rete})
     else
-		wifiConnectedPlayers[iSegnalePlayer].connected = connected
-		wifiConnectedPlayers[iSegnalePlayer].rete = rete
+		PLAYERS_PHONE_WIFI[iSegnalePlayer].connected = connected
+		PLAYERS_PHONE_WIFI[iSegnalePlayer].rete = rete
     end
 end
 
@@ -185,15 +186,15 @@ end
 gcPhoneT.isAbleToSurfInternet = function(identifier, neededMB)
 	local phone_number = gcPhoneT.getPhoneNumber(identifier)
 	
-	local iSegnalePlayer = gcPhoneT.getPlayerSegnaleIndex(segnaliTelefoniPlayers, identifier)
-    local iWifiConnectedPlayer = gcPhoneT.getPlayerSegnaleIndex(wifiConnectedPlayers, identifier)
+	local iSegnalePlayer = gcPhoneT.getPlayerSegnaleIndex(PLAYERS_PHONE_SIGNALS, identifier)
+    local iWifiConnectedPlayer = gcPhoneT.getPlayerSegnaleIndex(PLAYERS_PHONE_WIFI, identifier)
     local hasAirplane = gcPhoneT.getAirplaneForUser(identifier)
     
-    if iWifiConnectedPlayer ~= nil and wifiConnectedPlayers[iWifiConnectedPlayer].connected then
+    if iWifiConnectedPlayer ~= nil and PLAYERS_PHONE_WIFI[iWifiConnectedPlayer].connected then
         return true, 0
     else
         if not hasAirplane and phone_number then
-            if iSegnalePlayer ~= nil and segnaliTelefoniPlayers[iSegnalePlayer].potenzaSegnale ~= 0 then
+            if iSegnalePlayer ~= nil and PLAYERS_PHONE_SIGNALS[iSegnalePlayer].potenzaSegnale ~= 0 then
                 local dati = GetPianoTariffarioParam(phone_number, "dati")
                 if dati > 0 and dati >= neededMB then
                     return true, neededMB
@@ -212,11 +213,11 @@ end
 gcPhoneT.isAbleToSendMessage = function(identifier, cb)
 	local phone_number = gcPhoneT.getPhoneNumber(identifier)
 	
-    local iSegnalePlayer = gcPhoneT.getPlayerSegnaleIndex(segnaliTelefoniPlayers, identifier)
+    local iSegnalePlayer = gcPhoneT.getPlayerSegnaleIndex(PLAYERS_PHONE_SIGNALS, identifier)
     local hasAirplane = gcPhoneT.getAirplaneForUser(identifier)
     
     if not hasAirplane and phone_number then
-        if segnaliTelefoniPlayers[iSegnalePlayer] ~= nil and segnaliTelefoniPlayers[iSegnalePlayer].potenzaSegnale > 0 then
+        if PLAYERS_PHONE_SIGNALS[iSegnalePlayer] ~= nil and PLAYERS_PHONE_SIGNALS[iSegnalePlayer].potenzaSegnale > 0 then
             local messaggi = GetPianoTariffarioParam(phone_number, "messaggi")
             if messaggi > 0 then
                 cb(true)
@@ -548,7 +549,7 @@ function addMessage(source, identifier, phone_number, message)
     -- print(otherIdentifier, isInstalled)
     
     if otherIdentifier and myPhone then
-        segnaleTransmitter = segnaliTelefoniPlayers[gcPhoneT.getPlayerSegnaleIndex(segnaliTelefoniPlayers, identifier)]
+        segnaleTransmitter = PLAYERS_PHONE_SIGNALS[gcPhoneT.getPlayerSegnaleIndex(PLAYERS_PHONE_SIGNALS, identifier)]
 
     	if segnaleTransmitter and segnaleTransmitter.potenzaSegnale > 0 then
             local messaggi = GetPianoTariffarioParam(myPhone, "messaggi")
@@ -572,10 +573,10 @@ function addMessage(source, identifier, phone_number, message)
                                 if isInstalled and not hasAirplane then
                                     -- print("sim installata")
                                     -- se la sim è installata allora mando il telefono e gli mando la notifica
-                                    -- local retIndex = gcPhoneT.getPlayerSegnaleIndex(segnaliTelefoniPlayers, otherIdentifier)
+                                    -- local retIndex = gcPhoneT.getPlayerSegnaleIndex(PLAYERS_PHONE_SIGNALS, otherIdentifier)
                                     -- print(retIndex)
-                                    segnaleReceiver = segnaliTelefoniPlayers[gcPhoneT.getPlayerSegnaleIndex(segnaliTelefoniPlayers, otherIdentifier)]
-                                    -- print(ESX.DumpTable(segnaleReceiver), ESX.DumpTable(segnaliTelefoniPlayers))
+                                    segnaleReceiver = PLAYERS_PHONE_SIGNALS[gcPhoneT.getPlayerSegnaleIndex(PLAYERS_PHONE_SIGNALS, otherIdentifier)]
+                                    -- print(ESX.DumpTable(segnaleReceiver), ESX.DumpTable(PLAYERS_PHONE_SIGNALS))
                                     if segnaleReceiver ~= nil and segnaleReceiver.potenzaSegnale > 0 then
                                         TriggerClientEvent("gcPhone:receiveMessage", target_source, tomess)
                                         setMessageReceived(phone_number, myPhone)
@@ -914,7 +915,7 @@ function internal_startCall(player, phone_number, rtcOffer, extraData)
 
     gcPhoneT.isAbleToCall(srcIdentifier, function(isAble, useMin, min, message)
         Chiamate[indexCall].secondiRimanenti = min
-        segnaleTransmitter = segnaliTelefoniPlayers[gcPhoneT.getPlayerSegnaleIndex(segnaliTelefoniPlayers, srcIdentifier)]
+        segnaleTransmitter = PLAYERS_PHONE_SIGNALS[gcPhoneT.getPlayerSegnaleIndex(PLAYERS_PHONE_SIGNALS, srcIdentifier)]
         Chiamate[indexCall].updateMinuti = useMin
 
         -- qui controllo se la funzione gcPhoneT.getIdentifierByPhoneNumber ha tornato un valore valido, che non sto chiamando
@@ -924,7 +925,7 @@ function internal_startCall(player, phone_number, rtcOffer, extraData)
                 if playersInCall[srcTo] == nil then
                     if segnaleTransmitter ~= nil and segnaleTransmitter.potenzaSegnale > 0 then
                         if srcTo ~= nil then
-                            segnaleReceiver = segnaliTelefoniPlayers[gcPhoneT.getPlayerSegnaleIndex(segnaliTelefoniPlayers, destPlayer)]
+                            segnaleReceiver = PLAYERS_PHONE_SIGNALS[gcPhoneT.getPlayerSegnaleIndex(PLAYERS_PHONE_SIGNALS, destPlayer)]
                             if segnaleReceiver ~= nil and segnaleReceiver.potenzaSegnale > 0 then
                                 if isAble then
                                     Chiamate[indexCall].receiver_src = srcTo

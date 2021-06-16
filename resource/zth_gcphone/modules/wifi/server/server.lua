@@ -1,27 +1,17 @@
-radioTowers = {}
-retiWifi = {}
-
 -- non utilizzate per il momento
 -- utentiTorriRadio = {}
 -- utentiRetiWifi = {}
 
 Citizen.CreateThread(function()
-	radioTowers = Reti.loadTorriRadio()
-	Reti.Debug(Config.Language["WIFI_LOAD_DEBUG_1"])
-
-	retiWifi = Reti.loadRetiWifi()
-	Reti.Debug(Config.Language["WIFI_LOAD_DEBUG_2"])
+	while not TARIFFS_LOADED do Citizen.Wait(500) end
 
 	Reti.CheckDueDate()
 
 	if Config.EnableSyncThread then
 		while true do
-			radioTowers = Reti.loadTorriRadio()
-			retiWifi = Reti.loadRetiWifi()
-
 			-- print(DumpTable(retiWifi))
-			TriggerClientEvent('esx_wifi:riceviTorriRadio', -1, radioTowers)
-			TriggerClientEvent('esx_wifi:riceviRetiWifi', -1, retiWifi)
+			TriggerClientEvent('esx_wifi:riceviTorriRadio', -1, CACHED_TOWERS)
+			TriggerClientEvent('esx_wifi:riceviRetiWifi', -1, CACHED_WIFIS)
 
 			Reti.Debug(Config.Language["WIFI_LOAD_DEBUG_3"])
 
@@ -30,33 +20,10 @@ Citizen.CreateThread(function()
 	end
 end)
 
-gcPhoneT.richiediTorriRadio = function()
-	while radioTowers == nil do Citizen.Wait(500) end
-	return radioTowers
+gcPhoneT.requestServerInfo = function()
+	while not TARIFFS_LOADED do Citizen.Wait(500) end
+	return radioTowers, retiWifi
 end
-
-gcPhoneT.richiediRetiWifi = function()
-	while retiWifi == nil do Citizen.Wait(500) end
-	return retiWifi
-end
-
---[[
-	RegisterServerEvent('esx_wifi:richiediTorriRadio')
-	AddEventHandler('esx_wifi:richiediTorriRadio', function()
-		local player = source
-		while radioTowers == nil do Citizen.Wait(500) end
-
-		TriggerClientEvent('esx_wifi:riceviTorriRadio', player, radioTowers)
-	end)
-
-	RegisterServerEvent('esx_wifi:richiediRetiWifi')
-	AddEventHandler('esx_wifi:richiediRetiWifi', function()
-		local player = source
-		while retiWifi == nil do Citizen.Wait(500) end
-
-		TriggerClientEvent('esx_wifi:riceviRetiWifi', player, retiWifi)
-	end)
-]]
 
 --[[
 	DEPRECATED

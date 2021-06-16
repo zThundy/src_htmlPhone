@@ -1,13 +1,36 @@
+CACHED_TOWERS = nil
+CACHED_WIFIS = nil
+
+TARIFFS_LOADED = false
+
+MySQL.ready(function()
+	MySQL.Async.fetchAll("SELECT * FROM phone_cell_towers", {}, function(r)
+		CACHED_TOWERS = r
+		Reti.Debug(Config.Language["WIFI_LOAD_DEBUG_1"])
+
+		MySQL.Async.fetchAll("SELECT * FROM phone_wifi_nets", {}, function(r)
+			CACHED_WIFIS = r
+			Reti.Debug(Config.Language["WIFI_LOAD_DEBUG_2"])
+
+			TARIFFS_LOADED = true
+		end)
+	end)
+end)
+
 function Reti.loadTorriRadio()
-	return MySQL.Sync.fetchAll('SELECT * FROM phone_cell_towers', {})
+	-- return MySQL.Sync.fetchAll('SELECT * FROM phone_cell_towers', {})
+	return CACHED_TOWERS
 end
 
 function Reti.loadRetiWifi()
-	local reti = MySQL.Sync.fetchAll('SELECT * FROM phone_wifi_nets', {})
-	for i = 1, #reti do
-		reti[i].pos = vector3(reti[i].x, reti[i].y, reti[i].z)
+	-- local reti = MySQL.Sync.fetchAll('SELECT * FROM phone_wifi_nets', {})
+	-- for i = 1, #CACHED_WIFIS do
+	-- 	reti[i].pos = vector3(reti[i].x, reti[i].y, reti[i].z)
+	-- end
+	for _, v in pairs(CACHED_WIFIS) do
+		v.pos = vector3(v.x, v.y, v.z)
 	end
-	return reti
+	return CACHED_WIFIS
 end
 
 function Reti.updateCellTower(tower)
