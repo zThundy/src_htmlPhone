@@ -430,9 +430,10 @@ AddEventHandler("gcPhone:rejectCall", function(infoCall)
     SendNUIMessage({ event = 'rejectCall', infoCall = infoCall })
 end)
 
-RegisterNetEvent("gcPhone:historiqueCall")
-AddEventHandler("gcPhone:historiqueCall", function(historique)
-    SendNUIMessage({ event = 'historiqueCall', historique = historique })
+RegisterNetEvent("gcPhone:historyCalls")
+AddEventHandler("gcPhone:historyCalls", function(history)
+    print(DumpTable(history))
+    SendNUIMessage({ event = 'historyCalls', history = history })
 end)
 
 --====================================================================================
@@ -443,15 +444,15 @@ RegisterNetEvent("gcPhone:sendRequestedOfferta")
 AddEventHandler("gcPhone:sendRequestedOfferta", function(dati, label)
     ESX.TriggerServerCallback("esx_cartesim:getPianoTariffario", function(massimo)
         -- print("Tariffa telefono", massimo.minuti, massimo.messaggi, massimo.dati)
-        local info = {
+        -- local info = 
+        SendNUIMessage({ event = "updateOfferta", data = {
             current = dati,
             max = {
                 massimo.minuti,
                 massimo.messaggi,
                 massimo.dati
             }
-        }
-        SendNUIMessage({ event = "updateOfferta", data = info })
+        } })
     end, label)
 end)
 

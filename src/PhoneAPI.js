@@ -156,12 +156,12 @@ class PhoneAPI {
   }
 
   // == Gestion des appels
-  async appelsDeleteHistorique (numero) {
-    return this.post('appelsDeleteHistorique', { numero })
+  async deletePhoneHistory (numero) {
+    return this.post('deletePhoneHistory', { numero })
   }
 
-  async appelsDeleteAllHistorique () {
-    return this.post('appelsDeleteAllHistorique')
+  async deleteAllPhoneHistory () {
+    return this.post('deleteAllPhoneHistory')
   }
 
   // === Autre
@@ -319,8 +319,8 @@ class PhoneAPI {
     store.commit('SET_CONTACTS', data.contacts)
   }
 
-  onhistoriqueCall (data) {
-    store.commit('SET_APPELS_HISTORIQUE', data.historique)
+  onhistoryCalls (data) {
+    store.commit('SET_APPELS_HISTORIQUE', data.history)
   }
 
   onupdateBankbalance (data) {

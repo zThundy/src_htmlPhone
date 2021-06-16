@@ -1,6 +1,25 @@
 -- non utilizzate per il momento
 -- utentiTorriRadio = {}
 -- utentiRetiWifi = {}
+CACHED_TOWERS = nil
+CACHED_WIFIS = nil
+
+TARIFFS_LOADED = false
+
+MySQL.ready(function()
+	MySQL.Async.fetchAll("SELECT * FROM phone_cell_towers", {}, function(r)
+		CACHED_TOWERS = r
+		Reti.Debug(Config.Language["WIFI_LOAD_DEBUG_1"])
+
+		MySQL.Async.fetchAll("SELECT * FROM phone_wifi_nets", {}, function(r)
+			CACHED_WIFIS = r
+			CACHED_WIFIS = Reti.loadRetiWifi()
+			Reti.Debug(Config.Language["WIFI_LOAD_DEBUG_2"])
+
+			TARIFFS_LOADED = true
+		end)
+	end)
+end)
 
 Citizen.CreateThread(function()
 	while not TARIFFS_LOADED do Citizen.Wait(500) end
@@ -22,7 +41,7 @@ end)
 
 gcPhoneT.requestServerInfo = function()
 	while not TARIFFS_LOADED do Citizen.Wait(500) end
-	return radioTowers, retiWifi
+	return CACHED_TOWERS, CACHED_WIFIS
 end
 
 --[[

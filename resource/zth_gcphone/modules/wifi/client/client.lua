@@ -37,13 +37,15 @@ function Reti:InitScript()
 	self.idPlayer = GetPlayerServerId(PlayerId())
 
 	torriRadio, retiWifi = gcPhoneServerT.requestServerInfo()
+	-- print(DumpTable(torriRadio))
+	while #torriRadio == 0 do Citizen.Wait(100) end
 
 	-- thread per salvataggio coordinate
 	Citizen.CreateThread(function()
 		while true do
+			Citizen.Wait(1500)
 			self.ped = GetPlayerPed(-1)
 			self.p_coords = GetEntityCoords(self.ped)
-			Citizen.Wait(1000)
 		end
 	end)
 
@@ -54,11 +56,13 @@ function Reti:InitScript()
 		self.potenzaSegnale = 0
 		self.torrePiuVicina = 0
 
+		self.ped = GetPlayerPed(-1)
+		self.p_coords = GetEntityCoords(self.ped)
+
 		self.connectedTorreIndex = nil
 		self.agganciato = false
 		self.vecchiaPotenzaSegnale = 0
 
-		while #torriRadio == 0 do Citizen.Wait(100) end
 		blipCaricati = self.RefreshBlips()
 
 		while not playerCaricato do Citizen.Wait(500) end
@@ -106,6 +110,9 @@ function Reti:InitScript()
 	-- thread per controllo distanza reti wifi
 	Citizen.CreateThread(function()
 		local distanza = 0
+		
+		self.ped = GetPlayerPed(-1)
+		self.p_coords = GetEntityCoords(self.ped)
 
 		while true do
 			self.retiWifiVicine = {}

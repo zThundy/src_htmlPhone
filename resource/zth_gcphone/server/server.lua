@@ -737,11 +737,11 @@ gcPhoneT.deleteAll = function()
 
     gcPhoneT.deleteReceivedMessages(identifier)
     MySQL.Sync.execute("DELETE FROM phone_users_contacts WHERE `identifier` = @identifier", { ['@identifier'] = identifier })
-    gcPhoneT.appelsDeleteAllHistorique(identifier)
+    gcPhoneT.deleteAllPhoneHistory(identifier)
 
     TriggerClientEvent("gcPhone:contactList", player, {})
     TriggerClientEvent("gcPhone:allMessage", player, {})
-    TriggerClientEvent("appelsDeleteAllHistorique", player, {})
+    TriggerClientEvent("deleteAllPhoneHistory", player, {})
 end
 
 --==================================================================================================================
@@ -769,12 +769,17 @@ end
 
 function SyncCallHistory(player, num)
     local histo = GetCallsHistory(num)
+    print("SyncCallHistory")
+    print(player, num)
+    print(DumpTable(histo))
     if histo then
-        TriggerClientEvent('gcPhone:historiqueCall', player, histo)
+        TriggerClientEvent('gcPhone:historyCalls', player, histo)
     end
 end
 
 function SavePhoneCall(callData)
+    -- print("SavePhoneCall")
+    -- print(DumpTable(callData))
     if not callData.extraData or not callData.extraData.useNumber then
         MySQL.Async.insert("INSERT INTO phone_calls (`owner`, `num`, `incoming`, `accepts`) VALUES(@owner, @num, @incoming, @accepts)", {
             ['@owner'] = callData.transmitter_num,
@@ -785,8 +790,9 @@ function SavePhoneCall(callData)
             table.insert(CACHED_CALLS[callData.transmitter_num], {
                 owner = callData.transmitter_num,
                 num = callData.receiver_num,
-                incoming = 1,
-                accepts = callData.is_accepts
+                incoming = true,
+                accepts = callData.is_accepts,
+                id = id
             })
 
             SyncCallHistory(callData.transmitter_src, callData.transmitter_num)
@@ -809,14 +815,42 @@ function SavePhoneCall(callData)
                 table.insert(CACHED_CALLS[callData.receiver_num], {
                     owner = callData.transmitter_num,
                     num = num,
-                    incoming = 0,
-                    accepts = callData.is_accepts
+                    incoming = false,
+                    accepts = callData.is_accepts,
+                    id = id
                 })
 
                 SyncCallHistory(callData.receiver_src, callData.receiver_num)
             end
         end)
     end
+end
+
+gcPhoneT.deletePhoneHistory = function(number)
+    local player = source
+    local identifier = gcPhoneT.getPlayerID(player)
+    local phone_number = gcPhoneT.getPhoneNumber(identifier)
+
+    MySQL.Async.execute("DELETE FROM phone_calls WHERE `owner` = @owner AND `num` = @num", {
+        ['@owner'] = phone_number,
+        ['@num'] = number
+    }, function()
+        for id, v in pairs(CACHED_CALLS[phone_number]) do
+            if v.num == number then
+                CACHED_CALLS[phone_number][id] = nil
+            end
+        end
+    end)
+end
+
+gcPhoneT.deleteAllPhoneHistory = function()
+    local player = source
+    local identifier = gcPhoneT.getPlayerID(player)
+    local num = gcPhoneT.getPhoneNumber(identifier)
+
+    MySQL.Async.execute("DELETE FROM phone_calls WHERE `owner` = @owner", { ['@owner'] = num }, function()
+        CACHED_CALLS[num] = {}
+    end)
 end
 
 --[[
@@ -1064,25 +1098,6 @@ gcPhoneT.rejectCall = function(infoCall)
         -- TriggerEvent('gcPhone:removeCall', Chiamate)
         Chiamate[id] = nil
     end
-end
-
-gcPhoneT.appelsDeleteHistorique = function(number)
-    local player = source
-    local identifier = gcPhoneT.getPlayerID(player)
-    local num = gcPhoneT.getPhoneNumber(identifier)
-
-    MySQL.Async.execute("DELETE FROM phone_calls WHERE `owner` = @owner AND `num` = @num", {
-        ['@owner'] = num,
-        ['@num'] = number
-    })
-end
-
-gcPhoneT.appelsDeleteAllHistorique = function()
-    local player = source
-    local identifier = gcPhoneT.getPlayerID(player)
-    local num = gcPhoneT.getPhoneNumber(identifier)
-
-    MySQL.Async.execute("DELETE FROM phone_calls WHERE `owner` = @owner", { ['@owner'] = num })
 end
 
 --==================================================================================================================

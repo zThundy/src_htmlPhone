@@ -1,27 +1,3 @@
-CACHED_TOWERS = nil
-CACHED_WIFIS = nil
-
-TARIFFS_LOADED = false
-
-MySQL.ready(function()
-	MySQL.Async.fetchAll("SELECT * FROM phone_cell_towers", {}, function(r)
-		CACHED_TOWERS = r
-		Reti.Debug(Config.Language["WIFI_LOAD_DEBUG_1"])
-
-		MySQL.Async.fetchAll("SELECT * FROM phone_wifi_nets", {}, function(r)
-			CACHED_WIFIS = r
-			Reti.Debug(Config.Language["WIFI_LOAD_DEBUG_2"])
-
-			TARIFFS_LOADED = true
-		end)
-	end)
-end)
-
-function Reti.loadTorriRadio()
-	-- return MySQL.Sync.fetchAll('SELECT * FROM phone_cell_towers', {})
-	return CACHED_TOWERS
-end
-
 function Reti.loadRetiWifi()
 	-- local reti = MySQL.Sync.fetchAll('SELECT * FROM phone_wifi_nets', {})
 	-- for i = 1, #CACHED_WIFIS do
@@ -183,7 +159,7 @@ end
 function Reti.CheckDueDate()
 	Reti.Debug(Config.Language["WIFI_LOAD_DEBUG_5"])
 	
-	for index, rete in pairs(retiWifi) do
+	for index, rete in pairs(CACHED_WIFIS) do
 		if rete.not_expire == 0 then
 			local due_date = math.floor(rete.due_date / 1000)
 			local created = math.floor(rete.created / 1000)

@@ -55,14 +55,14 @@ const actions = {
     commit('SET_APPELS_INFO', null)
     PhoneAPI.ignoraChiamata(state.appelsInfo)
   },
-  appelsDeleteHistorique ({ commit, state }, { numero }) {
-    PhoneAPI.appelsDeleteHistorique(numero)
+  deletePhoneHistory ({ commit, state }, { numero }) {
+    PhoneAPI.deletePhoneHistory(numero)
     commit('SET_APPELS_HISTORIQUE', state.appelsHistorique.filter(h => {
       return h.num !== numero
     }))
   },
-  appelsDeleteAllHistorique ({ commit }) {
-    PhoneAPI.appelsDeleteAllHistorique()
+  deleteAllPhoneHistory ({ commit }) {
+    PhoneAPI.deleteAllPhoneHistory()
     commit('SET_APPELS_HISTORIQUE', [])
   },
   resetAppels ({ commit }) {

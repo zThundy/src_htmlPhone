@@ -56,7 +56,7 @@ export default {
     }
   },
   methods: {
-    ...mapActions(['startCall', 'appelsDeleteHistorique', 'appelsDeleteAllHistorique', 'addContact', 'updateIgnoredControls']),
+    ...mapActions(['startCall', 'deletePhoneHistory', 'deleteAllPhoneHistory', 'addContact', 'updateIgnoredControls']),
     getContact (num) {
       const find = this.contacts.find(e => e.number === num)
       return find
@@ -98,11 +98,11 @@ export default {
           this.updateIgnoredControls(false)
           break
         case 1:
-          this.appelsDeleteHistorique({ numero })
+          this.deletePhoneHistory({ numero })
           this.updateIgnoredControls(false)
           break
         case 2:
-          this.appelsDeleteAllHistorique()
+          this.deleteAllPhoneHistory()
           this.updateIgnoredControls(false)
           break
         case 4:

@@ -260,13 +260,13 @@ RegisterNUICallback('closePhone', function(data, cb)
     cb("ok")
 end)
 
-RegisterNUICallback('appelsDeleteHistorique', function(data, cb)
-    gcPhoneServerT.appelsDeleteHistorique(data.numero)
+RegisterNUICallback('deletePhoneHistory', function(data, cb)
+    gcPhoneServerT.deletePhoneHistory(data.numero)
     cb("ok")
 end)
 
-RegisterNUICallback('appelsDeleteAllHistorique', function(data, cb)
-    gcPhoneServerT.appelsDeleteAllHistorique(data.infoCall)
+RegisterNUICallback('deleteAllPhoneHistory', function(data, cb)
+    gcPhoneServerT.deleteAllPhoneHistory(data.infoCall)
     cb("ok")
 end)
 
