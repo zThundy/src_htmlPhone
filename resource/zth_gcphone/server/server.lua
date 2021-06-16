@@ -769,9 +769,9 @@ end
 
 function SyncCallHistory(player, num)
     local histo = GetCallsHistory(num)
-    print("SyncCallHistory")
-    print(player, num)
-    print(DumpTable(histo))
+    -- print("SyncCallHistory")
+    -- print(player, num)
+    -- print(DumpTable(histo))
     if histo then
         TriggerClientEvent('gcPhone:historyCalls', player, histo)
     end

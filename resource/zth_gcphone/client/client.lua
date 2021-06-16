@@ -432,7 +432,7 @@ end)
 
 RegisterNetEvent("gcPhone:historyCalls")
 AddEventHandler("gcPhone:historyCalls", function(history)
-    print(DumpTable(history))
+    -- print(DumpTable(history))
     SendNUIMessage({ event = 'historyCalls', history = history })
 end)
 
