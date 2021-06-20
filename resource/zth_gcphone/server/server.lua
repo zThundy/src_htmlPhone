@@ -138,7 +138,7 @@ gcPhoneT.updateSegnaleTelefono = function(potenza)
     local player = source
     local identifier = gcPhoneT.getPlayerID(player)
     local iSegnalePlayer = gcPhoneT.getPlayerSegnaleIndex(PLAYERS_PHONE_SIGNALS, identifier)
-
+    
     if iSegnalePlayer == nil then
     	table.insert(PLAYERS_PHONE_SIGNALS, {identifier = identifier, potenzaSegnale = potenza})
     else
@@ -177,10 +177,12 @@ gcPhoneT.getPlayerSegnaleIndex = function(tabella, identifier)
 end
 
 gcPhoneT.usaDatiInternet = function(identifier, value)
-    local phone_number = gcPhoneT.getPhoneNumber(identifier)
-	local dati = GetPianoTariffarioParam(phone_number, "dati")
+    if Config.EnableRadioTwoers then
+        local phone_number = gcPhoneT.getPhoneNumber(identifier)
+        local dati = GetPianoTariffarioParam(phone_number, "dati")
 
-    gcPhoneT.updateParametroTariffa(phone_number, "dati", dati - value)
+        gcPhoneT.updateParametroTariffa(phone_number, "dati", dati - value)
+    end
 end
 
 gcPhoneT.isAbleToSurfInternet = function(identifier, neededMB)
@@ -190,23 +192,27 @@ gcPhoneT.isAbleToSurfInternet = function(identifier, neededMB)
     local iWifiConnectedPlayer = gcPhoneT.getPlayerSegnaleIndex(PLAYERS_PHONE_WIFI, identifier)
     local hasAirplane = gcPhoneT.getAirplaneForUser(identifier)
     
-    if iWifiConnectedPlayer ~= nil and PLAYERS_PHONE_WIFI[iWifiConnectedPlayer].connected then
-        return true, 0
-    else
-        if not hasAirplane and phone_number then
-            if iSegnalePlayer ~= nil and PLAYERS_PHONE_SIGNALS[iSegnalePlayer].potenzaSegnale ~= 0 then
-                local dati = GetPianoTariffarioParam(phone_number, "dati")
-                if dati > 0 and dati >= neededMB then
-                    return true, neededMB
+    if Config.EnableRadioTwoers then
+        if iWifiConnectedPlayer ~= nil and PLAYERS_PHONE_WIFI[iWifiConnectedPlayer].connected then
+            return true, 0
+        else
+            if not hasAirplane and phone_number then
+                if iSegnalePlayer ~= nil and PLAYERS_PHONE_SIGNALS[iSegnalePlayer].potenzaSegnale ~= 0 then
+                    local dati = GetPianoTariffarioParam(phone_number, "dati")
+                    if dati > 0 and dati >= neededMB then
+                        return true, neededMB
+                    else
+                        return false, 0
+                    end
                 else
                     return false, 0
                 end
             else
                 return false, 0
             end
-        else
-            return false, 0
         end
+    else
+        return true, 0
     end
 end
 
@@ -787,6 +793,7 @@ function SavePhoneCall(callData)
             ['@incoming'] = 1,
             ['@accepts'] = callData.is_accepts
         }, function(id)
+            if not CACHED_CALLS[callData.transmitter_num] then CACHED_CALLS[callData.transmitter_num] = {} end
             table.insert(CACHED_CALLS[callData.transmitter_num], {
                 owner = callData.transmitter_num,
                 num = callData.receiver_num,

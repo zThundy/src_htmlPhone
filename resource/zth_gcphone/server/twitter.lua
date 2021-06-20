@@ -168,6 +168,7 @@ local function TwitterGetFavotireTweets(accountId)
 		-- 	ORDER BY likes DESC, TIME DESC LIMIT 30
 		-- ]===], {}, cb)
 		local fav_tweets = DuplicateTable(CACHED_TWEETS)
+		if not fav_tweets then fav_tweets = {} end
 		table.sort(fav_tweets, function(a, b) return a.likes > b.likes end)
 		return fav_tweets
 	else

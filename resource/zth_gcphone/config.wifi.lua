@@ -1,3 +1,8 @@
+-- if enabled this will enable the towers, tariffs plan and
+-- wifi system for the phone. Keep in mind that server with over
+-- 500 players will maybe lag a bit
+Config.EnableRadioTwoers = true
+
 -- this is the default prefix that a new
 -- automatically generated modem will have
 Config.DefaultRandomSSID = "Phone-"

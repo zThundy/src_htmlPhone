@@ -21,23 +21,51 @@ MySQL.ready(function()
 	end)
 end)
 
-Citizen.CreateThread(function()
-	while not TARIFFS_LOADED do Citizen.Wait(500) end
+if Config.EnableRadioTwoers then
+	Citizen.CreateThread(function()
+		while not TARIFFS_LOADED do Citizen.Wait(500) end
 
-	Reti.CheckDueDate()
+		Reti.CheckDueDate()
 
-	if Config.EnableSyncThread then
-		while true do
-			-- print(DumpTable(retiWifi))
-			TriggerClientEvent('esx_wifi:riceviTorriRadio', -1, CACHED_TOWERS)
-			TriggerClientEvent('esx_wifi:riceviRetiWifi', -1, CACHED_WIFIS)
+		if Config.EnableSyncThread then
+			while true do
+				-- print(DumpTable(retiWifi))
+				TriggerClientEvent('esx_wifi:riceviTorriRadio', -1, CACHED_TOWERS)
+				TriggerClientEvent('esx_wifi:riceviRetiWifi', -1, CACHED_WIFIS)
 
-			Reti.Debug(Config.Language["WIFI_LOAD_DEBUG_3"])
+				Reti.Debug(Config.Language["WIFI_LOAD_DEBUG_3"])
 
-			Citizen.Wait(Config.SyncThreadWait * 1000)
+				Citizen.Wait(Config.SyncThreadWait * 1000)
+			end
 		end
+	end)
+
+	RegisterServerEvent('esx_wifi:repairRadioTower')
+	AddEventHandler('esx_wifi:repairRadioTower', function(tower) Reti.updateCellTower(tower) end)
+	
+	if Config.EnableBreakWifiTowers then
+		Citizen.CreateThreadNow(function()
+			while true do
+				for _, v in pairs(radioTowers) do
+					if not v.broken then
+						math.randomseed(os.time()); math.randomseed(os.time()); math.randomseed(os.time());
+	
+						if Config.BreakChance > math.random(0, 100) then
+							v.broken = true
+							TriggerClientEvent('esx_wifi:riceviTorriRadio', -1, v)
+							Reti.updateCellTower(v)
+						end
+					end
+	
+					-- 10 minutes for each tower
+					Citizen.Wait(10 * 60 * 1000)
+				end
+	
+				Citizen.Wait(5)
+			end
+		end)
 	end
-end)
+end
 
 gcPhoneT.requestServerInfo = function()
 	while not TARIFFS_LOADED do Citizen.Wait(500) end
@@ -87,29 +115,3 @@ end
 		TriggerClientEvent('gcphone:updateRadioSignal', player, 0)
 	end)
 ]]
-
-RegisterServerEvent('esx_wifi:repairRadioTower')
-AddEventHandler('esx_wifi:repairRadioTower', function(tower) Reti.updateCellTower(tower) end)
-
-if Config.EnableBreakWifiTowers then
-	Citizen.CreateThreadNow(function()
-		while true do
-			for _, v in pairs(radioTowers) do
-				if not v.broken then
-					math.randomseed(os.time()); math.randomseed(os.time()); math.randomseed(os.time());
-
-					if Config.BreakChance > math.random(0, 100) then
-						v.broken = true
-						TriggerClientEvent('esx_wifi:riceviTorriRadio', -1, v)
-						Reti.updateCellTower(v)
-					end
-				end
-
-				-- 10 minutes for each tower
-				Citizen.Wait(10 * 60 * 1000)
-			end
-
-			Citizen.Wait(5)
-		end
-	end)
-end

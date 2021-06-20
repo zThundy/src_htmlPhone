@@ -13,7 +13,11 @@ Citizen.CreateThread(function()
 	ESX.PlayerData = ESX.GetPlayerData()
 	playerCaricato = true
 
-	Reti:InitScript()
+	if Config.EnableRadioTwoers then
+		Reti:InitScript()
+	else
+		gcPhoneServerT.updateSegnaleTelefono(4)
+	end
 end)
 
 -- used only on startup
