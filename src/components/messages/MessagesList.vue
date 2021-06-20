@@ -18,7 +18,7 @@ export default {
     }
   },
   methods: {
-    ...mapActions(['deleteMessagesNumber', 'deleteAllMessages', 'startCall']),
+    ...mapActions(['deleteMessagesNumber', 'deleteAllMessages', 'startCall', 'startVideoCall']),
     onSelect: function (data) {
       if (data.id === -1) {
         this.$router.push({name: 'messages.selectcontact'})
@@ -32,6 +32,7 @@ export default {
       Modal.CreateModal({
         choix: [
           {id: 4, title: this.LangString('APP_PHONE_CALL'), icons: 'fa-phone'},
+          {id: 8, title: this.LangString('APP_PHONE_VIDEO_CALL'), icons: 'fa-video-camera'},
           {id: 5, title: this.LangString('APP_PHONE_CALL_ANONYMOUS'), icons: 'fa-mask'},
           {id: 6, title: this.LangString('APP_MESSAGE_NEW_MESSAGE'), icons: 'fa-sms'}
         ]
@@ -54,6 +55,8 @@ export default {
           this.$router.push({ name: 'messages.view', params: data })
         } else if (rep.id === 7) {
           this.$router.push({ name: 'contacts.view', params: { id: 0, number: data.number } })
+        } else if (rep.id === 8) {
+          this.startVideoCall({ numero: data.number })
         }
         this.disableList = false
       })

@@ -1,6 +1,7 @@
 <template>
   <div style="height: 100vh; width: 100vw;">
-    <canvas style="height: 98%; width: 98%; overflow: hidden;" id="video-recorder-canvas"></canvas>
+    <!-- <canvas id="self-render" class="content-area"></canvas> -->
+    <canvas class="video-recorder-canvas" id="video-recorder-canvas"></canvas>
 
     <div v-if="show === true && tempoHide === false" :style="getStyle()">
       <div class="phone_wrapper" :style="classObject()">
@@ -8,6 +9,7 @@
         
         <div v-if="loaded" id="app" class="phone_screen noselect">
           <!-- <transition-page :isChanging="isChanging"/> :class="{ 'transition': isChanging }" :style="getStyle(brightness)" -->
+          <video id="target-stream" class="content-area" style="display: none;" autoplay muted></video>
           <notification />
 
           <router-view />

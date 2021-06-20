@@ -21,6 +21,7 @@ import news from './modules/news'
 import azienda from './modules/azienda'
 import license from './modules/license'
 import photo from './modules/photo'
+import videocalls from './modules/videocalls'
 
 Vue.use(Vuex)
 
@@ -45,7 +46,8 @@ export default new Vuex.Store({
     azienda,
     wifi,
     license,
-    photo
+    photo,
+    videocalls
   },
   strict: true
 })

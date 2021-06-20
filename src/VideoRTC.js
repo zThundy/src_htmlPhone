@@ -1,207 +1,151 @@
-import RecordRTC from 'recordrtc'
-
-const constraits = {
-  audio: true
-}
-
-const options = {
-  // recorderType: RecordRTC.MediaStreamRecorder,
-  // mimeType: 'video/video/webmcodecs=h264',
-  // ignoreMutedMedia: true,
-  // previewStream (stream) {
-  //   console.log('previewstream in options')
-  //   console.log(stream)
-  //   console.log('-----------------------')
-  // }
-  type: 'video'
-  // mimeType: 'video/webm;codecs=vp8,opus'
-}
-
+/* eslint-disable */
 class VideoRTC {
   constructor (RTCConfig) {
-    this.config = RTCConfig
-    this.recorder = null
-    this.audioStream = null
-    this.canvasStream = null
+    this.myPeerConnection = null
+    this.candidates = []
+    this.listener = {}
+    this.myCandidates = []
+    this.audio = new Audio()
+    this.offer = null
+    this.answer = null
+    this.initiator = null
+    this.audioContext = null
+    this.RTCConfig = RTCConfig
   }
 
-  async clearRecording () {
-    this.recorder = null
+  async init () {
+    this.close()
+    this.myPeerConnection = new RTCPeerConnection(this.RTCConfig)
+    this.stream = document.getElementById("video-recorder-canvas").captureStream();
+    // this.stream = await this.startModVoiceCall()
   }
 
-  async stopRecordingManually () {
-    if (this.recorder) {
-      this.recorder.stopRecording()
+  newConnection () {
+    this.close()
+    this.candidates = []
+    this.myCandidates = []
+    this.listener = {}
+    this.offer = null
+    this.answer = null
+    this.initiator = null
+    this.myPeerConnection = new RTCPeerConnection(this.RTCConfig)
+    this.myPeerConnection.onaddstream = this.onaddstream.bind(this)
+  }
+
+  close () {
+    if (this.myPeerConnection !== null) {
+      this.myPeerConnection.close()
     }
+    this.myPeerConnection = null
   }
 
-  async startRecording () {
-    navigator.mediaDevices.getUserMedia(constraits).then(audioStream => {
-      var canvas = document.getElementById('video-recorder-canvas')
-      this.canvasStream = canvas.captureStream()
-
-      this.audioStream = audioStream
-
-      var finalStream = new MediaStream()
-      // capture the audio element from the getusermedia function
-      this.audioStream.getTracks('audio').forEach(track => {
-        console.log('found audio track and added to mediastream')
-        console.log(track)
-        finalStream.addTrack(track)
-      })
-      // capture the video element from the canvass
-      this.canvasStream.getTracks('video').forEach(track => {
-        console.log('found video track and added to mediastream')
-        console.log(track)
-        finalStream.addTrack(track)
-      })
-      console.log(finalStream)
-      console.log('finalStream.getAudioTracks()')
-      console.log(finalStream.getAudioTracks())
-      this.recorder = RecordRTC(finalStream, options)
-      this.recorder.startRecording()
-      console.log(this.recorder)
-      Object.keys(this.recorder)
-
-      // while (this.recorder.state === 'stopped') {
-      //   console.log('recording is stopped')
-      // }
-
-      setTimeout(() => {
-        this.recorder.stopRecording(() => {
-          // var timestamp = (new Date()).valueOf()
-          // let fileName = timestamp + '.webm'
-          // console.log(this.recorder.getBlob())
-          // console.log(fileName)
-          // let invokesavelog = this.invokeSaveAsDialog(this.recorder.getBlob(), fileName)
-          // console.log(invokesavelog)
-          // var blob = recorder.getBlob()
-          // var file = new File([blob], fileName, {
-          //     type: 'video/webm'
-          // })
-          this.audioStream.stop()
-          this.canvasStream.stop()
-
-          var blob = this.recorder.getBlob()
-          var video = document.createElement('video')
-          video.src = URL.createObjectURL(blob)
-          console.log('video.src')
-          console.log(video.src)
-          video.setAttribute('style', 'height: 50%; position: absolute; top:0; left:0; z-index:9999; width:auto, min-width: 100px;')
-          document.body.appendChild(video)
-          video.controls = true
-          video.play()
-        })
-      }, 5000)
+  async prepareCall () {
+    await this.init()
+    this.newConnection()
+    this.initiator = true
+    // this.myPeerConnection.addStream(this.stream)
+    this.stream = document.getElementById("video-recorder-canvas").captureStream()
+    document.getElementById("target-stream").style.display = "none"
+    this.stream.getTracks().forEach(track => {
+      //console.log("addtrack to " + serverId);
+      this.myPeerConnection.addTrack(track, streamElement)
     })
 
-    // console.log('called startRecording from class VideoRTC')
-    // navigator.mediaDevices.getUserMedia(constraits).then(microphone => {
-    //   console.log(microphone)
-    //   console.log('document.getElementById(canvaselements))')
-    //   console.log(document.getElementById('video-recorder-canvas'))
-    //   var canvasStream = document.getElementById('video-recorder-canvas').captureStream()
-    //   console.log('canvasStream')
-    //   console.log(canvasStream)
-    //   canvasStream.onaddtrack = function () {
-    //     console.log('new track added to canvas')
-    //   }
-    //   microphone.getAudioTracks().forEach(audioTrack => {
-    //     console.log('added audio track to stream')
-    //     console.log(audioTrack)
-    //     canvasStream.addTrack(audioTrack)
-    //   })
-    //   console.log('canvasStream2')
-    //   console.log(canvasStream)
-    //   // now you can record "canvasStream" which include "microphone" tracks as well
-    //   this.recorder = RecordRTC(canvasStream, options)
-    //   this.recorder.startRecording()
-    // })
+    this.myPeerConnection.onicecandidate = this.onicecandidate.bind(this)
+    this.offer = await this.myPeerConnection.createOffer()
+    this.myPeerConnection.setLocalDescription(this.offer)
+    return btoa(JSON.stringify(this.offer))
   }
 
-  invokeSaveAsDialog (file, fileName) {
-    if (!file) {
-      console.err('Blob object is required.')
+  async acceptCall (infoCall) {
+    const offer = JSON.parse(atob(infoCall.rtcOffer))
+    this.newConnection()
+    this.initiator = false
+    // this.myPeerConnection.addStream(this.stream)
+  
+    document.getElementById("video-recorder-canvas").style.display = "none"
+    let video = document.getElementById("target-stream")
+    video.style.display = "block"
+
+    this.myPeerConnection.ontrack = (event) => {
+      event.streams[0].getTracks().forEach(track => {
+        video.srcObject.addTrack(track);
+      })
     }
-    if (!file.type) {
-      try {
-        file.type = 'video/webm'
-      } catch (e) {}
-    }
-    var fileExtension = (file.type || 'video/webm').split('/')[1]
-    if (fileExtension.indexOf('') !== -1) {
-      // extended mimetype, e.g. 'video/webmcodecs=vp8,opus'
-      fileExtension = fileExtension.split('')[0]
-    }
-    if (fileName && fileName.indexOf('.') !== -1) {
-      var splitted = fileName.split('.')
-      fileName = splitted[0]
-      fileExtension = splitted[1]
-    }
-    let filename = fileName || (Math.round(Math.random() * 9999999999) + 888888888)
-    var fileFullName = filename + '.' + fileExtension
-    if (typeof navigator.msSaveOrOpenBlob !== 'undefined') {
-      return navigator.msSaveOrOpenBlob(file, fileFullName)
-    } else if (typeof navigator.msSaveBlob !== 'undefined') {
-      return navigator.msSaveBlob(file, fileFullName)
-    }
-    var hyperlink = document.createElement('a')
-    hyperlink.href = URL.createObjectURL(file)
-    hyperlink.download = fileFullName
-    hyperlink.style = 'display:noneopacity:0color:transparent'
-    let body = document.body || document.documentElement
-    body.appendChild(hyperlink)
-    if (typeof hyperlink.click === 'function') {
-      hyperlink.click()
-    } else {
-      hyperlink.target = '_blank'
-      hyperlink.dispatchEvent(new MouseEvent('click', {
-        view: window,
-        bubbles: true,
-        cancelable: true
-      }))
-    }
-    URL.revokeObjectURL(hyperlink.href)
+
+    // offerta icecandidates
+    this.myPeerConnection.onicecandidate = this.onicecandidate.bind(this)
+    this.offer = new RTCSessionDescription(offer)
+    this.myPeerConnection.setRemoteDescription(this.offer)
+    // creo la risposta dal server e aspetto la promise
+    this.answer = await this.myPeerConnection.createAnswer()
+    this.myPeerConnection.setLocalDescription(this.answer)
+    return btoa(JSON.stringify(this.answer))
   }
 
-  /*
-  async startRecording () {
-    console.log('should be start recording (im in class VideoRTC)')
-    let htmlObject = document.getElementById('video-recorder-canvas')
-    console.log(htmlObject)
-    // var recorder = new CanvasRecorder(htmlObject, { disableLogs: true, useWhammyRecorder: true })
-    // recorder.record()
-    // recorder.stop(function (blob) {
-    //   let video = URL.createObjectURL(blob)
-    //   console.log(video)
-    // })
-    // navigator.mediaDevices.getDisplayMedia(constraits).then(stream => {
-    navigator.mediaDevices.getUserMedia(constraits).then(async function (stream) {
-      // options.video = RecordRTC.CanvasRecorder(htmlObject, {})
-      options.previewStream = function (stream) {
-        console.log(stream)
+  async onReceiveAnswer (answerData) {
+    const answerObj = JSON.parse(atob(answerData))
+    this.answer = new RTCSessionDescription(answerObj)
+    this.myPeerConnection.setRemoteDescription(this.answer)
+  }
+
+  onicecandidate (event) {
+    if (event.candidate !== undefined) {
+      this.myCandidates.push(event.candidate)
+      if (this.listener['onCandidate'] !== undefined) {
+        const candidates = this.getAvailableCandidates()
+        for (let func of this.listener['onCandidate']) {
+          func(candidates)
+        }
       }
-      let recorder = RecordRTC(stream, options)
-      console.log(recorder)
-      recorder.startRecording()
-
-      setTimeout(() => {
-        recorder.stopRecording(function () {
-          let blob = recorder.getBlob()
-          console.log(blob)
-          console.log(recorder.toURL())
-          let blobUrl = recorder.save('video.webm')
-          console.log(blobUrl)
-          console.log(recorder.getDataURL(blobUrl))
-        })
-      }, 5000)
-    })
+    }
   }
-  */
+
+  getAvailableCandidates () {
+    const candidates = btoa(JSON.stringify(this.myCandidates))
+    this.myCandidates = []
+    return candidates
+  }
+
+  addIceCandidates (candidatesRaw) {
+    if (this.myPeerConnection !== null) {
+      const candidates = JSON.parse(atob(candidatesRaw))
+      candidates.forEach((candidate) => {
+        if (candidate !== null) {
+          this.myPeerConnection.addIceCandidate(candidate)
+        }
+      })
+    }
+  }
+
+  addEventListener (eventName, callBack) {
+    if (eventName === 'onCandidate') {
+      if (this.listener[eventName] === undefined) {
+        this.listener[eventName] = []
+      }
+      this.listener[eventName].push(callBack)
+      callBack(this.getAvailableCandidates())
+    }
+  }
+
+  onaddstream (event) {
+    this.audio.srcObject = event.stream
+    this.audio.play()
+  }
+
+  getAudioContext () {
+    var audioContext
+    if (typeof AudioContext === 'function') {
+      audioContext = new AudioContext()
+    } else if (typeof webkitAudioContext === 'function') {
+      // eslint-disable-line new-cap
+      audioContext = new webkitAudioContext()
+    }
+    return audioContext
+  }
 }
 
 /* eslint-disable */
-(async function () {
-})()
+(async function () {})()
 
 export default VideoRTC

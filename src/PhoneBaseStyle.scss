@@ -7,6 +7,9 @@ body {
   font-size: 20px;
   margin: 0;
   padding: 0;
+  /* background-image: url("https://cdn.discordapp.com/attachments/848629680655433738/850852468953841664/screenshot.jpg"); */
+  /* background-color: rgba(255, 255, 255, 0.3); */
+  /* background-blend-mode: lighten; */
 }
 
 .phone_infoBare {
@@ -84,6 +87,16 @@ body {
   max-height: 95vh;
   border-radius: 50px;
   border-style: solid;
+}
+
+.video-recorder-canvas {
+  position: absolute;
+  top: 250px;
+  left: 350px;
+  width: 500px;
+  height: 680px;
+  background-color: #000000e0;
+  border-bottom: solid 2px black;
 }
 
 * {

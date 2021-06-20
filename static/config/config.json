@@ -24,15 +24,20 @@
 
   "defaultVolume": 0.2,
 
-  "useWebRTCVocal": false,
-  "useWebRTCVideo": false,
+  "enableWebRTC": true,
   "RTCConfig": {
     "iceServers": [{
-      "urls": ["turn:185.25.206.106:3478"],
-      "username": "gtam",
-      "credential": "jgf8RD64GJ84jgf"
-    }]
+      "urls": ["stun:stun.l.google.com:19302", "stun:stun1.l.google.com:19302", "stun:stun2.l.google.com:19302"]
+    }],
+    "iceCandidatePoolSize": 10
   },
+
+  "comment": "This is the old configuration for the iceServer that were used by the rtc",
+  "iceServers_old": [{
+    "urls": ["turn:185.25.206.106:3478"],
+    "username": "gtam",
+    "credential": "jgf8RD64GJ84jgf"
+  }],
 
   "RTCFilters": {
     "enable": false,
@@ -466,6 +471,7 @@
       "APP_CONFIG_RESET_CONFIRM": "Formatta",
       "APP_PHONE_DIALING_MESSAGE": ". . .",
       "APP_PHONE_CALL": "Chiama",
+      "APP_PHONE_VIDEO_CALL": "Videochiama",
       "APP_PHONE_CALL_ANONYMOUS": "Chiamata anonima",
       "APP_PHONE_DELETE": "Elimina",
       "APP_PHONE_DELETE_ALL": "Elimina tutto",

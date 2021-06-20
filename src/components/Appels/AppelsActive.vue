@@ -67,33 +67,15 @@ export default {
     },
     onEnter () {
       if (this.status === 0) {
-        if (this.select === 0) {
-          this.onRejectCall()
-        } else {
-          this.onAcceptCall()
-        }
-      }
-    },
-    raccrocher () {
-      this.onRejectCall()
-    },
-    deccrocher () {
-      if (this.status === 0) {
+        // if (this.select === 0) {
+        //   this.onRejectCall()
+        // } else {
         this.onAcceptCall()
+        // }
       }
     },
-    onLeft () {
-      if (this.status === 0) {
-        this.select = 0
-      }
-    },
-    onRight () {
-      if (this.status === 0) {
-        this.select = 1
-      }
-    },
-    updateTime () {
-      this.time += 1
+    onUp () {
+      this.$phoneAPI.addVideoElement()
     },
     onRejectCall () {
       this.rejectCall()
@@ -111,7 +93,9 @@ export default {
     startTimer () {
       if (this.intervalNum === undefined) {
         this.time = 0
-        this.intervalNum = setInterval(this.updateTime, 1000)
+        this.intervalNum = setInterval(() => {
+          this.time += 1
+        }, 1000)
       }
     }
   },
@@ -148,15 +132,17 @@ export default {
     //   this.$phoneAPI.speakTTS(text)
     // }
     this.$bus.$on('keyUpEnter', this.onEnter)
-    this.$bus.$on('keyUpArrowLeft', this.onLeft)
-    this.$bus.$on('keyUpArrowRight', this.onRight)
+    // this.$bus.$on('keyUpArrowLeft', this.onLeft)
+    // this.$bus.$on('keyUpArrowRight', this.onRight)
+    this.$bus.$on('keyUpArrowUp', this.onUp)
     this.$bus.$on('keyUpBackspace', this.onBackspace)
   },
   beforeDestroy () {
     this.$bus.$off('keyUpBackspace', this.onBackspace)
+    // this.$bus.$off('keyUpArrowLeft', this.onLeft)
+    // this.$bus.$off('keyUpArrowRight', this.onRight)
+    this.$bus.$off('keyUpArrowUp', this.onUp)
     this.$bus.$off('keyUpEnter', this.onEnter)
-    this.$bus.$off('keyUpArrowLeft', this.onLeft)
-    this.$bus.$off('keyUpArrowRight', this.onRight)
     if (this.intervalNum !== undefined) {
       window.clearInterval(this.intervalNum)
     }

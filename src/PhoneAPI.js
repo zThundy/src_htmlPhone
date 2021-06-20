@@ -1,5 +1,5 @@
 import store from '@/store'
-import VoiceRTC from './VoiceRCT'
+import VoiceRTC from './VoiceRTC'
 import VideoRTC from './VideoRTC'
 import Vue from 'vue'
 import { Howl, Howler } from 'howler'
@@ -9,7 +9,6 @@ import emoji from './emoji.json'
 const keyEmoji = Object.keys(emoji)
 
 let USE_VOICE_RTC = false
-let USE_VIDEO_RTC = false
 const BASE_URL = 'http://zth_gcphone/'
 
 /* eslint-disable camelcase */
@@ -230,16 +229,12 @@ class PhoneAPI {
       } else {
         this.config = response
       }
-      if (this.config.useWebRTCVocal === true) {
+      if (this.config.enableWebRTC === true) {
         this.voiceRTC = new VoiceRTC(this.config.RTCConfig, this.config.RTCFilters)
+        this.videoRTC = new VideoRTC(this.config.RTCConfig)
         USE_VOICE_RTC = true
       }
-      if (this.config.useWebRTCVideo === true) {
-        this.videoRTC = new VideoRTC(this.config.RTCConfig)
-        console.log('video rtc class constructed')
-        USE_VIDEO_RTC = true
-      }
-      this.notififyUseRTC(this.config.useWebRTCVocal)
+      this.notififyUseRTC(this.config.enableWebRTC)
     }
     return this.config
   }
@@ -351,23 +346,42 @@ class PhoneAPI {
     return this.post('sendMoneyToIban', { money, iban })
   }
 
-  // Video Record
-  async startRecording () {
-    if (USE_VIDEO_RTC === true) {
-      return this.videoRTC.startRecording()
+  // Video Calls
+  async startVideoCall (numero, extraData = undefined) {
+    if (USE_VOICE_RTC === true) {
+      const rtcOffer = await this.videoRTC.prepareCall()
+      return this.post('startVideoCall', { numero, rtcOffer, extraData })
     }
   }
 
-  async stopRecording () {
-    if (USE_VIDEO_RTC === true) {
-      this.videoRTC.stopRecordingManually()
+  async acceptVideoCall (infoCall) {
+    if (USE_VOICE_RTC === true) {
+      const rtcAnswer = await this.videoRTC.acceptCall(infoCall)
+      return this.post('acceptVideoCall', { infoCall, rtcAnswer })
     }
   }
 
-  async clearRecording () {
-    if (USE_VIDEO_RTC === true) {
-      this.videoRTC.clearRecording()
+  async rejectVideoCall (infoCall) {
+    return this.post('rejectVideoCall', { infoCall })
+  }
+
+  onwaitingVideoCall (data) {
+    store.commit('SET_APPELS_INFO_IF_EMPTY', {
+      ...data.infoCall,
+      initiator: data.initiator
+    })
+  }
+
+  onacceptVideoCall (data) {
+    if (USE_VOICE_RTC === true) {
+      if (data.initiator === true) {
+        this.voiceRTC.onReceiveAnswer(data.infoCall.rtcAnswer)
+      }
+      this.voiceRTC.addEventListener('onCandidate', (candidates) => {
+        this.post('onCandidates', { id: data.infoCall.id, candidates })
+      })
     }
+    store.commit('SET_APPELS_INFO_IS_ACCEPTS', true)
   }
 
   // Call

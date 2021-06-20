@@ -60,14 +60,6 @@ export default {
             })
             break
           case 2:
-            // console.log(await aperture.screens())
-            // aperture.startRecording(RECORD_OPTIONS)
-            // setTimeout(() => {
-            //   aperture.stopRecording().then(r => {
-            //     this.recording = r
-            //   })
-            // }, 5000)
-            this.$phoneAPI.startRecording()
             break
           case -1:
             this.ignoreControl = false
