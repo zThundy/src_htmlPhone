@@ -102,6 +102,8 @@ Citizen.CreateThreadNow(function()
                 ['@i'] = v.dati,
                 ['@id'] = v.id
             })
+
+            Citizen.Wait(50)
         end
     end
 end)
