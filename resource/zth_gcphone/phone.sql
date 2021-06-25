@@ -79,7 +79,7 @@ CREATE TABLE IF NOT EXISTS `phone_bank_movements` (
   `to` varchar(255) DEFAULT NULL,
   `from` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- Dump dei dati della tabella esfx.phone_bank_movements: ~0 rows (circa)
 DELETE FROM `phone_bank_movements`;
@@ -111,7 +111,7 @@ CREATE TABLE IF NOT EXISTS `phone_cell_towers` (
   `broken` tinyint(1) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   UNIQUE KEY `coordinate` (`x`,`y`)
-) ENGINE=InnoDB AUTO_INCREMENT=48 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=48 DEFAULT CHARSET=utf8;
 
 -- Dump dei dati della tabella esfx.phone_cell_towers: ~46 rows (circa)
 DELETE FROM `phone_cell_towers`;
@@ -172,7 +172,7 @@ CREATE TABLE IF NOT EXISTS `phone_crypto_market` (
   `old_price` double NOT NULL DEFAULT '0',
   `last_fluctuation` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`name`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- Dump dei dati della tabella esfx.phone_crypto_market: ~3 rows (circa)
 DELETE FROM `phone_crypto_market`;
@@ -206,7 +206,7 @@ CREATE TABLE IF NOT EXISTS `phone_emails` (
   `pic` varchar(255) DEFAULT NULL,
   `time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- Dump dei dati della tabella esfx.phone_emails: ~0 rows (circa)
 DELETE FROM `phone_emails`;
@@ -221,7 +221,7 @@ CREATE TABLE IF NOT EXISTS `phone_instagram_accounts` (
   `avatar_url` varchar(255) NOT NULL DEFAULT '/html/static/img/app_instagram/default_profile.png',
   PRIMARY KEY (`id`),
   UNIQUE KEY `Indice 2` (`username`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- Dump dei dati della tabella esfx.phone_instagram_accounts: ~0 rows (circa)
 DELETE FROM `phone_instagram_accounts`;
@@ -238,7 +238,7 @@ CREATE TABLE IF NOT EXISTS `phone_instagram_likes` (
   KEY `FK_instagram_likes_instagram_posts` (`postId`),
   CONSTRAINT `FK_instagram_likes_instagram_accounts` FOREIGN KEY (`authorId`) REFERENCES `phone_instagram_accounts` (`id`),
   CONSTRAINT `FK_instagram_likes_instagram_posts` FOREIGN KEY (`postId`) REFERENCES `phone_instagram_posts` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- Dump dei dati della tabella esfx.phone_instagram_likes: ~0 rows (circa)
 DELETE FROM `phone_instagram_likes`;
@@ -256,7 +256,7 @@ CREATE TABLE IF NOT EXISTS `phone_instagram_posts` (
   `likes` mediumint(9) NOT NULL DEFAULT '0',
   `data` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- Dump dei dati della tabella esfx.phone_instagram_posts: ~1 rows (circa)
 DELETE FROM `phone_instagram_posts`;
@@ -276,7 +276,7 @@ CREATE TABLE IF NOT EXISTS `phone_messages` (
   PRIMARY KEY (`id`),
   KEY `transmitter` (`transmitter`),
   KEY `receiver` (`receiver`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- Dump dei dati della tabella esfx.phone_messages: 0 rows
 DELETE FROM `phone_messages`;
@@ -357,7 +357,7 @@ CREATE TABLE IF NOT EXISTS `phone_users_contacts` (
   `email` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `Indice 2` (`identifier`,`number`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- Dump dei dati della tabella esfx.phone_users_contacts: 0 rows
 DELETE FROM `phone_users_contacts`;
@@ -370,7 +370,7 @@ CREATE TABLE IF NOT EXISTS `phone_users_emails` (
   `identifier` varchar(255) DEFAULT NULL,
   `email` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- Dump dei dati della tabella esfx.phone_users_emails: ~0 rows (circa)
 DELETE FROM `phone_users_emails`;
@@ -383,7 +383,7 @@ CREATE TABLE IF NOT EXISTS `phone_user_covers` (
   `identifier` varchar(50) NOT NULL DEFAULT '0',
   `cover` varchar(250) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- Dump dei dati della tabella esfx.phone_user_covers: ~0 rows (circa)
 DELETE FROM `phone_user_covers`;
@@ -398,7 +398,7 @@ CREATE TABLE IF NOT EXISTS `phone_user_crypto` (
   `amount` int(11) NOT NULL DEFAULT '0',
   `price` double NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- Dump dei dati della tabella esfx.phone_user_crypto: ~0 rows (circa)
 DELETE FROM `phone_user_crypto`;
@@ -412,7 +412,7 @@ CREATE TABLE IF NOT EXISTS `phone_whatsapp_groups` (
   `gruppo` varchar(255) NOT NULL DEFAULT 'Nessun nome',
   `partecipanti` longtext NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- Dump dei dati della tabella esfx.phone_whatsapp_groups: ~0 rows (circa)
 DELETE FROM `phone_whatsapp_groups`;
@@ -426,7 +426,7 @@ CREATE TABLE IF NOT EXISTS `phone_whatsapp_messages` (
   `sender` varchar(255) DEFAULT NULL,
   `message` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- Dump dei dati della tabella esfx.phone_whatsapp_messages: ~0 rows (circa)
 DELETE FROM `phone_whatsapp_messages`;
@@ -446,7 +446,7 @@ CREATE TABLE IF NOT EXISTS `phone_wifi_nets` (
   `not_expire` int(11) NOT NULL DEFAULT '0',
   PRIMARY KEY (`steam_id`),
   UNIQUE KEY `coordinate` (`x`,`y`,`z`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- Dump dei dati della tabella esfx.phone_wifi_nets: ~2 rows (circa)
 DELETE FROM `phone_wifi_nets`;
@@ -468,7 +468,7 @@ CREATE TABLE IF NOT EXISTS `phone_sim` (
   `nome_sim` varchar(10) DEFAULT '',
   PRIMARY KEY (`id`),
   UNIQUE KEY `phone_number` (`phone_number`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- Dump dei dati della tabella esfx.phone_sim: 0 rows
 DELETE FROM `phone_sim`;
