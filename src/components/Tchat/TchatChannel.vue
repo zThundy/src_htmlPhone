@@ -67,15 +67,15 @@ export default {
     async onRight () {
       if (this.ignoreControls === true) return
       this.ignoreControls = true
-      let choix = [
+      let scelte = [
         {id: 1, title: this.LangString('APP_DARKTCHAT_NEW_CHANNEL'), icons: 'fa-plus', color: 'green'},
         {id: 2, title: this.LangString('APP_DARKTCHAT_DELETE_CHANNEL'), icons: 'fa-minus', color: 'orange'},
         {id: 3, title: this.LangString('APP_DARKTCHAT_CANCEL'), icons: 'fa-undo', color: 'red'}
       ]
       if (this.tchatChannels.length === 0) {
-        choix.splice(1, 1)
+        scelte.splice(1, 1)
       }
-      const rep = await Modal.CreateModal({ choix })
+      const rep = await Modal.CreateModal({ scelte })
       this.ignoreControls = false
       switch (rep.id) {
         case 1:
@@ -91,11 +91,11 @@ export default {
       if (this.ignoreControls === true) return
       if (this.tchatChannels.length === 0) {
         this.ignoreControls = true
-        let choix = [
+        let scelte = [
           {id: 1, title: this.LangString('APP_DARKTCHAT_NEW_CHANNEL'), icons: 'fa-plus', color: 'green'},
           {id: 3, title: this.LangString('APP_DARKTCHAT_CANCEL'), icons: 'fa-undo', color: 'red'}
         ]
-        const rep = await Modal.CreateModal({ choix })
+        const rep = await Modal.CreateModal({ scelte })
         this.ignoreControls = false
         if (rep.id === 1) {
           this.addChannelOption()

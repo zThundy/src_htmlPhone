@@ -44,14 +44,14 @@ export default {
       if (contact.id === -1 || contact.id === undefined) return
       const isValid = contact.number.startsWith('#') === false
       this.disableList = true
-      var choix = [
+      var scelte = [
           {id: 1, title: this.LangString('APP_CONTACT_EDIT'), icons: 'fa-user-circle', color: 'orange'},
           {id: 2, title: this.LangString('APP_CONTACT_ADD_PICTURE'), icons: 'fa-camera'},
           {id: 4, title: this.LangString('APP_CONTACT_SHARE_CONTACT'), icons: 'fa-address-book'},
           {id: 5, title: this.LangString('CANCEL'), icons: 'fa-undo', color: 'red'}
       ]
-      if (isValid === true) { choix = [{id: 3, title: this.LangString('APP_PHONE_CALL'), icons: 'fa-phone'}, ...choix] }
-      const resp = await Modal.CreateModal({ choix: choix })
+      if (isValid === true) { scelte = [{id: 3, title: this.LangString('APP_PHONE_CALL'), icons: 'fa-phone'}, ...scelte] }
+      const resp = await Modal.CreateModal({ scelte: scelte })
       // lista delle scelte
       switch (resp.id) {
         case 1:

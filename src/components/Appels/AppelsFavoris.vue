@@ -27,7 +27,7 @@ export default {
       if (this.ignoreControls === true) return
       this.updateIgnoredControls(true)
       // qui apro il modal con le opzioni di selezione
-      const response = await Modal.CreateModal({choix: [...itemSelect.subMenu, {title: 'Cancella', icons: 'fa-undo', color: 'red'}]})
+      const response = await Modal.CreateModal({scelte: [...itemSelect.subMenu, {title: 'Cancella', icons: 'fa-undo', color: 'red'}]})
       if (response.title === 'Cancella' || response.title === 'cancel') { this.updateIgnoredControls(false); return }
       // dopo aver controllato se effettivamente si preme una opzione valida
       if (response.title !== 'Cancella') {

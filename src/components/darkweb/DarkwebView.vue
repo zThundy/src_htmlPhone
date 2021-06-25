@@ -85,9 +85,9 @@ export default {
           icons: 'fa-search'
         }, ...optionsChoix]
       }
-      const choix = await Modal.CreateModal({ choix: optionsChoix })
+      const scelte = await Modal.CreateModal({ scelte: optionsChoix })
       this.ignoreControls = false
-      switch (choix.id) {
+      switch (scelte.id) {
         case 1:
           this.reply(message)
           break

@@ -71,7 +71,7 @@ export default {
       if (this.ignoreControls) return
       this.ignoreControls = true
       try {
-        Modal.CreateModal({ choix: [
+        Modal.CreateModal({ scelte: [
           {id: 1, title: this.LangString('APP_BANK_LISTA_FATTURE'), icons: 'fa-list-alt'},
           {id: 2, title: this.LangString('APP_BANK_CREATE_MOVEMENT'), icons: 'fa-plus'},
           {id: -1, title: this.LangString('CANCEL'), icons: 'fa-undo', color: 'red'}
@@ -100,11 +100,11 @@ export default {
     async listaFatture () {
       this.ignoreControls = true
       try {
-        var choix = []
-        for (var key in this.fatture) { choix.push({ id: this.fatture[key].id, title: this.fatture[key].label + ' - ' + this.fatture[key].amount, icons: 'fa-money', fattura: this.fatture[key] }) }
-        choix.push({ id: -1, title: this.LangString('CANCEL'), icons: 'fa-undo', color: 'red' })
+        var scelte = []
+        for (var key in this.fatture) { scelte.push({ id: this.fatture[key].id, title: this.fatture[key].label + ' - ' + this.fatture[key].amount, icons: 'fa-money', fattura: this.fatture[key] }) }
+        scelte.push({ id: -1, title: this.LangString('CANCEL'), icons: 'fa-undo', color: 'red' })
         // dopo essermi creato la lista delle fatture, mi buildo il menù
-        Modal.CreateModal({ choix }).then(resp => {
+        Modal.CreateModal({ scelte }).then(resp => {
           if (resp.id === -1) { this.ignoreControls = false } else { this.selectedFatturaOptions(resp.fattura) }
         })
       } catch (e) { }
@@ -112,7 +112,7 @@ export default {
     selectedFatturaOptions (fattura) {
       this.ignoreControls = true
       try {
-        Modal.CreateModal({ choix: [
+        Modal.CreateModal({ scelte: [
           {id: 1, title: this.LangString('APP_BANK_MODAL_PAGA_FATTURE'), icons: 'fa-check-square'},
           {id: -1, title: this.LangString('CANCEL'), icons: 'fa-undo', color: 'red'}
         ] }).then(resp => {

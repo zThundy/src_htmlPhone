@@ -58,19 +58,14 @@ class PhoneAPI {
     try {
       var key = data.key
       var req = data.req
-      // console.log(req, key)
       if (req && key) {
         var decrypted = aes256.decrypt(key, req)
-        // console.log(decrypted)
         decrypted = JSON.parse(decrypted)
         if (decrypted) {
-          // console.log(decrypted.license, key)
           if (decrypted.license === key && decrypted.text === 'STATUS_OK') {
-            // console.log('changing value 2')
             store.commit('SET_LOADED_VALUE', true)
             this.post('PhoneNeedAuth', false)
           } else {
-            // console.log('changing value 2')
             store.commit('SET_LOADED_VALUE', false)
             this.post('PhoneNeedAuth', true)
           }
@@ -82,22 +77,6 @@ class PhoneAPI {
       }
     } catch (e) { console.log(e) }
   }
-
-  // async speakTTS (message, volume) {
-  //   if ('speechSynthesis' in window) {
-  //     var synthesis = window.speechSynthesis
-  //     // Create an utterance object
-  //     var utterance = new SpeechSynthesisUtterance(message)
-  //     // Set utterance properties
-  //     utterance.pitch = 0.0
-  //     utterance.rate = 1.5
-  //     // utterance.volume = volume - 0.1
-  //     // Speak the utterance
-  //     synthesis.speak(utterance)
-  //   } else {
-  //     console.log('Impossibile caricare il TTS')
-  //   }
-  // }
 
   getEmojis () {
     return emoji
@@ -299,7 +278,6 @@ class PhoneAPI {
   onnewMessage (data) {
     store.commit('ADD_MESSAGE', data.message)
     if (!data.message.owner) {
-      // console.log(JSON.stringify(data.message))
       Vue.notify({
         message: data.message.message,
         title: data.message.receiver + ':',
@@ -459,7 +437,6 @@ class PhoneAPI {
   // }
 
   onplaySound (data) {
-    // console.log(data.sound, data.volume)
     // qui mi roundo il volume con le funzioni custom
     // definite a fine file
     data.volume = Math.floor10(data.volume)
@@ -868,7 +845,6 @@ class PhoneAPI {
   }
 
   onchangePhoneCover (data) {
-    // console.log(data.label, data.cover)
     store.commit('SET_CURRENT_COVER', { label: data.label, value: data.cover })
   }
 
@@ -1006,6 +982,10 @@ class PhoneAPI {
     return this.post('aziendaEmployesAction', data)
   }
 
+  onreceiveAziendaCall (data) {
+    store.commit('UPDATE_AZIENDA_CALLS', data.calls)
+  }
+
   onupdateAziendaInfo (data) {
     store.commit('UPDATE_AZIENDA_APP', data)
   }
@@ -1031,12 +1011,10 @@ class PhoneAPI {
   }
 
   onreceiveBourseProfile (data) {
-    // console.log(JSON.stringify(data))
     store.commit('UPDATE_BOURSE_PROFILE', data.profile)
   }
 
   onreceiveBourseCrypto (data) {
-    // console.log(JSON.stringify(data))
     store.commit('UPDATE_BOURSE_CRYPTO', data.crypto)
   }
 

@@ -172,11 +172,11 @@ export default {
     },
     async snapGroupImage () {
       this.ignoreControls = true
-      let choix = [
+      let scelte = [
         {id: 1, title: this.LangString('APP_CONFIG_LINK_PICTURE'), icons: 'fa-link'},
         {id: 2, title: this.LangString('APP_CONFIG_TAKE_PICTURE'), icons: 'fa-camera'}
       ]
-      const resp = await Modal.CreateModal({ choix })
+      const resp = await Modal.CreateModal({ scelte })
       if (resp.id === 1) {
         Modal.CreateTextModal({ text: 'https://i.imgur.com/' }).then(valueText => {
           if (valueText.text !== '' && valueText.text !== undefined && valueText.text !== null && valueText.text !== 'https://i.imgur.com/') {
@@ -262,11 +262,11 @@ export default {
       // qui controllo: se premi destra mentre sei in fase di modifica (vedi whatsapp edit grouo)
       // allora gli creo un modal custom
       if (this.isAddingMembers === null || !this.isAddingMembers) {
-        let choix = [
+        let scelte = [
           {id: 1, title: this.LangString('APP_WHATSAPP_NEXT_STEP'), icons: 'fa-arrow-right'},
           {id: 2, title: this.LangString('CANCEL'), icons: 'fa-undo', color: 'red'}
         ]
-        const resp = await Modal.CreateModal({ choix })
+        const resp = await Modal.CreateModal({ scelte })
         switch (resp.id) {
           case 1:
             this.currentPage = this.STATES.INFO_GRUPPO
@@ -278,11 +278,11 @@ export default {
             break
         }
       } else {
-        let choix = [
+        let scelte = [
           {id: 1, title: this.LangString('APP_WHATSAPP_ADD_MEMBERS'), icons: 'fa-check', color: 'green'},
           {id: 2, title: this.LangString('CANCEL'), icons: 'fa-undo', color: 'red'}
         ]
-        const resp = await Modal.CreateModal({ choix })
+        const resp = await Modal.CreateModal({ scelte })
         switch (resp.id) {
           case 1:
             this.$router.push({ name: 'whatsapp.gruppo', params: { gruppo: this.gruppo, updategroups: true } })

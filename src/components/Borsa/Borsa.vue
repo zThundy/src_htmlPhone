@@ -148,11 +148,11 @@ export default {
       if (this.ignoreControls) return
       if (this.currentPage === 0) {
         this.ignoreControls = true
-        let choix = [
+        let scelte = [
           { id: 1, title: this.LangString('APP_BOURSE_CHOICE_BUY'), icons: 'fa-money', color: 'green' },
           { id: 2, title: this.LangString('CANCEL'), icons: 'fa-undo', color: 'red' }
         ]
-        Modal.CreateModal({ choix }).then(reponse => {
+        Modal.CreateModal({ scelte }).then(reponse => {
           if (reponse.id === 1) {
             this.$phoneAPI.getReponseText({
               limit: 5,
@@ -172,11 +172,11 @@ export default {
         })
       } else {
         this.ignoreControls = true
-        let choix = [
+        let scelte = [
           { id: 1, title: this.LangString('APP_BOURSE_CHOICE_SELL'), icons: 'fa-money', color: '#ff5f13' },
           { id: 2, title: this.LangString('CANCEL'), icons: 'fa-undo', color: 'red' }
         ]
-        Modal.CreateModal({ choix }).then(reponse => {
+        Modal.CreateModal({ scelte }).then(reponse => {
           if (reponse.id === 1) {
             this.$phoneAPI.getReponseText({
               limit: 5,

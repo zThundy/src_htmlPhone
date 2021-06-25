@@ -49,7 +49,7 @@ export default {
         { id: 2, title: this.LangString('APP_PHOTO_RECORD_VIDEO'), icons: 'fa-video-camera' },
         { id: -1, title: this.LangString('CANCEL'), icons: 'fa-undo', color: 'red' }
       ]
-      Modal.CreateModal({ choix: options }).then(resp => {
+      Modal.CreateModal({ scelte: options }).then(resp => {
         switch (resp.id) {
           case 1:
             this.$phoneAPI.takePhoto().then(photo => {

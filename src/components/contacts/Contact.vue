@@ -135,11 +135,11 @@ export default {
     deleteC () {
       if (this.id !== -1) {
         this.ignoreControls = true
-        let choix = [
+        let scelte = [
           { id: 1, title: this.LangString('APP_PHONE_DELETE'), icons: 'fa-trash', color: 'red' },
           { id: 2, title: this.LangString('CANCEL'), icons: 'fa-undo', color: 'red' }
         ]
-        Modal.CreateModal({ choix }).then(reponse => {
+        Modal.CreateModal({ scelte }).then(reponse => {
           this.ignoreControls = false
           if (reponse.id === 1) {
             this.$phoneAPI.deleteContact(this.id)

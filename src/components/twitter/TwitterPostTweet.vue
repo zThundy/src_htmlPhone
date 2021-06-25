@@ -35,11 +35,11 @@ export default {
     async onEnter () {
       if (this.modalopened) return
       this.modalopened = true
-      let choix = [
+      let scelte = [
         {id: 1, title: this.LangString('APP_TWITTER_POST_TWEET'), icons: 'fa-comment'},
         {id: 2, title: this.LangString('APP_TWITTER_POST_PICTURE'), icons: 'fa-camera'}
       ]
-      let resp = await Modal.CreateModal({ choix: choix })
+      let resp = await Modal.CreateModal({ scelte: scelte })
       if (resp.id === 1) {
         this.postTextTweet()
         this.modalopened = false
@@ -54,11 +54,11 @@ export default {
     },
     async choosePicType () {
       this.modalopened = true
-      let choix = [
+      let scelte = [
         {id: 1, title: this.LangString('APP_CONFIG_LINK_PICTURE'), icons: 'fa-link'},
         {id: 2, title: this.LangString('APP_CONFIG_TAKE_PICTURE'), icons: 'fa-camera'}
       ]
-      const resp = await Modal.CreateModal({ choix: choix })
+      const resp = await Modal.CreateModal({ scelte: scelte })
       if (resp.id === 1) {
         Modal.CreateTextModal({ text: 'https://i.imgur.com/' }).then(valueText => {
           if (valueText.text !== '' && valueText.text !== undefined && valueText.text !== null && valueText.text !== 'https://i.imgur.com/') {

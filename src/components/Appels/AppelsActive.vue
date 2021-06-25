@@ -126,11 +126,6 @@ export default {
     }
   },
   created () {
-    // if (this.tts) {
-    //   var numbstring = this.appelsDisplayNumber.split('').join(' ')
-    //   var text = 'Chiamata in arrivo.' + numbstring
-    //   this.$phoneAPI.speakTTS(text)
-    // }
     this.$bus.$on('keyUpEnter', this.onEnter)
     // this.$bus.$on('keyUpArrowLeft', this.onLeft)
     // this.$bus.$on('keyUpArrowRight', this.onRight)

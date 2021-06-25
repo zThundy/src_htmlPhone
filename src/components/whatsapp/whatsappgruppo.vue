@@ -132,18 +132,18 @@ export default {
       if (this.currentSelected === -1) {
         try {
           this.ignoreControls = true
-          let choix = [
+          let scelte = [
             {id: 1, title: this.LangString('APP_WHATSAPP_SEND_GPS'), icons: 'fa-location-arrow'},
             {id: -1, title: this.LangString('CANCEL'), icons: 'fa-undo', color: 'red'}
           ]
           if (this.enableTakePhoto) {
-            choix = [
+            scelte = [
               {id: 1, title: this.LangString('APP_WHATSAPP_SEND_GPS'), icons: 'fa-location-arrow'},
               {id: 2, title: this.LangString('APP_WHATSAPP_SEND_PHOTO'), icons: 'fa-picture-o'},
               {id: -1, title: this.LangString('CANCEL'), icons: 'fa-undo', color: 'red'}
             ]
           }
-          const resp = await Modal.CreateModal({ choix })
+          const resp = await Modal.CreateModal({ scelte })
           switch (resp.id) {
             case 1:
               this.ignoreControls = false
@@ -194,16 +194,16 @@ export default {
         let isGPS = /(-?\d+(\.\d+)?), (-?\d+(\.\d+)?)/.test(message.message)
         let isSMSImage = this.isImage(message)
         // dopo aver controllato che tipo di messaggio è, creo il modal
-        let choix = [
+        let scelte = [
           { id: 1, title: this.LangString('APP_WHATSAPP_SEND_GPS'), icons: 'fa-location-arrow' },
           { id: 2, title: this.LangString('APP_WHATSAPP_SEND_PHOTO'), icons: 'fa-picture-o' },
           { id: -1, title: this.LangString('CANCEL'), icons: 'fa-undo', color: 'red' }
         ]
-        if (isGPS === true) { choix = [{ id: 'gps', title: this.LangString('APP_WHATSAPP_SET_GPS'), icons: 'fa-location-arrow' }, ...choix] }
-        if (isSMSImage === true) { choix = [{ id: 'zoom', title: this.LangString('APP_MESSAGE_ZOOM_IMG'), icons: 'fa-search' }, ...choix] }
+        if (isGPS === true) { scelte = [{ id: 'gps', title: this.LangString('APP_WHATSAPP_SET_GPS'), icons: 'fa-location-arrow' }, ...scelte] }
+        if (isSMSImage === true) { scelte = [{ id: 'zoom', title: this.LangString('APP_MESSAGE_ZOOM_IMG'), icons: 'fa-search' }, ...scelte] }
         // disabilito i controlli
         this.ignoreControls = true
-        const data = await Modal.CreateModal({ choix })
+        const data = await Modal.CreateModal({ scelte })
         if (data.id === 'gps') {
           let val = message.message.match(/(-?\d+(\.\d+)?), (-?\d+(\.\d+)?)/)
           this.$phoneAPI.setGPS(val[1], val[3])

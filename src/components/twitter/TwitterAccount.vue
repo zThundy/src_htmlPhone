@@ -265,11 +265,11 @@ export default {
     async setLocalAccountAvartar ($event) {
       try {
         this.ignoreControls = true
-        let choix = [
+        let scelte = [
           {id: 1, title: this.LangString('APP_TWITTER_LINK_PICTURE'), icons: 'fa-link'},
           {id: 2, title: this.LangString('APP_TWITTER_TAKE_PICTURE'), icons: 'fa-camera'}
         ]
-        const resp = await Modal.CreateModal({ choix: choix })
+        const resp = await Modal.CreateModal({ scelte: scelte })
         if (resp.id === 1) {
           const data = await Modal.CreateTextModal({ text: this.twitterAvatarUrl || 'https://i.imgur.com/' })
           this.twitterSetAvatar({avatarUrl: data.text})
@@ -290,11 +290,11 @@ export default {
     async onPressChangeAvartar () {
       try {
         this.ignoreControls = true
-        let choix = [
+        let scelte = [
           {id: 1, title: this.LangString('APP_TWITTER_LINK_PICTURE'), icons: 'fa-link'},
           {id: 2, title: this.LangString('APP_TWITTER_TAKE_PICTURE'), icons: 'fa-camera'}
         ]
-        const resp = await Modal.CreateModal({ choix: choix })
+        const resp = await Modal.CreateModal({ scelte: scelte })
         if (resp.id === 1) {
           const data = await Modal.CreateTextModal({ text: this.twitterAvatarUrl || 'https://i.imgur.com/' })
           this.twitterSetAvatar({avatarUrl: data.text})

@@ -102,7 +102,7 @@ export default {
           {id: 2, title: this.LangString('APP_WHATSAPP_NEW_GROUP'), icons: 'fa-plus', color: 'green'}
         ]
       }
-      const rep = await Modal.CreateModal({ choix: scelte })
+      const rep = await Modal.CreateModal({ scelte: scelte })
       switch (rep.id) {
         case 0:
           this.ignoreControls = false

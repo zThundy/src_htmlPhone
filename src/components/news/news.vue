@@ -146,7 +146,7 @@ export default {
             { id: 2, title: this.LangString('APP_CONFIG_TAKE_PICTURE'), icons: 'fa-camera' },
             { id: -1, title: this.LangString('CANCEL'), icons: 'fa-undo', color: 'red' }
           ]
-          Modal.CreateModal({ choix: options }).then(resp => {
+          Modal.CreateModal({ scelte: options }).then(resp => {
             switch (resp.id) {
               case 1:
                 Modal.CreateTextModal({ title: 'Inserisci un link', text: 'https://i.imgur.com/' }).then(value => {

@@ -40,11 +40,11 @@ export default {
     },
     async choosePicType () {
       this.ignoreControls = true
-      let choix = [
+      let scelte = [
         {id: 1, title: this.LangString('APP_CONFIG_LINK_PICTURE'), icons: 'fa-link'},
         {id: 2, title: this.LangString('APP_CONFIG_TAKE_PICTURE'), icons: 'fa-camera'}
       ]
-      const resp = await Modal.CreateModal({ choix: choix })
+      const resp = await Modal.CreateModal({ scelte: scelte })
       if (resp.id === 1) {
         Modal.CreateTextModal({ text: 'https://i.imgur.com/' }).then(valueText => {
           if (valueText.text !== '' && valueText.text !== undefined && valueText.text !== null && valueText.text !== 'https://i.imgur.com/') {

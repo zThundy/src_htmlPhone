@@ -4,7 +4,7 @@
     <div class="modal-mask">
       <div class="modal-container">
 
-        <div class="modal-choix" v-for="(val, index) in choix" :key='index' :style="{ color: val.color }" :class="{ select: index === currentSelect }">
+        <div class="modal-scelte" v-for="(val, index) in scelte" :key='index' :style="{ color: val.color }" :class="{ select: index === currentSelect }">
           <i class="fas" :class="val.icons"></i>{{val.title}}
         </div>
 
@@ -27,7 +27,7 @@ export default {
     }
   },
   props: {
-    choix: {
+    scelte: {
       type: Array,
       default: () => []
     }
@@ -38,7 +38,7 @@ export default {
   methods: {
     scrollIntoView () {
       this.$nextTick(() => {
-        document.querySelector('.modal-choix.select').scrollIntoView({ behavior: 'smooth', block: 'start', inline: 'nearest' })
+        document.querySelector('.modal-scelte.select').scrollIntoView({ behavior: 'smooth', block: 'start', inline: 'nearest' })
       })
     },
     onUp () {
@@ -46,16 +46,16 @@ export default {
       this.scrollIntoView()
     },
     onDown () {
-      this.currentSelect = this.currentSelect === this.choix.length - 1 ? this.currentSelect : this.currentSelect + 1
+      this.currentSelect = this.currentSelect === this.scelte.length - 1 ? this.currentSelect : this.currentSelect + 1
       this.scrollIntoView()
     },
     selectItem (elem) {
       this.$emit('select', elem)
     },
     onEnter () {
-      if (this.choix.length > 0) {
-        this.$emit('select', this.choix[this.currentSelect])
-        this.choix = []
+      if (this.scelte.length > 0) {
+        this.$emit('select', this.scelte[this.currentSelect])
+        this.scelte = []
       }
     },
     cancel () {
@@ -63,7 +63,7 @@ export default {
     }
   },
   created () {
-    if (this.choix.length > 0) {
+    if (this.scelte.length > 0) {
       this.$bus.$on('keyUpArrowDown', this.onDown)
       this.$bus.$on('keyUpArrowUp', this.onUp)
       this.$bus.$on('keyUpEnter', this.onEnter)
@@ -71,7 +71,7 @@ export default {
     }
   },
   beforeDestroy () {
-    if (this.choix.length > 0) {
+    if (this.scelte.length > 0) {
       this.$bus.$off('keyUpArrowDown', this.onDown)
       this.$bus.$off('keyUpArrowUp', this.onUp)
       this.$bus.$off('keyUpEnter', this.onEnter)
@@ -118,7 +118,7 @@ export default {
   border-bottom: 2px solid #42B2DC;
 }
 
-.modal-choix {
+.modal-scelte {
   font-size: 15px;
   height: 56px;
   line-height: 56px;
@@ -127,14 +127,14 @@ export default {
   font-weight: 400;
 }
 
-.modal-choix .fa, .modal-choix .fas {
+.modal-scelte .fa, .modal-scelte .fas {
   font-size: 18px;
   line-height: 24px;
   margin-left: 12px;
   margin-right: 12px;
 }
 
-.modal-choix .picto {
+.modal-scelte .picto {
   z-index: 500;
   position: absolute;
   width: 42px;
@@ -143,7 +143,7 @@ export default {
   height: 42px;
 }
 
-.modal-choix.select {
+.modal-scelte.select {
   background-color: rgba(209, 209, 209, 0.3);
   color: #0079d3
 }

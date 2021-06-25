@@ -42,7 +42,7 @@ export default {
     async onEnter () {
       if (this.modalopened) return
       this.modalopened = true
-      let resp = await Modal.CreateModal({ choix: [
+      let resp = await Modal.CreateModal({ scelte: [
         {id: 1, title: this.LangString('APP_DARKWEB_POST_MESSAGE'), icons: 'fa-comment'},
         {id: 2, title: this.LangString('APP_DARKWEB_POST_PICTURE'), icons: 'fa-camera'}
       ] })

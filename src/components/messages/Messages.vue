@@ -209,7 +209,7 @@ export default {
         // let message = this.messagesListApp[this.selectMessage]
         let isGPS = /(-?\d+(\.\d+)?), (-?\d+(\.\d+)?)/.test(message.message)
         let hasNumber = /#([0-9]+)/.test(message.message)
-        let choix = [
+        let scelte = [
           {
             id: 'inoltra',
             title: this.LangString('APP_MESSAGE_INOLTRA_IMG'),
@@ -228,42 +228,42 @@ export default {
           }
         ]
         if (isGPS === true) {
-          choix = [{
+          scelte = [{
             id: 'gps',
             title: this.LangString('APP_MESSAGE_SET_GPS'),
             icons: 'fa-location-arrow'
-          }, ...choix]
+          }, ...scelte]
         }
         if (this.isSMSContact(message.message)) {
-          choix = [{
+          scelte = [{
             id: 'add_contact',
             title: this.LangString('APP_MESSAGE_ADD_CONTACT'),
             icons: 'fa-plus'
-          }, ...choix]
+          }, ...scelte]
           // {
           //   id: 'message_contact',
           //   title: this.LangString('APP_MESSAGE_MESSAGE_CONTACT'),
           //   icons: 'fa-comment'
-          // }, ...choix]
+          // }, ...scelte]
         }
-        if (hasNumber === true) {
+        if (hasNumber) {
           const num = message.message.match(/#([0-9-]*)/)[1]
-          choix = [{
+          scelte = [{
             id: 'num',
             title: `${this.LangString('APP_MESSAGE_MESS_NUMBER')} ${num}`,
             number: num,
             icons: 'fa-phone'
-          }, ...choix]
+          }, ...scelte]
         }
         if (this.isSMSImage(message.message)) {
-          choix = [{
+          scelte = [{
             id: 'zoom',
             title: this.LangString('APP_MESSAGE_ZOOM_IMG'),
             icons: 'fa-search'
-          }, ...choix]
+          }, ...scelte]
         }
         this.ignoreControls = true
-        const data = await Modal.CreateModal({choix})
+        const data = await Modal.CreateModal({scelte})
         if (data.id === 'delete') {
           this.deleteMessage({ id: message.id })
         } else if (data.id === 'gps') {
@@ -296,7 +296,7 @@ export default {
     async onSelectPhoneNumber (number) {
       try {
         this.ignoreControls = true
-        let choix = [
+        let scelte = [
           {
             id: 'sms',
             title: this.LangString('APP_MESSAGE_MESS_SMS'),
@@ -320,7 +320,7 @@ export default {
           // }
         ]
 
-        const data = await Modal.CreateModal({ choix })
+        const data = await Modal.CreateModal({ scelte })
         if (data.id === 'sms') {
           this.phoneNumber = number
           this.display = undefined
@@ -366,18 +366,18 @@ export default {
     async showOptions () {
       try {
         this.ignoreControls = true
-        let choix = [
+        let scelte = [
           {id: 1, title: this.LangString('APP_MESSAGE_SEND_GPS'), icons: 'fa-location-arrow'},
           {id: -1, title: this.LangString('CANCEL'), icons: 'fa-undo', color: 'red'}
         ]
         if (this.enableTakePhoto) {
-          choix = [
+          scelte = [
             {id: 1, title: this.LangString('APP_MESSAGE_SEND_GPS'), icons: 'fa-location-arrow'},
             {id: 2, title: this.LangString('APP_MESSAGE_SEND_PHOTO'), icons: 'fa-picture-o'},
             {id: -1, title: this.LangString('CANCEL'), icons: 'fa-undo', color: 'red'}
           ]
         }
-        const data = await Modal.CreateModal({ choix })
+        const data = await Modal.CreateModal({ scelte })
         if (data.id === 1) {
           this.sendMessage({ phoneNumber: this.phoneNumber, message: '%pos%' })
         }

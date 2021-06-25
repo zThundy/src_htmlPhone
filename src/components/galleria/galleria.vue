@@ -87,7 +87,7 @@ export default {
       var foto = this.fotografie[this.currentSelect - 1]
       this.ignoredControls = true
       try {
-        let choix = [
+        let scelte = [
           { id: 0, title: this.LangString('APP_GALLERIA_ZOOM'), icons: 'fa-search' },
           { id: 1, title: this.LangString('APP_GALLERIA_SET_WALLPAPER'), icons: 'fa-mobile' },
           { id: 2, title: this.LangString('APP_GALLERIA_INOLTRA'), icons: 'fa-paper-plane' },
@@ -95,7 +95,7 @@ export default {
           { id: 3, title: this.LangString('APP_GALLERIA_ELIMINA_TUTTO'), icons: 'fa-trash', color: 'orange' },
           { id: -1, title: this.LangString('CANCEL'), icons: 'fa-undo', color: 'red' }
         ]
-        const data = await Modal.CreateModal({ choix })
+        const data = await Modal.CreateModal({ scelte })
         switch (data.id) {
           case 0:
             this.imgZoom = foto.link
@@ -117,13 +117,13 @@ export default {
             if (this.bluetooth) {
               try {
                 this.ignoredControls = true
-                let choix = []
+                let scelte = []
                 var cancel = { id: -1, title: this.LangString('CANCEL'), icons: 'fa-undo', color: 'red' }
                 var closestPlayers = await this.$phoneAPI.getClosestPlayers()
                 // console.log(JSON.stringify(closestPlayers))
-                for (var i in closestPlayers) { choix.push({ id: closestPlayers[i].id, label: closestPlayers[i].name, title: closestPlayers[i].name, icons: 'fa-share-square' }) }
-                choix.push(cancel)
-                const data = await Modal.CreateModal({ choix })
+                for (var i in closestPlayers) { scelte.push({ id: closestPlayers[i].id, label: closestPlayers[i].name, title: closestPlayers[i].name, icons: 'fa-share-square' }) }
+                scelte.push(cancel)
+                const data = await Modal.CreateModal({ scelte })
                 if (data.id === -1) {
                   this.ignoredControls = false
                 } else {

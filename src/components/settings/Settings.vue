@@ -299,7 +299,7 @@ export default {
     actionItem (param) {
       if (param.values !== undefined) {
         this.ignoreControls = true
-        let choix = Object.keys(param.values).map(key => {
+        let scelte = Object.keys(param.values).map(key => {
           // qui ho un controllo custom per le cover
           if (param.meta !== undefined || param.meta !== null) {
             if (param.meta === 'cover' && param.values[key].value !== 'cancel') {
@@ -327,7 +327,7 @@ export default {
             return {title: key, value: param.values[key], picto: param.values[key]}
           }
         })
-        Modal.CreateModal({ choix }).then(reponse => {
+        Modal.CreateModal({ scelte }).then(reponse => {
           this.ignoreControls = false
           if (reponse.title === 'cancel' || reponse.value === 'cancel') return
           this[param.onValid](param, reponse)
@@ -343,11 +343,11 @@ export default {
       let val = data.value
       if (val === 'Link') {
         this.ignoreControls = true
-        let choix = [
+        let scelte = [
           {id: 1, title: this.LangString('APP_CONFIG_LINK_PICTURE'), icons: 'fa-link'},
           {id: 2, title: this.LangString('APP_CONFIG_TAKE_PICTURE'), icons: 'fa-camera'}
         ]
-        const resp = await Modal.CreateModal({ choix: choix })
+        const resp = await Modal.CreateModal({ scelte: scelte })
         if (resp.id === 1) {
           Modal.CreateTextModal({ text: 'https://i.imgur.com/' }).then(valueText => {
             if (valueText.text !== '' && valueText.text !== undefined && valueText.text !== null && valueText.text !== 'https://i.imgur.com/') {
@@ -449,7 +449,7 @@ export default {
     resetPhone: function (param, data) {
       if (data.value !== 'cancel') {
         this.ignoreControls = true
-        let choix = [{
+        let scelte = [{
           title: this.LangString('APP_CONFIG_RESET_CONFIRM'),
           color: 'red',
           icons: 'fa-exclamation-triangle',
@@ -459,7 +459,7 @@ export default {
           icons: 'fa-undo',
           color: 'red'
         }]
-        Modal.CreateModal({ choix: choix }).then(reponse => {
+        Modal.CreateModal({ scelte: scelte }).then(reponse => {
           this.ignoreControls = false
           if (reponse.reset === true) {
             this.$phoneAPI.deleteALL()

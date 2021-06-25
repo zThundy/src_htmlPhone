@@ -178,7 +178,7 @@ export default {
           { id: -1, title: this.LangString('CANCEL'), color: 'red', icons: 'fa-undo' }
         ]
       }
-      Modal.CreateModal({ choix: info }).then(response => {
+      Modal.CreateModal({ scelte: info }).then(response => {
         switch (response.id) {
           case 1:
             this.$router.push({ name: 'email.write' })

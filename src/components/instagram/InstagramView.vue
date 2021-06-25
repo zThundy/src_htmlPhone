@@ -80,9 +80,9 @@ export default {
         icons: 'fa-undo',
         color: 'red'
       }]
-      const choix = await Modal.CreateModal({ choix: optionsChoix })
+      const scelte = await Modal.CreateModal({ scelte: optionsChoix })
       this.ignoreControls = false
-      switch (choix.id) {
+      switch (scelte.id) {
         case 1:
           this.instagramToogleLike(post.id)
           break

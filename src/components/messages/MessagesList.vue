@@ -30,7 +30,7 @@ export default {
       if (data.number === undefined) return
       this.disableList = true
       Modal.CreateModal({
-        choix: [
+        scelte: [
           {id: 4, title: this.LangString('APP_PHONE_CALL'), icons: 'fa-phone'},
           {id: 8, title: this.LangString('APP_PHONE_VIDEO_CALL'), icons: 'fa-video-camera'},
           {id: 5, title: this.LangString('APP_PHONE_CALL_ANONYMOUS'), icons: 'fa-mask'},

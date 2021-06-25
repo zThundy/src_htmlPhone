@@ -52,7 +52,7 @@ export default {
   methods: {
     scrollIntoView () {
       this.$nextTick(() => {
-        document.querySelector('.modal-choix.select').scrollIntoView({ behavior: 'smooth', block: 'start', inline: 'nearest' })
+        document.querySelector('.modal-scelte.select').scrollIntoView({ behavior: 'smooth', block: 'start', inline: 'nearest' })
       })
     },
     onUp () {
@@ -60,14 +60,14 @@ export default {
       this.scrollIntoView()
     },
     onDown () {
-      this.currentSelect = this.currentSelect === this.choix.length - 1 ? this.currentSelect : this.currentSelect + 1
+      this.currentSelect = this.currentSelect === this.scelte.length - 1 ? this.currentSelect : this.currentSelect + 1
       this.scrollIntoView()
     },
     selectItem (elem) {
       this.$emit('select', elem)
     },
     onEnter () {
-      this.$emit('select', this.choix[this.currentSelect])
+      this.$emit('select', this.scelte[this.currentSelect])
     },
     cancel () {
       this.$emit('cancel')

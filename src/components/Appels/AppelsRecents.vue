@@ -5,7 +5,7 @@
       <img style="width: 32px; margin-left: 10px;" src="/html/static/img/icons_app/borrado.png" alt="Logotipo APR2">
 
       <div class="elem-content">
-        <div class="elem-content-p">{{histo.display}}</div>
+        <div class="elem-content-p">{{ histo.display }}</div>
 
         <div class="elem-content-s">
           <div class="elem-histo-pico" :class="{'reject': hc.accept === false}" v-for="(hc, i) in histo.lastCall" :key="i">
@@ -80,18 +80,18 @@ export default {
       const numero = item.num
       const isValid = numero.startsWith('#') === false
       this.updateIgnoredControls(true)
-      let choix = [
+      let scelte = [
         {id: 4, title: this.LangString('APP_PHONE_ADD'), icons: 'fa-plus'},
         {id: 1, title: this.LangString('APP_PHONE_DELETE'), icons: 'fa-trash', color: 'orange'},
         {id: 2, title: this.LangString('APP_PHONE_DELETE_ALL'), icons: 'fa-trash', color: 'red'},
         {id: 3, title: this.LangString('APP_PHONE_CANCEL'), icons: 'fa-undo', color: 'red'}
       ]
       if (isValid === true) {
-        choix = [{id: 5, title: this.LangString('APP_PHONE_SEND_MESSAGE'), icons: 'fa-sms'}, ...choix]
-        choix = [{id: 6, title: this.LangString('APP_PHONE_CALL_ANONYMOUS'), icons: 'fa-mask'}, ...choix]
-        choix = [{id: 0, title: this.LangString('APP_PHONE_CALL'), icons: 'fa-phone'}, ...choix]
+        scelte = [{id: 5, title: this.LangString('APP_PHONE_SEND_MESSAGE'), icons: 'fa-sms'}, ...scelte]
+        scelte = [{id: 6, title: this.LangString('APP_PHONE_CALL_ANONYMOUS'), icons: 'fa-mask'}, ...scelte]
+        scelte = [{id: 0, title: this.LangString('APP_PHONE_CALL'), icons: 'fa-phone'}, ...scelte]
       }
-      const rep = await Modal.CreateModal({ choix })
+      const rep = await Modal.CreateModal({ scelte })
       switch (rep.id) {
         case 0:
           this.startCall({ numero })

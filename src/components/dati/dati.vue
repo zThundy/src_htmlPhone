@@ -109,11 +109,11 @@ export default {
     async onRight () {
       if (this.disableBackspace) return
       this.disableBackspace = true
-      let choix = [
+      let scelte = [
         {id: 1, title: this.LangString('APP_DATI_REFRESH'), icons: 'fa-plus'},
         {id: 2, title: this.LangString('CANCEL'), color: 'red', icons: 'fa-undo'}
       ]
-      const resp = await Modal.CreateModal({ choix })
+      const resp = await Modal.CreateModal({ scelte })
       // risposta del menù
       switch (resp.id) {
         case 1:

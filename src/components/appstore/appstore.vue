@@ -70,11 +70,11 @@ export default {
       this.currentSelect = this.currentSelect + 1
     },
     async onRight () {
-      let choix = [
+      let scelte = [
         {id: 1, title: this.LangString('APP_APPSTORE_DOWNLOAD'), icons: 'fa-download'},
         {id: 2, title: this.LangString('CANCEL'), color: 'red', icons: 'fa-undo'}
       ]
-      const resp = await Modal.CreateModal({ choix })
+      const resp = await Modal.CreateModal({ scelte })
       // risposta del menù
       switch (resp.id) {
         case 1:

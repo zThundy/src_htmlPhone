@@ -120,7 +120,7 @@ export default {
         { id: 1, title: this.LangString('APP_EMAIL_SENDING_TITLE_CHOICE_ONE'), icons: 'fa-user' },
         { id: 2, title: this.LangString('APP_EMAIL_SENDING_TITLE_CHOICE_TWO'), icons: 'fa-pencil-square-o' }
       ]
-      Modal.CreateModal({ choix: info }).then(resp => {
+      Modal.CreateModal({ scelte: info }).then(resp => {
         switch (resp.id) {
           case 1:
             this.$router.push({ name: 'email.choosecontact', params: { email: this.email } })
@@ -143,7 +143,7 @@ export default {
         { id: 1, title: this.LangString('APP_EMAIL_SENDING_FINALIZE_CHOICE_ONE'), icons: 'fa-envelope' },
         { id: 2, title: this.LangString('APP_EMAIL_SENDING_FINALIZE_CHOICE_TWO'), icons: 'fa-trash', color: 'red' }
       ]
-      Modal.CreateModal({ choix: info }).then(resp => {
+      Modal.CreateModal({ scelte: info }).then(resp => {
         switch (resp.id) {
           case 1:
             if (this.email.receiver && this.email.title && this.email.message) {

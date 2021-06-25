@@ -65,11 +65,11 @@ export default {
     },
     async snapGroupImage () {
       this.ignoreControls = true
-      let choix = [
+      let scelte = [
         {id: 1, title: this.LangString('APP_CONFIG_LINK_PICTURE'), icons: 'fa-link'},
         {id: 2, title: this.LangString('APP_CONFIG_TAKE_PICTURE'), icons: 'fa-camera'}
       ]
-      const resp = await Modal.CreateModal({ choix })
+      const resp = await Modal.CreateModal({ scelte })
       if (resp.id === 1) {
         Modal.CreateTextModal({ text: 'https://i.imgur.com/' }).then(data => {
           if (data.text !== '' && data.text !== undefined && data.text !== null && data.text !== 'https://i.imgur.com/') {
