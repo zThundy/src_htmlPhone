@@ -81,7 +81,6 @@ export default {
     },
     openMessageOptions (data) {
       if (this.aziendaIngoreControls) return
-      console.log(JSON.stringify(data))
       try {
         this.SET_AZIENDA_IGNORE_CONTROLS(true)
         let scelte = [
@@ -97,7 +96,7 @@ export default {
           }
           this.SET_AZIENDA_IGNORE_CONTROLS(false)
         })
-      } catch (e) { console.log(e) }
+      } catch (e) {}
     }
   },
   created () {
