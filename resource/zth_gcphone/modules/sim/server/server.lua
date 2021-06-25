@@ -82,11 +82,11 @@ function NewSim(source)
 	local xPlayer = ESX.GetPlayerFromId(player)
 	
 	MySQL.Async.fetchAll('SELECT * FROM users WHERE identifier = @identifier', {['@identifier'] = xPlayer.identifier}, function(result)
-		local result = MySQL.Sync.fetchAll("SELECT * FROM sim", {})
+		local result = MySQL.Sync.fetchAll("SELECT * FROM phone_sim", {})
 		local phone_number = GenerateUniquePhoneNumber(result)
 		
 		if phone_number ~= nil then
-			MySQL.Async.insert('INSERT INTO sim(phone_number, identifier, piano_tariffario, minuti, messaggi, dati) VALUES(@phone_number, @identifier, @piano_tariffario, @minuti, @messaggi, @dati)', {
+			MySQL.Async.insert('INSERT INTO phone_sim(phone_number, identifier, piano_tariffario, minuti, messaggi, dati) VALUES(@phone_number, @identifier, @piano_tariffario, @minuti, @messaggi, @dati)', {
 				['@phone_number'] = phone_number,
 				['@identifier'] = xPlayer.identifier,
 				['@piano_tariffario'] = "nessuno",
@@ -139,7 +139,7 @@ cartesimT.daiSim = function(number, c_id)
 			end
 		end)
 
-		MySQL.Async.execute('UPDATE sim SET identifier = @identifier WHERE phone_number = @phone_number', {
+		MySQL.Async.execute('UPDATE phone_sim SET identifier = @identifier WHERE phone_number = @phone_number', {
 			['@identifier'] = xPlayer2.identifier,
 			['@phone_number'] = number
 		})
@@ -159,12 +159,12 @@ cartesimT.eliminaSim = function(sim)
 		['@phone_number'] = 0
 	})
 
-	MySQL.Async.fetchAll('SELECT phone_number FROM sim WHERE identifier = @identifier', {['@identifier'] = xPlayer.identifier}, function (result)
+	MySQL.Async.fetchAll('SELECT phone_number FROM phone_sim WHERE identifier = @identifier', {['@identifier'] = xPlayer.identifier}, function (result)
 		for i=1, #result, 1 do
 			local simZ = result[i].phone_number
 
 			if simZ == sim then
-				MySQL.Async.execute('DELETE FROM sim WHERE phone_number = @phone_number', {['@phone_number'] = simZ})
+				MySQL.Async.execute('DELETE FROM phone_sim WHERE phone_number = @phone_number', {['@phone_number'] = simZ})
 				gcPhoneT.updateCachedNumber(sim, false, false)
 				break
 			end
@@ -198,7 +198,7 @@ cartesimT.rinominaSim = function(number, name)
 	local player = source
 	local xPlayer = ESX.GetPlayerFromId(player)
 
-	MySQL.Async.execute('UPDATE sim SET nome_sim = @nome_sim WHERE identifier = @identifier AND phone_number = @phone_number', {
+	MySQL.Async.execute('UPDATE phone_sim SET nome_sim = @nome_sim WHERE identifier = @identifier AND phone_number = @phone_number', {
 		['@identifier'] = xPlayer.identifier,
 		['@phone_number'] = number,
 		['@nome_sim'] = name
@@ -210,7 +210,7 @@ ESX.RegisterServerCallback('esx_cartesim:GetList', function(source, cb)
 	local xPlayer = ESX.GetPlayerFromId(player)
 	local cartesim = {}
 
-	MySQL.Async.fetchAll("SELECT * FROM sim WHERE identifier = @identifier", {['@identifier'] = xPlayer.getIdentifier()}, function(data) 
+	MySQL.Async.fetchAll("SELECT * FROM phone_sim WHERE identifier = @identifier", {['@identifier'] = xPlayer.getIdentifier()}, function(data) 
 		for _, v in pairs(data) do
 			table.insert(cartesim, {number = v.phone_number, nome_sim = v.nome_sim, info = {label = v.piano_tariffario, minuti = v.minuti, messaggi = v.messaggi, dati = v.dati}})
 		end
@@ -219,7 +219,7 @@ ESX.RegisterServerCallback('esx_cartesim:GetList', function(source, cb)
 end)
 
 ESX.RegisterServerCallback("esx_cartesim:GetOffertaByNumber", function(source, cb, number)
-	MySQL.Async.fetchAll("SELECT * FROM sim WHERE phone_number = @phone_number", {['@phone_number'] = number}, function(result)
+	MySQL.Async.fetchAll("SELECT * FROM phone_sim WHERE phone_number = @phone_number", {['@phone_number'] = number}, function(result)
 		if #result > 0 then
 			cb(result[1])
 		end
@@ -234,7 +234,7 @@ ESX.RegisterServerCallback("esx_cartesim:rinnovaOfferta", function(source, cb, l
 		if v.label == label and moneys >= v.price then
 			xPlayer.removeAccountMoney("bank", v.price)
 
-			MySQL.Async.execute("UPDATE sim SET minuti = @minuti, messaggi = @messaggi, dati = @dati WHERE phone_number = @phone_number", {
+			MySQL.Async.execute("UPDATE phone_sim SET minuti = @minuti, messaggi = @messaggi, dati = @dati WHERE phone_number = @phone_number", {
 				['@phone_number'] = number,
 				['@minuti'] = v.minuti * 60,
 				['@messaggi'] = v.messaggi,
@@ -265,7 +265,7 @@ ESX.RegisterServerCallback("esx_cartesim:acquistaOffertaCheckSoldi", function(so
 	if moneys >= table.price then
 		xPlayer.removeAccountMoney("bank", table.price)
 
-		MySQL.Async.execute("UPDATE sim SET piano_tariffario = @piano_tariffario, minuti = @minuti, messaggi = @messaggi, dati = @dati WHERE phone_number = @phone_number", {
+		MySQL.Async.execute("UPDATE phone_sim SET piano_tariffario = @piano_tariffario, minuti = @minuti, messaggi = @messaggi, dati = @dati WHERE phone_number = @phone_number", {
 			['@phone_number'] = number,
 			['@piano_tariffario'] = table.label,
 			['@minuti'] = table.minuti * 60,

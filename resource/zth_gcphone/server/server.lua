@@ -34,7 +34,7 @@ MySQL.ready(function()
     MySQL.Async.execute("DELETE FROM phone_messages WHERE (DATEDIFF(CURRENT_DATE, time) > 15)", {})
     MySQL.Async.execute("DELETE FROM phone_calls WHERE (DATEDIFF(CURRENT_DATE, time) > 15)", {})
 
-    MySQL.Async.fetchAll("SELECT phone_number, identifier FROM sim", {}, function(numbers)
+    MySQL.Async.fetchAll("SELECT * FROM phone_sim", {}, function(numbers)
         for _, v in pairs(numbers) do
             CACHED_NUMBERS[tostring(v.phone_number)] = { identifier = v.identifier, inUse = false }
 
@@ -76,15 +76,13 @@ MySQL.ready(function()
                     end
 
                     gcPhone.debug(Config.Language["CACHING_STARTUP_3"])
-                    MySQL.Async.fetchAll("SELECT * FROM phone_sim", {}, function(sim)
-                        for _, v in pairs(sim) do
-                            CACHED_TARIFFS[v.phone_number] = v
-                        end
-                        
-                        gcPhone.debug(Config.Language["WIFI_LOAD_DEBUG_8"])
-                        gcPhone.debug(Config.Language["CACHING_STARTUP_4"])
-                        phone_loaded = true
-                    end)
+                    for _, v in pairs(numbers) do
+                        CACHED_TARIFFS[v.phone_number] = v
+                    end
+                    
+                    gcPhone.debug(Config.Language["WIFI_LOAD_DEBUG_8"])
+                    gcPhone.debug(Config.Language["CACHING_STARTUP_4"])
+                    phone_loaded = true
                 end)
             end)
         end)
@@ -94,7 +92,7 @@ end)
 Citizen.CreateThreadNow(function()
     while true do
         Citizen.Wait(Config.TimeToSaveTariffs * 1000)
-
+        gcPhone.debug(Config.Language["DEBUG_STARTED_SAVING_OF_TARIFFS"])
         for _, v in pairs(CACHED_TARIFFS) do
             MySQL.Async.execute("UPDATE phone_sim SET minuti = @m, messaggi = @s, dati = @i WHERE id = @id", {
                 ['@m'] = v.minuti,
@@ -102,7 +100,6 @@ Citizen.CreateThreadNow(function()
                 ['@i'] = v.dati,
                 ['@id'] = v.id
             })
-
             Citizen.Wait(50)
         end
     end
@@ -152,7 +149,6 @@ gcPhoneT.allUpdate = function()
         -- if notReceivedMessages > 0 then setMessagesReceived(num) end
 
         TriggerClientEvent("gcPhone:allMessage", player, getMessages(phone_number), notReceivedMessages)
-
         SyncCallHistory(player, phone_number)
     end)
 end
@@ -914,7 +910,7 @@ gcPhoneT.requestOffertaFromDatabase = function()
     MySQL.Async.fetchAll("SELECT phone_number FROM users WHERE identifier = @identifier", {['@identifier'] = xPlayer.identifier}, function(user)
         if #user > 0 then
             if user[1].phone_number ~= nil then
-                MySQL.Async.fetchAll("SELECT * FROM sim WHERE phone_number = @phone_number", {['@phone_number'] = user[1].phone_number}, function(sim)
+                MySQL.Async.fetchAll("SELECT * FROM phone_sim WHERE phone_number = @phone_number", {['@phone_number'] = user[1].phone_number}, function(sim)
                     if #sim > 0 then
                         minuti = math.floor(sim[1].minuti / 60)
                         
