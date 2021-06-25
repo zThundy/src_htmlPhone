@@ -21,6 +21,7 @@ CACHED_NAMES = {}
 CACHED_CONTACTS = {}
 CACHED_MESSAGES = {}
 CACHED_CALLS = {}
+CACHED_TARIFFS = {}
 
 AddEventHandler("playerDropped", function(reason)
     local player = source
@@ -35,7 +36,7 @@ MySQL.ready(function()
 
     MySQL.Async.fetchAll("SELECT phone_number, identifier FROM sim", {}, function(numbers)
         for _, v in pairs(numbers) do
-            CACHED_NUMBERS[tostring(v.phone_number)] = {identifier = v.identifier, inUse = false}
+            CACHED_NUMBERS[tostring(v.phone_number)] = { identifier = v.identifier, inUse = false }
 
             --[[
                 da esx_cartesim aggiorno la sim in uso al
@@ -75,29 +76,60 @@ MySQL.ready(function()
                     end
 
                     gcPhone.debug(Config.Language["CACHING_STARTUP_3"])
-                    gcPhone.debug(Config.Language["CACHING_STARTUP_4"])
-                    phone_loaded = true
+                    MySQL.Async.fetchAll("SELECT * FROM phone_sim", {}, function(sim)
+                        for _, v in pairs(sim) do
+                            CACHED_TARIFFS[v.phone_number] = v
+                        end
+                        
+                        gcPhone.debug(Config.Language["WIFI_LOAD_DEBUG_8"])
+                        gcPhone.debug(Config.Language["CACHING_STARTUP_4"])
+                        phone_loaded = true
+                    end)
                 end)
             end)
         end)
     end)
 end)
 
-local function GetPianoTariffarioParam(phone_number, param)
-    local result = MySQL.Sync.fetchScalar("SELECT " .. param .. " FROM sim WHERE phone_number = @phone_number", {
-        ['@phone_number'] = phone_number
-    })
+Citizen.CreateThreadNow(function()
+    while true do
+        Citizen.Wait(Config.TimeToSaveTariffs * 1000)
 
+        for _, v in pairs(CACHED_TARIFFS) do
+            MySQL.Async.execute("UPDATE phone_sim SET minuti = @m, messaggi = @s, dati = @i WHERE id = @id", {
+                ['@m'] = v.minuti,
+                ['@s'] = v.messaggi,
+                ['@i'] = v.dati,
+                ['@id'] = v.id
+            })
+        end
+    end
+end)
+
+local function GetPianoTariffarioParam(phone_number, param)
+    while not phone_loaded do Citizen.Wait(100) end
+    local result = nil
+    if CACHED_TARIFFS[phone_number] and CACHED_TARIFFS[phone_number][param] then
+        result = CACHED_TARIFFS[phone_number][param]
+    end
+    -- local result = MySQL.Sync.fetchScalar("SELECT " .. param .. " FROM sim WHERE phone_number = @phone_number", {
+    --     ['@phone_number'] = phone_number
+    -- })
     -- print(phone_number, param)
     return result and result or 0
 end
 
 local function UpdatePianoTariffario(phone_number, param, value)
+    while not phone_loaded do Citizen.Wait(100) end
+
     if phone_number ~= nil and param ~= nil and value ~= nil then
-		MySQL.Async.execute('UPDATE sim SET '..param..' = @'..param..' WHERE phone_number = @phone_number', {
-			['@phone_number'] = phone_number,
-			['@'..param] = value
-		})
+        if CACHED_TARIFFS[phone_number] and CACHED_TARIFFS[phone_number][param] then
+            CACHED_TARIFFS[phone_number][param] = value
+        end
+		-- MySQL.Async.execute('UPDATE sim SET '..param..' = @'..param..' WHERE phone_number = @phone_number', {
+		-- 	['@phone_number'] = phone_number,
+		-- 	['@'..param] = value
+		-- })
 	end
 end
 

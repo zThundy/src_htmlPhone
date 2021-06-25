@@ -457,7 +457,8 @@ INSERT INTO `phone_wifi_nets` (`steam_id`, `label`, `password`, `x`, `y`, `z`, `
 /*!40000 ALTER TABLE `phone_wifi_nets` ENABLE KEYS */;
 
 -- Dump della struttura di tabella esfx.sim
-CREATE TABLE IF NOT EXISTS `sim` (
+CREATE TABLE IF NOT EXISTS `phone_sim` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
   `identifier` varchar(50) NOT NULL,
   `phone_number` varchar(10) DEFAULT NULL,
   `piano_tariffario` varchar(16) DEFAULT 'nessuno',
@@ -465,13 +466,14 @@ CREATE TABLE IF NOT EXISTS `sim` (
   `messaggi` int(11) DEFAULT '0',
   `dati` int(11) DEFAULT '0',
   `nome_sim` varchar(10) DEFAULT '',
+  PRIMARY KEY (`id`),
   UNIQUE KEY `phone_number` (`phone_number`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
--- Dump dei dati della tabella esfx.sim: 0 rows
-DELETE FROM `sim`;
-/*!40000 ALTER TABLE `sim` DISABLE KEYS */;
-/*!40000 ALTER TABLE `sim` ENABLE KEYS */;
+-- Dump dei dati della tabella esfx.phone_sim: 0 rows
+DELETE FROM `phone_sim`;
+/*!40000 ALTER TABLE `phone_sim` DISABLE KEYS */;
+/*!40000 ALTER TABLE `phone_sim` ENABLE KEYS */;
 
 /*!40101 SET SQL_MODE=IFNULL(@OLD_SQL_MODE, '') */;
 /*!40014 SET FOREIGN_KEY_CHECKS=IF(@OLD_FOREIGN_KEY_CHECKS IS NULL, 1, @OLD_FOREIGN_KEY_CHECKS) */;

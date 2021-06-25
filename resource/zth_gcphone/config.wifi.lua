@@ -57,3 +57,9 @@ Config.BreakRadioTowersJob = "vodafone"
 -- if Config.EnableBreakWifiTowers is eanbled this is the
 -- break chance value for a single radio tower
 Config.BreakChance = 5
+
+-- Config.TimeToSaveTariffs is the time (in seconds) that the server will wait to
+-- save the whole cache of sims for the phone. Keep in mind that more is this time, less the server
+-- will perform on saving of this (default should be 1800 or 30 minutes)
+-- Keep in mind that the server will save only one sim at time every 500 milliseconds so the server will need some time
+Config.TimeToSaveTariffs = 1800

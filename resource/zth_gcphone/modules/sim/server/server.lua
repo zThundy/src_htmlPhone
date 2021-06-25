@@ -42,45 +42,39 @@ end
 
 RegisterServerEvent("esx:playerLoaded")
 AddEventHandler('esx:playerLoaded', function(source, xPlayer)
-	MySQL.Async.fetchAll("SELECT phone_number FROM users WHERE identifier = @identifier", {['@identifier'] = xPlayer.identifier}, function(result)
-		gcPhoneT.updateCachedNumber(result[1].phone_number, xPlayer.identifier, false)
+	local phone_number = gcPhoneT.getPhoneNumber(xPlayer.identifier)
 
-		if #result > 0 then
-			if result[1].phone_number ~= nil then
-				MySQL.Async.fetchAll("SELECT * FROM sim WHERE phone_number = @phone_number", {['@phone_number'] = result[1].phone_number}, function(sim)
-					if #sim > 0 then
+	if phone_number ~= nil then
+		gcPhoneT.updateCachedNumber(phone_number, xPlayer.identifier, false)
 
-						for _, v in pairs(Config.Tariffs) do
-							if v.label == sim[1].piano_tariffario then
-								TriggerClientEvent("gcphone:updateValoriDati", xPlayer.source, {
-									{
-										current = tonumber(math.floor(sim[1].minuti / 60)),
-										max = tonumber(v.minuti),
-										icon = "phone",
-										suffix = Config.Language["PHONE_TARIFFS_APP_LABEL_1"]
-									},
-									{
-										current = tonumber(sim[1].messaggi),
-										max = tonumber(v.messaggi),
-										icon = "message",
-										suffix = Config.Language["PHONE_TARIFFS_APP_LABEL_2"]
-									},
-									{
-										current = tonumber(sim[1].dati),
-										max = tonumber(v.dati),
-										icon = "discovery",
-										suffix = Config.Language["PHONE_TARIFFS_APP_LABEL_3"]
-									}
-								})
-								return
-							end
-						end
-
-					end
-				end)
+		if CACHED_TARIFFS[phone_number] then
+			for _, v in pairs(Config.Tariffs) do
+				if v.label == CACHED_TARIFFS[phone_number].piano_tariffario then
+					TriggerClientEvent("gcphone:updateValoriDati", xPlayer.source, {
+						{
+							current = tonumber(math.floor(CACHED_TARIFFS[phone_number].minuti / 60)),
+							max = tonumber(v.minuti),
+							icon = "phone",
+							suffix = Config.Language["PHONE_TARIFFS_APP_LABEL_1"]
+						},
+						{
+							current = tonumber(CACHED_TARIFFS[phone_number].messaggi),
+							max = tonumber(v.messaggi),
+							icon = "message",
+							suffix = Config.Language["PHONE_TARIFFS_APP_LABEL_2"]
+						},
+						{
+							current = tonumber(CACHED_TARIFFS[phone_number].dati),
+							max = tonumber(v.dati),
+							icon = "discovery",
+							suffix = Config.Language["PHONE_TARIFFS_APP_LABEL_3"]
+						}
+					})
+					return
+				end
 			end
 		end
-	end)
+	end
 end)
 
 function NewSim(source)
@@ -89,19 +83,29 @@ function NewSim(source)
 	
 	MySQL.Async.fetchAll('SELECT * FROM users WHERE identifier = @identifier', {['@identifier'] = xPlayer.identifier}, function(result)
 		local result = MySQL.Sync.fetchAll("SELECT * FROM sim", {})
-		local phoneNumber = GenerateUniquePhoneNumber(result) 
+		local phone_number = GenerateUniquePhoneNumber(result)
 		
-		if phoneNumber ~= nil then
-			MySQL.Async.execute('INSERT INTO sim (phone_number, identifier, piano_tariffario, minuti, messaggi, dati) VALUES (@phone_number, @identifier, @piano_tariffario, @minuti, @messaggi, @dati)', {
-				['@phone_number'] = phoneNumber,
+		if phone_number ~= nil then
+			MySQL.Async.insert('INSERT INTO sim(phone_number, identifier, piano_tariffario, minuti, messaggi, dati) VALUES(@phone_number, @identifier, @piano_tariffario, @minuti, @messaggi, @dati)', {
+				['@phone_number'] = phone_number,
 				['@identifier'] = xPlayer.identifier,
 				['@piano_tariffario'] = "nessuno",
 				['@minuti'] = 0,
 				['@messaggi'] = 0,
 				['@dati'] = 0
-			}, function (r)
+			}, function(id)
 				xPlayer.showNotification(Config.Language["SIM_CREATED_MESSAGE_OK"])
-				gcPhoneT.updateCachedNumber(phoneNumber, xPlayer.identifier, false)
+				gcPhoneT.updateCachedNumber(phone_number, xPlayer.identifier, false)
+
+				CACHED_TARIFFS[phone_number] = {
+					phone_number = phone_number,
+					identifier = xPlayer.identifier,
+					piano_tariffario = "nessuno",
+					minuti = 0,
+					messaggi = 0,
+					dati = 0,
+					id = id
+				}
 			end)
 		else
 			xPlayer.showNotification(Config.Language["SIM_CREATED_MESSAGE_ERROR"])
