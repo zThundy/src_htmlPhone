@@ -9,7 +9,6 @@ class VideoRTC {
     this.offer = null
     this.answer = null
     this.initiator = null
-    this.audioContext = null
     this.RTCConfig = RTCConfig
   }
 
@@ -131,17 +130,6 @@ class VideoRTC {
   onaddstream (event) {
     this.audio.srcObject = event.stream
     this.audio.play()
-  }
-
-  getAudioContext () {
-    var audioContext
-    if (typeof AudioContext === 'function') {
-      audioContext = new AudioContext()
-    } else if (typeof webkitAudioContext === 'function') {
-      // eslint-disable-line new-cap
-      audioContext = new webkitAudioContext()
-    }
-    return audioContext
   }
 }
 
