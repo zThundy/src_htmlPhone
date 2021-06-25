@@ -9,7 +9,7 @@
           </div>
           
           <div class="employe-title">
-            <span>{{ elem.name }} ({{elem.phoneNumber}})</span>
+            <span>{{ elem.name }} ({{ elem.phoneNumber }})</span>
           </div>
         </div>
 
@@ -18,12 +18,12 @@
         <div class="employe-body">
           <div class="employe-grade-body">
             <span class="employe-grade-label">{{ LangString("APP_AZIENDA_GRADE_LABEL") }}:</span>
-            <span class="employe-grade-text">{{elem.gradeName}} | {{elem.grade}}</span>
+            <span class="employe-grade-text">{{ elem.gradeName }} | {{ elem.grade }}</span>
           </div>
 
           <div class="employe-salary-body">
             <span class="employe-salary-label">{{ LangString("APP_AZIENDA_SALARY_LABEL") }}:</span>
-            <span class="employe-salary-text">{{elem.salary}} $</span>
+            <span class="employe-salary-text">{{ elem.salary }} $</span>
           </div>
         </div>
       </div>
@@ -77,12 +77,12 @@ export default {
       this.SET_AZIENDA_IGNORE_CONTROLS(true)
       try {
         let currentEmploye = this.myAziendaInfo.employes[this.currentSelected]
-        let choix = [
+        let scelte = [
           {id: 1, title: this.LangString('APP_AZIENDA_PROMOTE_EMPLOYE'), icons: 'fa-plus-square', color: 'green'},
           {id: 2, title: this.LangString('APP_AZIENDA_DEMOTE_EMPLOYE'), icons: 'fa-minus-square', color: 'orange'},
           {id: -1, title: this.LangString('CANCEL'), icons: 'fa-undo', color: 'red'}
         ]
-        Modal.CreateModal({ choix }).then(resp => {
+        Modal.CreateModal({ scelte }).then(resp => {
           if (resp.id === 1) {
             this.$phoneAPI.aziendaEmployesAction({ action: 'promote', employe: currentEmploye })
             this.SET_AZIENDA_IGNORE_CONTROLS(false)

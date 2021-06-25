@@ -86,17 +86,17 @@ export default {
       try {
         let currentMessage = this.aziendaMessages[this.currentSelected]
         let isGPS = /(-?\d+(\.\d+)?), (-?\d+(\.\d+)?)/.test(currentMessage.message)
-        let choix = [
+        let scelte = [
           {id: 1, title: this.LangString('APP_AZIENDA_SEND_POSITION'), icons: 'fa-location-arrow'},
           {id: -1, title: this.LangString('CANCEL'), icons: 'fa-undo', color: 'red'}
         ]
         if (!currentMessage.mine) {
-          choix = [{id: 2, title: this.LangString('APP_AZIENDA_CALL_NUMBER'), icons: 'fa-phone'}, ...choix]
+          scelte = [{id: 2, title: this.LangString('APP_AZIENDA_CALL_NUMBER'), icons: 'fa-phone'}, ...scelte]
         }
         if (isGPS) {
-          choix = [{id: 3, title: this.LangString('APP_AZIENDA_SET_POSITION'), icons: 'fa-location-arrow'}, ...choix]
+          scelte = [{id: 3, title: this.LangString('APP_AZIENDA_SET_POSITION'), icons: 'fa-location-arrow'}, ...scelte]
         }
-        Modal.CreateModal({ choix }).then(resp => {
+        Modal.CreateModal({ scelte }).then(resp => {
           if (resp.id === 1) {
             this.$phoneAPI.sendAziendaMessage({ azienda: this.myAziendaInfo.name, number: currentMessage.authorPhone, message: '%pos%' })
             this.SET_AZIENDA_IGNORE_CONTROLS(false)

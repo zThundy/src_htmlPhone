@@ -23,7 +23,7 @@ const getters = {
     if (state.videoCallsInfo === null) {
       return 'Errore'
     }
-    if (getters.isInitiatorCall === true) {
+    if (getters.isInitiatorVideoCall === true) {
       return state.videoCallsInfo.receiver_num
     }
     if (state.videoCallsInfo.hidden === true) {
@@ -31,7 +31,7 @@ const getters = {
     }
     return state.videoCallsInfo.transmitter_num
   },
-  isInitiatorCall (state, getters) {
+  isInitiatorVideoCall (state, getters) {
     if (state.videoCallsInfo === null) {
       return false
     }

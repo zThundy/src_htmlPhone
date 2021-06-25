@@ -5,10 +5,10 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex'
+import { mapActions } from 'vuex'
 export default {
   methods: {
-    ...mapGetters(['setupUnreadAziendaMessages'])
+    ...mapActions(['setupUnreadAziendaMessages'])
   },
   created: function () {
     this.$phoneAPI.requestAziendaMessages()

@@ -15,11 +15,16 @@ const state = {
     {
       id: 'chat',
       label: 'APP_AZIENDA_EMPLOYES_CHAT'
+    },
+    {
+      id: 'calls',
+      label: 'APP_AZIENDA_CALLS'
     }
   ],
   aziendaMessages: [],
   unreadAziendaMessages: [],
-  aziendaIngoreControls: false
+  aziendaIngoreControls: false,
+  aziendaCalls: []
 }
 
 const getters = {
@@ -29,6 +34,7 @@ const getters = {
   aziendaMessages: ({ aziendaMessages }) => aziendaMessages,
   aziendaIngoreControls: ({ aziendaIngoreControls }) => aziendaIngoreControls,
   unreadAziendaMessages: ({ unreadAziendaMessages }) => unreadAziendaMessages,
+  aziendaCalls: ({ aziendaCalls }) => aziendaCalls,
   UnreadAziendaMessagesLength: ({ aziendaMessages }) => {
     if (aziendaMessages) {
       return aziendaMessages.filter(e => e.isRead !== 1).length
@@ -84,6 +90,10 @@ const mutations = {
         val.isRead = 0
       }
     }
+  },
+  UPDATE_AZIENDA_CALLS (state, data) {
+    data.time = new Date().toUTCString()
+    state.aziendaCalls.push(data)
   }
 }
 
@@ -103,14 +113,72 @@ if (process.env.NODE_ENV !== 'production') {
   // jobLabel = "Meccanico",
   // canedit = true -- permette di modificare le cose da capo
 
+  state.aziendaCalls = [
+    {
+      message: 'Test message',
+      number: '55523773',
+      coords: { x: 1.2, y: 2.3, z: 2.2 },
+      time: new Date().toUTCString()
+    },
+    {
+      message: 'Test message 2Test message 2Test message 2Test message 2Test message 2Test message 2Test message 2Test message 2Test message 2Test message 2Test message 2Test message 2Test message 2Test message 2Test message 2Test message 2Test message 2Test message 2Test message 2Test message 2Test message 2',
+      number: '5552383',
+      coords: { x: 8.2, y: 51.3, z: 20.2 },
+      time: new Date().toUTCString()
+    },
+    {
+      message: 'Troll call :clown:',
+      number: '555223223',
+      coords: { x: 80.2, y: 51.3, z: 20.2 },
+      time: new Date().toUTCString()
+    },
+    {
+      message: 'Troll call :clown:',
+      number: '555223223',
+      coords: { x: 80.2, y: 51.3, z: 20.2 },
+      time: new Date().toUTCString()
+    },
+    {
+      message: 'Troll call :clown:',
+      number: '555223223',
+      coords: { x: 80.2, y: 51.3, z: 20.2 },
+      time: new Date().toUTCString()
+    },
+    {
+      message: 'Troll call :clown:',
+      number: '555223223',
+      coords: { x: 80.2, y: 51.3, z: 20.2 },
+      time: new Date().toUTCString()
+    },
+    {
+      message: 'Troll call :clown:',
+      number: '555223223',
+      coords: { x: 80.2, y: 51.3, z: 20.2 },
+      time: new Date().toUTCString()
+    },
+    {
+      message: 'Troll call :clown:',
+      number: '555223223',
+      coords: { x: 80.2, y: 51.3, z: 20.2 },
+      time: new Date().toUTCString()
+    },
+    {
+      message: 'Troll call :clown:',
+      number: '555223223',
+      coords: { x: 80.2, y: 51.3, z: 20.2 },
+      time: new Date().toUTCString()
+    }
+  ]
+
   state.myJobInfo = {
     name: 'Juba ja',
     gradeName: 'Direttore',
     grade: 3,
     buttons: {
       'employes': true,
-      'salary': true,
-      'chat': true
+      // 'salary': true,
+      // 'chat': true,
+      'calls': true
     }
   }
 

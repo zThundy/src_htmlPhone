@@ -262,3 +262,13 @@ gcPhoneT.azienda_requestAziendaMessages = function()
         end
     end)
 end
+
+gcPhoneT.azienda_sendAziendaCallNotification = function(data)
+    local player = source
+	local identifier = gcPhoneT.getPlayerID(player)
+    local phone_number = gcPhoneT.getPhoneNumber(identifier)
+
+    data.emergencyNumber = data.number
+    data.number = phone_number
+    return data
+end

@@ -22,6 +22,7 @@ Config.Language = {
         ["CACHE_NUMBERS_3"] = "Utente %s sta entrando nel server, registrando %s come numero 'inUse'",
 
         -- CLIENT FILES
+        ["APP_AZIENDA_NEW_EMERGENCY_CALL"] = "Nuova chiamata di emergenza",
         ["BLUETOOTH_CANNOT_GET_IMAGE"] = "~r~Impossibile ricevere l'immagine, bluetooth spento",
         ["BOURSE_CRYPTO_BOUGHT_OK"] = "~g~Hai comprato %sx %s per %s$ l'uno",
         ["BOURSE_CRYPTO_BOUGHT_ERROR"] = "~r~La trasnazione non è avvenuta con successo",
@@ -170,6 +171,7 @@ Config.Language = {
         ["CACHE_NUMBERS_3"] = "User %s is joining, registering %s as 'inUse' number",
 
         -- CLIENT FILES
+        ["APP_AZIENDA_NEW_EMERGENCY_CALL"] = "New emergency call",
         ["BLUETOOTH_CANNOT_GET_IMAGE"] = "~r~Cannot receive image, bluetooth off",
         ["BOURSE_CRYPTO_BOUGHT_OK"] = "~g~You bought %sx %s for %s each",
         ["BOURSE_CRYPTO_BOUGHT_ERROR"] = "~r~Transaction went off with an error",

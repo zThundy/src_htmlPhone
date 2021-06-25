@@ -14,21 +14,29 @@ function notifyAlertSMS(number, alert, listSrc)
 	if alert.coords ~= nil then mess = mess .. '\n GPS: ' .. alert.coords.x .. ', ' .. alert.coords.y end
 
 	for _, source in pairs(listSrc) do
-		local xPlayer = ESX.GetPlayerFromId(source)
+		if not Config.EnableAziendaAppCalls then
+			local xPlayer = ESX.GetPlayerFromId(source)
 
-		if xPlayer ~= nil then
-			local phone_number = gcPhoneT.getPhoneNumber(xPlayer.identifier)
+			if xPlayer ~= nil then
+				local phone_number = gcPhoneT.getPhoneNumber(xPlayer.identifier)
 
-			if phone_number ~= nil then
-				if Config.ServicesNames[number] then
-					_internalAddMessage(Config.ServicesNames[number], phone_number, mess, 0, function(message)
-						-- local message = gcPhoneT.internalAddMessage(Config.ServicesNames[number], phone_number, mess, 0)
-						TriggerClientEvent("gcPhone:receiveMessage", source, message)
-					end)
-				else
-					xPlayer.showNotification(Config.Language["EMERGENCY_CALL_MESSAGE_ERROR"])
+				if phone_number ~= nil then
+					if Config.ServicesNames[number] then
+						_internalAddMessage(Config.ServicesNames[number], phone_number, mess, 0, function(message)
+							-- local message = gcPhoneT.internalAddMessage(Config.ServicesNames[number], phone_number, mess, 0)
+							TriggerClientEvent("gcPhone:receiveMessage", source, message)
+						end)
+					else
+						xPlayer.showNotification(Config.Language["EMERGENCY_CALL_MESSAGE_ERROR"])
+					end
 				end
 			end
+		else
+			alert.newMessage = mess
+			alert.coords.x = tonumber(string.format("%.3f", alert.coords.x))
+			alert.coords.y = tonumber(string.format("%.3f", alert.coords.y))
+			alert = gcPhoneT.azienda_sendAziendaCallNotification(alert)
+			TriggerClientEvent("gcphone:azienda_sendEmergencyCall", source, alert)
 		end
 	end
 end
@@ -38,10 +46,10 @@ gcPhoneT.servicesStartCall = function(number, message, coords, hideNumber)
 	local phone_number = nil
 
 	if player ~= nil and player ~= 0 then
-		local xPlayer = ESX.GetPlayerFromId(player)
-		phone_number = gcPhoneT.getPhoneNumber(xPlayer.identifier)
+		local identifier = gcPhoneT.getPlayerID(player)
+		phone_number = gcPhoneT.getPhoneNumber(identifier)
 	end
 	
-	if hideNumber ~= nil or phone_number == nil then phone_number = Config.Language["EMERGENCY_CALL_NO_NUMBER"] end
+	if hideNumber or not phone_number then phone_number = Config.Language["EMERGENCY_CALL_NO_NUMBER"] end
 	notifyAlertSMS(number, { message = message, coords = coords, numero = phone_number }, GetPlayersFromJob(number))
 end

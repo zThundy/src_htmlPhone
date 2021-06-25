@@ -24,8 +24,8 @@
       </div>
 
       <div class="buttons-container">
-        <div v-for="(val, key) in buttons" :key="key">
-          <input v-if="myJobInfo.buttons[val.id]" type='button' class="generic-button" :class="{ select: currentSelect == key }" :value="LangString(val.label)" />
+        <div v-for="(val, key) in appButtons" :key="key">
+          <input type='button' class="generic-button" :class="{ select: currentSelect == key }" :value="LangString(val.label)" />
         </div>
       </div>
     </div>
@@ -59,6 +59,7 @@ import { mapGetters, mapMutations } from 'vuex'
 
 import AziendaChat from './aziendachat'
 import AziendaEmployes from './aziendaemployes'
+import AziendaCalls from './aziendacalls'
 
 import { Amount } from 'mand-mobile'
 import 'mand-mobile/lib/mand-mobile.css'
@@ -76,14 +77,18 @@ export default {
       showingComponent: null,
       COMPONENTS: {
         'chat': AziendaChat,
-        'employes': AziendaEmployes
+        'employes': AziendaEmployes,
+        'calls': AziendaCalls
       },
       animate: false,
       changingRouter: 'hidden'
     }
   },
   computed: {
-    ...mapGetters(['LangString', 'myJobInfo', 'myAziendaInfo', 'buttons', 'aziendaIngoreControls'])
+    ...mapGetters(['LangString', 'myJobInfo', 'myAziendaInfo', 'buttons', 'aziendaIngoreControls']),
+    appButtons () {
+      return this.buttons.filter(element => this.myJobInfo.buttons[element.id] !== null && this.myJobInfo.buttons[element.id] !== undefined)
+    }
   },
   watch: {
   },
@@ -94,21 +99,21 @@ export default {
       if (this.showingComponent) return
       if (this.currentSelect === -1) return
       this.currentSelect = this.currentSelect - 1
-      this.checkButtonsOnScroll(true)
+      // this.checkButtonsOnScroll(true)
     },
     onDown () {
       if (this.aziendaIngoreControls) return
       if (this.showingComponent) return
-      if (this.currentSelect === this.buttons.length - 1) return
+      if (this.currentSelect === this.appButtons.length - 1) return
       this.currentSelect = this.currentSelect + 1
-      this.checkButtonsOnScroll(false)
+      // this.checkButtonsOnScroll(false)
     },
     onEnter () {
       if (this.aziendaIngoreControls) return
       if (this.showingComponent) return
       if (this.currentSelect === -1) return
-      if (!this.myJobInfo.buttons[this.buttons[this.currentSelect].id]) return
-      this.showingComponent = this.buttons[this.currentSelect].id
+      if (!this.myJobInfo.buttons[this.appButtons[this.currentSelect].id]) return
+      this.showingComponent = this.appButtons[this.currentSelect].id
       this.animate = true
       this.SET_AZIENDA_IGNORE_CONTROLS(true)
       setTimeout(() => {
@@ -126,25 +131,25 @@ export default {
         return
       }
       this.$router.push({ name: 'menu' })
-    },
-    checkButtonsOnScroll (up) {
-      if (this.currentSelect === -1) return
-      if (!this.myJobInfo.buttons[this.buttons[this.currentSelect].id]) {
-        if (!up) {
-          if (this.currentSelect === 0) {
-            this.currentSelect = 1
-          } else if (this.currentSelect === 1) {
-            this.currentSelect = 2
-          }
-        } else {
-          if (this.currentSelect === 2) {
-            this.currentSelect = 1
-          } else if (this.currentSelect === 1) {
-            this.currentSelect = 0
-          }
-        }
-      }
-    }
+    } // ,
+    // checkButtonsOnScroll (up) {
+    //   if (this.currentSelect === -1) return
+    //   if (!this.myJobInfo.buttons[this.buttons[this.currentSelect].id]) {
+    //     if (!up) {
+    //       if (this.currentSelect === 0) {
+    //         this.currentSelect = 1
+    //       } else if (this.currentSelect === 1) {
+    //         this.currentSelect = 2
+    //       }
+    //     } else {
+    //       if (this.currentSelect === 2) {
+    //         this.currentSelect = 1
+    //       } else if (this.currentSelect === 1) {
+    //         this.currentSelect = 0
+    //       }
+    //     }
+    //   }
+    // }
   },
   created () {
     setTimeout(() => {
@@ -261,7 +266,7 @@ export default {
 .generic-button {
   width: 250px;
   height: 50px;
-  margin-top: 95px;
+  margin-top: 30%;
 
   border: none;
   border-radius: 20px;
