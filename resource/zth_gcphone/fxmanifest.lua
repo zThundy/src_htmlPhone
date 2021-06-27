@@ -1,4 +1,4 @@
-fx_version "bodacious"
+fx_version "cerulean"
 game "gta5"
 version "2.1.6"
 author "zThundy__"

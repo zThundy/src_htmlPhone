@@ -349,7 +349,6 @@ gcPhoneT.updateCachedNumber = function(number, identifier, isChanging)
     end
 
     local oldNumber = gcPhoneT.getPhoneNumber(identifier)
-    -- print(ESX.DumpTable(CACHED_NUMBERS[number]), ESX.DumpTable(CACHED_NUMBERS[oldNumber]), oldNumber)
 
     -- qui controllo se la il numero sta venendo cambiato
     -- con un altra sim
@@ -361,7 +360,6 @@ gcPhoneT.updateCachedNumber = function(number, identifier, isChanging)
             else
                 -- da esx_cartesim al login del player
                 gcPhone.debug(Config.Language["CACHE_NUMBERS_3"]:format(identifier, number))
-                -- print("Registrando numero al login", number, identifier)
                 CACHED_NUMBERS[number].inUse = true
             end
         else
@@ -398,11 +396,6 @@ gcPhoneT.getSourceFromIdentifier = function(identifier, cb)
 end
 
 gcPhoneT.getPhoneNumber = function(identifier)
-    --[[
-        local result = MySQL.Sync.fetchAll("SELECT * FROM users WHERE identifier = @identifier", {['@identifier'] = identifier })
-        if #result > 0 then return result[1].phone_number end
-    ]]
-
     if identifier then
         for number, v in pairs(CACHED_NUMBERS) do
             if tostring(v.identifier) == tostring(identifier) and v.inUse then
@@ -415,17 +408,6 @@ gcPhoneT.getPhoneNumber = function(identifier)
 end
 
 gcPhoneT.getIdentifierByPhoneNumber = function(phone_number)
-    --[[
-        local result = MySQL.Sync.fetchAll("SELECT identifier FROM users WHERE phone_number = @phone_number", {['@phone_number'] = phone_number })
-        local isInstalled = true
-        if result[1] == nil then
-            result = MySQL.Sync.fetchAll("SELECT identifier FROM sim WHERE phone_number = @phone_number", {['@phone_number'] = phone_number})
-            isInstalled = false
-        end
-
-        if result[1] ~= nil then return result[1].identifier, isInstalled end
-    ]]
-
     phone_number = tostring(phone_number)
     if CACHED_NUMBERS[phone_number] == nil then return nil, false end
 
@@ -452,7 +434,6 @@ end
 --==================================================================================================================
 
 function getContacts(identifier)
-    -- print(DumpTable(CACHED_CONTACTS))
     if not CACHED_CONTACTS[tostring(identifier)] then CACHED_CONTACTS[tostring(identifier)] = {} end
     return CACHED_CONTACTS[tostring(identifier)]
 end
@@ -509,7 +490,7 @@ end
 gcPhoneT.updateContact = function(id, display, number, email)
     local player = source
     local identifier = gcPhoneT.getPlayerID(player)
-    
+
     MySQL.Async.execute("UPDATE phone_users_contacts SET number = @number, display = @display, email = @email WHERE id = @id", { 
         ['@number'] = number,
         ['@display'] = display,
@@ -567,8 +548,6 @@ function addMessage(source, identifier, phone_number, message)
     local otherIdentifier, isInstalled = gcPhoneT.getIdentifierByPhoneNumber(phone_number)
     local myPhone = gcPhoneT.getPhoneNumber(identifier)
     local hasAirplane = gcPhoneT.getAirplaneForUser(otherIdentifier)
-
-    -- print(otherIdentifier, isInstalled)
     
     if otherIdentifier and myPhone then
         segnaleTransmitter = PLAYERS_PHONE_SIGNALS[gcPhoneT.getPlayerSegnaleIndex(PLAYERS_PHONE_SIGNALS, identifier)]
@@ -657,7 +636,6 @@ function _internalAddMessage(transmitter, receiver, message, owner, cb)
         table.insert(CACHED_MESSAGES[receiver], message)
         cb(message)
     end)
-    -- return message
 end
 
 gcPhoneT.setReadMessageNumber = function(transmitter_number)

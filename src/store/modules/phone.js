@@ -57,7 +57,7 @@ const getters = {
   backgroundLabel: (state, getters) => getters.background.label,
   backgroundURL: (state, getters) => {
     if (getters.background.value !== undefined) {
-      if (getters.background.value.startsWith('http') === true) {
+      if (getters.background.value.startsWith('http') === true || getters.background.value.startsWith('https') === true) {
         return getters.background.value
       }
     }

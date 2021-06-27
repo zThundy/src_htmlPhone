@@ -9,7 +9,7 @@ import emoji from './emoji.json'
 const keyEmoji = Object.keys(emoji)
 
 let USE_VOICE_RTC = false
-const BASE_URL = 'http://zth_gcphone/'
+const BASE_URL = 'https://zth_gcphone/'
 
 /* eslint-disable camelcase */
 class PhoneAPI {
@@ -330,7 +330,7 @@ class PhoneAPI {
       const rtcOffer = await this.videoRTC.prepareCall()
       return this.post('startVideoCall', { numero, rtcOffer, extraData })
     } else {
-      return this.post('sendErrorMessage', { message: store.getters.LangString('PHONE_RTC_NOT_ENABLED') })
+      return this.sendErrorMessage(store.getters.LangString('PHONE_RTC_NOT_ENABLED'))
     }
   }
 
@@ -338,6 +338,8 @@ class PhoneAPI {
     if (USE_VOICE_RTC === true) {
       const rtcAnswer = await this.videoRTC.acceptCall(infoCall)
       return this.post('acceptVideoCall', { infoCall, rtcAnswer })
+    } else {
+      return this.sendErrorMessage(store.getters.LangString('PHONE_RTC_NOT_ENABLED'))
     }
   }
 
