@@ -44,9 +44,16 @@ class VideoRTC {
     this.initiator = true
     // this.myPeerConnection.addStream(this.stream)
     this.stream = document.getElementById("video-recorder-canvas").captureStream()
-    document.getElementById("target-stream").style.display = "none"
+    // document.getElementById("target-stream").style.display = "none"
+
+    // with this i will add the current source to the phone frame to show
+    // to client the current recording screen
+    let video = document.getElementById("target-stream")
+
     this.stream.getTracks().forEach(track => {
-      //console.log("addtrack to " + serverId);
+      // here i'm adding the track taken from the video canvas to the video object
+      // and to the rtc connection
+      video.srcObject.addTrack(track);
       this.myPeerConnection.addTrack(track, streamElement)
     })
 
