@@ -1,41 +1,24 @@
 <template>
   <div class="home" v-bind:style="{ background: 'url(' + backgroundURL +')' }">
-    <InfoBare style="width: 330px;" />
-
+    <InfoBare style="width: 100%;" />
     <DropdownNotifications :show="showDropdown"/>
-
-    <!--
-    <span class="warningMess" v-if="messages.length >= warningMessageCount && warningMessageCount !== -1">
-      <div class="warningMess_icon"><i class="fa fa-warning"></i></div>
-      <span class="warningMess_content">
-        <span class="warningMess_title">{{ LangString('PHONE_WARNING_MESSAGE') }}</span><br>
-        <span class="warningMess_mess">{{messages.length}} / {{warningMessageCount}} {{LangString('PHONE_WARNING_MESSAGE_MESS')}}</span>
-      </span>
-    </span>
-     -->
-
-    <div class="time"></div>
-    <!-- <div class="time-display">{{timeDisplay}}</div> -->
     
+    <span v-if="showDropdown === false" class="time">
+      <i class="meteo-icon fas fa-sun"></i>
+      <current-time class="current-time"></current-time>
+    </span>
+
     <div class='home_buttons'>
-      
-      <button style=" top: 73px; margin-left: 10px; margin-right: 10px;"
-        v-for="(but, key) of AppsHome" 
-        v-bind:key="but.name" 
-        v-bind:class="{select: key === currentSelect}"
-        v-bind:style="{backgroundImage: 'url(' + but.icons +')'}"
+      <button v-for="(but, key) of AppsHome" :key="but.name" 
+        :class="{ select: key === currentSelect }"
+        class="app_buttons"
+        :style="{ backgroundImage: 'url(' + but.icons +')' }"
       >
-          <!--{{but.intlName}}-->
-        <span class="puce" v-if="but.puce !== undefined && but.puce !== 0">{{but.puce}}</span>
+        <span class="puce" v-if="but.puce !== undefined && but.puce !== 0">{{ but.puce }}</span>
       </button>
         
       <div class="btn_menu_ctn">
-        <button
-          class="btn_menu" 
-          :class="{ select: AppsHome.length === currentSelect }" 
-          v-bind:style="{ backgroundImage: 'url(' + '/html/static/img/icons_app/menu.png' +')' }"
-        >
-
+        <button :class="{ select: AppsHome.length === currentSelect }" :style="{ backgroundImage: 'url(' + '/html/static/img/icons_app/menu.png' +')' }">
         </button>
       </div>
     </div>
@@ -48,13 +31,11 @@ import { mapGetters, mapActions } from 'vuex'
 import InfoBare from './InfoBare'
 import TransitionPage from '@/components/TransitionPage'
 import DropdownNotifications from '@/components/DropdownNotifications'
+import CurrentTime from './CurrentTime'
 
 export default {
-  components: {
-    InfoBare,
-    TransitionPage,
-    DropdownNotifications
-  },
+  name: 'homepage',
+  components: { InfoBare, TransitionPage, DropdownNotifications, CurrentTime },
   data () {
     return {
       currentSelect: 0,
@@ -62,11 +43,10 @@ export default {
     }
   },
   computed: {
-    // ...mapGetters(['LangString', 'backgroundURL', 'messages', 'AppsHome', 'warningMessageCount'])
     ...mapGetters(['LangString', 'backgroundURL', 'messages', 'AppsHome'])
   },
   methods: {
-    ...mapActions(['closePhone', 'setMessages']),
+    ...mapActions(['closePhone']),
     onLeft () {
       if (this.showDropdown) return
       this.currentSelect = (this.currentSelect + 1) % (this.AppsHome.length + 1)
@@ -81,17 +61,14 @@ export default {
     },
     onDown () {
       if (this.showDropdown) return
-      // this.currentSelect = Math.min(this.currentSelect + 4, this.AppsHome.length)
-      // console.log('notifiche')
       this.showDropdown = !this.showDropdown
     },
     openApp (app) {
-      // this.$router.push({ name: app.routeName })
       this.$router.replace({ name: app.routeName })
     },
     onEnter () {
       if (this.showDropdown) return
-      this.openApp(this.AppsHome[this.currentSelect] || {routeName: 'menu'})
+      this.openApp(this.AppsHome[this.currentSelect] || { routeName: 'menu' })
     },
     onBack () {
       if (this.showDropdown) {
@@ -120,7 +97,24 @@ export default {
 }
 </script>
 
-<style scoped="true">
+<style scoped>
+.time {
+  position: absolute;
+  top: 50px;
+  /* font-size: 40px; */
+  color: white;
+}
+
+.time .current-time {
+  font-size: 70px;
+}
+
+.time .meteo-icon {
+  font-size: 50px;
+  margin-right: 15px;
+  color: yellow;
+}
+
 .home {
   background-size: cover !important;
   background-position: center !important;
@@ -137,61 +131,29 @@ export default {
   color: gray;
 }
 
-.warningMess {
-  background-color: white;
-  position: absolute;
-  left: 12px;
-  right: 12px;
-  top: 34px;
-  min-height: 64px;
-  display: flex;
-  padding: 12px;
-  border-radius: 4px;
-  box-shadow: 0 2px 2px 0 rgba(0,0,0,.14), 0 3px 1px -2px rgba(0,0,0,.2), 0 1px 5px 0 rgba(0,0,0,.12);
-}
-
-.warningMess .warningMess_icon {
-  display: flex;
-  width: 16%;
-  align-items: center;
-  justify-content: center;
-  font-size: 28px;
-  height: 42px;
-  width: 42px;
-  border-radius: 50%;
-}
-
-.warningMess .warningMess_icon .fa {
-  text-align: center;
-  color: #F94B42;
-}
-
-.warningMess .warningMess_content {
-  padding-left: 12px;
-  background-color: rgba(255,255,255, 0.2);
-}
-
-.warningMess_title {
-  font-size: 20px;
-}
-
-.warningMess_mess {
-  font-size: 16px;
-}
-
 .home_buttons {
   display: flex;
-  padding: 6px; 
-  width: 100%;
-  bottom:1px;
+  
+  height: 95px;
+  width: 90%;
+  bottom: 5px;
   position: absolute;
   align-items: flex-end;
   flex-flow: row;
   flex-wrap: wrap;
-  margin-bottom: 3px;
+  margin-bottom: 10px;
   justify-content: space-between;
-  
+
+  background-color: rgba(128, 128, 128, 0.5);
+  border-radius: 20px;
+
   transition: all 0.5s ease-in-out;
+}
+
+.home_buttons .app_buttons {
+  top: -8px;
+  margin-left: 10px;
+  margin-right: 10px;
 }
 
 button {
@@ -201,17 +163,16 @@ button {
   width: 80px;
   height: 76px;
   color: white;
+
   background-size: 64px 64px;
   background-position: center 6px;
   background-repeat: no-repeat;
   background-color: transparent;
+
   font-size: 14px;
-  padding-top: 72px;
   font-weight: 700;
-  text-shadow: -1px 0 0 rgba(0,0,0, 0.8), 
-             1px 0 0 rgba(0,0,0, 0.8),
-             0 -1px 0 rgba(0,0,0, 0.8),
-             0 1px 0 rgba(0,0,0, 0.8);
+
+  text-shadow: -1px 0 0 rgba(0, 0, 0, 0.8), 1px 0 0 rgba(0, 0, 0, 0.8), 0 -1px 0 rgba(0, 0, 0, 0.8), 0 1px 0 rgba(0, 0, 0, 0.8);
   text-align: center;
 }
 
@@ -236,22 +197,18 @@ button .puce {
   right: 12px;
 }
 
-button.select{
-  background-color: rgba(255,255,255, 0.2);
+button.select {
+  background-color: rgba(255, 255, 255, 0.2);
   border-radius: 22%;
 }
 
 .btn_menu_ctn {
+  position: absolute;
   width: 100%;
   display: flex;
-  height: 70px;
+  height: 84px;
   justify-content: center;
   align-content: center;
-    border-radius: 24px;
+  border-radius: 24px;
 }
-.btn_menu {
-  height: 50px;
-}
-
-
 </style>

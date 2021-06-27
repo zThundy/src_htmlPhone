@@ -329,6 +329,8 @@ class PhoneAPI {
     if (USE_VOICE_RTC === true) {
       const rtcOffer = await this.videoRTC.prepareCall()
       return this.post('startVideoCall', { numero, rtcOffer, extraData })
+    } else {
+      return this.post('sendErrorMessage', { message: store.getters.LangString('PHONE_RTC_NOT_ENABLED') })
     }
   }
 

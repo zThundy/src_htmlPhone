@@ -265,8 +265,7 @@
      "it_IT": {
       "icons": "fa-flag",
       "NAME": "Italiano",
-      "PHONE_WARNING_MESSAGE": "Saturation mémoires !",
-      "PHONE_WARNING_MESSAGE_MESS": "messaggi",
+      "PHONE_RTC_NOT_ENABLED": "Chiamate RTC non abilitate",
       "CONFIRM": "Accetta",
       "CANCEL": "Annulla",
       "APP_PHOTO_TITLE": "Fotocamera",

@@ -31,7 +31,7 @@ export default {
     ...mapGetters(['config', 'segnale', 'hasWifi'])
   },
   components: { CurrentTime },
-  data: function () {
+  data () {
     return {
       barra1: {
         height: '12px',

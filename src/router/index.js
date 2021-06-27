@@ -75,27 +75,19 @@ Vue.use(Router)
 export default new Router({
   routes: [
     {
-      // meta: { depth: 0, transitionName: 'slide' },
       path: '/',
       name: 'lockscreen',
-      components: {
-        default: Lockscreen
-      }
+      component: Lockscreen
     },
     {
-      // meta: { depth: 0, transitionName: 'slide' },
       path: '/home',
       name: 'home',
-      components: {
-        default: Home
-      }
+      component: Home
     },
     {
       path: '/menu',
       name: 'menu',
-      components: {
-        default: Menu
-      }
+      component: Menu
     },
     {
       path: '/contacts',
@@ -188,7 +180,6 @@ export default new Router({
       component: TchatSplashScreen
     },
     {
-      meta: { depth: 2 },
       path: '/tchat',
       name: 'tchat.channel',
       component: TchatChannel
@@ -264,13 +255,11 @@ export default new Router({
       component: DarkwebScreen
     },
     // {
-    //   meta: { depth: 1, transitionName: 'slide' },
     //   path: '/appstore/splash',
     //   name: 'appstore.splash',
     //   component: AppStoreSplash
     // },
     // {
-    //   meta: { depth: 2, transitionName: 'slide' },
     //   path: '/appstore',
     //   name: 'appstore',
     //   component: AppStore

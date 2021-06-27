@@ -1,4 +1,6 @@
 /* eslint-disable */
+
+// TODO: add audio source to rtc connection to stream audio and video
 class VideoRTC {
   constructor (RTCConfig) {
     this.myPeerConnection = null
