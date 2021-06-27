@@ -62,8 +62,8 @@ function onAcceptFixePhone(player, infoCall, rtcAnswer)
     if Chiamate[id] ~= nil then
         Chiamate[id].receiver_src = player
 
-        playersInCall[Chiamate[id].transmitter_src] = true
-        playersInCall[Chiamate[id].receiver_src] = true
+        ACTIVE_CALLS[Chiamate[id].transmitter_src] = true
+        ACTIVE_CALLS[Chiamate[id].receiver_src] = true
 
         if Chiamate[id].transmitter_src ~= nil and Chiamate[id].receiver_src ~= nil then
             Chiamate[id].is_accepts = true

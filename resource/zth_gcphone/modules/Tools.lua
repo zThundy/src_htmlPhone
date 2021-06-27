@@ -1,5 +1,4 @@
 -- this file define some useful tools
-
 local Tools = {}
 local IDGenerator = {}
 
@@ -35,5 +34,4 @@ function IDGenerator:free(id)
 end
 
 -- USEFUL FUNCTIONS
-
 return Tools

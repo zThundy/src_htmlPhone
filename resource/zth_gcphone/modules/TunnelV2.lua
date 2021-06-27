@@ -1,8 +1,5 @@
--- this file describe a two way proxy between the server and the clients (request system)
--- local Debug = false
 local IDManager = module("zth_gcphone", "modules/IDManager")
 
--- API used in function of the side
 local TriggerRemoteEvent = nil
 local RegisterLocalEvent = nil
 if SERVER then
@@ -123,29 +120,12 @@ function Tunnel.bindInterface(name, interface)
   -- receive request
     RegisterLocalEvent(name..":tunnel_req")
     AddEventHandler(name..":tunnel_req", function(member, args, identifier, rid)
-        -- if (Debug) then
-        --     print(name..":tunnel_req")
-        --     if (SERVER) then
-        --         print(os.date("%Y/%m/%d %X - " .. os.clock())) 
-        --     end
-        --     print(identifier)
-        --     print(rid)
-        --     print(source)
-        --     print(DumpTable(args))
-        -- end
-
         local source = source
         local f = interface[member]
 
         local rets = {}
         if type(f) == "function" then -- call bound function
             rets = {f(table.unpack(args, 1, table_maxn(args)))}
-            -- if (Debug) then
-            --     print("RETS FUNCTION RESULT")
-            --     print(rets)
-            --     print(DumpTable(args))
-            -- end
-            -- CancelEvent() -- cancel event doesn't seem to cancel the event for the other handlers, but if it does, uncomment this
         end
 
         -- send response (even if the function doesn't exist)
@@ -175,19 +155,8 @@ function Tunnel.getInterface(name,identifier)
     -- receive response
     RegisterLocalEvent(name..":"..identifier..":tunnel_res")
     AddEventHandler(name..":"..identifier..":tunnel_res", function(rid, args)
-        -- if (Debug) then
-        --     print("======================"..name..":"..identifier..":tunnel_res START")
-        --     if (SERVER) then
-        --         print(os.date("%Y/%m/%d %X - " .. os.clock())) 
-        --     end
-        -- end
         local callback = callbacks[rid]
         if callback then
-            -- if (Debug) then
-            --     print("TUNNEL RESULT CALLBACK")
-            --     print(rid)
-            --     print(DumpTable(args))
-            -- end     
             -- free request id
             ids:free(rid)
             callbacks[rid] = nil

@@ -11,7 +11,7 @@ CALL_INDEX = 10
 
 local PLAYERS_PHONE_SIGNALS = {}
 local PLAYERS_PHONE_WIFI = {}
-playersInCall = {}
+ACTIVE_CALLS = {}
 -- built_phones = false
 phone_loaded = false
 
@@ -235,7 +235,6 @@ end
 
 gcPhoneT.isAbleToSendMessage = function(identifier, cb)
 	local phone_number = gcPhoneT.getPhoneNumber(identifier)
-	
     local iSegnalePlayer = gcPhoneT.getPlayerSegnaleIndex(PLAYERS_PHONE_SIGNALS, identifier)
     local hasAirplane = gcPhoneT.getAirplaneForUser(identifier)
     
@@ -980,7 +979,7 @@ function internal_startCall(player, phone_number, rtcOffer, extraData)
         -- me stesso, e che la sim sia installata
         if is_valid and isInstalled and not hasAirplane then
             gcPhoneT.getSourceFromIdentifier(destPlayer, function(srcTo)
-                if playersInCall[srcTo] == nil then
+                if ACTIVE_CALLS[srcTo] == nil then
                     if segnaleTransmitter ~= nil and segnaleTransmitter.potenzaSegnale > 0 then
                         if srcTo ~= nil then
                             segnaleReceiver = PLAYERS_PHONE_SIGNALS[gcPhoneT.getPlayerSegnaleIndex(PLAYERS_PHONE_SIGNALS, destPlayer)]
@@ -1062,8 +1061,8 @@ gcPhoneT.acceptCall = function(infoCall, rtcAnswer)
             return
         end
 
-        playersInCall[Chiamate[id].transmitter_src] = true
-        playersInCall[Chiamate[id].receiver_src] = true
+        ACTIVE_CALLS[Chiamate[id].transmitter_src] = true
+        ACTIVE_CALLS[Chiamate[id].receiver_src] = true
 
         Chiamate[id].receiver_src = infoCall.receiver_src or Chiamate[id].receiver_src
 
@@ -1097,9 +1096,9 @@ gcPhoneT.rejectCall = function(infoCall)
     local id = infoCall.id
 
     if Chiamate[id] ~= nil then
-        playersInCall[Chiamate[id].transmitter_src] = nil
+        ACTIVE_CALLS[Chiamate[id].transmitter_src] = nil
         if Chiamate[id].receiver_src ~= nil then
-            playersInCall[Chiamate[id].receiver_src] = nil
+            ACTIVE_CALLS[Chiamate[id].receiver_src] = nil
         end
 
         if FIXED_PHONES_INFO[id] ~= nil then
