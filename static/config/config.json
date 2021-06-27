@@ -32,7 +32,7 @@
     "iceCandidatePoolSize": 10
   },
 
-  "comment": "This is the old configuration for the iceServer that were used by the rtc",
+  "comment": "This is the old configuration for the iceServer that was used for the rtc",
   "iceServers_old": [{
     "urls": ["turn:185.25.206.106:3478"],
     "username": "gtam",
@@ -99,19 +99,6 @@
       ]
     },
     {
-      "display": "99° Distretto",
-      "icon": "/html/static/img/app_favourites/polizia.png",
-      "subMenu": [{
-          "title": "Invia un messaggio",
-          "icons": "fa-phone",
-          "eventName": "esx_addons_gcphone:call",
-          "type": {
-            "number": "99district"
-          }
-        }
-      ]
-    },
-    {
       "display": "Medici",
       "icon": "/html/static/img/app_favourites/ems.png",
       "subMenu": [{
@@ -134,155 +121,6 @@
           "eventName": "esx_addons_gcphone:call",
           "type": {
             "number": "taxi"
-          }
-        }
-      ]
-    },
-    {
-      "display": "Concessionario Auto",
-      "backgroundColor": "blue",
-      "icon": "/html/static/img/app_favourites/car.png",
-      "subMenu": [
-        {
-          "title": "Invia un messaggio",
-		      "icons": "fa-phone",
-          "eventName": "esx_addons_gcphone:call",
-          "type": {
-            "number": "cardealer"
-          }
-        }
-      ]
-    },
-    {
-      "display": "Concessionario Aerei",
-      "backgroundColor": "blue",
-      "icon": "/html/static/img/app_favourites/aereo.png",
-      "subMenu": [
-        {
-          "title": "Invia un messaggio",
-		      "icons": "fa-phone",
-          "eventName": "esx_addons_gcphone:call",
-          "type": {
-            "number": "motorcycle"
-          }
-        }
-      ]
-    },
-    {
-      "display": "Weazel News",
-      "backgroundColor": "blue",
-      "subMenu": [
-        {
-          "title": "Invia un messaggio",
-		      "icons": "fa-phone",
-          "eventName": "esx_addons_gcphone:call",
-          "type": {
-            "number": "reporter"
-          }
-        }
-      ]
-    },
-    {
-      "display": "LS Customs",
-      "backgroundColor": "orange",
-      "icon": "/html/static/img/app_favourites/meccanico.png",
-      "subMenu": [
-        {
-          "title": "Invia un messaggio",
-		      "icons": "fa-phone",
-          "eventName": "esx_addons_gcphone:call",
-          "type": {
-            "number": "lolly"
-          }
-        }
-      ]
-    },
-    {
-      "display": "Immobiliare",
-      "backgroundColor": "red",
-      "icon": "/html/static/img/app_favourites/agenzia.png",
-      "subMenu": [
-        {
-          "title": "Invia un messaggio",
-		      "icons": "fa-phone",
-          "eventName": "esx_addons_gcphone:call",
-          "type": {
-            "number": "realestateagent"
-          }
-        }
-      ]
-    },
-    {
-      "display": "Armeria",
-      "backgroundColor": "red",
-      "icon": "/html/static/img/app_favourites/ammu.png",
-      "subMenu": [
-        {
-          "title": "Invia un messaggio",
-		      "icons": "fa-phone",
-          "eventName": "esx_addons_gcphone:call",
-          "type": {
-            "number": "armeria"
-          }
-        }
-      ]
-    },
-    {
-      "display": "Concessionario Camion",
-      "backgroundColor": "green",
-      "icon": "/html/static/img/app_favourites/truck.png",
-      "subMenu": [
-        {
-          "title": "Invia un messaggio",
-		      "icons": "fa-phone",
-          "eventName": "esx_addons_gcphone:call",
-          "type": {
-            "number": "truckdealer"
-          }
-        }
-      ]
-    },
-    {
-      "display": "Concessionario Usate",
-      "backgroundColor": "green",
-      "icon": "/html/static/img/app_favourites/car.png",
-      "subMenu": [
-        {
-          "title": "Invia un messaggio",
-		      "icons": "fa-phone",
-          "eventName": "esx_addons_gcphone:call",
-          "type": {
-            "number": "autousate"
-          }
-        }
-      ]
-    },
-    {
-      "display": "Burger Shot",
-      "backgroundColor": "blue",
-      "icon": "/html/static/img/app_favourites/bunger.png",
-      "subMenu": [
-        {
-          "title": "Invia un messaggio",
-		      "icons": "fa-phone",
-          "eventName": "esx_addons_gcphone:call",
-          "type": {
-            "number": "burgershot"
-          }
-        }
-      ]
-    },
-    {
-      "display": "Import",
-      "backgroundColor": "blue",
-      "icon": "/html/static/img/app_favourites/company3.png",
-      "subMenu": [
-        {
-          "title": "Invia un messaggio",
-		      "icons": "fa-phone",
-          "eventName": "esx_addons_gcphone:call",
-          "type": {
-            "number": "import"
           }
         }
       ]
@@ -358,13 +196,6 @@
       "enabled": true
     },
     {
-      "name": "Facebook",
-      "it_IT__name": "Facebook",
-      "icons": "/html/static/img/icons_app/facebook.png",
-      "routeName": "facebook.splash",
-      "enabled": false
-    },
-    {
       "name": "Banca",
       "it_IT__name": "Banca",
       "icons": "/html/static/img/icons_app/banca.png",
@@ -398,13 +229,6 @@
       "icons": "/html/static/img/icons_app/photo.png",
       "routeName": "photo",
       "enabled": true
-    },
-    {
-      "name": "App Store",
-      "it_IT__name": "App Store",
-      "icons": "/html/static/img/icons_app/appstore.png",
-      "routeName": "appstore",
-      "enabled": false
     },
     {
       "name": "Email",
