@@ -9,14 +9,6 @@ ESX.RegisterUsableItem(Config.SimItemName, function(source)
 	NewSim(source)
 end)
 
--- RegisterServerEvent("esx_cartesim:createNewSim")
--- AddEventHandler("esx_cartesim:createNewSim", function()
--- 	local player = source
--- 	local xPlayer = ESX.GetPlayerFromId(player)
--- 	xPlayer.removeInventoryItem(Config.SimItemName, 1)
--- 	NewSim(player)
--- end)
-
 function GenerateUniquePhoneNumber(result)
     local query = false
 	local numbers = {}
@@ -32,7 +24,7 @@ function GenerateUniquePhoneNumber(result)
 	-- 	first_random_part = tonumber(first_random_part)
 	-- end
 	math.randomseed(os.time()); math.randomseed(os.time()); math.randomseed(os.time())
-	local rand_number = string.format("555%04d", math.random(11111, 99999))
+	local rand_number = string.format(Config.SimFormat, math.random(11111, 99999))
 	if numbers[tostring(rand_number)] == nil then
 		return rand_number
 	end
@@ -130,12 +122,18 @@ cartesimT.daiSim = function(number, c_id)
 
 		gcPhoneT.updateCachedNumber(number, xPlayer2.identifier, false)
 
-		MySQL.Async.fetchAll("SELECT * FROM users WHERE identifier = @identifier", {['@identifier'] = xPlayer.identifier}, function(result)
-			if result[1].phone_number == number then
+		MySQL.Async.fetchAll("SELECT phone_number FROM users WHERE identifier = @identifier AND phone_number = @number", {
+			['@identifier'] = xPlayer.identifier,
+			['@number'] = number
+		}, function(result)
+			if result and result[1] then
 				MySQL.Async.execute('UPDATE `users` SET phone_number = @phone_number WHERE `identifier` = @identifier', {
 					['@identifier']   = xPlayer.identifier,
 					['@phone_number'] = 0
 				})
+
+				CACHED_TARIFFS[number].phone_number = number
+				CACHED_TARIFFS[number].identifier = xPlayer.identifier
 			end
 		end)
 
@@ -145,10 +143,6 @@ cartesimT.daiSim = function(number, c_id)
 		})
     end
 end
-
--- RegisterServerEvent('esx_cartesim:sim_delete')
--- AddEventHandler('esx_cartesim:sim_delete', function(sim)
--- end)
 
 cartesimT.eliminaSim = function(sim)
 	local player = source
@@ -166,15 +160,12 @@ cartesimT.eliminaSim = function(sim)
 			if simZ == sim then
 				MySQL.Async.execute('DELETE FROM phone_sim WHERE phone_number = @phone_number', {['@phone_number'] = simZ})
 				gcPhoneT.updateCachedNumber(sim, false, false)
+				CACHED_TARIFFS[simZ] = nil
 				break
 			end
 		end
 	end)
 end
-
--- RegisterServerEvent('esx_cartesim:sim_use')
--- AddEventHandler('esx_cartesim:sim_use', function(sim)
--- end)
 
 cartesimT.usaSim = function(sim)
 	local player = source
@@ -183,6 +174,8 @@ cartesimT.usaSim = function(sim)
 	TriggerClientEvent("gcPhone:myPhoneNumber", player, sim.number)
 	TriggerClientEvent("gcPhone:UpdateNumber", player, sim.number)
 	gcPhoneT.updateCachedNumber(sim.number, xPlayer.identifier, true)
+	CACHED_TARIFFS[sim.number].identifier = xPlayer.identifier
+	CACHED_TARIFFS[sim.number].phone_number = sim.number
 
 	MySQL.Async.execute('UPDATE users SET phone_number = @phone_number WHERE identifier = @identifier', {
 		['@identifier'] = xPlayer.getIdentifier(),
@@ -203,6 +196,9 @@ cartesimT.rinominaSim = function(number, name)
 		['@phone_number'] = number,
 		['@nome_sim'] = name
 	})
+	
+	CACHED_TARIFFS[number].phone_number = number
+	CACHED_TARIFFS[number].nome_sim = name
 end
 
 ESX.RegisterServerCallback('esx_cartesim:GetList', function(source, cb)
@@ -240,6 +236,10 @@ ESX.RegisterServerCallback("esx_cartesim:rinnovaOfferta", function(source, cb, l
 				['@messaggi'] = v.messaggi,
 				['@dati'] = v.dati
 			})
+			
+			CACHED_TARIFFS[number].minuti = v.minuti * 60
+			CACHED_TARIFFS[number].messaggi = v.messaggi
+			CACHED_TARIFFS[number].dati = v.dati
 
 			cb(true)
 			return
@@ -272,6 +272,11 @@ ESX.RegisterServerCallback("esx_cartesim:acquistaOffertaCheckSoldi", function(so
 			['@messaggi'] = table.messaggi,
 			['@dati'] = table.dati
 		})
+		
+		CACHED_TARIFFS[number].minuti = table.minuti * 60
+		CACHED_TARIFFS[number].messaggi = table.messaggi
+		CACHED_TARIFFS[number].dati = table.dati
+		CACHED_NUMBERS[number].piano_tariffatio = table.label
 
 		cb(true)
 		return

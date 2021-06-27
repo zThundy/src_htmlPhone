@@ -37,19 +37,6 @@ MySQL.ready(function()
     MySQL.Async.fetchAll("SELECT * FROM phone_sim", {}, function(numbers)
         for _, v in pairs(numbers) do
             CACHED_NUMBERS[tostring(v.phone_number)] = { identifier = v.identifier, inUse = false }
-
-            --[[
-                da esx_cartesim aggiorno la sim in uso al
-                login del plater, quindi non mi serve fare tutte ste query
-
-                MySQL.Async.fetchAll("SELECT phone_number FROM users WHERE identifier = @identifier", {['@identifier'] = v.identifier}, function(user)
-                    if user ~= nil and user[1] ~= nil then
-                        if user[1].phone_number == v.phone_number then
-                            CACHED_NUMBERS[tostring(v.phone_number)].inUse = true
-                        end
-                    end
-                end)
-            ]]
         end
 
         gcPhone.debug(Config.Language["CACHING_STARTUP_1"])
