@@ -16,6 +16,7 @@ Citizen.CreateThread(function()
 	if Config.EnableRadioTwoers then
 		Reti:InitScript()
 	else
+		Citizen.Wait(5000)
 		gcPhoneServerT.updateSegnaleTelefono(4)
 	end
 end)
