@@ -813,6 +813,7 @@ function SavePhoneCall(callData)
             ['@accepts'] = callData.is_accepts
         }, function(id)
             if callData.receiver_src ~= nil then
+                if not CACHED_CALLS[callData.receiver_num] then CACHED_CALLS[callData.receiver_num] = {} end
                 table.insert(CACHED_CALLS[callData.receiver_num], {
                     owner = callData.transmitter_num,
                     num = num,
