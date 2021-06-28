@@ -176,8 +176,8 @@ if (process.env.NODE_ENV !== 'production') {
     grade: 3,
     buttons: {
       'employes': true,
-      // 'salary': true,
-      // 'chat': true,
+      'salary': true,
+      'chat': true,
       'calls': true
     }
   }

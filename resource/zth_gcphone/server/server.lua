@@ -559,11 +559,8 @@ function addMessage(source, identifier, phone_number, message)
 
                 _addMessage(phone_number, myPhone, message, 1, function(memess)
                     TriggerClientEvent("gcPhone:receiveMessage", player, memess)
-                    -- print(ESX.DumpTable(memess))
                     
                     _addMessage(myPhone, phone_number, message, 0, function(tomess)
-                        -- print(ESX.DumpTable(tomess))
-        
                         gcPhoneT.getSourceFromIdentifier(otherIdentifier, function(target_source)
                             target_source = tonumber(target_source)
         
@@ -1019,23 +1016,17 @@ gcPhoneT.acceptCall = function(infoCall, rtcAnswer)
     local player = source
     local id = infoCall.id
 
-    -- print("call accepted", player)
-    -- print(ESX.DumpTable(infoCall))
-
     if Chiamate[id] ~= nil then
-        -- print(ESX.DumpTable(Chiamate[id]))
         if FIXED_PHONES_INFO[id] ~= nil then
-            onAcceptFixePhone(player, infoCall, rtcAnswer)
+            onAcceptStaticPhone(player, infoCall, rtcAnswer)
             return
         end
 
         ACTIVE_CALLS[Chiamate[id].transmitter_src] = true
         ACTIVE_CALLS[Chiamate[id].receiver_src] = true
-
         Chiamate[id].receiver_src = infoCall.receiver_src or Chiamate[id].receiver_src
 
         if Chiamate[id].transmitter_src ~= nil and Chiamate[id].receiver_src ~= nil then
-
             Chiamate[id].is_accepts = true
             Chiamate[id].rtcAnswer = rtcAnswer
             TriggerClientEvent('gcPhone:acceptCall', Chiamate[id].transmitter_src, Chiamate[id], true)

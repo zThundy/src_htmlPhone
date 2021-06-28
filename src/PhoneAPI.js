@@ -360,7 +360,7 @@ class PhoneAPI {
         this.voiceRTC.onReceiveAnswer(data.infoCall.rtcAnswer)
       }
       this.voiceRTC.addEventListener('onCandidate', (candidates) => {
-        this.post('onCandidates', { id: data.infoCall.id, candidates })
+        this.post('onVideoCandidates', { id: data.infoCall.id, candidates })
       })
     }
     store.commit('SET_APPELS_INFO_IS_ACCEPTS', true)

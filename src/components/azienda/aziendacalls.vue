@@ -85,7 +85,7 @@ export default {
         this.SET_AZIENDA_IGNORE_CONTROLS(true)
         let scelte = [
           { id: 'gps', title: this.LangString('APP_MESSAGE_SET_GPS'), icons: 'fa-location-arrow' },
-          { id: 'num', title: `${this.LangString('APP_MESSAGE_MESS_NUMBER')} ${data.numero}`, number: data.numero, icons: 'fa-phone' },
+          { id: 'num', title: `${this.LangString('APP_MESSAGE_MESS_NUMBER')} ${data.number}`, number: data.number, icons: 'fa-phone' },
           { id: -1, title: this.LangString('CANCEL'), icons: 'fa-undo', color: 'red' }
         ]
         Modal.CreateModal({ scelte }).then(resp => {

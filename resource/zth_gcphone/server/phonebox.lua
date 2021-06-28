@@ -57,7 +57,7 @@ function CallStaticPhone(player, phone_number, rtcOffer, extraData)
     end
 end
 
-function onAcceptFixePhone(player, infoCall, rtcAnswer)
+function onAcceptStaticPhone(player, infoCall, rtcAnswer)
     local id = infoCall.id
     if Chiamate[id] ~= nil then
         Chiamate[id].receiver_src = player

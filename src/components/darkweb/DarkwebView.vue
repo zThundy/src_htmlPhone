@@ -102,7 +102,7 @@ export default {
     },
     async reply (message) {
       // const authorName = message.author
-      const authorName = currentSelected
+      const authorName = this.currentSelected
       try {
         this.ignoreControls = true
         const rep = await Modal.CreateTextModal({ title: 'Rispondi', text: `@${authorName} ` })
