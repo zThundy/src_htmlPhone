@@ -6,7 +6,7 @@
     </div>
 
     <div class="dark-wrapper" ref="elementsDiv">
-      <div class="darkweb" v-for='(val, key) in darkwebMessages' v-bind:key="key" v-bind:class="{ select: key === selectMessage }">
+      <div class="darkweb" v-for='(val, key) in darkwebMessages' v-bind:key="key" v-bind:class="{ select: key === currentSelected }">
         <div class="dark-content">
           <div class="dark-head">
             <div class="dark-head-author">{{ LangString("APP_DARKWEB_USER_TITLE") }}</div>
@@ -49,7 +49,7 @@ export default {
   components: {},
   data () {
     return {
-      selectMessage: -1,
+      currentSelected: -1,
       ignoreControls: false,
       imgZoom: undefined
     }
@@ -67,7 +67,7 @@ export default {
     },
     async showOption () {
       this.ignoreControls = true
-      const message = this.darkwebMessages[this.selectMessage]
+      const message = this.darkwebMessages[this.currentSelected]
       let optionsChoix = [{
         id: 1,
         title: this.LangString('APP_DARKWEB_REPLY'),
@@ -101,7 +101,8 @@ export default {
       return /^https?:\/\/.*\.(png|jpg|jpeg|gif)/.test(mess)
     },
     async reply (message) {
-      const authorName = message.author
+      // const authorName = message.author
+      const authorName = currentSelected
       try {
         this.ignoreControls = true
         const rep = await Modal.CreateTextModal({ title: 'Rispondi', text: `@${authorName} ` })
@@ -120,7 +121,7 @@ export default {
       this.$nextTick(() => {
         let elem = document.querySelector('#darkweb')
         elem.scrollTop = elem.scrollHeight
-        this.selectMessage = -1
+        this.currentSelected = -1
       })
     },
     scrollIntoView () {
@@ -133,25 +134,17 @@ export default {
     },
     onUp () {
       if (this.ignoreControls === true) return
-      if (this.selectMessage === -1) {
-        this.selectMessage = 0
-      } else {
-        this.selectMessage = this.selectMessage === 0 ? 0 : this.selectMessage - 1
-      }
+      this.currentSelected = this.currentSelected === 0 || this.currentSelected === -1 ? 0 : this.currentSelected - 1
       this.scrollIntoView()
     },
     onDown () {
       if (this.ignoreControls === true) return
-      if (this.selectMessage === -1) {
-        this.selectMessage = 0
-      } else {
-        this.selectMessage = this.selectMessage === this.darkwebMessages.length - 1 ? this.selectMessage : this.selectMessage + 1
-      }
+      this.currentSelected = this.currentSelected === this.darkwebMessages.length - 1 ? this.currentSelected : this.currentSelected + 1
       this.scrollIntoView()
     },
     async onEnter () {
       if (this.ignoreControls === true) return
-      if (this.selectMessage !== -1) {
+      if (this.currentSelected !== -1) {
         this.showOption()
       }
     },
@@ -162,8 +155,8 @@ export default {
         return
       }
       if (this.ignoreControls === true) return
-      if (this.selectMessage !== -1) {
-        this.selectMessage = -1
+      if (this.currentSelected !== -1) {
+        this.currentSelected = -1
       } else {
         this.$router.push({ name: 'menu' })
       }
