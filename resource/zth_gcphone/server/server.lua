@@ -802,9 +802,7 @@ function SavePhoneCall(callData)
 
     if callData.is_valid then
         local num = callData.transmitter_num
-        if callData.hidden then
-            num = "555#####"
-        end
+        if callData.hidden then num = Config.HiddenNumberFormat end
 
         MySQL.Async.insert("INSERT INTO phone_calls(`owner`, `num`,`incoming`, `accepts`) VALUES(@owner, @num, @incoming, @accepts)", {
             ['@owner'] = callData.receiver_num,

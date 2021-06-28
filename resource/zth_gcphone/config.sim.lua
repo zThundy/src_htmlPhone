@@ -5,6 +5,9 @@ Config.SimCardKey = "f4"
 -- for each sim card
 Config.SimFormat = "555%04d"
 
+-- this is the number shown when a player start an anonymus call
+Config.HiddenNumberFormat = "555#####"
+
 -- these are the coordinates where the tariffs shop blip and marker
 -- will be located
 Config.TariffsShop = vector3(53.59, -1584.38, 29.6)
