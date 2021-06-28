@@ -1,6 +1,6 @@
 fx_version "cerulean"
 game "gta5"
-version "2.1.8"
+version "2.1.9"
 author "zThundy__"
 
 ui_page 'html/index.html'
