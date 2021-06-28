@@ -103,7 +103,7 @@ gcPhoneT.azienda_requestJobInfo = function()
 
     local isAble, mbToRemove = gcPhoneT.isAbleToSurfInternet(xPlayer.identifier, 0.5)
     if isAble then
-        gcPhoneT.usaDatiInternet(xPlayer.identifier, mbToRemove)
+        gcPhoneT.useInternetData(xPlayer.identifier, mbToRemove)
 
         if Config.MinAziendaGrade[xPlayer.job.name] then
             local firstname, lastname = gcPhoneT.getFirstnameAndLastname(xPlayer.identifier)
@@ -168,7 +168,7 @@ gcPhoneT.azienda_sendAziendaMessage = function(azienda, number, message)
 
     local isAble, mbToRemove = gcPhoneT.isAbleToSurfInternet(xPlayer.identifier, 0.1)
     if isAble then
-        gcPhoneT.usaDatiInternet(xPlayer.identifier, mbToRemove)
+        gcPhoneT.useInternetData(xPlayer.identifier, mbToRemove)
         local firstname, lastname = gcPhoneT.getFirstnameAndLastname(xPlayer.identifier)
 
         MySQL.Async.insert("INSERT INTO phone_azienda_messages(azienda, authorIdentifier, authorNumber, authorName, message) VALUES(@azienda, @identifier, @number, @name, @message)", {
@@ -181,7 +181,7 @@ gcPhoneT.azienda_sendAziendaMessage = function(azienda, number, message)
             GetAziendaMessages(player, azienda, function(messages)
                 local isAble, mbToRemove = gcPhoneT.isAbleToSurfInternet(xPlayer.identifier, #messages * 0.01)
                 if isAble then
-                    gcPhoneT.usaDatiInternet(xPlayer.identifier, mbToRemove)
+                    gcPhoneT.useInternetData(xPlayer.identifier, mbToRemove)
 
                     for _, xPlayer in pairs(GetPlayersWithJob(azienda)) do
                         TriggerClientEvent("gcphone:azienda_retriveMessages", xPlayer.source, messages)
@@ -217,7 +217,7 @@ gcPhoneT.azienda_employeAction = function(action, employe)
 	
     local isAble, mbToRemove = gcPhoneT.isAbleToSurfInternet(xPlayer.identifier, 0.5)
     if isAble then
-        gcPhoneT.usaDatiInternet(xPlayer.identifier, mbToRemove)
+        gcPhoneT.useInternetData(xPlayer.identifier, mbToRemove)
         local firstname, lastname = gcPhoneT.getFirstnameAndLastname(c_xPlayer.identifier)
 
         if action == "promote" then
@@ -254,7 +254,7 @@ gcPhoneT.azienda_requestAziendaMessages = function()
     GetAziendaMessages(player, xPlayer.job.name, function(messages)
         local isAble, mbToRemove = gcPhoneT.isAbleToSurfInternet(xPlayer.identifier, #messages * 0.01)
         if isAble then
-            gcPhoneT.usaDatiInternet(xPlayer.identifier, mbToRemove)
+            gcPhoneT.useInternetData(xPlayer.identifier, mbToRemove)
             
             TriggerClientEvent("gcphone:azienda_retriveMessages", player, messages)
         else

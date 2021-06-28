@@ -115,7 +115,7 @@ ESX.RegisterServerCallback("gcPhone:getMessaggiFromGroupId", function(source, cb
 
         local isAble, mbToRemove = gcPhoneT.isAbleToSurfInternet(identifier, 0.1 * #messages)
         if isAble then
-            gcPhoneT.usaDatiInternet(identifier, mbToRemove)
+            gcPhoneT.useInternetData(identifier, mbToRemove)
             cb(messages)
         else
             WhatsappShowNotificationError(source, "WHATSAPP_INFO_TITLE", "WHATSAPP_NOT_ENOUGH_GIGA")
@@ -137,7 +137,7 @@ gcPhoneT.whatsapp_sendMessage = function(data)
 
     local isAble, mbToRemove = gcPhoneT.isAbleToSurfInternet(identifier, 1.5)
     if isAble then
-        gcPhoneT.usaDatiInternet(identifier, mbToRemove)
+        gcPhoneT.useInternetData(identifier, mbToRemove)
 
         MySQL.Async.insert("INSERT INTO phone_whatsapp_messages(idgruppo, sender, message) VALUES(@id, @sender, @message)", {
             ['@id'] = data.id,
@@ -193,7 +193,7 @@ gcPhoneT.whatsapp_addGroupMembers = function(data)
 
     local isAble, mbToRemove = gcPhoneT.isAbleToSurfInternet(identifier, 1)
     if isAble then
-        gcPhoneT.usaDatiInternet(identifier, mbToRemove)
+        gcPhoneT.useInternetData(identifier, mbToRemove)
         
         local partecipanti = formatTableIndex(getPartecipanti(data.gruppo.id))
 
@@ -223,7 +223,7 @@ gcPhoneT.whatsapp_addGroupMembers = function(data)
 
         local isAble, mbToRemove = gcPhoneT.isAbleToSurfInternet(identifier, #partecipanti * 0.2)
         if isAble then
-            gcPhoneT.usaDatiInternet(identifier, mbToRemove)
+            gcPhoneT.useInternetData(identifier, mbToRemove)
 
             MySQL.Async.execute("UPDATE phone_whatsapp_groups SET partecipanti = @partecipanti WHERE id = @id", {
                 ['@id'] = data.gruppo.id,
@@ -253,7 +253,7 @@ gcPhoneT.whatsapp_leaveGroup = function(group)
     -- print(number, group.id)
     local isAble, mbToRemove = gcPhoneT.isAbleToSurfInternet(identifier, 5.0)
     if isAble then
-        gcPhoneT.usaDatiInternet(identifier, mbToRemove)
+        gcPhoneT.useInternetData(identifier, mbToRemove)
 
         MySQL.Async.fetchAll("SELECT * FROM phone_whatsapp_groups WHERE id = @id", {['@id'] = group.id}, function(r)
             if r[1] == nil then return end
@@ -320,7 +320,7 @@ gcPhoneT.whatsapp_creaNuovoGruppo = function(data)
 
     local isAble, mbToRemove = gcPhoneT.isAbleToSurfInternet(identifier, 1.5)
     if isAble then
-        gcPhoneT.usaDatiInternet(identifier, mbToRemove)
+        gcPhoneT.useInternetData(identifier, mbToRemove)
 
         -- print(ESX.DumpTable(partecipanti))
         -- print(ESX.DumpTable(data.selected))
@@ -371,7 +371,7 @@ ESX.RegisterServerCallback("gcphone:whatsapp_editGroup", function(source, cb, gr
 
     local isAble, mbToRemove = gcPhoneT.isAbleToSurfInternet(identifier, 2.5)
     if isAble then
-        gcPhoneT.usaDatiInternet(identifier, mbToRemove)
+        gcPhoneT.useInternetData(identifier, mbToRemove)
         
         MySQL.Async.execute("UPDATE phone_whatsapp_groups SET gruppo = @gruppo, icona = @icona WHERE id = @id", {
             ['@gruppo'] = group.gruppo,

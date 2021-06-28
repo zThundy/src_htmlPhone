@@ -103,7 +103,7 @@ gcPhoneT.getBourseProfile = function()
     
 	local isAble, mbToRemove = gcPhoneT.isAbleToSurfInternet(xPlayer.identifier, 0.5)
     if isAble then
-        gcPhoneT.usaDatiInternet(xPlayer.identifier, mbToRemove)
+        gcPhoneT.useInternetData(xPlayer.identifier, mbToRemove)
         local firstname, lastname = gcPhoneT.getFirstnameAndLastname(xPlayer.identifier)
     
         return {
@@ -128,7 +128,7 @@ gcPhoneT.getMyCrypto = function()
 
     local isAble, mbToRemove = gcPhoneT.isAbleToSurfInternet(identifier, 0.5)
     if isAble then
-        gcPhoneT.usaDatiInternet(identifier, mbToRemove)
+        gcPhoneT.useInternetData(identifier, mbToRemove)
         -- print(ESX.DumpTable(CACHED_USER_CRYPTO[identifier]))
         return CACHED_USER_CRYPTO[identifier]
     else
@@ -148,7 +148,7 @@ gcPhoneT.requestCryptoValues = function()
 
 	local isAble, mbToRemove = gcPhoneT.isAbleToSurfInternet(identifier, 0.5)
     if isAble then
-        gcPhoneT.usaDatiInternet(identifier, mbToRemove)
+        gcPhoneT.useInternetData(identifier, mbToRemove)
         return CACHED_CRYPTO
     else
         TriggerClientEvent("gcphone:sendGenericNotification", player, {
@@ -171,7 +171,7 @@ gcPhoneT.buyCrypto = function(data)
 
         local isAble, mbToRemove = gcPhoneT.isAbleToSurfInternet(xPlayer.identifier, 0.5)
         if isAble then
-            gcPhoneT.usaDatiInternet(xPlayer.identifier, mbToRemove)
+            gcPhoneT.useInternetData(xPlayer.identifier, mbToRemove)
 
             if PlayerHasCrypto(xPlayer.identifier, data.crypto.name) then
                 local crypto = GetPlayerCrypto(xPlayer.identifier, data.crypto.name)
@@ -219,7 +219,7 @@ gcPhoneT.sellCrypto = function(data)
     if data.crypto.amount >= data.amount then
         local isAble, mbToRemove = gcPhoneT.isAbleToSurfInternet(xPlayer.identifier, 0.5)
         if isAble then
-            gcPhoneT.usaDatiInternet(xPlayer.identifier, mbToRemove)
+            gcPhoneT.useInternetData(xPlayer.identifier, mbToRemove)
 
             xPlayer.addAccountMoney("bank", math.floor(data.amount * data.price))
             local crypto = GetPlayerCrypto(xPlayer.identifier, data.crypto.name)

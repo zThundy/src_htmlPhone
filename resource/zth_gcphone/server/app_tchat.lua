@@ -1,7 +1,7 @@
 local function TchatGetMessageChannel(identifier, channel, cb)
 	local isAble, mbToRemove = gcPhoneT.isAbleToSurfInternet(identifier, 2)
 	if isAble then
-		gcPhoneT.usaDatiInternet(identifier, mbToRemove)
+		gcPhoneT.useInternetData(identifier, mbToRemove)
 
 		MySQL.Async.fetchAll("SELECT * FROM phone_app_chat WHERE channel = @channel ORDER BY time DESC LIMIT 100", { 
 			['@channel'] = channel
@@ -25,7 +25,7 @@ gcPhoneT.tchat_channel = function(channel)
 	
 	local isAble, mbToRemove = gcPhoneT.isAbleToSurfInternet(identifier, 0.5)
 	if isAble then
-		gcPhoneT.usaDatiInternet(identifier, mbToRemove)
+		gcPhoneT.useInternetData(identifier, mbToRemove)
 		
 		TchatGetMessageChannel(identifier, channel, function(messages)
 			TriggerClientEvent('gcPhone:tchat_channel', source, channel, messages)
@@ -38,7 +38,7 @@ gcPhoneT.tchat_addMessage = function(channel, message)
 	
 	local isAble, mbToRemove = gcPhoneT.isAbleToSurfInternet(identifier, 0.05)
 	if isAble then
-		gcPhoneT.usaDatiInternet(identifier, mbToRemove)
+		gcPhoneT.useInternetData(identifier, mbToRemove)
 
 		TchatAddMessage(channel, message)
 	end

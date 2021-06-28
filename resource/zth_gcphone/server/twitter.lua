@@ -243,7 +243,7 @@ local function TwitterPostTweet(username, password, message, player, realUser)
 
 	local isAble, mbToRemove = gcPhoneT.isAbleToSurfInternet(identifier, 0.5)
 	if isAble then
-		gcPhoneT.usaDatiInternet(identifier, mbToRemove)
+		gcPhoneT.useInternetData(identifier, mbToRemove)
 
 		local user = getTwiterUserAccount(username, password)
 		if user == nil then
@@ -317,7 +317,7 @@ local function TwitterToogleLike(username, password, tweetId, player)
 	
 	local isAble, mbToRemove = gcPhoneT.isAbleToSurfInternet(identifier, 0.02)
 	if isAble then
-		gcPhoneT.usaDatiInternet(identifier, mbToRemove)
+		gcPhoneT.useInternetData(identifier, mbToRemove)
 			
 		local user = getTwiterUserAccount(username, password)
 		if user == nil then
@@ -458,7 +458,7 @@ gcPhoneT.twitter_login = function(username, password)
 	
 	local isAble, mbToRemove = gcPhoneT.isAbleToSurfInternet(identifier, 0.5)
 	if isAble then
-		gcPhoneT.usaDatiInternet(identifier, mbToRemove)
+		gcPhoneT.useInternetData(identifier, mbToRemove)
 
 		local user = getTwiterUserAccount(username, password)
 		if user == false then
@@ -483,7 +483,7 @@ gcPhoneT.twitter_changePassword = function(username, password, newPassword)
 	
 	local isAble, mbToRemove = gcPhoneT.isAbleToSurfInternet(identifier, 0.5)
 	if isAble then
-		gcPhoneT.usaDatiInternet(identifier, mbToRemove)
+		gcPhoneT.useInternetData(identifier, mbToRemove)
 			
 		local user = getTwiterUserAccount(username, password)
 		if user == false then
@@ -518,7 +518,7 @@ gcPhoneT.twitter_createAccount = function(username, password, avatarUrl)
 
 	local isAble, mbToRemove = gcPhoneT.isAbleToSurfInternet(identifier, 0.5)
 	if isAble then
-		gcPhoneT.usaDatiInternet(identifier, mbToRemove)
+		gcPhoneT.useInternetData(identifier, mbToRemove)
 
 		TwitterCreateAccount(username, password, avatarUrl, function(id)
 			if id ~= 0 then
@@ -548,7 +548,7 @@ gcPhoneT.twitter_getTweets = function(username, password)
 	if username ~= nil and username ~= "" and password ~= nil and password ~= "" then
 		local isAble, mbToRemove = gcPhoneT.isAbleToSurfInternet(identifier, 1)
 		if isAble then
-			gcPhoneT.usaDatiInternet(identifier, mbToRemove)
+			gcPhoneT.useInternetData(identifier, mbToRemove)
 				
 			local user = getTwiterUserAccount(username, password)
 			if user == false then
@@ -561,7 +561,7 @@ gcPhoneT.twitter_getTweets = function(username, password)
 			-- print(DumpTable(tweets))
 			local isAble, mbToRemove = gcPhoneT.isAbleToSurfInternet(identifier, 0.04 * #tweets)
 			if isAble then
-				gcPhoneT.usaDatiInternet(identifier, mbToRemove)
+				gcPhoneT.useInternetData(identifier, mbToRemove)
 				TriggerClientEvent('gcPhone:twitter_getTweets', player, tweets)
 			else
 				TwitterShowError(player, 'TWITTER_INFO_TITLE', 'APP_TWITTER_NOTIF_NO_CONNECTION')
@@ -572,12 +572,12 @@ gcPhoneT.twitter_getTweets = function(username, password)
   	else
 		local isAble, mbToRemove = gcPhoneT.isAbleToSurfInternet(identifier, 1)
 		if isAble then
-			gcPhoneT.usaDatiInternet(identifier, mbToRemove)
+			gcPhoneT.useInternetData(identifier, mbToRemove)
 			local tweets = TwitterGetTweets(false)
 			-- print(DumpTable(tweets))
 			local isAble, mbToRemove = gcPhoneT.isAbleToSurfInternet(identifier, 0.04 * #tweets)
 			if isAble then
-				gcPhoneT.usaDatiInternet(identifier, mbToRemove)
+				gcPhoneT.useInternetData(identifier, mbToRemove)
 				TriggerClientEvent('gcPhone:twitter_getTweets', player, tweets)
 			else
 				TwitterShowError(player, 'TWITTER_INFO_TITLE', 'APP_TWITTER_NOTIF_NO_CONNECTION')
@@ -595,7 +595,7 @@ gcPhoneT.twitter_getFavoriteTweets = function(username, password)
 	if username ~= nil and username ~= "" and password ~= nil and password ~= "" then
 		local isAble, mbToRemove = gcPhoneT.isAbleToSurfInternet(identifier, 1)
 		if isAble then
-			gcPhoneT.usaDatiInternet(identifier, mbToRemove)
+			gcPhoneT.useInternetData(identifier, mbToRemove)
 			
 			local user = getTwiterUserAccount(username, password)
 			if user == false then
@@ -608,7 +608,7 @@ gcPhoneT.twitter_getFavoriteTweets = function(username, password)
 			-- print(DumpTable(tweets))
 			local isAble, mbToRemove = gcPhoneT.isAbleToSurfInternet(identifier, 0.04 * #tweets)
 			if isAble then
-				gcPhoneT.usaDatiInternet(identifier, mbToRemove)
+				gcPhoneT.useInternetData(identifier, mbToRemove)
 				TriggerClientEvent('gcPhone:twitter_getFavoriteTweets', player, tweets)
 			else
 				TwitterShowError(player, 'TWITTER_INFO_TITLE', 'APP_TWITTER_NOTIF_NO_CONNECTION')
@@ -621,7 +621,7 @@ gcPhoneT.twitter_getFavoriteTweets = function(username, password)
 		-- print(DumpTable(tweets))
 		local isAble, mbToRemove = gcPhoneT.isAbleToSurfInternet(identifier, 0.04 * #tweets)
 		if isAble then
-			gcPhoneT.usaDatiInternet(identifier, mbToRemove)
+			gcPhoneT.useInternetData(identifier, mbToRemove)
 			TriggerClientEvent('gcPhone:twitter_getFavoriteTweets', player, tweets)
 		else
 			TwitterShowError(player, 'TWITTER_INFO_TITLE', 'APP_TWITTER_NOTIF_NO_CONNECTION')

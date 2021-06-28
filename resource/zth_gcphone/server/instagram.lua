@@ -124,7 +124,7 @@ gcPhoneT.instagram_nuovoPost = function(username, password, data)
 
 	local isAble, mbToRemove = gcPhoneT.isAbleToSurfInternet(identifier, 0.5)
 	if isAble then
-		gcPhoneT.usaDatiInternet(identifier, mbToRemove)
+		gcPhoneT.useInternetData(identifier, mbToRemove)
 
 		getInstagramUser(username, password, function(user)
 			if user == false then
@@ -150,7 +150,7 @@ gcPhoneT.instagram_nuovoPost = function(username, password, data)
 				InstagramGetPosts(nil, function(posts)
 					local isAble, mbToRemove = gcPhoneT.isAbleToSurfInternet(identifier, 0.04 * #posts)
 					if isAble then
-						gcPhoneT.usaDatiInternet(identifier, mbToRemove)
+						gcPhoneT.useInternetData(identifier, mbToRemove)
 						
 						TriggerClientEvent('gcPhone:instagram_updatePosts', player, posts)
 					else
@@ -171,7 +171,7 @@ gcPhoneT.instagram_getPosts = function(username, password)
 	if username ~= nil and username ~= "" and password ~= nil and password ~= "" then
 		local isAble, mbToRemove = gcPhoneT.isAbleToSurfInternet(identifier, 1)
 		if isAble then
-			gcPhoneT.usaDatiInternet(identifier, mbToRemove)
+			gcPhoneT.useInternetData(identifier, mbToRemove)
 			
 			-- funzione che controlla se l'utente esista effettivamente
 			getInstagramUser(username, password, function(user)
@@ -186,7 +186,7 @@ gcPhoneT.instagram_getPosts = function(username, password)
 				InstagramGetPosts(accountId, function(posts)
 					local isAble, mbToRemove = gcPhoneT.isAbleToSurfInternet(identifier, 0.04 * #posts)
 					if isAble then
-						gcPhoneT.usaDatiInternet(identifier, mbToRemove)
+						gcPhoneT.useInternetData(identifier, mbToRemove)
 						
 						TriggerClientEvent('gcPhone:instagram_updatePosts', player, posts)
 					else
@@ -200,12 +200,12 @@ gcPhoneT.instagram_getPosts = function(username, password)
   	else
 		local isAble, mbToRemove = gcPhoneT.isAbleToSurfInternet(identifier, 1)
 		if isAble then
-			gcPhoneT.usaDatiInternet(identifier, mbToRemove)
+			gcPhoneT.useInternetData(identifier, mbToRemove)
 			
 			InstagramGetPosts(nil, function(posts)
 				local isAble, mbToRemove = gcPhoneT.isAbleToSurfInternet(identifier, 0.04 * #posts)
 				if isAble then
-					gcPhoneT.usaDatiInternet(identifier, mbToRemove)
+					gcPhoneT.useInternetData(identifier, mbToRemove)
 					TriggerClientEvent('gcPhone:instagram_updatePosts', player, posts)
 				else
 					InstagramShowError(player, 'INSTAGRAM_INFO_TITLE', 'APP_INSTAGRAM_NOTIF_NO_CONNECTION')
@@ -223,7 +223,7 @@ gcPhoneT.instagram_createAccount = function(username, password, avatarUrl)
   	
 	local isAble, mbToRemove = gcPhoneT.isAbleToSurfInternet(identifier, 0.5)
 	if isAble then
-		gcPhoneT.usaDatiInternet(identifier, mbToRemove)
+		gcPhoneT.useInternetData(identifier, mbToRemove)
 		
 		createNewInstagramAccount(username, password, avatarUrl, function(id)
 			if id ~= 0 then
@@ -245,7 +245,7 @@ gcPhoneT.instagram_loginAccount = function(username, password)
 	
 	local isAble, mbToRemove = gcPhoneT.isAbleToSurfInternet(identifier, 0.5)
 	if isAble then
-		gcPhoneT.usaDatiInternet(identifier, mbToRemove)
+		gcPhoneT.useInternetData(identifier, mbToRemove)
 
 		getInstagramUser(username, password, function(user)
 			if user == false then
@@ -271,7 +271,7 @@ gcPhoneT.instagram_changePassword = function(username, password, newPassword)
 	
 	local isAble, mbToRemove = gcPhoneT.isAbleToSurfInternet(identifier, 0.5)
 	if isAble then
-		gcPhoneT.usaDatiInternet(identifier, mbToRemove)
+		gcPhoneT.useInternetData(identifier, mbToRemove)
 
 		getInstagramUser(username, password, function(user)
 			if user == false then
@@ -302,7 +302,7 @@ gcPhoneT.instagram_toggleLikePost = function(username, password, postId)
 	
 	local isAble, mbToRemove = gcPhoneT.isAbleToSurfInternet(identifier, 0.02)
 	if isAble then
-		gcPhoneT.usaDatiInternet(identifier, mbToRemove)
+		gcPhoneT.useInternetData(identifier, mbToRemove)
 		
 		getInstagramUser(username, password, function(user)
 			if user == nil then
@@ -362,7 +362,7 @@ gcPhoneT.instagram_setAvatarurl = function(username, password, avatarUrl)
 
 	local isAble, mbToRemove = gcPhoneT.isAbleToSurfInternet(identifier, 0.5)
 	if isAble then
-		gcPhoneT.usaDatiInternet(identifier, mbToRemove)
+		gcPhoneT.useInternetData(identifier, mbToRemove)
 		
 		getInstagramUser(username, password, function(user)
 			MySQL.Async.execute("UPDATE phone_instagram_accounts SET avatar_url = @avatarUrl WHERE username = @username AND password = @password", {

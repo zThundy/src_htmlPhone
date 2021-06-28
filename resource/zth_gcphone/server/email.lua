@@ -29,7 +29,7 @@ gcPhoneT.email_requestMyEmail = function()
 
     local isAble, mbToRemove = gcPhoneT.isAbleToSurfInternet(identifier, 0.5)
     if isAble then
-        gcPhoneT.usaDatiInternet(identifier, mbToRemove)
+        gcPhoneT.useInternetData(identifier, mbToRemove)
         
         GetUserEmail(identifier, function(email)
             if not email then email = false end
@@ -54,7 +54,7 @@ gcPhoneT.email_sendEmail = function(data)
     GetUserEmail(identifier, function(myEmail)
         local isAble, mbToRemove = gcPhoneT.isAbleToSurfInternet(identifier, 1.0)
         if isAble then
-            gcPhoneT.usaDatiInternet(identifier, mbToRemove)
+            gcPhoneT.useInternetData(identifier, mbToRemove)
 
             --[[
                 transmitter: this.myEmail,
@@ -92,7 +92,7 @@ gcPhoneT.email_requestEmails = function()
         FetchAllEmails(email, function(emails)
             local isAble, mbToRemove = gcPhoneT.isAbleToSurfInternet(identifier, #emails * 0.05)
             if isAble then
-                gcPhoneT.usaDatiInternet(identifier, mbToRemove)
+                gcPhoneT.useInternetData(identifier, mbToRemove)
                 TriggerClientEvent("gcphone:email_sendRequestedEmails", player, emails)
             else
                 TriggerClientEvent("gcphone:sendGenericNotification", player, {
@@ -117,7 +117,7 @@ gcPhoneT.email_deleteEmail = function(emailID)
             FetchAllEmails(email, function(emails)
                 local isAble, mbToRemove = gcPhoneT.isAbleToSurfInternet(identifier, #emails * 0.05)
                 if isAble then
-                    gcPhoneT.usaDatiInternet(identifier, mbToRemove)
+                    gcPhoneT.useInternetData(identifier, mbToRemove)
 
                     TriggerClientEvent("gcphone:email_sendRequestedEmails", player, emails)
                 else
@@ -141,7 +141,7 @@ gcPhoneT.email_registerEmail = function(email)
 
     local isAble, mbToRemove = gcPhoneT.isAbleToSurfInternet(identifier, 0.5)
     if isAble then
-        gcPhoneT.usaDatiInternet(identifier, mbToRemove)
+        gcPhoneT.useInternetData(identifier, mbToRemove)
         MySQL.Async.insert("INSERT INTO phone_users_emails(identifier, email) VALUES(@identifier, @email)", {
             ['@identifier'] = identifier,
             ['@email'] = email

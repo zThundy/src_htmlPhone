@@ -193,7 +193,7 @@ gcPhoneT.getPlayerSegnaleIndex = function(tabella, identifier)
 	return index
 end
 
-gcPhoneT.usaDatiInternet = function(identifier, value)
+gcPhoneT.useInternetData = function(identifier, value)
     if Config.EnableRadioTwoers then
         local phone_number = gcPhoneT.getPhoneNumber(identifier)
         local dati = GetPianoTariffarioParam(phone_number, "dati")
@@ -233,26 +233,30 @@ gcPhoneT.isAbleToSurfInternet = function(identifier, neededMB)
     end
 end
 
-gcPhoneT.isAbleToSendMessage = function(identifier, cb)
-	local phone_number = gcPhoneT.getPhoneNumber(identifier)
-    local iSegnalePlayer = gcPhoneT.getPlayerSegnaleIndex(PLAYERS_PHONE_SIGNALS, identifier)
-    local hasAirplane = gcPhoneT.getAirplaneForUser(identifier)
-    
-    if not hasAirplane and phone_number then
-        if PLAYERS_PHONE_SIGNALS[iSegnalePlayer] ~= nil and PLAYERS_PHONE_SIGNALS[iSegnalePlayer].potenzaSegnale > 0 then
-            local messaggi = GetPianoTariffarioParam(phone_number, "messaggi")
-            if messaggi > 0 then
-                cb(true)
+--[[
+    NOT USED FOR NOW, BUT HEY!
+
+    gcPhoneT.isAbleToSendMessage = function(identifier, cb)
+        local phone_number = gcPhoneT.getPhoneNumber(identifier)
+        local iSegnalePlayer = gcPhoneT.getPlayerSegnaleIndex(PLAYERS_PHONE_SIGNALS, identifier)
+        local hasAirplane = gcPhoneT.getAirplaneForUser(identifier)
+        
+        if not hasAirplane and phone_number then
+            if PLAYERS_PHONE_SIGNALS[iSegnalePlayer] ~= nil and PLAYERS_PHONE_SIGNALS[iSegnalePlayer].potenzaSegnale > 0 then
+                local messaggi = GetPianoTariffarioParam(phone_number, "messaggi")
+                if messaggi > 0 then
+                    cb(true)
+                else
+                    cb(false)
+                end
             else
                 cb(false)
             end
         else
             cb(false)
         end
-    else
-        cb(false)
     end
-end
+]]
 
 gcPhoneT.isAbleToCall = function(identifier, cb)
 	local phone_number = gcPhoneT.getPhoneNumber(identifier)
@@ -292,7 +296,6 @@ gcPhoneT.getFirstnameAndLastname = function(identifier)
     -- fill values if loaded query had some errors
     if not CACHED_NAMES[identifier] then
         -- this needs to be syncronus cause return :)
-        -- print(identifier)
         MySQL.Async.fetchAll("SELECT firstname, lastname FROM users WHERE identifier = @identifier", {['@identifier'] = identifier}, function(r)
             if (r and r[1]) and (r[1].firstname and r[1].lastname) then
                 CACHED_NAMES[identifier] = {
@@ -340,7 +343,6 @@ end
 gcPhoneT.updateCachedNumber = function(number, identifier, isChanging)
     -- print(number, identifier, isChanging)
     number = tostring(number)
-    identifier = identifier
 
     if identifier then
         gcPhone.debug(Config.Language["CACHE_NUMBERS_1"]:format(number, identifier))
@@ -403,14 +405,12 @@ gcPhoneT.getPhoneNumber = function(identifier)
             end
         end
     end
-
     return nil
 end
 
 gcPhoneT.getIdentifierByPhoneNumber = function(phone_number)
     phone_number = tostring(phone_number)
     if CACHED_NUMBERS[phone_number] == nil then return nil, false end
-
     return CACHED_NUMBERS[phone_number].identifier, CACHED_NUMBERS[phone_number].inUse
 end
 
@@ -557,11 +557,11 @@ function addMessage(source, identifier, phone_number, message)
             if messaggi > 0 then
                 UpdatePianoTariffario(myPhone, "messaggi", messaggi - 1)
 
-                _internalAddMessage(phone_number, myPhone, message, 1, function(memess)
+                _addMessage(phone_number, myPhone, message, 1, function(memess)
                     TriggerClientEvent("gcPhone:receiveMessage", player, memess)
                     -- print(ESX.DumpTable(memess))
                     
-                    _internalAddMessage(myPhone, phone_number, message, 0, function(tomess)
+                    _addMessage(myPhone, phone_number, message, 0, function(tomess)
                         -- print(ESX.DumpTable(tomess))
         
                         gcPhoneT.getSourceFromIdentifier(otherIdentifier, function(target_source)
@@ -612,7 +612,7 @@ gcPhoneT.sendMessage = function(phoneNumber, message)
     addMessage(player, identifier, phoneNumber, message)
 end
 
-function _internalAddMessage(transmitter, receiver, message, owner, cb)
+function _addMessage(transmitter, receiver, message, owner, cb)
     if not CACHED_MESSAGES[receiver] then CACHED_MESSAGES[receiver] = {} end
     MySQL.Async.insert("INSERT INTO phone_messages (`transmitter`, `receiver`,`message`, `isRead`, `owner`) VALUES(@transmitter, @receiver, @message, @isRead, @owner)", {
         ['@transmitter'] = transmitter,
@@ -892,19 +892,11 @@ end
 
 gcPhoneT.startCall = function(phone_number, rtcOffer, extraData)
     local player = source
-    -- print(player, phone_number, rtcOffer, extraData)
-    internal_startCall(player, phone_number, rtcOffer, extraData)
-end
-
--- evento che controlla le chiamate tra giocatori
--- e giocatori e telefoni fissi
-function internal_startCall(player, phone_number, rtcOffer, extraData)
     if Config.PhoneBoxes[phone_number] ~= nil then
-        onCallFixePhone(player, phone_number, rtcOffer, extraData)
+        CallStaticPhone(player, phone_number, rtcOffer, extraData)
         return
     end
 
-    -- local xPlayer = ESX.GetPlayerFromId(player)
     local srcIdentifier = gcPhoneT.getPlayerID(player)
     -- srcIdentifier è l'identifier del giocatore che ha
     -- avviato la chiamata
@@ -913,11 +905,8 @@ function internal_startCall(player, phone_number, rtcOffer, extraData)
     if phone_number == nil or phone_number == '' then return end
 
     local hidden = string.sub(phone_number, 1, 1) == '#'
-    if hidden == true then phone_number = string.sub(phone_number, 2) end
+    if hidden then phone_number = string.sub(phone_number, 2) end
     -- phone_number è il numero di telefono di chi riceve la chiamata
-
-    local indexCall = CALL_INDEX
-    CALL_INDEX = CALL_INDEX + 1
 
     local srcPhone = ''
     if extraData ~= nil and extraData.useNumber ~= nil then
@@ -933,8 +922,8 @@ function internal_startCall(player, phone_number, rtcOffer, extraData)
     local hasAirplane = gcPhoneT.getAirplaneForUser(destPlayer)
     local is_valid = destPlayer ~= nil and destPlayer ~= srcIdentifier
 
-    Chiamate[indexCall] = {
-        id = indexCall,
+    Chiamate[CALL_INDEX] = {
+        id = CALL_INDEX,
         transmitter_src = player,
         transmitter_num = srcPhone,
         receiver_src = nil,
@@ -949,9 +938,9 @@ function internal_startCall(player, phone_number, rtcOffer, extraData)
     }
 
     gcPhoneT.isAbleToCall(srcIdentifier, function(isAble, useMin, min, message)
-        Chiamate[indexCall].secondiRimanenti = min
+        Chiamate[CALL_INDEX].secondiRimanenti = min
         segnaleTransmitter = PLAYERS_PHONE_SIGNALS[gcPhoneT.getPlayerSegnaleIndex(PLAYERS_PHONE_SIGNALS, srcIdentifier)]
-        Chiamate[indexCall].updateMinuti = useMin
+        Chiamate[CALL_INDEX].updateMinuti = useMin
 
         -- qui controllo se la funzione gcPhoneT.getIdentifierByPhoneNumber ha tornato un valore valido, che non sto chiamando
         -- me stesso, e che la sim sia installata
@@ -963,38 +952,40 @@ function internal_startCall(player, phone_number, rtcOffer, extraData)
                             segnaleReceiver = PLAYERS_PHONE_SIGNALS[gcPhoneT.getPlayerSegnaleIndex(PLAYERS_PHONE_SIGNALS, destPlayer)]
                             if segnaleReceiver ~= nil and segnaleReceiver.potenzaSegnale > 0 then
                                 if isAble then
-                                    Chiamate[indexCall].receiver_src = srcTo
-                                    TriggerEvent('gcPhone:addCall', Chiamate[indexCall])
-                                    TriggerClientEvent('gcPhone:waitingCall', player, Chiamate[indexCall], true)
-                                    TriggerClientEvent('gcPhone:waitingCall', srcTo, Chiamate[indexCall], false)
+                                    Chiamate[CALL_INDEX].receiver_src = srcTo
+                                    TriggerEvent('gcPhone:addCall', Chiamate[CALL_INDEX])
+                                    TriggerClientEvent('gcPhone:waitingCall', player, Chiamate[CALL_INDEX], true)
+                                    TriggerClientEvent('gcPhone:waitingCall', srcTo, Chiamate[CALL_INDEX], false)
                                 else
                                     TriggerClientEvent("esx:showNotification", player, "~r~"..message)
                                     -- xPlayer.showNotification("~r~"..message)
                                 end
                             else
-                                PlayUnreachable(player, Chiamate[indexCall])
+                                PlayUnreachable(player, Chiamate[CALL_INDEX])
                             end
                         else
-                            PlayUnreachable(player, Chiamate[indexCall])
+                            PlayUnreachable(player, Chiamate[CALL_INDEX])
                         end
                     else
-                        PlayNoSignal(player, Chiamate[indexCall])
+                        PlayNoSignal(player, Chiamate[CALL_INDEX])
                         TriggerClientEvent("esx:showNotification", player, Config.Language["STARTCALL_MESSAGE_ERROR_1"])
                     end
                 else
-                    PlayNoSignal(player, Chiamate[indexCall])
+                    PlayNoSignal(player, Chiamate[CALL_INDEX])
                     TriggerClientEvent("esx:showNotification", player, Config.Language["STARTCALL_MESSAGE_ERROR_2"])
                 end
             end)
         else
             if segnaleTransmitter ~= nil and segnaleTransmitter.potenzaSegnale > 0 then
-                PlayUnreachable(player, Chiamate[indexCall])
+                PlayUnreachable(player, Chiamate[CALL_INDEX])
             else
-                PlayNoSignal(player, Chiamate[indexCall])
+                PlayNoSignal(player, Chiamate[CALL_INDEX])
                 TriggerClientEvent("esx:showNotification", player, Config.Language["STARTCALL_MESSAGE_ERROR_3"])
                 -- xPlayer.showNotification("~r~Non c'è segnale per effettuare una telefonata")
             end
         end
+
+        CALL_INDEX = CALL_INDEX + 1
     end)
 end
 
@@ -1117,7 +1108,8 @@ AddEventHandler('esx:playerLoaded', function(source, xPlayer)
     local player = tonumber(source)
     -- if not built_phones then buildPhones() end
 
-    local identifier = gcPhoneT.getPlayerID(player)
+    -- local identifier = gcPhoneT.getPlayerID(player)
+    local identifier = xPlayer.identifier
     local phone_number = gcPhoneT.getPhoneNumber(identifier)
 
     TriggerClientEvent("gcPhone:updatePhoneNumber", player, phone_number)
@@ -1125,7 +1117,6 @@ AddEventHandler('esx:playerLoaded', function(source, xPlayer)
 
    	local notReceivedMessages = getUnreceivedMessages(phone_number)
     if notReceivedMessages > 0 then setMessagesReceived(phone_number) end
-
     TriggerClientEvent("gcPhone:allMessage", player, getMessages(phone_number), notReceivedMessages)
 
     MySQL.Async.fetchAll("SELECT firstname, lastname FROM users WHERE identifier = @identifier", {['@identifier'] = identifier}, function(r)

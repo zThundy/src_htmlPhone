@@ -12,7 +12,7 @@ local function isNumberInCall(phone_number)
     return false
 end
 
-function onCallFixePhone(player, phone_number, rtcOffer, extraData)
+function CallStaticPhone(player, phone_number, rtcOffer, extraData)
     local indexCall = CALL_INDEX
     CALL_INDEX = CALL_INDEX + 1
 
