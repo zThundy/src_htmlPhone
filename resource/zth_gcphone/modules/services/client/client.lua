@@ -23,6 +23,7 @@ AddEventHandler('esx_addons_gcphone:call', function(data)
     if not message then message = data.text end
 
     local number = data.type.number
+    if not number then return end
 
     if message == nil then
         DisplayOnscreenKeyboard(1, "FMMC_MPM_NA", "", "", "", "", "", 200)
