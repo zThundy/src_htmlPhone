@@ -49,7 +49,7 @@ const getters = {
       }
       return {
         label: 'Default',
-        value: 'code.png'
+        value: 'apple.png'
       }
     }
     return background

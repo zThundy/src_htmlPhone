@@ -4,7 +4,6 @@
 
     <div class="subMenu">
       <div class="subMenu-elem" v-for="(Comp, i) of subMenu" :key="i" :class="{ selected: currentMenuIndex === i }">
-        <!-- <i class="subMenu-icon fa" :class="['fa-' + Comp.icon]"></i> -->
         <span class="subMenu-name">{{ Comp.name }}</span>
         <span class="subMenu-underline"></span>
       </div>
@@ -43,20 +42,16 @@ export default {
     subMenu () {
       return [{
         Comp: AppelsFavoris,
-        name: this.LangString('APP_PHONE_MENU_FAVORITES'),
-        icon: 'star'
+        name: this.LangString('APP_PHONE_MENU_FAVORITES')
       }, {
         Comp: AppelsRecents,
-        name: this.LangString('APP_PHONE_MENU_RECENTS'),
-        icon: 'clock-o'
+        name: this.LangString('APP_PHONE_MENU_RECENTS')
       }, {
         Comp: AppelsContacts,
-        name: this.LangString('APP_PHONE_MENU_CONTACTS'),
-        icon: 'user'
+        name: this.LangString('APP_PHONE_MENU_CONTACTS')
       }, {
         Comp: AppelsSegreteria,
-        name: this.LangString('APP_PHONE_MENU_SECRETARIAT'),
-        icon: 'cog'
+        name: this.LangString('APP_PHONE_MENU_SECRETARIAT')
       }]
     }
   },
@@ -73,9 +68,11 @@ export default {
       this.currentMenuIndex = index
     },
     onLeft () {
+      if (this.ignoreControls) return
       this.currentMenuIndex = Math.max(this.currentMenuIndex - 1, 0)
     },
     onRight () {
+      if (this.ignoreControls) return
       this.currentMenuIndex = Math.min(this.currentMenuIndex + 1, this.subMenu.length - 1)
     },
     onBackspace: function () {
@@ -118,7 +115,6 @@ export default {
 .content {
   height: calc(100% - 68px);
   overflow-y: auto;
-  width: 337px;
 }
 
 .subMenu {

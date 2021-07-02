@@ -95,6 +95,9 @@ const mutations = {
   },
   UPDATE_IGNORED_CONTROLS (state, bool) {
     state.ignoreControls = bool
+  },
+  SET_CALLS_IGNORE_CONTROLS (state, bool) {
+    state.ignoreCallControls = bool
   }
 }
 
