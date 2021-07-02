@@ -6,7 +6,9 @@ import VueTimeago from './TimeAgo'
 import PhoneAPI from './PhoneAPI'
 import Notification from './components/Notification'
 import AutoFocus from './directives/autofocus'
+// import VueRecord from 'vue-record'
 
+// Vue.use(VueRecord)
 Vue.use(VueTimeago)
 Vue.use(Notification)
 Vue.config.productionTip = false

@@ -32,7 +32,7 @@ export default {
       Modal.CreateModal({
         scelte: [
           {id: 4, title: this.LangString('APP_PHONE_CALL'), icons: 'fa-phone'},
-          {id: 8, title: this.LangString('APP_PHONE_VIDEO_CALL'), icons: 'fa-video-camera'},
+          // {id: 8, title: this.LangString('APP_PHONE_VIDEO_CALL'), icons: 'fa-video-camera'},
           {id: 5, title: this.LangString('APP_PHONE_CALL_ANONYMOUS'), icons: 'fa-mask'},
           {id: 6, title: this.LangString('APP_MESSAGE_NEW_MESSAGE'), icons: 'fa-sms'}
         ]

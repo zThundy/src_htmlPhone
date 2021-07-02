@@ -118,7 +118,7 @@ export default {
           icons: 'fa-bluetooth-b',
           onValid: 'toggleBluetoothLocally',
           title: this.LangString('APP_CONFIG_BLUETOOTH'),
-          value: (this.bluetooth) ? 'Attivo' : 'Disattivo',
+          value: (this.bluetooth) ? this.LangString('APP_CONFIG_ENABLED_2') : this.LangString('APP_CONFIG_DISABLED_2'),
           bottone: true
         },
         {
@@ -126,7 +126,7 @@ export default {
           icons: 'fa-bell',
           onValid: 'toggleNotificationsLocally',
           title: this.LangString('APP_CONFIG_NOTIFICATION'),
-          value: (this.notification) ? 'Attive' : 'Disattive',
+          value: (this.notification) ? this.LangString('APP_CONFIG_ENABLED_3') : this.LangString('APP_CONFIG_DISABLED_3'),
           bottone: true
         },
         {
@@ -134,7 +134,7 @@ export default {
           icons: 'fa-plane',
           onValid: 'toggleAirplaneModeLocally',
           title: this.LangString('APP_CONFIG_AIRPLANE_MODE'),
-          value: (this.airplane) ? 'Attiva' : 'Disattiva',
+          value: (this.airplane) ? this.LangString('APP_CONFIG_ENABLED_1') : this.LangString('APP_CONFIG_DISABLED_1'),
           bottone: true
         },
         {

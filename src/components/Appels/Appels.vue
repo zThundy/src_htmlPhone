@@ -27,6 +27,7 @@ import PhoneTitle from './../PhoneTitle'
 import AppelsFavoris from './AppelsFavoris'
 import AppelsContacts from './AppelsContacts'
 import AppelsRecents from './AppelsRecents'
+import AppelsSegreteria from './AppelsSegreteria'
 import TransitionPage from '@/components/TransitionPage'
 
 export default {
@@ -52,6 +53,10 @@ export default {
         Comp: AppelsContacts,
         name: this.LangString('APP_PHONE_MENU_CONTACTS'),
         icon: 'user'
+      }, {
+        Comp: AppelsSegreteria,
+        name: this.LangString('APP_PHONE_MENU_SECRETARIAT'),
+        icon: 'cog'
       }]
     }
   },
@@ -117,8 +122,11 @@ export default {
 }
 
 .subMenu {
+  position: relative;
   display: flex;
   height: 40px;
+  margin-left: 8px;
+  margin-right: 8px;
 }
 
 /*
@@ -138,9 +146,9 @@ export default {
 
 .subMenu-name {
   display: block;
-  font-size: 20px;
+  font-size: 15px;
   height: 10px;
-  margin-top: 6px;
+  margin-top: 10px;
 }
 
 .subMenu-elem {
@@ -150,6 +158,8 @@ export default {
   display: flex;
   color: rgba(0, 0, 0, 0.3);
   flex-direction: column;
+  /* margin-left: 5px; */
+  /* margin-right: 5px; */
 }
 
 .subMenu-elem.selected {
