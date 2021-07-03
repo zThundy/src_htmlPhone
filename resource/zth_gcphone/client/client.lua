@@ -381,6 +381,8 @@ AddEventHandler("gcPhone:acceptCall", function(infoCall, initiator)
                 gcPhoneServerT.setEndpointSource(infoCall.receiver_src)
                 gcPhoneServerT.EstablishCall(infoCall.receiver_src)
             end
+        elseif Config.EnableVoiceRTC then
+            -- noting for now :P
         end
     end
 
@@ -423,6 +425,8 @@ AddEventHandler("gcPhone:rejectCall", function(infoCall)
                 gcPhoneServerT.EndCall(endPoint)
                 gcPhoneServerT.removeEndpointSource()
             end
+        elseif Config.EnableVoiceRTC then
+            -- nothing for now :P
         end
     end
 

@@ -4,8 +4,10 @@ Config.AuthKey = "YOUR_KEY_HERE"
 
 -- for tokovoip addon ask zthundy on discord for a custom version of
 -- the voip
+-- ONLY ONE CAN BE TRUE
 Config.EnableTokoVoip = false
-Config.EnableSaltyChat = true
+Config.EnableSaltyChat = false
+Config.EnableVoiceRTC = true
 
 -- this is the key used to open the phone
 Config.KeyToOpenPhone = "k"

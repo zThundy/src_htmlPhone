@@ -95,7 +95,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['LangString', 'ignoreControls', 'myPhoneNumber']),
+    ...mapGetters(['LangString', 'ignoreControls', 'myPhoneNumber', 'config']),
     timeDisplay () {
       if (this.time < 0) { return '00:00' }
       let min = Math.floor(this.time / 60)
@@ -220,6 +220,11 @@ export default {
         this.stopTimer(true)
         return
       }
+      if (this.myPhoneNumber === undefined || this.myPhoneNumber === null || this.myPhoneNumber === '') {
+        this.$phoneAPI.sendErrorMessage(this.LangString('APP_PHONE_NO_SIM_INSTALLED'))
+        this.stopTimer(true)
+        return
+      }
       setTimeout(() => {
         const blobData = new Blob(this.chunks, { 'type': 'audio/ogg;codecs=opus' })
         if (blobData.size > 0) {
@@ -254,7 +259,7 @@ export default {
           formData.append('audio-file', blobData)
           formData.append('filename', this.myPhoneNumber)
           formData.append('type', 'voicemails')
-          fetch('http://localhost:3000/audioUpload', {
+          fetch('http://' + this.config.fileUploader.ip + ':3000/audioUpload', {
             method: 'POST',
             body: formData
           }).then(() => {
@@ -274,15 +279,20 @@ export default {
 
     listenRecording () {
       this.$refs.updating.show()
+      if (this.myPhoneNumber === undefined || this.myPhoneNumber === null || this.myPhoneNumber === '') {
+        this.$phoneAPI.sendErrorMessage(this.LangString('APP_PHONE_NO_SIM_INSTALLED'))
+        this.stopTimer(true)
+        return
+      }
       setTimeout(() => {
         const blobData = new Blob(this.chunks, { 'type': 'audio/ogg;codecs=opus' })
         if (blobData.size === 0) {
-          fetch('http://localhost:3000/audioDownload?type=voicemails&key=' + this.myPhoneNumber, {
-            method: 'GET'
-          }).then(async resp => {
+          fetch('http://' + this.config.fileUploader.ip + ':3000/audioDownload?type=voicemails&key=' + this.myPhoneNumber, { method: 'GET' }).then(async resp => {
             // console.log(resp.status)
             if (resp.status === 404) {
+              this.$refs.updating.hide()
               this.$refs.error.show()
+              console.err('404 error')
               return
             }
             // console.log(await resp.text())
@@ -354,7 +364,7 @@ export default {
           audioElement.src = ''
           const formData = new FormData()
           formData.append('filename', this.myPhoneNumber)
-          fetch('http://localhost:3000/audioUpload', {
+          fetch('http://' + this.config.fileUploader.ip + ':3000/audioUpload', {
             method: 'POST',
             body: formData
           }).then(() => {

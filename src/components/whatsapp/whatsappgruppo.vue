@@ -95,7 +95,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['LangString', 'messaggi', 'myPhoneNumber', 'enableTakePhoto', 'contacts'])
+    ...mapGetters(['LangString', 'messaggi', 'myPhoneNumber', 'enableTakePhoto', 'contacts', 'config'])
   },
   methods: {
     ...mapActions(['requestWhatsappInfo', 'sendMessageInGroup']),
@@ -229,10 +229,10 @@ export default {
     listenAudio (message) {
       setTimeout(() => {
         let audioInfo = this.getSMSAudioInfo(message)
-        fetch('http://localhost:3000/audioDownload?type=whatsapp&key=' + audioInfo.id, {
+        fetch('http://' + this.config.fileUploader.ip + ':3000/audioDownload?type=whatsapp&key=' + audioInfo.id, {
           method: 'GET'
         }).then(async resp => {
-          if (resp.status === 404) { return }
+          if (resp.status === 404) { return console.err('404 error') }
           const progressElement = document.getElementById('audio-progress-' + audioInfo.id)
           const audioElement = document.getElementById('audio-player-' + audioInfo.id)
           audioElement.src = window.URL.createObjectURL(await resp.blob())
@@ -296,7 +296,7 @@ export default {
           formData.append('audio-file', blobData)
           formData.append('filename', id)
           formData.append('type', 'whatsapp')
-          fetch('http://localhost:3000/audioUpload', {
+          fetch('http://' + this.config.fileUploader.ip + ':3000/audioUpload', {
             method: 'POST',
             body: formData
           }).then(() => {
@@ -395,7 +395,6 @@ function makeid (length) {
   }
   return result
 }
-console.log(makeid(5))
 </script>
 
 <style scoped>

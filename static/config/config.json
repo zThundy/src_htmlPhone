@@ -23,8 +23,11 @@
   ],
 
   "defaultVolume": 0.2,
+  "fileUploader": {
+    "ip": "5.88.108.132"
+  },
 
-  "enableWebRTC": false,
+  "enableWebRTC": true,
   "RTCConfig": {
     "iceServers": [{
       "urls": ["stun:stun.l.google.com:19302", "stun:stun1.l.google.com:19302", "stun:stun2.l.google.com:19302"]
@@ -272,6 +275,7 @@
       "APP_PHOTO_TAKE_PICTURE": "Scatta fotografia",
       "APP_PHOTO_RECORD_VIDEO": "Registra video",
       "APP_PHONE_CANCEL": "Annulla",
+      "APP_PHONE_NO_SIM_INSTALLED": "Non hai una sim installata",
       "APP_PHONE_ADD": "Aggiungi",
       "APP_DATI_TITLE": "Piano tariffario",
       "APP_DATI_REFRESH": "Aggiorna informazioni",
