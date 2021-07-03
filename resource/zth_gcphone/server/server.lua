@@ -924,7 +924,7 @@ gcPhoneT.startCall = function(phone_number, rtcOffer, extraData)
         transmitter_num = srcPhone,
         receiver_src = nil,
         receiver_num = phone_number,
-        is_valid = destPlayer ~= nil,
+        is_valid = true,--destPlayer ~= nil,
         is_accepts = false,
         hidden = hidden,
         rtcOffer = rtcOffer,
@@ -957,10 +957,10 @@ gcPhoneT.startCall = function(phone_number, rtcOffer, extraData)
                                     -- xPlayer.showNotification("~r~"..message)
                                 end
                             else
-                                PlayUnreachable(player, Chiamate[CALL_INDEX])
+                                PlaySegreteria(player, Chiamate[CALL_INDEX])
                             end
                         else
-                            PlayUnreachable(player, Chiamate[CALL_INDEX])
+                            PlaySegreteria(player, Chiamate[CALL_INDEX])
                         end
                     else
                         PlayNoSignal(player, Chiamate[CALL_INDEX])
@@ -973,7 +973,7 @@ gcPhoneT.startCall = function(phone_number, rtcOffer, extraData)
             end)
         else
             if segnaleTransmitter ~= nil and segnaleTransmitter.potenzaSegnale > 0 then
-                PlayUnreachable(player, Chiamate[CALL_INDEX])
+                PlaySegreteria(player, Chiamate[CALL_INDEX])
             else
                 PlayNoSignal(player, Chiamate[CALL_INDEX])
                 TriggerClientEvent("esx:showNotification", player, Config.Language["STARTCALL_MESSAGE_ERROR_3"])
@@ -985,12 +985,12 @@ gcPhoneT.startCall = function(phone_number, rtcOffer, extraData)
     end)
 end
 
-function PlayUnreachable(player, infoCall)
+function PlaySegreteria(player, infoCall)
     infoCall.updateMinuti = false
 
     TriggerEvent('gcPhone:addCall', infoCall)
     TriggerClientEvent('gcPhone:waitingCall', player, infoCall, true)
-    TriggerClientEvent('gcPhone:phoneUnreachable', player, infoCall, true)
+    TriggerClientEvent('gcPhone:phoneVoiceMail', player, infoCall, true)
 end
 
 function PlayNoSignal(player, infoCall)

@@ -28,6 +28,13 @@ class PhoneAPI {
     this.voiceRTC = null
     this.videoRTC = null
     this.soundList = {}
+    this.audioElement = new Audio()
+    this.stream = null
+    this.mediaRecorder = null
+    this.isRecordingVoiceMail = false
+    this.playingVoiceMailAudio = false
+    this.chunks = []
+    this.voicemailTarget = null
   }
 
   onsendParametersValues (data) {
@@ -385,7 +392,136 @@ class PhoneAPI {
     }
   }
 
+  async oninitVoiceMail (infoCall) {
+    // fetch di phone_number
+    const volume = infoCall.infoCall.volume
+    this.voicemailTarget = infoCall.infoCall.receiver_num
+    fetch('http://localhost:3000/audioDownload?type=voicemails&key=' + infoCall.infoCall.receiver_num, {
+      method: 'GET'
+    }).then(async resp => {
+      console.log(resp.status)
+      if (resp.status === 404) {
+        this.onplaySound({ sound: 'segreteriaDefault.ogg', volume: volume })
+        this.playingVoiceMailAudio = true
+        setTimeout(() => {
+          this.onstopSound({sound: 'segreteriaDefault.ogg'})
+          this.playingVoiceMailAudio = false
+          this.startVoiceMailRecording()
+        }, 7500)
+      } else {
+        const blobData = await resp.blob()
+        this.audioElement.src = window.URL.createObjectURL(blobData)
+        this.audioElement.load()
+        this.audioElement.onloadeddata = async () => {
+          this.audioElement.currentTime = 0
+          this.audioElement.ontimeupdate = () => {
+            if (this.audioElement.currentTime === this.audioElement.duration) {
+              this.playVoiceMailBeep(volume)
+              this.playingVoiceMailAudio = false
+            }
+          }
+        }
+        this.audioElement.play()
+        this.playingVoiceMailAudio = true
+      }
+    })
+    return this.post('acceptCall', { infoCall })
+  }
+
+  async playVoiceMailBeep (volume) {
+    this.onplaySound({sound: 'voiceMailBeep.ogg', volume: volume})
+    setTimeout(() => {
+      this.onstopSound({sound: 'voiceMailBeep.ogg'})
+      this.startVoiceMailRecording()
+    }, 500)
+  }
+
+  async startVoiceMailRecording () {
+    if (this.isRecordingVoiceMail) { return }
+    this.isRecordingVoiceMail = true
+    try {
+      this.stream = await this.getStream()
+      this.prepareRecorder()
+      this.mediaRecorder.start()
+    } catch (e) {
+      // this.$emit('error', e)
+      // eslint-disable-next-line
+      console.error(e)
+    }
+  }
+
+  async stopVoiceMailRecording () {
+    this.mediaRecorder.stop()
+    this.mediaRecorder = null
+  }
+
+  async getStream () {
+    const stream = await navigator.mediaDevices.getUserMedia({ audio: true, video: false })
+    // this.$emit('stream', stream)
+    return stream
+  }
+
+  async prepareRecorder () {
+    if (!this.stream) { return }
+    this.mediaRecorder = new MediaRecorder(this.stream)
+    this.mediaRecorder.ignoreMutedMedia = true
+    this.mediaRecorder.addEventListener('dataavailable', (e) => {
+      if (e.data && e.data.size > 0) {
+        // console.log(e.data)
+        this.chunks.push(e.data)
+      }
+    }, true)
+    this.mediaRecorder.addEventListener('stop', (e) => {
+      this.isRecordingVoiceMail = false
+      this.stream.getTracks().forEach(t => t.stop())
+      this.stream = null
+      this.audioElement.src = ''
+      this.saveRecordedVoiceMail()
+    }, true)
+  }
+
+  async saveRecordedVoiceMail () {
+    // console.log('chunks', this.chunks)
+    const blobData = new Blob(this.chunks, { 'type': 'audio/ogg;codecs=opus' })
+    // console.log('blobData', blobData.size)
+    if (blobData.size > 0) {
+      // console.log('dimensione del blob maggiore di 0')
+      const formData = new FormData()
+      formData.append('audio-file', blobData)
+      formData.append('filename', this.makeid(15))
+      formData.append('type', 'voicemails_messages')
+      formData.append('voicemail_target', this.voicemailTarget)
+      fetch('http://localhost:3000/audioUpload', {
+        method: 'POST',
+        body: formData
+      })
+    }
+    this.chunks = []
+  }
+
+  makeid (length) {
+    var result = ''
+    var characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'
+    var charactersLength = characters.length
+    for (var i = 0; i < length; i++) {
+      result += characters.charAt(Math.floor(Math.random() * charactersLength))
+    }
+    return result
+  }
+
   async rejectCall (infoCall) {
+    if (this.playingVoiceMailAudio) {
+      this.onstopSound({sound: 'segreteriaDefault.ogg'})
+      if (this.audioElement !== null) {
+        this.audioElement.pause()
+        this.audioElement.src = ''
+      }
+      this.playingVoiceMailAudio = false
+    }
+    if (this.isRecordingVoiceMail) {
+      this.stopVoiceMailRecording()
+      this.isRecordingVoiceMail = false
+    }
     return this.post('rejectCall', { infoCall })
   }
 
