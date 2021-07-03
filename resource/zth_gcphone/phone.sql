@@ -36,7 +36,7 @@ SELECT COUNT(*)
   prepare stmt from @query;
 EXECUTE stmt;
 
-INSERT INTO `items` (`name`, `label`, `weigth`) VALUES
+INSERT INTO `items` (`name`, `label`, `weight`) VALUES
   ('phone', 'Phone', 1),
   ('sim', 'Sim', 1),
   ('modem', 'Modem', 1);

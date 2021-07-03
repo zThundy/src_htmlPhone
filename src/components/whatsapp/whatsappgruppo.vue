@@ -241,8 +241,6 @@ export default {
               console.log(audioElement.duration)
               if (audioElement.duration === Infinity) return
               if (isNaN(audioElement.duration)) return
-              // console.log(audioElement.currentTime, audioElement.duration)
-              // console.log((audioElement.currentTime / audioElement.duration) * 100)
               progressElement.value = (audioElement.currentTime / audioElement.duration) * 100
             }
             audioElement.play()
@@ -265,24 +263,19 @@ export default {
     },
     prepareRecorder () {
       if (!this.$_stream) { return }
-
       this.$_mediaRecorder = new MediaRecorder(this.$_stream)
       this.$_mediaRecorder.ignoreMutedMedia = true
-
       this.$_mediaRecorder.addEventListener('start', () => {
         this.isRecording = true
         this.isPaused = false
       })
-
       this.$_mediaRecorder.addEventListener('resume', () => {
         this.isRecording = true
         this.isPaused = false
       })
-
       this.$_mediaRecorder.addEventListener('pause', () => {
         this.isPaused = true
       })
-
       this.$_mediaRecorder.addEventListener('dataavailable', (e) => {
         if (e.data && e.data.size > 0) {
           this.chunks.push(e.data)
