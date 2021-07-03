@@ -40,7 +40,6 @@ export default {
     ...mapGetters(['LangString'])
   },
   methods: {
-    // ...mapActions(['addPhoto'])
     async onEnter () {
       if (this.ignoreControl) return
       this.ignoreControl = true
@@ -53,10 +52,7 @@ export default {
         switch (resp.id) {
           case 1:
             this.$phoneAPI.takePhoto().then(photo => {
-              // this.addPhoto({ link: resp.url })
-              if (photo) {
-                this.$router.push({ name: 'galleria.splash', params: photo })
-              }
+              if (photo) { this.$router.push({ name: 'galleria.splash', params: photo }) }
             })
             break
           case 2:

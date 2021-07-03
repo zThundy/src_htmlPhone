@@ -182,6 +182,14 @@ if (process.env.NODE_ENV !== 'production') {
     {
       sender: '55529322',
       message: '[AUDIO]%5553827%developer2'
+    },
+    {
+      sender: '55529322',
+      message: 'provo il messaggio 2 :rofl: :rofl: :rofl: :rofl: :rofl: :rofl:'
+    },
+    {
+      sender: '55529322',
+      message: 'https://i.imgur.com/gthahbs.png'
     }
   ]
   state.messaggi['520'] = [

@@ -22,8 +22,7 @@
 
     <div style="width: 100%; height: 605px;" id='sms_list'>
       <div v-for="(s, i) of messaggi[String(gruppo.id)]" :key="i" class="whatsapp-menu-item">
-        <div v-if="isSMSAudio(s)">
-
+        <div v-if="isSMSAudio(s)" style="overflow: auto;">
           <div v-if="isSentByMe(s)" class="bubble daMe" :class="{select: i === currentSelected}">
             <div class="whatsapp-audio-player">
               <i class="fas fa-play"></i>
@@ -39,7 +38,6 @@
               <audio :id="'audio-player-' + getSMSAudioInfo(s.message).id"></audio>
             </div>
           </div>
-
         </div>
 
         <div v-else-if="!isImage(s)" style="overflow: auto;">
