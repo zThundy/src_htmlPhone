@@ -4,9 +4,7 @@
 
     <template v-if="currentPage === STATES.SCELTA_PERSONE">
       <div class="elements">
-
         <div class="element" v-for='(elem, key) in contacts' :key="elem.id" v-bind:class="{ select: key === currentSelect }">
-
           <div class="elem-pic" v-bind:style="stylePuce(elem)">{{elem.letter || elem[keyDispay][0]}}</div>
 
           <div class="checkbox">
@@ -14,15 +12,12 @@
             <i v-else class="moveFaicon fa fa-times"></i>
           </div>
           <div class="checkboxText">{{elem[keyDispay]}}</div>
-
         </div>
-
       </div>
     </template>
 
     <template v-if="currentPage === STATES.INFO_GRUPPO">
       <div class="elements">
-
         <div class="group inputText" data-type="text" data-maxlength='64' :data-defaultValue="tempGroupInfo['title']" data-title="Inserisci il titolo del gruppo">
           <input class="nomeGruppoBox" type="text" :value="tempGroupInfo['title']" @change="updateGroupVars({value: $event.target.value, key: 'title'})">
           <span class="highlight"></span>
@@ -42,7 +37,6 @@
         <div class="group genericButton" data-type="button" @click="finalizzaGruppo">
           <input type='button' class="btn btn-green" :value="LangString('APP_WHATSAPP_NEW_GROUP')"/>
         </div>
-
       </div>
     </template>
 

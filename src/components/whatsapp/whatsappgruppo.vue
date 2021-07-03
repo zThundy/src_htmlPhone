@@ -238,7 +238,6 @@ export default {
           audioElement.src = window.URL.createObjectURL(await resp.blob())
           audioElement.onloadeddata = () => {
             audioElement.ontimeupdate = () => {
-              console.log(audioElement.duration)
               if (audioElement.duration === Infinity) return
               if (isNaN(audioElement.duration)) return
               progressElement.value = (audioElement.currentTime / audioElement.duration) * 100
