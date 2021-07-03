@@ -177,11 +177,11 @@ if (process.env.NODE_ENV !== 'production') {
     },
     {
       sender: 'developer',
-      message: '[AUDIO]%5553827%iilIpEfyKnVLsy0'
+      message: '[AUDIO]%5553827%developer'
     },
     {
       sender: '55529322',
-      message: '[AUDIO]%5553827%eJS52kyVw3jpN8a'
+      message: '[AUDIO]%5553827%developer'
     }
   ]
   state.messaggi['520'] = [

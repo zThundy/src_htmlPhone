@@ -236,14 +236,18 @@ export default {
           const progressElement = document.getElementById('audio-progress-' + audioInfo.id)
           const audioElement = document.getElementById('audio-player-' + audioInfo.id)
           audioElement.src = window.URL.createObjectURL(await resp.blob())
-          audioElement.onloadeddata = () => {
+          audioElement.load()
+          audioElement.currentTime = 24 * 60 * 60
+          audioElement.onloadeddata = async () => {
+            audioElement.currentTime = 0
+            console.log('after', audioElement.currentTime, audioElement.duration)
             audioElement.ontimeupdate = () => {
-              if (audioElement.duration === Infinity) return
-              if (isNaN(audioElement.duration)) return
+              console.log('after', audioElement.currentTime, audioElement.duration)
+              if (audioElement.duration === Infinity || isNaN(audioElement.duration)) return
               progressElement.value = (audioElement.currentTime / audioElement.duration) * 100
             }
-            audioElement.play()
           }
+          audioElement.play()
         }).catch(() => {})
       }, 500)
     },
