@@ -924,7 +924,7 @@ gcPhoneT.startCall = function(phone_number, rtcOffer, extraData)
         transmitter_num = srcPhone,
         receiver_src = nil,
         receiver_num = phone_number,
-        is_valid = true,--destPlayer ~= nil,
+        is_valid = destPlayer ~= nil,
         is_accepts = false,
         hidden = hidden,
         rtcOffer = rtcOffer,
