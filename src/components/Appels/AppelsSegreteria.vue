@@ -364,6 +364,7 @@ export default {
           audioElement.src = ''
           const formData = new FormData()
           formData.append('filename', this.myPhoneNumber)
+          formData.append('type', 'voicemails')
           fetch('http://' + this.config.fileUploader.ip + ':3000/audioUpload', {
             method: 'POST',
             body: formData
