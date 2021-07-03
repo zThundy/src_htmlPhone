@@ -399,7 +399,7 @@ class PhoneAPI {
     fetch('http://localhost:3000/audioDownload?type=voicemails&key=' + infoCall.infoCall.receiver_num, {
       method: 'GET'
     }).then(async resp => {
-      console.log(resp.status)
+      // console.log(resp.status)
       if (resp.status === 404) {
         this.onplaySound({ sound: 'segreteriaDefault.ogg', volume: volume })
         this.playingVoiceMailAudio = true
