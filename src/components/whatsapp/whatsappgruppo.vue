@@ -218,7 +218,6 @@ export default {
           } else {
             this.sendMessageInGroup({ gruppo: this.gruppo, message: message, phoneNumber: this.myPhoneNumber })
           }
-          // qui aggiorno la visualizzazione dei messaggi
           setTimeout(() => {
             this.currentSelected = this.messaggi[String(this.gruppo.id)].length - 1
             this.scrollIntoView()
@@ -240,9 +239,7 @@ export default {
           audioElement.currentTime = 24 * 60 * 60
           audioElement.onloadeddata = async () => {
             audioElement.currentTime = 0
-            console.log('after', audioElement.currentTime, audioElement.duration)
             audioElement.ontimeupdate = () => {
-              console.log('after', audioElement.currentTime, audioElement.duration)
               if (audioElement.duration === Infinity || isNaN(audioElement.duration)) return
               progressElement.value = (audioElement.currentTime / audioElement.duration) * 100
             }
@@ -256,9 +253,7 @@ export default {
         this.$_stream = await this.getStream()
         this.prepareRecorder()
         this.$_mediaRecorder.start()
-      } catch (e) {
-        console.error(e)
-      }
+      } catch (e) {}
     },
     stop () {
       this.$_mediaRecorder.stop()
@@ -318,7 +313,6 @@ export default {
     async onActionMessage (message) {
       try {
         let isGPS = /(-?\d+(\.\d+)?), (-?\d+(\.\d+)?)/.test(message.message)
-        // dopo aver controllato che tipo di messaggio è, creo il modal
         let scelte = [
           { id: 1, title: this.LangString('APP_WHATSAPP_SEND_GPS'), icons: 'fa-location-arrow' },
           { id: 2, title: this.LangString('APP_WHATSAPP_SEND_PHOTO'), icons: 'fa-picture-o' },
@@ -331,7 +325,6 @@ export default {
         } else {
           scelte = [{ id: 'audio-record', title: this.LangString('APP_WHATSAPP_RECORD_AUDIO'), icons: 'fa-microphone' }, ...scelte]
         }
-        // disabilito i controlli
         this.ignoreControls = true
         const data = await Modal.CreateModal({ scelte })
         this.ignoreControls = false

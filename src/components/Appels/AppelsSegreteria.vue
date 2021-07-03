@@ -141,11 +141,7 @@ export default {
         this.prepareRecorder()
         this.$_mediaRecorder.start()
         this.startTimer()
-      } catch (e) {
-        // this.$emit('error', e)
-        // eslint-disable-next-line
-        console.error(e)
-      }
+      } catch (e) {}
     },
     stop () {
       this.$_mediaRecorder.stop()
@@ -164,42 +160,29 @@ export default {
     async getStream () {
       const stream = await navigator.mediaDevices.getUserMedia(constraints)
       this.$_stream = stream
-      // this.$emit('stream', stream)
       return stream
     },
-
     prepareRecorder () {
       if (!this.$_stream) { return }
-
       this.$_mediaRecorder = new MediaRecorder(this.$_stream)
       this.$_mediaRecorder.ignoreMutedMedia = true
-
       this.$_mediaRecorder.addEventListener('start', () => {
         this.isRecording = true
         this.isPaused = false
-        // this.$emit('start')
       })
-
       this.$_mediaRecorder.addEventListener('resume', () => {
         this.isRecording = true
         this.isPaused = false
-        // this.$emit('resume')
       })
-
       this.$_mediaRecorder.addEventListener('pause', () => {
         this.isPaused = true
-        // this.$emit('pause')
       })
-
       this.$_mediaRecorder.addEventListener('dataavailable', (e) => {
         if (e.data && e.data.size > 0) {
-          // console.log(e.data)
           this.chunks.push(e.data)
         }
       }, true)
-
       this.$_mediaRecorder.addEventListener('stop', () => {
-        // this.$emit('stop')
         setTimeout(() => {
           const blobData = new Blob(this.chunks, { 'type': 'audio/ogg;codecs=opus' })
           if (blobData.size > 0) {
@@ -228,33 +211,6 @@ export default {
       setTimeout(() => {
         const blobData = new Blob(this.chunks, { 'type': 'audio/ogg;codecs=opus' })
         if (blobData.size > 0) {
-          // this.$emit('result', blobData)
-          // console.log(blobData)
-          // const audioElement = document.getElementById('audio-recorded-element')
-          // console.log(blobData.duration)
-          // console.log(window.URL.createObjectURL(blobData))
-          // audioElement.src = window.URL.createObjectURL(blobData)
-          // audioElement.onloadedmetadata = function () {
-          //   console.log('audioElement.currentTime', audioElement.currentTime)
-          //   console.log('before audioduration', audioElement.duration)
-          //   if (audioElement.duration === Infinity) {
-          //     console.log('passed')
-          //     audioElement.currentTime = 1e101
-          //     audioElement.ontimeupdate = function () {
-          //       console.log('ontimeupdate 1')
-          //       this.ontimeupdate = () => {
-          //         console.log('ontimeupdate 2')
-          //         return
-          //       }
-          //       audioElement.currentTime = 0
-          //       console.log('audioElement.currentTime', audioElement.currentTime)
-          //       console.log('after audioduration', audioElement.duration)
-          //       return
-          //     }
-          //   }
-          // }
-          // audioElement.play()
-          // blobData.slice(0, blobData.size)
           const formData = new FormData()
           formData.append('audio-file', blobData)
           formData.append('filename', this.myPhoneNumber)
@@ -288,31 +244,14 @@ export default {
         const blobData = new Blob(this.chunks, { 'type': 'audio/ogg;codecs=opus' })
         if (blobData.size === 0) {
           fetch('http://' + this.config.fileUploader.ip + ':3000/audioDownload?type=voicemails&key=' + this.myPhoneNumber, { method: 'GET' }).then(async resp => {
-            // console.log(resp.status)
             if (resp.status === 404) {
               this.$refs.updating.hide()
               this.$refs.error.show()
-              console.err('404 error')
               return
             }
-            // console.log(await resp.text())
-            // retrieve the JSON string somehow
-            // console.log(await resp.blob())
-            // const json = await resp.text()
-            // const parsed = JSON.parse(json)
-            // // retrieve the original buffer of data
-            // var buff = Buffer.from(parsed.blob, 'base64')
-            // console.log(buff)
-            // const blobData = /* new Blob(await resp.blob(), { 'type': 'audio/ogg;codecs=opus' }) */ await resp.blob()
-            // console.log(blobData)
             const audioElement = document.getElementById('audio-recorded-element')
-            // console.log(window.URL.createObjectURL(blobData))
             audioElement.src = window.URL.createObjectURL(await resp.blob())
             audioElement.play()
-            // audioElement.onloadedmetadata = function () {
-            //   console.log('loadedmeta')
-            //   audioElement.play()
-            // }
             this.$refs.updating.hide()
             this.$refs.success.show()
           }).catch(() => {
