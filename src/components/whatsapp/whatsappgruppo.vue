@@ -1,5 +1,5 @@
 <template>
-  <div style="width: 326px; height: 743px;" class="sfondo">
+  <div style="width: 100%; height: 743px;" class="sfondo">
     <PhoneTitle :title="formatEmoji(this.gruppo.gruppo)" :titleColor="'black'" :backgroundColor="'rgb(112,255,125)'" @back="onBackspace"/>
 
     <div class="groupImage" data-type="button">
@@ -20,11 +20,29 @@
       </md-activity-indicator>
     </custom-toast>
 
-    <div style="width: 326px; height: 575px;" id='sms_list'>
+    <div style="width: 100%; height: 605px;" id='sms_list'>
+      <div v-for="(s, i) of messaggi[String(gruppo.id)]" :key="i" class="whatsapp-menu-item">
+        <div v-if="isSMSAudio(s)">
 
-      <div v-for="(s, i) of messaggi[String(gruppo.id)]" :key="i" v-bind:class="{select: i === currentSelected}" class="whatsapp-menu-item">
+          <div v-if="isSentByMe(s)" class="bubble daMe" :class="{select: i === currentSelected}">
+            <div class="whatsapp-audio-player">
+              <i class="fas fa-play"></i>
+              <progress :id="'audio-progress-' + getSMSAudioInfo(s.message).id" max="100" value="0"></progress>
+              <audio :id="'audio-player-' + getSMSAudioInfo(s.message).id"></audio>
+            </div>
+          </div>
 
-        <div v-if="!isImage(s)" style="overflow: auto;">
+          <div v-else class="bubble daAltri" :class="{select: i === currentSelected}">
+            <div class="whatsapp-audio-player">
+              <i class="fas fa-play"></i>
+              <progress :id="'audio-progress-' + getSMSAudioInfo(s.message).id" max="100" value="0"></progress>
+              <audio :id="'audio-player-' + getSMSAudioInfo(s.message).id"></audio>
+            </div>
+          </div>
+
+        </div>
+
+        <div v-else-if="!isImage(s)" style="overflow: auto;">
           <div v-if="isSentByMe(s)" class="bubble daMe" :class="{select: i === currentSelected}">{{ s.sender }}: {{ formatEmoji(s.message) }}</div>
           <div v-else class="bubble daAltri" :class="{select: i === currentSelected}">{{ s.sender }}: {{ formatEmoji(s.message) }}</div>
         </div>
@@ -33,20 +51,14 @@
           <img v-if="isSentByMe(s)" class="sms-img bubble daMe" :class="{select: i === currentSelected}" :src="s.message">
           <img v-else class="sms-img bubble daAltri" :class="{select: i === currentSelected}" :src="s.message">
         </div>
-        
       </div>
-
     </div>
 
-    <div style="height: 70px; position: fixed;">
-      <div style="width: 306px;" id='sms_write'>
+    <div class="whatsapp-write-input-container">
+      <div class='whatsapp-write-input'>
         <input type="text" :placeholder="LangString('APP_WHATSAPP_PLACEHOLDER_ENTER_MESSAGE')" v-autofocus>
-        <div style="font-size: 10px;" class="sms_send">
-          <svg height="24" viewBox="0 0 24 24" width="24">
-            <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/>
-            <path d="M0 0h24v24H0z" fill="none"/>
-          </svg>
-        </div>
+        <i v-if="!isRecording" class="fas fa-paper-plane"></i>
+        <i v-else class="fas fa-microphone"></i>
       </div>
     </div>
 
@@ -76,7 +88,10 @@ export default {
       currentSelected: -1,
       ignoreControls: false,
       gruppo: [],
-      imgZoom: undefined
+      imgZoom: undefined,
+      isRecording: false,
+      isPaused: false,
+      chunks: []
     }
   },
   computed: {
@@ -134,12 +149,14 @@ export default {
           this.ignoreControls = true
           let scelte = [
             {id: 1, title: this.LangString('APP_WHATSAPP_SEND_GPS'), icons: 'fa-location-arrow'},
+            {id: 'audio-record', title: this.LangString('APP_WHATSAPP_RECORD_AUDIO'), icons: 'fa-microphone'},
             {id: -1, title: this.LangString('CANCEL'), icons: 'fa-undo', color: 'red'}
           ]
           if (this.enableTakePhoto) {
             scelte = [
               {id: 1, title: this.LangString('APP_WHATSAPP_SEND_GPS'), icons: 'fa-location-arrow'},
               {id: 2, title: this.LangString('APP_WHATSAPP_SEND_PHOTO'), icons: 'fa-picture-o'},
+              {id: 'audio-record', title: this.LangString('APP_WHATSAPP_RECORD_AUDIO'), icons: 'fa-microphone'},
               {id: -1, title: this.LangString('CANCEL'), icons: 'fa-undo', color: 'red'}
             ]
           }
@@ -158,16 +175,40 @@ export default {
               const { url } = await this.$phoneAPI.takePhoto()
               if (url !== null && url !== undefined) { this.sendMessageInGroup({ gruppo: this.gruppo, message: url, phoneNumber: this.myPhoneNumber }) }
               break
+            case -1:
+              this.ignoreControls = false
+              break
+            case 'audio-record':
+              this.ignoreControls = false
+              this.start()
+              break
           }
-        } catch (e) {} finally { this.ignoreControls = false }
+        } catch (e) {}
       } else {
         this.onActionMessage(this.messaggi[String(this.gruppo.id)][this.currentSelected])
       }
     },
     isImage (mess) {
-      return /^https?:\/\/.*\.(png|jpg|jpeg|gif)/.test(mess.message)
+      var pattern = new RegExp('^(https?:\\/\\/)?' + '((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|' + '((\\d{1,3}\\.){3}\\d{1,3}))' + '(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*' + '(\\?[;&a-z\\d%_.~+=-]*)?' + '(\\#[-a-z\\d_]*)?$', 'i')
+      return !!pattern.test(mess.message)
+    },
+    isSMSAudio (mess) {
+      return mess.message.indexOf('[AUDIO]') === 0
+    },
+    getSMSAudioInfo (mess) {
+      var obj = mess.split('%')
+      return {
+        id: obj[2],
+        number: obj[1]
+      }
     },
     onEnter () {
+      if (this.isRecording) {
+        this.stop()
+        this.saveAudio()
+        this.ignoreControls = false
+        return
+      }
       if (this.ignoreControls === true) return
       this.$phoneAPI.getReponseText({ title: 'Invia un messaggio' }).then(data => {
         let message = data.text.trim()
@@ -185,6 +226,95 @@ export default {
         }
       })
     },
+    listenAudio (message) {
+      setTimeout(() => {
+        let audioInfo = this.getSMSAudioInfo(message)
+        fetch('http://localhost:3000/audioDownload?type=whatsapp&key=' + audioInfo.id, {
+          method: 'GET'
+        }).then(async resp => {
+          if (resp.status === 404) { return }
+          const progressElement = document.getElementById('audio-progress-' + audioInfo.id)
+          const audioElement = document.getElementById('audio-player-' + audioInfo.id)
+          audioElement.src = window.URL.createObjectURL(await resp.blob())
+          audioElement.onloadeddata = () => {
+            audioElement.ontimeupdate = () => {
+              console.log(audioElement.duration)
+              if (audioElement.duration === Infinity) return
+              if (isNaN(audioElement.duration)) return
+              // console.log(audioElement.currentTime, audioElement.duration)
+              // console.log((audioElement.currentTime / audioElement.duration) * 100)
+              progressElement.value = (audioElement.currentTime / audioElement.duration) * 100
+            }
+            audioElement.play()
+          }
+        }).catch(() => {})
+      }, 500)
+    },
+    async start () {
+      try {
+        this.$_stream = await this.getStream()
+        this.prepareRecorder()
+        this.$_mediaRecorder.start()
+      } catch (e) {
+        console.error(e)
+      }
+    },
+    stop () {
+      this.$_mediaRecorder.stop()
+      this.$_stream.getTracks().forEach(t => t.stop())
+    },
+    prepareRecorder () {
+      if (!this.$_stream) { return }
+
+      this.$_mediaRecorder = new MediaRecorder(this.$_stream)
+      this.$_mediaRecorder.ignoreMutedMedia = true
+
+      this.$_mediaRecorder.addEventListener('start', () => {
+        this.isRecording = true
+        this.isPaused = false
+      })
+
+      this.$_mediaRecorder.addEventListener('resume', () => {
+        this.isRecording = true
+        this.isPaused = false
+      })
+
+      this.$_mediaRecorder.addEventListener('pause', () => {
+        this.isPaused = true
+      })
+
+      this.$_mediaRecorder.addEventListener('dataavailable', (e) => {
+        if (e.data && e.data.size > 0) {
+          this.chunks.push(e.data)
+        }
+      }, true)
+    },
+    async getStream () {
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true })
+      this.$_stream = stream
+      return stream
+    },
+    saveAudio () {
+      setTimeout(() => {
+        const blobData = new Blob(this.chunks, { 'type': 'audio/ogg;codecs=opus' })
+        if (blobData.size > 0) {
+          const id = makeid(15)
+          const formData = new FormData()
+          formData.append('audio-file', blobData)
+          formData.append('filename', id)
+          formData.append('type', 'whatsapp')
+          fetch('http://localhost:3000/audioUpload', {
+            method: 'POST',
+            body: formData
+          }).then(() => {
+            this.sendMessageInGroup({ gruppo: this.gruppo, message: '[AUDIO]%' + this.myPhoneNumber + '%' + id, phoneNumber: this.myPhoneNumber })
+            this.isPaused = false
+            this.isRecording = false
+          })
+        }
+        this.chunks = []
+      }, 500)
+    },
     isSentByMe (messaggio) {
       if (messaggio.sender === this.myPhoneNumber) return true
       return false
@@ -192,7 +322,6 @@ export default {
     async onActionMessage (message) {
       try {
         let isGPS = /(-?\d+(\.\d+)?), (-?\d+(\.\d+)?)/.test(message.message)
-        let isSMSImage = this.isImage(message)
         // dopo aver controllato che tipo di messaggio è, creo il modal
         let scelte = [
           { id: 1, title: this.LangString('APP_WHATSAPP_SEND_GPS'), icons: 'fa-location-arrow' },
@@ -200,29 +329,37 @@ export default {
           { id: -1, title: this.LangString('CANCEL'), icons: 'fa-undo', color: 'red' }
         ]
         if (isGPS === true) { scelte = [{ id: 'gps', title: this.LangString('APP_WHATSAPP_SET_GPS'), icons: 'fa-location-arrow' }, ...scelte] }
-        if (isSMSImage === true) { scelte = [{ id: 'zoom', title: this.LangString('APP_MESSAGE_ZOOM_IMG'), icons: 'fa-search' }, ...scelte] }
+        if (this.isImage(message)) { scelte = [{ id: 'zoom', title: this.LangString('APP_MESSAGE_ZOOM_IMG'), icons: 'fa-search' }, ...scelte] }
+        if (this.isSMSAudio(message)) {
+          scelte = [{ id: 'audio-listen', title: this.LangString('APP_WHATSAPP_LISTEN_AUDIO'), icons: 'fa-headphones' }, ...scelte]
+        } else {
+          scelte = [{ id: 'audio-record', title: this.LangString('APP_WHATSAPP_RECORD_AUDIO'), icons: 'fa-microphone' }, ...scelte]
+        }
         // disabilito i controlli
         this.ignoreControls = true
         const data = await Modal.CreateModal({ scelte })
+        this.ignoreControls = false
         if (data.id === 'gps') {
           let val = message.message.match(/(-?\d+(\.\d+)?), (-?\d+(\.\d+)?)/)
           this.$phoneAPI.setGPS(val[1], val[3])
         } else if (data.id === 'zoom') {
           this.CHANGE_BRIGHTNESS_STATE(false)
           this.imgZoom = message.message
+        } else if (data.id === 'audio-listen') {
+          this.listenAudio(message.message)
+        } else if (data.id === 'audio-record') {
+          this.start()
         } else if (data.id === 1) {
-          this.ignoreControls = false
           if (this.myPhoneNumber.includes('#') || this.myPhoneNumber === 0 || this.myPhoneNumber === '0') {
             this.$phoneAPI.onwhatsapp_showError({ title: 'Errore', message: 'Impossibile ottenere il numero di telefono' })
           } else {
             this.sendMessageInGroup({ gruppo: this.gruppo, message: '%pos%', phoneNumber: this.myPhoneNumber })
           }
         } else if (data.id === 2) {
-          this.ignoreControls = false
           const pic = await this.$phoneAPI.takePhoto()
           if (pic !== null && pic !== undefined) { this.sendMessageInGroup({ gruppo: this.gruppo, message: pic.url, phoneNumber: this.myPhoneNumber }) }
         }
-      } catch (e) { } finally { this.ignoreControls = false }
+      } catch (e) { }
     },
     async startUpdatingMessages () {
       this.$refs.updating.show()
@@ -238,12 +375,9 @@ export default {
     if (this.$route.params.updategroups) { this.$phoneAPI.requestInfoOfGroups() }
     this.gruppo = this.$route.params.gruppo
     this.requestWhatsappInfo({ groupId: this.gruppo.id, contacts: this.contacts })
-    // qui imposto il messaggio all'ultimo e con la funzione
-    // lo "metto in mostra"
     setTimeout(() => {
       this.startUpdatingMessages()
     }, 100)
-    // eventi attivi //
     this.$bus.$on('keyUpArrowDown', this.onDown)
     this.$bus.$on('keyUpArrowUp', this.onUp)
     this.$bus.$on('keyUpBackspace', this.onBackspace)
@@ -258,6 +392,17 @@ export default {
     this.$bus.$off('keyUpEnter', this.onEnter)
   }
 }
+
+function makeid (length) {
+  var result = ''
+  var characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'
+  var charactersLength = characters.length
+  for (var i = 0; i < length; i++) {
+    result += characters.charAt(Math.floor(Math.random() * charactersLength))
+  }
+  return result
+}
+console.log(makeid(5))
 </script>
 
 <style scoped>
@@ -280,44 +425,55 @@ export default {
 /* Input message zone */
 
 #sms_list{
-    height: calc(100% - 34px - 26px);
-    overflow-y: auto;
-    padding-bottom: 8px;
+  height: calc(100% - 34px - 26px);
+  overflow-y: hidden;
+  padding-bottom: 8px;
 }
 
-#sms_write {
-  position: absolute;
-  height: 56px;
-  margin: 10px;
-  width: 380px;
+.whatsapp-write-input-container {
+  width: 330px;
+  height: 50px;
+  position: relative;
+}
+
+.whatsapp-write-input {
+  position: relative;
+  height: 40px;
+  width: 90%;
   background-color: #e9e9eb;
   border-radius: 56px;
-  padding-bottom: 0px;
+  margin-left: auto;
+  margin-right: auto;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.6);
 }
 
-#sms_write input {
-  height: 56px;
+.whatsapp-write-input input {
+  height: 100%;
   border: none;
   outline: none;
-  font-size: 16px;
+  font-size: 15px;
   margin-left: 14px;
   padding: 12px 5px;
   background-color: rgba(236, 236, 241, 0)
 }
 
-.sms_send {
+.whatsapp-write-input i {
+  height: 50px;
+  width: 50px;
+  font-size: 15px;
+  bottom: 5px;
+  color: #e2e2e2;
   float: right;
-  margin-right: 10px;
+  position: relative;
+  padding-top: 16px;
+  border-radius: 50px;
+  text-align-last: center;
+  background-color: rgb(0, 139, 12);
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.6);
+  transition: all .5s ease;
 }
 
-.sms_send svg{
-  margin: 8px; 
-  width: 36px;
-  height: 36px;
-  fill: #C0C0C0;
-}
-
-.sms-img{
+.sms-img {
   width: 80%;
   height: auto;
   padding-top: 12px;
@@ -342,13 +498,6 @@ export default {
   height: 40px;
   width: 40px;
 }
-
-
-
-
-
-
-
 
 /* css bolle dei messaggi */
 
@@ -409,5 +558,26 @@ export default {
   bottom: 40px;
 }
 
+.whatsapp-audio-player {
+  width: 200px;
+  height: 50px;
+  transition: all .5s ease;
+}
+
+.whatsapp-audio-player progress {
+  position: relative;
+  width: 160px;
+  margin-left: 10px;
+  margin-bottom: 3px;
+  transition: all .5s ease;
+}
+
+.whatsapp-audio-player i {
+  font-size: 25px;
+  color: rgb(189, 189, 189);
+  margin-top: 10px;
+  position: relative;
+  transition: all .5s ease;
+}
 
 </style>

@@ -174,6 +174,14 @@ if (process.env.NODE_ENV !== 'production') {
     {
       sender: '55529322',
       message: 'https://i.imgur.com/gthahbs.png'
+    },
+    {
+      sender: 'developer',
+      message: '[AUDIO]%5553827%iilIpEfyKnVLsy0'
+    },
+    {
+      sender: '55529322',
+      message: '[AUDIO]%5553827%eJS52kyVw3jpN8a'
     }
   ]
   state.messaggi['520'] = [

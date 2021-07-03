@@ -1,56 +1,65 @@
 <template>
-  <div style="display: flex; flex-direction: column; width: 100%; height: 50%;">
-    <!-- <VueRecordAudio @result="onResult" /> -->
-    <div class="toast">
-      <custom-toast ref="updating">
-        <md-activity-indicator
-          :size="20"
-          :text-size="16"
-          color="white"
-          text-color="white"
-        >Caricamento...
-        </md-activity-indicator>
-      </custom-toast>
+  <div style="display: flex; flex-direction: column;">
+    <div style="display: flex; flex-direction: column; width: 100%; height: 300px;">
+      <!-- <VueRecordAudio @result="onResult" /> -->
+      <div class="toast">
+        <custom-toast ref="updating">
+          <md-activity-indicator
+            :size="20"
+            :text-size="16"
+            color="white"
+            text-color="white"
+          >Caricamento...
+          </md-activity-indicator>
+        </custom-toast>
 
-      <custom-toast ref="success" :content="'Riuscito'" :duration="4000">
-        <div style="font-size: 17px; padding-left: 2px;">Riuscito</div>
-      </custom-toast>
+        <custom-toast ref="success" :content="'Riuscito'" :duration="4000">
+          <div style="font-size: 17px; padding-left: 2px;">Riuscito</div>
+        </custom-toast>
 
-      <custom-toast ref="error" :content="'Riuscito'" :duration="4000">
-        <div style="font-size: 17px; padding-left: 2px;">Errore</div>
-      </custom-toast>
+        <custom-toast ref="error" :content="'Riuscito'" :duration="4000">
+          <div style="font-size: 17px; padding-left: 2px;">Errore</div>
+        </custom-toast>
+      </div>
+
+      <div class="audio-recorder-time">
+        <span :style="getTimerColor()">{{ timeDisplay }}/00:15</span>
+      </div>
+
+      <div class="audio-recorder-container">
+        <div class="audio-recorder-button-container">
+          <div class="audio-recorder-button-small" :class="{ select: currentSelect === 0 }">
+            <i class="fas fa-stop"></i>
+          </div>
+        </div>
+        <div class="audio-recorder-button-container">
+          <div class="audio-recorder-button-big" :class="{ select: currentSelect === 1, recording: !isRecording && !isPaused, paused: isPaused && isRecording }">
+            <i v-if="!isRecording && !isPaused" class="fas fa-microphone"></i>
+            <i v-else-if="isRecording && !isPaused" style="font-size: 40px; margin-top: 20px;" class="fas fa-pause"></i>
+            <i v-else-if="isRecording && isPaused" style="margin-left: 5px; font-size: 40px; margin-top: 20px;" class="fas fa-play"></i>
+          </div>
+        </div>
+        <div class="audio-recorder-button-container">
+          <div class="audio-recorder-button-small" :class="{ select: currentSelect === 2 }">
+            <i class="fas fa-trash"></i>
+          </div>
+        </div>
+      </div>
+      <div class="audio-recorder-container">
+        <div class="audio-recorder-button-container">
+          <div class="audio-recorder-button-small-listen" :class="{ select: currentSelect === 3 }">
+            <i class="fas fa-headphones"></i>
+          </div>
+        </div>
+        <div class="audio-recorder-button-container">
+          <div class="audio-recorder-button-small-upload" :class="{ select: currentSelect === 4 }">
+            <i class="fas fa-save"></i>
+          </div>
+        </div>
+      </div>
     </div>
 
-    <div class="audio-recorder-container">
-      <div class="audio-recorder-button-container">
-        <div class="audio-recorder-button-small" :class="{ select: currentSelect === 0 }">
-          <i class="fas fa-stop"></i>
-        </div>
-      </div>
-      <div class="audio-recorder-button-container">
-        <div class="audio-recorder-button-big" :class="{ select: currentSelect === 1, recording: !isRecording && !isPaused, paused: isPaused && isRecording }">
-          <i v-if="!isRecording && !isPaused" class="fas fa-microphone"></i>
-          <i v-else-if="isRecording && !isPaused" style="font-size: 40px; margin-top: 20px;" class="fas fa-pause"></i>
-          <i v-else-if="isRecording && isPaused" style="margin-left: 5px; font-size: 40px; margin-top: 20px;" class="fas fa-play"></i>
-        </div>
-      </div>
-      <div class="audio-recorder-button-container">
-        <div class="audio-recorder-button-small" :class="{ select: currentSelect === 2 }">
-          <i class="fas fa-trash"></i>
-        </div>
-      </div>
-    </div>
-    <div class="audio-recorder-container">
-      <div class="audio-recorder-button-container">
-        <div class="audio-recorder-button-small-listen" :class="{ select: currentSelect === 3 }">
-          <i class="fas fa-headphones"></i>
-        </div>
-      </div>
-      <div class="audio-recorder-button-container">
-        <div class="audio-recorder-button-small-upload" :class="{ select: currentSelect === 4 }">
-          <i class="fas fa-save"></i>
-        </div>
-      </div>
+    <div>
     </div>
     <audio id="audio-recorded-element" type="audio/ogg"></audio>
   </div>
@@ -78,22 +87,60 @@ export default {
   data () {
     return {
       currentSelect: -1,
-      isSupported: false,
       isRecording: false,
       isPaused: false,
-      chunks: []
+      chunks: [],
+      time: -1,
+      intervalNum: undefined
     }
   },
   computed: {
-    ...mapGetters(['LangString', 'ignoreControls', 'myPhoneNumber'])
+    ...mapGetters(['LangString', 'ignoreControls', 'myPhoneNumber']),
+    timeDisplay () {
+      if (this.time < 0) { return '00:00' }
+      let min = Math.floor(this.time / 60)
+      let sec = this.time % 60
+      if (sec < 10) { sec = '0' + sec }
+      if (min < 10) { min = '0' + min }
+      return `${min}:${sec}`
+    }
   },
   methods: {
     ...mapActions(['updateIgnoredControls']),
+    startTimer () {
+      if (this.intervalNum === undefined) {
+        this.intervalNum = setInterval(() => {
+          this.time += 1
+        }, 1000)
+      }
+    },
+    stopTimer (reset) {
+      if (this.intervalNum !== undefined) {
+        window.clearInterval(this.intervalNum)
+        this.intervalNum = undefined
+      }
+      if (reset) { this.time = 0 }
+    },
+    getTimerColor () {
+      if (this.time > 15) {
+        return {
+          color: 'red',
+          transition: 'all .5s ease'
+        }
+      } else {
+        return {
+          color: 'black',
+          transition: 'all .5s ease'
+        }
+      }
+    },
+
     async start () {
       try {
         this.$_stream = await this.getStream()
         this.prepareRecorder()
         this.$_mediaRecorder.start()
+        this.startTimer()
       } catch (e) {
         // this.$emit('error', e)
         // eslint-disable-next-line
@@ -103,12 +150,15 @@ export default {
     stop () {
       this.$_mediaRecorder.stop()
       this.$_stream.getTracks().forEach(t => t.stop())
+      this.stopTimer(true)
     },
     pause () {
       this.$_mediaRecorder.pause()
+      this.stopTimer(false)
     },
     resume () {
       this.$_mediaRecorder.resume()
+      this.startTimer()
     },
 
     async getStream () {
@@ -165,6 +215,11 @@ export default {
 
     saveRecording () {
       this.$refs.updating.show()
+      if (this.time > 15) {
+        this.$phoneAPI.sendErrorMessage(this.LangString('APP_PHONE_RECORD_TOO_LONG'))
+        this.stopTimer(true)
+        return
+      }
       setTimeout(() => {
         const blobData = new Blob(this.chunks, { 'type': 'audio/ogg;codecs=opus' })
         if (blobData.size > 0) {
@@ -198,12 +253,16 @@ export default {
           const formData = new FormData()
           formData.append('audio-file', blobData)
           formData.append('filename', this.myPhoneNumber)
+          formData.append('type', 'voicemails')
           fetch('http://localhost:3000/audioUpload', {
             method: 'POST',
             body: formData
           }).then(() => {
             this.$refs.updating.hide()
             this.$refs.success.show()
+          }).catch(() => {
+            this.$refs.updating.hide()
+            this.$refs.error.show()
           })
         } else {
           this.$refs.updating.hide()
@@ -214,35 +273,49 @@ export default {
     },
 
     listenRecording () {
-      try {
-        fetch('http://localhost:3000/audioDownload?key=' + this.myPhoneNumber, {
-          method: 'GET'
-        }).then(async resp => {
-          // console.log(resp.status)
-          if (resp.status === 404) {
+      this.$refs.updating.show()
+      setTimeout(() => {
+        const blobData = new Blob(this.chunks, { 'type': 'audio/ogg;codecs=opus' })
+        if (blobData.size === 0) {
+          fetch('http://localhost:3000/audioDownload?type=voicemails&key=' + this.myPhoneNumber, {
+            method: 'GET'
+          }).then(async resp => {
+            // console.log(resp.status)
+            if (resp.status === 404) {
+              this.$refs.error.show()
+              return
+            }
+            // console.log(await resp.text())
+            // retrieve the JSON string somehow
+            // console.log(await resp.blob())
+            // const json = await resp.text()
+            // const parsed = JSON.parse(json)
+            // // retrieve the original buffer of data
+            // var buff = Buffer.from(parsed.blob, 'base64')
+            // console.log(buff)
+            // const blobData = /* new Blob(await resp.blob(), { 'type': 'audio/ogg;codecs=opus' }) */ await resp.blob()
+            // console.log(blobData)
+            const audioElement = document.getElementById('audio-recorded-element')
+            // console.log(window.URL.createObjectURL(blobData))
+            audioElement.src = window.URL.createObjectURL(await resp.blob())
+            audioElement.play()
+            // audioElement.onloadedmetadata = function () {
+            //   console.log('loadedmeta')
+            //   audioElement.play()
+            // }
+            this.$refs.updating.hide()
+            this.$refs.success.show()
+          }).catch(() => {
+            this.$refs.updating.hide()
             this.$refs.error.show()
-            return
-          }
-          // console.log(await resp.text())
-          // retrieve the JSON string somehow
-          // console.log(await resp.blob())
-          // const json = await resp.text()
-          // const parsed = JSON.parse(json)
-          // // retrieve the original buffer of data
-          // var buff = Buffer.from(parsed.blob, 'base64')
-          // console.log(buff)
-          // const blobData = /* new Blob(await resp.blob(), { 'type': 'audio/ogg;codecs=opus' }) */ await resp.blob()
-          // console.log(blobData)
+          })
+        } else {
+          this.$refs.updating.hide()
           const audioElement = document.getElementById('audio-recorded-element')
-          // console.log(window.URL.createObjectURL(blobData))
-          audioElement.src = window.URL.createObjectURL(await resp.blob())
+          audioElement.src = window.URL.createObjectURL(blobData)
           audioElement.play()
-          // audioElement.onloadedmetadata = function () {
-          //   console.log('loadedmeta')
-          //   audioElement.play()
-          // }
-        })
-      } catch (e) {}
+        }
+      }, 500)
     },
 
     // CONTROLS SECTION //
@@ -270,6 +343,11 @@ export default {
       }
 
       if (this.currentSelect === 2) {
+        if (this.time > 15) {
+          this.$phoneAPI.sendErrorMessage(this.LangString('APP_PHONE_RECORD_TOO_LONG'))
+          this.stopTimer(true)
+          return
+        }
         if (this.chunks !== []) {
           this.chunks = []
           const audioElement = document.getElementById('audio-recorded-element')
@@ -284,6 +362,7 @@ export default {
             this.$refs.success.show()
           })
         }
+        this.stopTimer(true)
       }
       // this.start()
       // setTimeout(() => {
@@ -299,7 +378,7 @@ export default {
       }
     },
     onRight () {
-      if (this.currentSelect === 2) return
+      if (this.currentSelect === 4) return
       this.currentSelect = this.currentSelect + 1
     },
     onDown () {
@@ -308,10 +387,11 @@ export default {
           this.currentSelect = 3
           return
         }
-        if (this.currentSelect > 0) {
+        if (this.currentSelect > 0 && this.currentSelect < 3) {
           this.currentSelect = 4
           return
         }
+        if (this.currentSelect > 1) return
       }
       // select the middle button
       this.currentSelect = 1
@@ -325,11 +405,12 @@ export default {
       if (this.currentSelect > 2) {
         if (this.currentSelect === 4) {
           this.currentSelect = 2
+          return
         }
         if (this.currentSelect === 3) {
           this.currentSelect = 0
+          return
         }
-        return
       }
       this.onBackspace()
     },
@@ -369,6 +450,19 @@ export default {
 </script>
 
 <style scoped>
+.audio-recorder-time {
+  width: 100%;
+  height: 50px;
+  text-align-last: center;
+}
+
+.audio-recorder-time span {
+  position: relative;
+  top: 30px;
+  font-size: 35px;
+  font-weight: bold;
+}
+
 .audio-recorder-container {
   display: flex;
   flex-direction: row;
@@ -441,7 +535,7 @@ i {
 }
 
 .select {
-  filter: brightness(120%);
+  filter: brightness(150%);
 }
 
 .recording {
@@ -470,5 +564,4 @@ i {
   height: 62%;
 }
 
-/* #audio-recorded-element {} */
 </style>

@@ -22,7 +22,8 @@
 
         <span class='sms_message sms_me' v-bind:class="{ sms_other : mess.owner === 0 }">
           <img v-if="isSMSImage(mess.message)" class="sms-img" :src="mess.message"/>
-          <div class="contact-forward-container" v-else-if="isSMSContact(mess.message)">
+
+          <div v-else-if="isSMSContact(mess.message)" class="contact-forward-container">
             <div class="contact-forward-background">
               <div class="contact-forward-pic" :style="stylePuce(mess)">{{ getSMSContactInfo(mess.message).letter }}</div>
               <!-- <img class="contact-forward-pic" :src="getSMSContactInfo(mess.message).pic"> -->
