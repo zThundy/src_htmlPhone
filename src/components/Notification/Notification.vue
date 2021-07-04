@@ -74,7 +74,7 @@ export default {
     },
     showNotification (dataNotif) {
       this.currentShowing = dataNotif
-      this.soundList[dataNotif.id].play()
+      if (this.soundList[dataNotif.id]) this.soundList[dataNotif.id].play()
       setTimeout(() => {
         this.list = this.list.filter(n => n.id !== this.currentShowing.id)
         delete this.soundList[this.currentShowing.id]

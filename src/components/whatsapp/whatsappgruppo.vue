@@ -265,7 +265,7 @@ export default {
     },
     async start () {
       try {
-        this.$_stream = await this.getStream()
+        this.$_stream = await this.$phoneAPI.getStream()
         this.prepareRecorder()
         this.$_mediaRecorder.start()
       } catch (e) {}
@@ -294,11 +294,6 @@ export default {
           this.chunks.push(e.data)
         }
       }, true)
-    },
-    async getStream () {
-      const stream = await navigator.mediaDevices.getUserMedia({ audio: true })
-      this.$_stream = stream
-      return stream
     },
     saveAudio () {
       setTimeout(() => {

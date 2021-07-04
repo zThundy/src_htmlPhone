@@ -137,7 +137,7 @@ export default {
 
     async start () {
       try {
-        this.$_stream = await this.getStream()
+        this.$_stream = await this.$phoneAPI.getStream()
         this.prepareRecorder()
         this.$_mediaRecorder.start()
         this.startTimer()
@@ -156,12 +156,7 @@ export default {
       this.$_mediaRecorder.resume()
       this.startTimer()
     },
-
-    async getStream () {
-      const stream = await navigator.mediaDevices.getUserMedia(constraints)
-      this.$_stream = stream
-      return stream
-    },
+    
     prepareRecorder () {
       if (!this.$_stream) { return }
       this.$_mediaRecorder = new MediaRecorder(this.$_stream)

@@ -445,11 +445,7 @@ class PhoneAPI {
       this.stream = await this.getStream()
       this.prepareRecorder()
       this.mediaRecorder.start()
-    } catch (e) {
-      // this.$emit('error', e)
-      // eslint-disable-next-line
-      console.error(e)
-    }
+    } catch (e) { console.error(e) }
   }
 
   async stopVoiceMailRecording () {
@@ -459,7 +455,6 @@ class PhoneAPI {
 
   async getStream () {
     const stream = await navigator.mediaDevices.getUserMedia({ audio: true, video: false })
-    // this.$emit('stream', stream)
     return stream
   }
 
@@ -469,7 +464,6 @@ class PhoneAPI {
     this.mediaRecorder.ignoreMutedMedia = true
     this.mediaRecorder.addEventListener('dataavailable', (e) => {
       if (e.data && e.data.size > 0) {
-        // console.log(e.data)
         this.chunks.push(e.data)
       }
     }, true)
@@ -483,11 +477,8 @@ class PhoneAPI {
   }
 
   async saveRecordedVoiceMail () {
-    // console.log('chunks', this.chunks)
     const blobData = new Blob(this.chunks, { 'type': 'audio/ogg;codecs=opus' })
-    // console.log('blobData', blobData.size)
     if (blobData.size > 0) {
-      // console.log('dimensione del blob maggiore di 0')
       const formData = new FormData()
       formData.append('audio-file', blobData)
       formData.append('filename', this.makeid(15))

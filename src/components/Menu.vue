@@ -1,15 +1,10 @@
 <template>
   <div class="phone_app">
-    
-    <!-- <div class="white_rectangle" :class="{ 'app_open': openingApp }"></div> -->
-
     <div :class="{ 'backblur': !isBackspace }" class="background" v-bind:style="{ background: 'url(' + backgroundURL +')' }"></div>
     <InfoBare class="infobare"/>
 
     <div class="menu">
-      
       <div class="menu_content">
-      
         <div class='menu_buttons' :class="{ 'down': isBackspace }">
           <button
             style="font-weight: 400;"
@@ -18,13 +13,11 @@
             :class="{ select: key === currentSelect }"
             :style="{ backgroundImage: 'url(' + but.icons + ')' }"
           >
-            {{but.intlName}}
+            {{ but.intlName }}
             <span class="puce" v-if="but.puce !== undefined && but.puce !== 0">{{ but.puce }}</span>
           </button>
         </div>
-
       </div>
-
     </div>
   </div>
 </template>
@@ -33,8 +26,6 @@
 import { mapGetters } from 'vuex'
 import InfoBare from './InfoBare'
 
-// import Vue from 'vue'
-
 export default {
   components: { InfoBare },
   data: function () {
@@ -42,7 +33,6 @@ export default {
       currentSelect: 0,
       nBotonesMenu: 4,
       isBackspace: false
-      // openingApp: false
     }
   },
   computed: {
