@@ -32,6 +32,7 @@ files {
 	'html/static/fonts/*',
 
 	'html/static/sound/*',
+	"html/static/sound/phoneDialogsEffect/*",
 
 	"modules/Luaoop.lua",
 	"modules/TunnelV2.lua",

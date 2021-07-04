@@ -215,8 +215,6 @@ AddEventHandler("gcphone:updateRadioSignal", function(s_radioPower)
     radioPower = s_radioPower
     local data = { potenza = s_radioPower }
     SendNUIMessage({ event = "updateSegnale", data = data })
-    
-    gcPhoneServerT.updateSegnaleTelefono(s_radioPower)
 end)
 
 RegisterNetEvent("gcPhone:receiveMessage")

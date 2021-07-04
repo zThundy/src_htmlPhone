@@ -84,7 +84,7 @@ function Reti:InitScript()
 					self.agganciato = true
 					self.vecchiaPotenzaSegnale = self.potenzaSegnale
 					self.connectedTorreIndex = self.torrePiuVicina
-					TriggerEvent('gcphone:updateRadioSignal', self.potenzaSegnale)
+					gcPhoneServerT.updateSegnaleTelefono(self.potenzaSegnale)
 					-- TriggerServerEvent("esx_wifi:connettiAllaTorre", self.idPlayer, self.torre.tower_label, self.potenzaSegnale)
 				else
 					if self.torrePiuVicina ~= self.connectedTorreIndex then
@@ -103,10 +103,12 @@ function Reti:InitScript()
 					self.connectedTorreIndex = nil
 					self.vecchiaPotenzaSegnale = 0
 					self.potenzaSegnale = 0
-					TriggerEvent('gcphone:updateRadioSignal', self.potenzaSegnale)
+					gcPhoneServerT.updateSegnaleTelefono(self.potenzaSegnale)
 					-- TriggerServerEvent("esx_wifi:disconnettiDallaTorre", self.idPlayer)
 				end
 			end
+			
+			TriggerEvent('gcphone:updateRadioSignal', self.potenzaSegnale)
 
 			Citizen.Wait(Config.CheckDistanceWaitTowers * 1000)
 		end
