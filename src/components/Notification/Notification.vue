@@ -48,6 +48,7 @@ export default {
       if (message.indexOf('[CONTACT]') === 0) {
         return this.LangString('PHONE_CONTACT_MESSAGE_TITILE')
       }
+      return message
     },
     async addItem (event = {}) {
       // console.log(JSON.stringify(event))

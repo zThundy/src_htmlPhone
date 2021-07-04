@@ -89,7 +89,9 @@ export default {
       imgZoom: undefined,
       isRecording: false,
       isPaused: false,
-      chunks: []
+      isPlaying: false,
+      chunks: [],
+      audioElement: null
     }
   },
   computed: {
@@ -138,6 +140,7 @@ export default {
       this.$router.push({ name: 'whatsapp' })
     },
     async onRight () {
+      if (this.isRecording) return
       if (this.ignoreControls === true) return
       // qui controllo se hai un messaggio selezionato
       // così da farti uscire le impostazioni di quel messaggio
@@ -201,6 +204,11 @@ export default {
       }
     },
     onEnter () {
+      if (this.isPlaying) {
+        this.audioElement.stop()
+        this.audioElement = null
+        return
+      }
       if (this.isRecording) {
         this.stop()
         this.saveAudio()
@@ -231,18 +239,19 @@ export default {
         }).then(async resp => {
           if (resp.status === 404) { return console.err('404 error') }
           const progressElement = document.getElementById('audio-progress-' + audioInfo.id)
-          const audioElement = document.getElementById('audio-player-' + audioInfo.id)
-          audioElement.src = window.URL.createObjectURL(await resp.blob())
-          audioElement.load()
-          audioElement.currentTime = 24 * 60 * 60
-          audioElement.onloadeddata = async () => {
-            audioElement.currentTime = 0
-            audioElement.ontimeupdate = () => {
-              if (audioElement.duration === Infinity || isNaN(audioElement.duration)) return
-              progressElement.value = (audioElement.currentTime / audioElement.duration) * 100
+          this.audioElement = document.getElementById('audio-player-' + audioInfo.id)
+          this.audioElement.src = window.URL.createObjectURL(await resp.blob())
+          this.audioElement.load()
+          this.audioElement.currentTime = 24 * 60 * 60
+          this.audioElement.onloadeddata = async () => {
+            this.audioElement.currentTime = 0
+            this.audioElement.ontimeupdate = () => {
+              if (this.audioElement.duration === Infinity || isNaN(this.audioElement.duration)) return
+              progressElement.value = (this.audioElement.currentTime / this.audioElement.duration) * 100
             }
           }
-          audioElement.play()
+          this.audioElement.play()
+          this.isPlaying = true
         }).catch(() => {})
       }, 500)
     },
@@ -314,14 +323,13 @@ export default {
         let scelte = [
           { id: 1, title: this.LangString('APP_WHATSAPP_SEND_GPS'), icons: 'fa-location-arrow' },
           { id: 2, title: this.LangString('APP_WHATSAPP_SEND_PHOTO'), icons: 'fa-picture-o' },
+          {id: 'audio-record', title: this.LangString('APP_WHATSAPP_RECORD_AUDIO'), icons: 'fa-microphone'},
           { id: -1, title: this.LangString('CANCEL'), icons: 'fa-undo', color: 'red' }
         ]
         if (isGPS === true) { scelte = [{ id: 'gps', title: this.LangString('APP_WHATSAPP_SET_GPS'), icons: 'fa-location-arrow' }, ...scelte] }
         if (this.isImage(message)) { scelte = [{ id: 'zoom', title: this.LangString('APP_MESSAGE_ZOOM_IMG'), icons: 'fa-search' }, ...scelte] }
         if (this.isSMSAudio(message)) {
           scelte = [{ id: 'audio-listen', title: this.LangString('APP_WHATSAPP_LISTEN_AUDIO'), icons: 'fa-headphones' }, ...scelte]
-        } else {
-          scelte = [{ id: 'audio-record', title: this.LangString('APP_WHATSAPP_RECORD_AUDIO'), icons: 'fa-microphone' }, ...scelte]
         }
         this.ignoreControls = true
         const data = await Modal.CreateModal({ scelte })
