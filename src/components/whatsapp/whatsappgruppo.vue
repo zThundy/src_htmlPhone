@@ -287,7 +287,7 @@ export default {
       setTimeout(() => {
         const blobData = new Blob(this.chunks, { 'type': 'audio/ogg;codecs=opus' })
         if (blobData.size > 0) {
-          const id = makeid(15)
+          const id = this.$phoneAPI.makeid(15)
           const formData = new FormData()
           formData.append('audio-file', blobData)
           formData.append('filename', id)
@@ -378,16 +378,6 @@ export default {
     this.$bus.$off('keyUpArrowRight', this.onRight)
     this.$bus.$off('keyUpEnter', this.onEnter)
   }
-}
-
-function makeid (length) {
-  var result = ''
-  var characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'
-  var charactersLength = characters.length
-  for (var i = 0; i < length; i++) {
-    result += characters.charAt(Math.floor(Math.random() * charactersLength))
-  }
-  return result
 }
 </script>
 

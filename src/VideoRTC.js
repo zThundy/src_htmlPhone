@@ -55,8 +55,8 @@ class VideoRTC {
     this.stream.getTracks().forEach(track => {
       // here i'm adding the track taken from the video canvas to the video object
       // and to the rtc connection
-      video.srcObject.addTrack(track);
-      this.myPeerConnection.addTrack(track, streamElement)
+      video.srcObject.addTrack(track)
+      this.myPeerConnection.addTrack(track, this.stream)
     })
 
     this.myPeerConnection.onicecandidate = this.onicecandidate.bind(this)

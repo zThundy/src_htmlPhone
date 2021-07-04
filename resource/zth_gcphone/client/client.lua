@@ -266,35 +266,19 @@ AddEventHandler("gcPhone:waitingCall", function(infoCall, initiator)
     end
 end)
 
-RegisterNetEvent("gcPhone:phoneUnreachable")
-AddEventHandler("gcPhone:phoneUnreachable", function(infoCall, initiator)
+RegisterNetEvent("gcPhone:phoneVoiceMail")
+AddEventHandler("gcPhone:phoneVoiceMail", function(infoCall, initiator)
     secondiRimanenti = infoCall.secondiRimanenti
     count = 0
 
     Citizen.CreateThreadNow(function()
         stoppedPlayingUnreachable = false
         Citizen.Wait(2000)
+        infoCall.volume = volume
+        -- print("sending nui message")
         SendNUIMessage({ event = 'acceptCall', infoCall = infoCall, initiator = initiator })
-
-        if stoppedPlayingUnreachable == false then
-            PlaySoundJS('phoneunreachable.ogg')
-            count = 0
-                
-            while true do
-                if count == 11 then TriggerEvent("gcPhone:rejectCall", infoCall) end
-
-                if stoppedPlayingUnreachable == true then
-                    stoppedPlayingUnreachable = false
-                    StopSoundJS('phoneunreachable.ogg')
-                    return
-                end
-
-                Citizen.Wait(1000)
-                count = count + 1
-            end
-        else
-            stoppedPlayingUnreachable = false
-        end
+        SendNUIMessage({ event = 'initVoiceMail', infoCall = infoCall, initiator = initiator })
+        -- print("sent nui message")
     end)
 end)
 

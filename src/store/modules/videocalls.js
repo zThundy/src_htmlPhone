@@ -27,7 +27,7 @@ const getters = {
       return state.videoCallsInfo.receiver_num
     }
     if (state.videoCallsInfo.hidden === true) {
-      return 'Numero nascosco'
+      return 'Numero nascosto'
     }
     return state.videoCallsInfo.transmitter_num
   },

@@ -29,7 +29,7 @@ const getters = {
       return state.appelsInfo.receiver_num
     }
     if (state.appelsInfo.hidden === true) {
-      return 'Numero nascosco'
+      return 'Numero nascosto'
     }
     return state.appelsInfo.transmitter_num
   },

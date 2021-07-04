@@ -9,8 +9,8 @@
 
       <div class="divider"></div>
 
-      <div v-if="notif.title" class="message-title">{{ formatEmoji(notif.title) }}</div>
-      <div v-if="notif.message" class="message">{{ formatEmoji(notif.message) }}</div>
+      <div v-if="notif.title" class="message-title">{{ checkAdditionalFormat(formatEmoji(notif.title)) }}</div>
+      <div v-if="notif.message" class="message">{{ checkAdditionalFormat(formatEmoji(notif.message)) }}</div>
     </div>
 
   </div>
@@ -35,11 +35,19 @@ export default {
     events.$on('add', this.addItem)
   },
   computed: {
-    ...mapGetters(['show', 'tempoHide', 'volume'])
+    ...mapGetters(['show', 'tempoHide', 'volume', 'LangString'])
   },
   methods: {
     formatEmoji (message) {
       return this.$phoneAPI.convertEmoji(message)
+    },
+    checkAdditionalFormat (message) {
+      if (message.indexOf('[AUDIO]') === 0) {
+        return this.LangString('PHONE_AUDIO_MESSAGE_TITLE')
+      }
+      if (message.indexOf('[CONTACT]') === 0) {
+        return this.LangString('PHONE_CONTACT_MESSAGE_TITILE')
+      }
     },
     async addItem (event = {}) {
       // console.log(JSON.stringify(event))
