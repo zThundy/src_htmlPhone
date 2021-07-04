@@ -100,10 +100,10 @@ function Reti:InitScript()
 			else
 				if self.agganciato then
 					self.agganciato = false
-					TriggerEvent('gcphone:updateRadioSignal', self.potenzaSegnale)
 					self.connectedTorreIndex = nil
 					self.vecchiaPotenzaSegnale = 0
 					self.potenzaSegnale = 0
+					TriggerEvent('gcphone:updateRadioSignal', self.potenzaSegnale)
 					-- TriggerServerEvent("esx_wifi:disconnettiDallaTorre", self.idPlayer)
 				end
 			end
