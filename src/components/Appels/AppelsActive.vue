@@ -50,18 +50,18 @@ export default {
       showingKeypad: false,
       numero: '',
       keyInfo: [
-        {primary: '1', secondary: ''},
-        {primary: '2', secondary: 'abc'},
-        {primary: '3', secondary: 'def'},
-        {primary: '4', secondary: 'ghi'},
-        {primary: '5', secondary: 'jkl'},
-        {primary: '6', secondary: 'mmo'},
-        {primary: '7', secondary: 'pqrs'},
-        {primary: '8', secondary: 'tuv'},
-        {primary: '9', secondary: 'wxyz'},
-        {primary: '*', secondary: '', isNotNumber: true},
-        {primary: '0', secondary: '+'},
-        {primary: '#', secondary: '', isNotNumber: true}
+        {primary: '1', secondary: '', ascii: 48},
+        {primary: '2', secondary: 'abc', ascii: 49},
+        {primary: '3', secondary: 'def', ascii: 50},
+        {primary: '4', secondary: 'ghi', ascii: 51},
+        {primary: '5', secondary: 'jkl', ascii: 52},
+        {primary: '6', secondary: 'mmo', ascii: 53},
+        {primary: '7', secondary: 'pqrs', ascii: 54},
+        {primary: '8', secondary: 'tuv', ascii: 55},
+        {primary: '9', secondary: 'wxyz', ascii: 56},
+        {primary: '*', secondary: '', isNotNumber: true, ascii: 42},
+        {primary: '0', secondary: '+', ascii: 57},
+        {primary: '#', secondary: '', isNotNumber: true, ascii: 35}
       ],
       keySelect: 0
     }
@@ -80,7 +80,8 @@ export default {
     },
     onEnter () {
       if (this.showingKeypad) {
-        if (this.numero.length >= 25) return
+        this.$phoneAPI.playKeySound({ file: this.keyInfo[this.keySelect].ascii })
+        if (this.numero.length >= 25) this.numero = ''
         this.numero += this.keyInfo[this.keySelect].primary
         return
       }
@@ -121,9 +122,7 @@ export default {
     startTimer () {
       if (this.intervalNum === undefined) {
         this.time = 0
-        this.intervalNum = setInterval(() => {
-          this.time += 1
-        }, 1000)
+        this.intervalNum = setInterval(() => { this.time += 1 }, 1000)
       }
     }
   },
@@ -168,9 +167,7 @@ export default {
     this.$bus.$off('keyUpArrowDown', this.onDown)
     this.$bus.$off('keyUpArrowUp', this.onUp)
     this.$bus.$off('keyUpEnter', this.onEnter)
-    if (this.intervalNum !== undefined) {
-      window.clearInterval(this.intervalNum)
-    }
+    if (this.intervalNum !== undefined) { clearInterval(this.intervalNum) }
     this.$phoneAPI.setIgnoreFocus(false)
   }
 }
