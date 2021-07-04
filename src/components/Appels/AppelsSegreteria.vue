@@ -72,11 +72,6 @@ import { Icon, ActivityIndicator } from 'mand-mobile'
 import 'mand-mobile/lib/mand-mobile.css'
 import CustomToast from '@/components/CustomToast'
 
-const constraints = {
-  audio: true,
-  video: false
-}
-
 export default {
   name: 'calls-segreteria',
   components: {
@@ -134,7 +129,6 @@ export default {
         }
       }
     },
-
     async start () {
       try {
         this.$_stream = await this.$phoneAPI.getStream()
@@ -156,7 +150,6 @@ export default {
       this.$_mediaRecorder.resume()
       this.startTimer()
     },
-    
     prepareRecorder () {
       if (!this.$_stream) { return }
       this.$_mediaRecorder = new MediaRecorder(this.$_stream)
@@ -190,7 +183,6 @@ export default {
         })
       }, true)
     },
-
     saveRecording () {
       this.$refs.updating.show()
       if (this.time > 15) {
@@ -227,7 +219,6 @@ export default {
         this.chunks = []
       }, 500)
     },
-
     listenRecording () {
       this.$refs.updating.show()
       if (this.myPhoneNumber === undefined || this.myPhoneNumber === null || this.myPhoneNumber === '') {
@@ -261,9 +252,7 @@ export default {
         }
       }, 500)
     },
-
     // CONTROLS SECTION //
-
     onEnter () {
       if (this.currentSelect === 0) {
         if (this.isRecording) {
@@ -285,7 +274,6 @@ export default {
           this.pause()
         }
       }
-
       if (this.currentSelect === 2) {
         if (this.time > 15) {
           this.$phoneAPI.sendErrorMessage(this.LangString('APP_PHONE_RECORD_TOO_LONG'))
@@ -309,18 +297,8 @@ export default {
         }
         this.stopTimer(true)
       }
-      // this.start()
-      // setTimeout(() => {
-      //   this.stop()
-      // }, 2000)
-
-      if (this.currentSelect === 3) {
-        this.listenRecording()
-      }
-
-      if (this.currentSelect === 4) {
-        this.saveRecording()
-      }
+      if (this.currentSelect === 3) { this.listenRecording() }
+      if (this.currentSelect === 4) { this.saveRecording() }
     },
     onRight () {
       if (this.currentSelect === 4) return
@@ -367,13 +345,12 @@ export default {
     }
   },
   mounted () {
-    if (!navigator.mediaDevices && !navigator.mediaDevices.getUserMedia) {
-      // eslint-disable-next-line
-      console.warn('Media Devices are not supported from your browser.')
-      return
-    }
-
-    this.isSupported = true
+    // if (!navigator.mediaDevices && !navigator.mediaDevices.getUserMedia) {
+    //   // eslint-disable-next-line
+    //   console.warn('Media Devices are not supported from your browser.')
+    //   return
+    // }
+    // this.isSupported = true
   },
   created () {
     this.$bus.$on('keyUpArrowRight', this.onRight)

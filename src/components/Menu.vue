@@ -44,13 +44,6 @@ export default {
       const l = Math.floor(this.currentSelect / this.nBotonesMenu)
       const newS = (this.currentSelect + this.nBotonesMenu - 1) % this.nBotonesMenu + l * this.nBotonesMenu
       this.currentSelect = Math.min(newS, this.Apps.length - 1)
-      // Vue.notify({
-      //   message: 'messaggio messaggio messaggio messaggio messaggio messaggio messaggio messaggio messaggio messaggio messaggio messaggio ',
-      //   title: 'autore' + ' : SONO FIKO',
-      //   icon: 'twitter',
-      //   backgroundColor: 'rgb(55, 55, 255)',
-      //   appName: 'Twitter'
-      // })
     },
     onRight () {
       const l = Math.floor(this.currentSelect / this.nBotonesMenu)
