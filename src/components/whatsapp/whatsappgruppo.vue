@@ -149,15 +149,15 @@ export default {
         try {
           this.ignoreControls = true
           let scelte = [
+              {id: 'audio-record', title: this.LangString('APP_WHATSAPP_RECORD_AUDIO'), icons: 'fa-microphone'},
             {id: 1, title: this.LangString('APP_WHATSAPP_SEND_GPS'), icons: 'fa-location-arrow'},
-            {id: 'audio-record', title: this.LangString('APP_WHATSAPP_RECORD_AUDIO'), icons: 'fa-microphone'},
             {id: -1, title: this.LangString('CANCEL'), icons: 'fa-undo', color: 'red'}
           ]
           if (this.enableTakePhoto) {
             scelte = [
+              {id: 'audio-record', title: this.LangString('APP_WHATSAPP_RECORD_AUDIO'), icons: 'fa-microphone'},
               {id: 1, title: this.LangString('APP_WHATSAPP_SEND_GPS'), icons: 'fa-location-arrow'},
               {id: 2, title: this.LangString('APP_WHATSAPP_SEND_PHOTO'), icons: 'fa-picture-o'},
-              {id: 'audio-record', title: this.LangString('APP_WHATSAPP_RECORD_AUDIO'), icons: 'fa-microphone'},
               {id: -1, title: this.LangString('CANCEL'), icons: 'fa-undo', color: 'red'}
             ]
           }
@@ -205,7 +205,7 @@ export default {
     },
     onEnter () {
       if (this.isPlaying) {
-        this.audioElement.stop()
+        this.audioElement.pause()
         this.audioElement = null
         return
       }
@@ -248,6 +248,7 @@ export default {
             this.audioElement.ontimeupdate = () => {
               if (this.audioElement.duration === Infinity || isNaN(this.audioElement.duration)) return
               progressElement.value = (this.audioElement.currentTime / this.audioElement.duration) * 100
+              if (this.audioElement.currentTime == this.audioElement.duration) { this.isPlaying = false }
             }
           }
           this.audioElement.play()
@@ -321,9 +322,9 @@ export default {
       try {
         let isGPS = /(-?\d+(\.\d+)?), (-?\d+(\.\d+)?)/.test(message.message)
         let scelte = [
+              {id: 'audio-record', title: this.LangString('APP_WHATSAPP_RECORD_AUDIO'), icons: 'fa-microphone'},
           { id: 1, title: this.LangString('APP_WHATSAPP_SEND_GPS'), icons: 'fa-location-arrow' },
           { id: 2, title: this.LangString('APP_WHATSAPP_SEND_PHOTO'), icons: 'fa-picture-o' },
-          {id: 'audio-record', title: this.LangString('APP_WHATSAPP_RECORD_AUDIO'), icons: 'fa-microphone'},
           { id: -1, title: this.LangString('CANCEL'), icons: 'fa-undo', color: 'red' }
         ]
         if (isGPS === true) { scelte = [{ id: 'gps', title: this.LangString('APP_WHATSAPP_SET_GPS'), icons: 'fa-location-arrow' }, ...scelte] }

@@ -9,7 +9,7 @@
 
       <div class="divider"></div>
 
-      <div v-if="notif.title" class="message-title">{{ checkAdditionalFormat(formatEmoji(notif.title)) }}</div>
+      <div v-if="notif.title" class="message-title">{{ formatEmoji(notif.title) }}</div>
       <div v-if="notif.message" class="message">{{ checkAdditionalFormat(formatEmoji(notif.message)) }}</div>
     </div>
 
