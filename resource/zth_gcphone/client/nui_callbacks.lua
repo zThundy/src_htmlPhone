@@ -49,13 +49,6 @@ RegisterNUICallback('connettiAllaRete', function(data, cb)
     cb("ok")
 end)
 
-RegisterNUICallback('soundLockscreen', function(data, cb)
-	PlaySoundJS('phoneUnlock.ogg')
-    Wait(1000)
-    StopSoundJS('phoneUnlock.ogg')
-    cb("ok")
-end)
-
 RegisterNUICallback('startCall', function(data, cb)
     if not GLOBAL_AIRPLANE then
         if data.rtcOffer == nil then data.rtcOffer = '' end

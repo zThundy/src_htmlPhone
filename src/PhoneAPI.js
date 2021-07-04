@@ -792,12 +792,6 @@ class PhoneAPI {
     store.dispatch('updateWifiString', data.hasWifi)
   }
 
-  // == Schermata di sblocco
-  async postPlayUnlockSound () {
-    // Vue.notify({ sound: 'phoneUnlock.ogg', hidden: true, duration: 1500 })
-    return this.post('soundLockscreen')
-  }
-
   // ==========================================================================
   //  Zona eventi e funzioni Instagram
   // ==========================================================================
