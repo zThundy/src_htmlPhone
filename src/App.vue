@@ -93,13 +93,9 @@ export default {
         } else {
           path = '/html/static/sound/' + this.suoneria.value
           this.soundCall = new Howl({
-            src: path,
-            onend: function () {
-              // this.$phoneAPI.endSuoneriaForOthers()
-            },
-            onplay: function () {
-              // this.$phoneAPI.startSuoneriaForOthers(this.suoneria.value)
-            }
+            src: path
+            // onend: function () {},
+            // onplay: function () {}
           })
         }
         this.soundCall.loop = true

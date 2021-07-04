@@ -1,16 +1,17 @@
 <template>
   <div class="notifications">
 
-    <div v-for='notif in list' :key="notif.id" class="notification">
-      <div class="appName" :style="style(notif)">
-        <i v-if="notif.icon" class="fa" :class="'fa-' + notif.icon"/>
-        <span>{{ notif.appName }}</span>
+    <!-- <div v-for='notif in list' :key="notif.id" class="notification"> -->
+    <div v-if="currentShowing" class="notification">
+      <div class="appName" :style="style(currentShowing)">
+        <i v-if="currentShowing.icon" class="fa" :class="'fa-' + currentShowing.icon"/>
+        <span>{{ currentShowing.appName }}</span>
       </div>
 
       <div class="divider"></div>
 
-      <div v-if="notif.title" class="message-title">{{ formatEmoji(notif.title) }}</div>
-      <div v-if="notif.message" class="message">{{ checkAdditionalFormat(formatEmoji(notif.message)) }}</div>
+      <div v-if="currentShowing.title" class="message-title">{{ formatEmoji(currentShowing.title) }}</div>
+      <div v-if="currentShowing.message" class="message">{{ checkAdditionalFormat(formatEmoji(currentShowing.message)) }}</div>
     </div>
 
   </div>
@@ -18,8 +19,6 @@
 
 <script>
 import events from './events'
-import { Howl } from 'howler'
-
 import { mapGetters } from 'vuex'
 
 export default {
@@ -28,7 +27,9 @@ export default {
     return {
       currentId: 0,
       list: [],
-      soundList: {}
+      soundList: {},
+      currentShowing: null,
+      audioElement: new Audio()
     }
   },
   mounted () {
@@ -54,64 +55,39 @@ export default {
       return message
     },
     async addItem (event = {}) {
-      // console.log(JSON.stringify(event))
-      // if (event.hidden) {
-      //   var path = '/html/static/sound/' + event.sound
-      //   var audio = new Howl({ src: path })
-      //   if (event.volume !== undefined || event.volume !== null) {
-      //     audio.volume(Number(event.volume))
-      //   } else {
-      //     audio.volume(0.5)
-      //   }
-      //   audio.play()
-      //   return
-      // }
       const dataNotif = { ...event, id: this.currentId++, duration: parseInt(event.duration) || 3000 }
-      // dopo essermi buildato i valori li riproduco
-      if (!event.hidden) {
-        // ho rimosso dataNotif.duration anche se lo prendo comunque
-        this.list.push(dataNotif)
-        window.setTimeout(() => {
-          this.destroy(dataNotif.id)
-        }, dataNotif.duration)
-      }
-      if (event.sound) {
-        var path = '/html/static/sound/' + event.sound
-        if (event.sound === undefined || event.sound === null) return
-        if (this.soundList[event.sound] !== undefined) {
-          this.soundList[event.sound].volume = Number(this.volume)
+      if (dataNotif.sound) {
+        var path = '/html/static/sound/' + dataNotif.sound
+        if (dataNotif.sound === undefined || dataNotif.sound === null) return
+        if (this.soundList[dataNotif.id] !== undefined) {
+          this.soundList[dataNotif.id].volume = Number(this.volume)
         } else {
-          this.soundList[event.sound] = new Howl({
-            src: path,
-            volume: this.volume
-            // onend: function () {
-            //   if (this.soundList[event.sound]) {
-            //     delete this.soundList[event.sound]
-            //   }
-            // }
-          })
-          this.soundList[event.sound].play()
-          this.soundList[event.sound].on('end', () => {
-            // console.log('deleted', event.sound)
-            // console.log('deleted', this.soundList[event.sound])
-            delete this.soundList[event.sound]
-            // console.log('deleted', this.soundList[event.sound])
-          })
+          this.audioElement.src = path
+          this.audioElement.volume = Number(this.volume)
+          this.soundList[dataNotif.id] = this.audioElement
         }
       }
+      if (!event.hidden) {
+        this.list.push(dataNotif)
+        if (this.currentShowing === null) this.showNotification(dataNotif)
+      }
+    },
+    showNotification (dataNotif) {
+      this.currentShowing = dataNotif
+      this.soundList[dataNotif.id].play()
+      setTimeout(() => {
+        this.list = this.list.filter(n => n.id !== this.currentShowing.id)
+        delete this.soundList[this.currentShowing.id]
+        this.currentShowing = null
+        setTimeout(() => {
+          if (this.list[0]) { this.showNotification(this.list[0]) }
+        }, 200)
+      }, dataNotif.duration)
     },
     style (notif) {
-      if (!notif.backgroundColor) {
-        return {
-          color: 'black'
-        }
-      }
-      return {
-        color: notif.backgroundColor
-      }
-    },
-    destroy (id) {
-      this.list = this.list.filter(n => n.id !== id)
+      if (!notif) return
+      if (!notif.backgroundColor) { return { color: 'black' } }
+      return { color: notif.backgroundColor }
     }
   }
 }

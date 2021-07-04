@@ -559,6 +559,18 @@ class PhoneAPI {
     store.commit('SET_APPELS_INFO_IS_ACCEPTS', true)
   }
 
+  async keyDigitEvent (data) {
+    console.log(data.pressedKey)
+  }
+
+  playKeySound (data) {
+    if (data.file) {
+      this.audioElement.src = '/html/static/sound/phoneDialogsEffect/' + data.file + '.ogg'
+      this.audioElement.volume = 0.1
+      this.audioElement.play()
+    }
+  }
+
   oncandidatesAvailable (data) {
     this.voiceRTC.addIceCandidates(data.candidates)
   }
@@ -574,14 +586,6 @@ class PhoneAPI {
     data.volume = Math.floor10(data.volume, -2)
     return this.post('updateVolume', data)
   }
-
-  // async endSuoneriaForOthers () {
-  //   return this.post('endSuoneriaForOthers')
-  // }
-
-  // async startSuoneriaForOthers (sound) {
-  //   return this.post('startSuoneriaForOthers', { sound: sound })
-  // }
 
   onplaySound (data) {
     // qui mi roundo il volume con le funzioni custom

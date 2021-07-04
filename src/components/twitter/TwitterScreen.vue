@@ -72,7 +72,8 @@ export default {
       //   title: 'autore' + ' : SONO FIKO',
       //   icon: 'twitter',
       //   backgroundColor: 'rgb(55, 55, 255)',
-      //   appName: 'Twitter'
+      //   appName: 'Twitter',
+      //   sound: 'Twitter_Sound_Effect.ogg'
       // })
       // Vue.notify({
       //   title: 'autore' + ' : SONO FIKO',
