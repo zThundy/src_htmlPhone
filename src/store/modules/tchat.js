@@ -1,8 +1,5 @@
 import PhoneAPI from './../../PhoneAPI'
 const LOCAL_NAME = 'gc_tchat_channels'
-import {Howl} from 'howler'
-
-let TchatAudio = null
 
 const state = {
   channels: JSON.parse(localStorage[LOCAL_NAME] || null) || [],
@@ -29,21 +26,6 @@ const actions = {
       dispatch('tchatGetMessagesChannel', { channel })
     }
   },
-  tchatAddMessage ({ state, commit, getters }, { message }) {
-    const channel = message.channel
-    if (state.channels.find(e => e.channel === channel) !== undefined) {
-      if (TchatAudio !== null) {
-        TchatAudio.pause()
-        TchatAudio = null
-      }
-      TchatAudio = new Howl({
-        src: '/html/static/sound/msgnotify.ogg',
-        volume: getters.volume
-      })
-      TchatAudio.play()
-    }
-    commit('TCHAT_ADD_MESSAGES', { message })
-  },
   tchatAddChannel ({ commit }, { channel }) {
     commit('TCHAT_ADD_CHANNELS', { channel })
   },
@@ -63,15 +45,11 @@ const mutations = {
     state.currentChannel = channel
   },
   TCHAT_ADD_CHANNELS (state, { channel }) {
-    state.channels.push({
-      channel
-    })
+    state.channels.push({ channel })
     localStorage[LOCAL_NAME] = JSON.stringify(state.channels)
   },
   TCHAT_REMOVES_CHANNELS (state, { channel }) {
-    state.channels = state.channels.filter(c => {
-      return c.channel !== channel
-    })
+    state.channels = state.channels.filter(c => { return c.channel !== channel })
     localStorage[LOCAL_NAME] = JSON.stringify(state.channels)
   },
   TCHAT_REMOVES_ALL_CHANNELS (state) {

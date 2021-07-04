@@ -630,7 +630,11 @@ class PhoneAPI {
 
   // Tchat Event
   ontchat_receive (data) {
-    store.dispatch('tchatAddMessage', data)
+    this.onplaySound({ sound: 'msgnotify.ogg', volume: 0.4 })
+    setTimeout(() => {
+      this.onstopSound({ sound: 'msgnotify.ogg' })
+    }, 3000)
+    store.commit('TCHAT_ADD_MESSAGES', data.message)
   }
 
   ontchat_channel (data) {

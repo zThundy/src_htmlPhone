@@ -41,7 +41,6 @@ import './assets/css/cssgram.css'
 // import './assets/css/fontawesome.min.css'
 
 import { mapGetters, mapActions } from 'vuex'
-import { Howl } from 'howler'
 import TransitionPage from './components/TransitionPage'
 import Notification from '@/components/Notification/Notification'
 
@@ -54,7 +53,8 @@ export default {
     return {
       soundCall: null,
       isChanging: false,
-      currentRoute: window.location.pathname
+      currentRoute: window.location.pathname,
+      audioElement: new Audio()
     }
   },
   methods: {
@@ -83,22 +83,16 @@ export default {
   watch: {
     appelsInfo (newValue, oldValue) {
       if (this.appelsInfo !== null && this.appelsInfo.is_accepts !== true) {
-        if (this.soundCall !== null) {
-          this.soundCall.pause()
-        }
+        if (this.soundCall !== null) { this.soundCall.pause() }
         var path = null
         if (this.appelsInfo.initiator === true) {
           path = '/html/static/sound/Phone_Call_Sound_Effect.ogg'
-          this.soundCall = new Howl({ src: path, loop: true })
+          this.audioElement.loop = true
         } else {
           path = '/html/static/sound/' + this.suoneria.value
-          this.soundCall = new Howl({
-            src: path
-            // onend: function () {},
-            // onplay: function () {}
-          })
         }
-        this.soundCall.loop = true
+        this.audioElement.src = path
+        this.soundCall = this.audioElement
         this.soundCall.volume = this.volume
         this.soundCall.play()
       } else if (this.soundCall !== null) {
