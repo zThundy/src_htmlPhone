@@ -248,7 +248,7 @@ export default {
             this.audioElement.ontimeupdate = () => {
               if (this.audioElement.duration === Infinity || isNaN(this.audioElement.duration)) return
               progressElement.value = (this.audioElement.currentTime / this.audioElement.duration) * 100
-              if (this.audioElement.currentTime == this.audioElement.duration) { this.isPlaying = false }
+              if (this.audioElement.currentTime === this.audioElement.duration) { this.isPlaying = false }
             }
           }
           this.audioElement.play()
