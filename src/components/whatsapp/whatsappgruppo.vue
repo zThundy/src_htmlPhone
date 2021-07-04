@@ -25,6 +25,9 @@
         <div v-if="isSMSAudio(s)" style="overflow: auto;">
           <div v-if="isSentByMe(s)" class="bubble daMe" :class="{select: i === currentSelected}">
             <div class="whatsapp-audio-player">
+              <div class="whatsapp-audio-player-title">
+                <span>{{ s.sender }}</span>
+              </div>
               <i class="fas fa-play"></i>
               <progress :id="'audio-progress-' + getSMSAudioInfo(s.message).id" max="100" value="0"></progress>
               <audio :id="'audio-player-' + getSMSAudioInfo(s.message).id"></audio>
@@ -33,6 +36,9 @@
 
           <div v-else class="bubble daAltri" :class="{select: i === currentSelected}">
             <div class="whatsapp-audio-player">
+              <div class="whatsapp-audio-player-title">
+                <span>{{ s.sender }}</span>
+              </div>
               <i class="fas fa-play"></i>
               <progress :id="'audio-progress-' + getSMSAudioInfo(s.message).id" max="100" value="0"></progress>
               <audio :id="'audio-player-' + getSMSAudioInfo(s.message).id"></audio>
@@ -246,9 +252,11 @@ export default {
           this.audioElement.onloadeddata = async () => {
             this.audioElement.currentTime = 0
             this.audioElement.ontimeupdate = () => {
-              if (this.audioElement.duration === Infinity || isNaN(this.audioElement.duration)) return
-              progressElement.value = (this.audioElement.currentTime / this.audioElement.duration) * 100
-              if (this.audioElement.currentTime === this.audioElement.duration) { this.isPlaying = false }
+              if (this.audioElement) {
+                if (this.audioElement.duration === Infinity || isNaN(this.audioElement.duration)) return
+                progressElement.value = (this.audioElement.currentTime / this.audioElement.duration) * 100
+                if (this.audioElement.currentTime === this.audioElement.duration) { this.isPlaying = false }
+              }
             }
           }
           this.audioElement.play()
@@ -545,8 +553,21 @@ export default {
 
 .whatsapp-audio-player {
   width: 200px;
-  height: 50px;
+  height: 60px;
   transition: all .5s ease;
+}
+
+.whatsapp-audio-player-title {
+  position: relative;
+  width: 100%;
+  height: 20px;
+}
+
+.whatsapp-audio-player-title span {
+  position: relative;
+  font-size: 15px;
+  color: gray;
+  padding-bottom: 10px;
 }
 
 .whatsapp-audio-player progress {
@@ -558,7 +579,7 @@ export default {
 }
 
 .whatsapp-audio-player i {
-  font-size: 25px;
+  font-size: 20px;
   color: rgb(189, 189, 189);
   margin-top: 10px;
   position: relative;
