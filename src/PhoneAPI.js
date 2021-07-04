@@ -28,7 +28,6 @@ class PhoneAPI {
     this.voiceRTC = null
     this.videoRTC = null
     this.soundList = {}
-    // segreteria
     this.audioElement = new Audio()
     this.stream = null
     this.mediaRecorder = null
