@@ -426,6 +426,7 @@ class PhoneAPI {
         this.playingVoiceMailAudio = true
       }
     })
+    store.commit('SET_APPELS_INFO_IS_ACCEPTS', true)
     return this.post('acceptCall', { infoCall })
   }
 

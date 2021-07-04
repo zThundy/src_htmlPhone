@@ -275,10 +275,7 @@ AddEventHandler("gcPhone:phoneVoiceMail", function(infoCall, initiator)
         stoppedPlayingUnreachable = false
         Citizen.Wait(2000)
         infoCall.volume = volume
-        -- print("sending nui message")
-        SendNUIMessage({ event = 'acceptCall', infoCall = infoCall, initiator = initiator })
         SendNUIMessage({ event = 'initVoiceMail', infoCall = infoCall, initiator = initiator })
-        -- print("sent nui message")
     end)
 end)
 
