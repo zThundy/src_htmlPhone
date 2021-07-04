@@ -1,6 +1,6 @@
 fx_version "bodacious"
 game "gta5"
-version "3.1.4"
+version "3.1.6"
 author "zThundy__"
 
 ui_page 'html/index.html'
@@ -64,7 +64,6 @@ client_script {
 	"client/whatsapp.lua",
 	"client/cover.lua",
 	"client/bluetooth.lua",
-	-- "client/suoneria.lua",
 	"client/modem.lua",
 	"client/darkweb.lua",
 	"client/email.lua",
@@ -94,7 +93,6 @@ server_script {
 	"server/whatsapp.lua",
 	"server/cover.lua",
 	"server/bluetooth.lua",
-	-- "server/suoneria.lua",
 	"server/modem.lua",
 	"server/darkweb.lua",
 	"server/email.lua",
