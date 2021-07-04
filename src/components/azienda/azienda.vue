@@ -112,6 +112,7 @@ export default {
       if (this.aziendaIngoreControls) return
       if (this.showingComponent) return
       if (this.currentSelect === -1) return
+      if (!this.myJobInfo) return
       if (!this.myJobInfo.buttons[this.appButtons[this.currentSelect].id]) return
       this.showingComponent = this.appButtons[this.currentSelect].id
       this.animate = true
