@@ -46,7 +46,7 @@
           </div>
         </div>
 
-        <div v-else-if="!isImage(s)" style="overflow: auto;">
+        <div v-else-if="!isImage(s.message)" style="overflow: auto;">
           <div v-if="isSentByMe(s)" class="bubble daMe" :class="{select: i === currentSelected}">{{ s.sender }}: {{ formatEmoji(s.message) }}</div>
           <div v-else class="bubble daAltri" :class="{select: i === currentSelected}">{{ s.sender }}: {{ formatEmoji(s.message) }}</div>
         </div>
@@ -195,9 +195,8 @@ export default {
         this.onActionMessage(this.messaggi[String(this.gruppo.id)][this.currentSelected])
       }
     },
-    isImage (mess) {
-      var pattern = new RegExp('^(https?:\\/\\/)?' + '((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|' + '((\\d{1,3}\\.){3}\\d{1,3}))' + '(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*' + '(\\?[;&a-z\\d%_.~+=-]*)?' + '(\\#[-a-z\\d_]*)?$', 'i')
-      return !!pattern.test(mess.message)
+    isImage (message) {
+      return this.$phoneAPI.isImage(message)
     },
     isSMSAudio (mess) {
       return mess.message.indexOf('[AUDIO]') === 0
@@ -336,7 +335,7 @@ export default {
           { id: -1, title: this.LangString('CANCEL'), icons: 'fa-undo', color: 'red' }
         ]
         if (isGPS === true) { scelte = [{ id: 'gps', title: this.LangString('APP_WHATSAPP_SET_GPS'), icons: 'fa-location-arrow' }, ...scelte] }
-        if (this.isImage(message)) { scelte = [{ id: 'zoom', title: this.LangString('APP_MESSAGE_ZOOM_IMG'), icons: 'fa-search' }, ...scelte] }
+        if (this.isImage(message.message)) { scelte = [{ id: 'zoom', title: this.LangString('APP_MESSAGE_ZOOM_IMG'), icons: 'fa-search' }, ...scelte] }
         if (this.isSMSAudio(message)) {
           scelte = [{ id: 'audio-listen', title: this.LangString('APP_WHATSAPP_LISTEN_AUDIO'), icons: 'fa-headphones' }, ...scelte]
         }

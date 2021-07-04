@@ -93,7 +93,7 @@ export default {
       }
     },
     isImage (mess) {
-      return /^https?:\/\/.*\.(png|jpg|jpeg|gif)/.test(mess)
+      return this.$phoneAPI.isImage(mess)
     },
     resetScroll () {
       this.$nextTick(() => {

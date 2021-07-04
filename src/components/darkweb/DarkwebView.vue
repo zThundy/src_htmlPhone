@@ -97,9 +97,6 @@ export default {
           break
       }
     },
-    isImage (mess) {
-      return /^https?:\/\/.*\.(png|jpg|jpeg|gif)/.test(mess)
-    },
     async reply (message) {
       // const authorName = message.author
       const authorName = this.currentSelected
@@ -164,6 +161,9 @@ export default {
     formatTime (time) {
       const d = new Date(time)
       return d.toLocaleTimeString()
+    },
+    isImage (mess) {
+      return this.$phoneAPI.isImage(mess)
     }
   },
   created () {
