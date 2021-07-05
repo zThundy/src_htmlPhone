@@ -26,7 +26,7 @@ class PhoneAPI {
     this.config = null
     this.voiceRTC = null
     this.videoRTC = null
-    this.soundList = {}
+    this.soundList = []
   }
 
   onsendParametersValues (data) {
@@ -396,7 +396,6 @@ class PhoneAPI {
   oninitVoiceMail (data) {
     Vue.prototype.$bus.$emit('initVoiceMail', data.infoCall)
     store.commit('SET_APPELS_INFO_IS_ACCEPTS', true)
-    return this.post('acceptCall', { data })
   }
 
   onwaitingCall (data) {
@@ -405,21 +404,14 @@ class PhoneAPI {
       initiator: data.initiator
     })
     if (data.infoCall.receiver_num === this.config.voicemails_number && data.infoCall.noSignal === undefined) {
-      setTimeout(() => {
-        Vue.prototype.$bus.$emit('initVoiceMailListener', data)
-        store.commit('SET_APPELS_INFO_IS_ACCEPTS', true)
-      }, 3000)
+      setTimeout(() => { Vue.prototype.$bus.$emit('initVoiceMailListener', data); store.commit('SET_APPELS_INFO_IS_ACCEPTS', true) }, 3000)
     }
   }
 
   onacceptCall (data) {
     if (USE_VOICE_RTC === true) {
-      if (data.initiator === true) {
-        this.voiceRTC.onReceiveAnswer(data.infoCall.rtcAnswer)
-      }
-      this.voiceRTC.addEventListener('onCandidate', (candidates) => {
-        this.post('onCandidates', { id: data.infoCall.id, candidates })
-      })
+      if (data.initiator === true) { this.voiceRTC.onReceiveAnswer(data.infoCall.rtcAnswer) }
+      this.voiceRTC.addEventListener('onCandidate', (candidates) => { this.post('onCandidates', { id: data.infoCall.id, candidates }) })
     }
     store.commit('SET_APPELS_INFO_IS_ACCEPTS', true)
   }
@@ -456,12 +448,14 @@ class PhoneAPI {
   }
 
   onupdateGlobalVolume (data) {
-    // data.volume = decimalAdjust('floor', data.volume, -2)
-    // if (this.soundList) {
-    //   this.soundList.forEach((elem, sound) => {
-    //     elem.volume = data.volume
-    //   })
-    // }
+    data.volume = decimalAdjust('floor', data.volume, -2)
+    if (this.soundList) {
+      this.soundList.forEach((elem, sound) => {
+        console.log(elem, sound)
+        if (!elem) return
+        elem.volume = data.volume
+      })
+    }
   }
 
   onsetSoundVolume (data) {

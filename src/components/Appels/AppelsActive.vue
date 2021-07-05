@@ -136,7 +136,6 @@ export default {
       }
     },
     // SEGRETERIA //
-
     async tts (text, cb, instance) {
       if (text === '') { return cb(instance) }
       instance.playSound({ sound: 'tts/' + text.charAt(0) + '.ogg', delay: 100 }, function (instance) {
@@ -255,7 +254,6 @@ export default {
       this.onrejectCall()
     },
     async playSound (data, cb) {
-      console.log(this.audioElement.src)
       if (this.audioElement.src !== '' && this.audioElement.src !== 'http://localhost:8080/' && this.playingSound) { this.audioElement.pause() }
       if (data.volume !== undefined) this.audioElement.volume = data.volume
       this.audioElement.src = data.path === undefined ? '/html/static/sound/' + data.sound : data.path
@@ -264,7 +262,6 @@ export default {
         this.audioElement.onended = () => {
           this.playingSound = false
           this.audioElement.src = ''
-          // console.log('phoneapi instance', this)
           if (cb !== undefined) { cb(this) }
         }
       }
@@ -282,9 +279,9 @@ export default {
       }
     },
     async initVoiceMail (data) {
-      const volume = data.infoCall.volume
-      this.voicemailTarget = data.infoCall.receiver_num
-      fetch('http://' + this.config.fileUploader.ip + ':3000/audioDownload?type=voicemails&key=' + data.infoCall.receiver_num, {
+      const volume = data.volume
+      this.voicemailTarget = data.receiver_num
+      fetch('http://' + this.config.fileUploader.ip + ':3000/audioDownload?type=voicemails&key=' + data.receiver_num, {
         method: 'GET'
       }).then(async resp => {
         if (resp.status === 404) {
@@ -315,7 +312,7 @@ export default {
       }
     },
     async startVoiceMailRecording () {
-      if (this.isRecordingVoiceMail) { return }
+      if (this.isRecordingVoiceMail) return
       this.isRecordingVoiceMail = true
       try {
         this.stream = await this.getStream()
@@ -327,7 +324,7 @@ export default {
       this.voicemailMenuIndex = 0
       this.recordedMessagesIndex = 0
       if (this.isRecordingVoiceMail) return
-      this.mediaRecorder.stop()
+      if (this.this.mediaRecorder) this.mediaRecorder.stop()
       this.mediaRecorder = null
     },
     async getStream () {
@@ -335,7 +332,8 @@ export default {
       return stream
     },
     async prepareRecorder () {
-      if (this.stream === null) { return }
+      if (this.stream === null) return
+      if (this.this.mediaRecorder === null) return
       this.mediaRecorder = new MediaRecorder(this.stream)
       this.mediaRecorder.ignoreMutedMedia = true
       this.mediaRecorder.addEventListener('dataavailable', (e) => {
