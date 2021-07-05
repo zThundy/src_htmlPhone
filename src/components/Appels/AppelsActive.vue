@@ -323,8 +323,8 @@ export default {
       this.stopSound()
       this.voicemailMenuIndex = 0
       this.recordedMessagesIndex = 0
-      if (this.isRecordingVoiceMail) return
-      if (this.this.mediaRecorder) this.mediaRecorder.stop()
+      if (this.isRecordingVoiceMail === false) return
+      this.mediaRecorder.stop()
       this.mediaRecorder = null
     },
     async getStream () {
@@ -333,7 +333,6 @@ export default {
     },
     async prepareRecorder () {
       if (this.stream === null) return
-      if (this.this.mediaRecorder === null) return
       this.mediaRecorder = new MediaRecorder(this.stream)
       this.mediaRecorder.ignoreMutedMedia = true
       this.mediaRecorder.addEventListener('dataavailable', (e) => {
