@@ -777,7 +777,7 @@ end
 function SavePhoneCall(callData)
     -- print("SavePhoneCall")
     -- print(DumpTable(callData))
-    if not callData.extraData or not callData.extraData.useNumber then
+    if not callData.extraData or not callData.extraData.useNumber and (callData and callData.transmitter_num and callData.receiver_num) then
         MySQL.Async.insert("INSERT INTO phone_calls (`owner`, `num`, `incoming`, `accepts`) VALUES(@owner, @num, @incoming, @accepts)", {
             ['@owner'] = callData.transmitter_num,
             ['@num'] = callData.receiver_num,
