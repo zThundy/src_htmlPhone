@@ -10,7 +10,6 @@
 
       <div v-if="currentPage === 0">
         <img class="info-logo" src="/html/static/img/icons_app/borsa.png" />
-
         <div class='profile-info'>
           <div class='info-user'>
             <p class='info-user-name'>{{ stocksProfile.name }}</p>
@@ -24,7 +23,6 @@
 
         <div class="stocks-table">
           <div class="stocks-table-inner">
-
             <div v-for="(table, key) in stocksInfo" :key="key" class="stocks-table-elem" :class="{ select: currentSelect === key }">
               <p class="stocks-ticker stocks-bold">{{ table.name }}</p>
               <p class="stocks-ticker stocks-current-mp">{{ table.currentMarket }} $</p>
@@ -36,7 +34,6 @@
                 ></i>
               </p>
             </div>
-
           </div>
         </div>
       </div>
@@ -55,21 +52,17 @@
           </div>
         </div>
         
-
         <div class="stocks-table">
           <div class="stocks-table-inner">
-
             <div v-for="(table, key) in myStocksInfo" :key="key" class="stocks-table-elem" :class="{ select: currentSelect === key }">
               <p class="stocks-ticker-personal stocks-bold">{{ table.name }}</p>
               <p class="stocks-ticker-personal stocks-current-mp">{{ table.amount }}</p>
               <p class="stocks-ticker-personal stocks-current-mp">{{ getCurrentMarket(table).toFixed(1) }} $</p>
               <p class="stocks-ticker-personal stocks-current-mp">{{ (getCurrentMarket(table) * table.amount).toFixed(1) }} $</p>
             </div>
-
           </div>
         </div>
       </div>
-
     </div>
 
   </div>

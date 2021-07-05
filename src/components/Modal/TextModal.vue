@@ -2,7 +2,7 @@
 <transition name="modal">
     <div class="modal-mask">
         <div class="modal-container" @click.stop >
-          <h2 :style="{color}">{{ title }}</h2>
+          <h2 :style="{ color }">{{ title }}</h2>
           <textarea v-autofocus class="modal-textarea" :class="{oneline: limit <= 18}" ref="textarea" :style="{borderColor: color}" v-model="inputText" :maxlength="limit"></textarea>
           <div class="botton-container">
             <button :style="{color}" @click="cancel">
@@ -73,9 +73,7 @@ export default {
       this.$emit('cancel')
     },
     valide () {
-      this.$emit('valid', {
-        text: this.inputText
-      })
+      this.$emit('valid', { text: this.inputText })
     }
   },
   getTextAreaModal () {

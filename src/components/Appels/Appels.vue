@@ -27,10 +27,9 @@ import AppelsFavoris from './AppelsFavoris'
 import AppelsContacts from './AppelsContacts'
 import AppelsRecents from './AppelsRecents'
 import AppelsSegreteria from './AppelsSegreteria'
-import TransitionPage from '@/components/TransitionPage'
 
 export default {
-  components: { PhoneTitle, TransitionPage },
+  components: { PhoneTitle },
   data () {
     return {
       currentMenuIndex: 1

@@ -40,12 +40,11 @@ import './assets/css/font-awesome.min.css'
 import './assets/css/cssgram.css'
 
 import { mapGetters, mapActions } from 'vuex'
-import TransitionPage from './components/TransitionPage'
 import Notification from '@/components/Notification/Notification'
 
 export default {
   name: 'app',
-  components: { TransitionPage, Notification },
+  components: { Notification },
   data () {
     return {
       soundCall: null,

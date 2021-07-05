@@ -4,15 +4,13 @@
 
     <div class="elements">
       <div class="element" v-for='(elem, key) in list' :key="key" v-bind:class="{ select: key === currentSelect }">
-          
         <div class="elem-pic" v-bind:style="stylePuce(elem)">{{ formatEmoji(elem.letter || elem[keyDispay][0]) }}</div>
         <div v-if="elem.puce !== undefined && elem.puce !== 0" class="elem-puce">{{ elem.puce }}</div>
         <div v-if="elem.keyDesc === undefined || elem.keyDesc === ''" class="elem-title">{{ formatEmoji(elem[keyDispay]) }}</div>
         <div v-if="elem.keyDesc !== undefined && elem.keyDesc !== ''" class="elem-title-has-desc">
           {{ formatEmoji(elem[keyDispay]) }}
-          <div v-if="elem.keyDesc !== undefined && elem.keyDesc !== ''" class="elem-description">{{ formatEmoji(isSMSImage(elem.keyDesc)) }}</div>
+          <div v-if="elem.keyDesc !== undefined && elem.keyDesc !== ''" class="elem-description">{{ formatEmoji(checkAdditionalFormat(elem.keyDesc)) }}</div>
         </div>
-      
       </div>
     </div>
 
@@ -80,25 +78,24 @@ export default {
     }
   },
   computed: {
-    ...mapGetters([])
+    ...mapGetters(['LangString'])
   },
   methods: {
-    isSMSImage (mess) {
-      var pattern = new RegExp('^(https?:\\/\\/)?' + '((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|' + '((\\d{1,3}\\.){3}\\d{1,3}))' + '(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*' + '(\\?[;&a-z\\d%_.~+=-]*)?' + '(\\#[-a-z\\d_]*)?$', 'i')
-      if (pattern.test(mess)) {
-        return 'Immagine'
-      }
-      return mess
-    },
     formatEmoji (message) {
       return this.$phoneAPI.convertEmoji(message)
     },
-    // styleTitle: function () {
-    //   return {
-    //     color: this.color,
-    //     backgroundColor: this.backgroundColor
-    //   }
-    // },
+    checkAdditionalFormat (message) {
+      if (message.indexOf('[AUDIO]') === 0) {
+        return this.LangString('PHONE_AUDIO_MESSAGE_TITLE')
+      }
+      if (message.indexOf('[CONTACT]') === 0) {
+        return this.LangString('PHONE_CONTACT_MESSAGE_TITILE')
+      }
+      if (this.$phoneAPI.isImage(message)) {
+        return this.LangString('PHONE_IMAGE_MESSAGE_TITLE')
+      }
+      return message
+    },
     stylePuce (data) {
       data = data || {}
       if (data.icon !== undefined) {

@@ -102,6 +102,8 @@ if (process.env.NODE_ENV !== 'production') {
     {id: 5, transmitter: numRandom, time, message: '[CONTACT]%55529322%Questo è un nome vero%questoenuovo@phone.com', isRead: 1, owner: 0},
     {id: 6, transmitter: numRandom, time, message: '[CONTACT]%55529322%Sai anche questo è un nome vero solo che è lungo%questoenuovo@phone.com%https://i.imgur.com/gthahbs.png', isRead: 1, owner: 0},
     {id: 20, transmitter: numRandom, time, message: ':100: :100:', isRead: 1, owner: 0},
+    {id: 21, transmitter: numRandom, time, message: 'https://i.imgur.com/gthahbs.png', isRead: 0, owner: 1},
+    {id: 22, transmitter: numRandom, time, message: 'https://i.imgur.com/gthahbs.png', isRead: 0, owner: 0},
     {id: 1, transmitter: '5554444', time, message: 'Cazz c fai ca? !', isRead: 0, owner: 0},
     {id: 2, transmitter: '5554444', time, message: 'Cazz c fai ca? !', isRead: 0, owner: 1},
     {id: 3, transmitter: '5554444', time, message: 'Cazz c fai ca? !', isRead: 0, owner: 0},
@@ -114,6 +116,7 @@ if (process.env.NODE_ENV !== 'production') {
     {id: 10, transmitter: '55589231', time, message: 'Cazz c fai ca? !', isRead: 1, owner: 1},
     {id: 11, transmitter: '55589231', time, message: 'Cazz c fai ca? !', isRead: 0, owner: 1},
     {id: 12, transmitter: '55589231', time, message: 'Cazz c fai ca? !', isRead: 0, owner: 1},
-    {id: 13, transmitter: '55589231', time, message: 'Cazz c fai ca? !', isRead: 0, owner: 1}
+    {id: 13, transmitter: '55589231', time, message: 'Cazz c fai ca? !', isRead: 0, owner: 1},
+    {id: 14, transmitter: '55589231', time, message: '[CONTACT]%55529322%Questo è un nome vero%questoenuovo@phone.com', isRead: 0, owner: 0}
   ]
 }

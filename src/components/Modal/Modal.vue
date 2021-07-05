@@ -3,11 +3,9 @@
 
     <div class="modal-mask">
       <div class="modal-container">
-
         <div class="modal-scelte" v-for="(val, index) in scelte" :key='index' :style="{ color: val.color }" :class="{ select: index === currentSelect }">
-          <i class="fas" :class="val.icons"></i>{{val.title}}
+          <i class="fas" :class="val.icons"></i>{{ val.title }}
         </div>
-
       </div>
     </div>
 

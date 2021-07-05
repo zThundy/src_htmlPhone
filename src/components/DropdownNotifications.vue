@@ -27,9 +27,8 @@
         <span v-if="key < 4" class="messlist">
 
           <span class="warningMess_content">
-            <div class="transmitter">{{elem.transmitter}}</div>
-            <div v-if="!isSMSImage(elem.message)" class="messaggio">{{elem.message}}</div>
-            <div v-else class="messaggio">Immagine</div>
+            <div class="transmitter">{{ elem.transmitter }}</div>
+            <div class="messaggio">{{ formatEmoji(checkAdditionalFormat(elem.message)) }}</div>
           </span>
 
         </span>
@@ -154,9 +153,20 @@ export default {
       this.currentSelectX = 0
       this.currentSelectY = 0
     },
-    isSMSImage (mess) {
-      var pattern = new RegExp('^(https?:\\/\\/)?' + '((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|' + '((\\d{1,3}\\.){3}\\d{1,3}))' + '(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*' + '(\\?[;&a-z\\d%_.~+=-]*)?' + '(\\#[-a-z\\d_]*)?$', 'i')
-      return !!pattern.test(mess)
+    formatEmoji (message) {
+      return this.$phoneAPI.convertEmoji(message)
+    },
+    checkAdditionalFormat (message) {
+      if (message.indexOf('[AUDIO]') === 0) {
+        return this.LangString('PHONE_AUDIO_MESSAGE_TITLE')
+      }
+      if (message.indexOf('[CONTACT]') === 0) {
+        return this.LangString('PHONE_CONTACT_MESSAGE_TITILE')
+      }
+      if (this.$phoneAPI.isImage(message)) {
+        return this.LangString('PHONE_IMAGE_MESSAGE_TITLE')
+      }
+      return message
     }
   },
   created () {

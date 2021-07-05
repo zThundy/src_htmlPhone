@@ -29,13 +29,12 @@
 <script>
 import { mapGetters, mapActions } from 'vuex'
 import InfoBare from './InfoBare'
-import TransitionPage from '@/components/TransitionPage'
 import DropdownNotifications from '@/components/DropdownNotifications'
 import CurrentTime from './CurrentTime'
 
 export default {
   name: 'homepage',
-  components: { InfoBare, TransitionPage, DropdownNotifications, CurrentTime },
+  components: { InfoBare, DropdownNotifications, CurrentTime },
   data () {
     return {
       currentSelect: 0,

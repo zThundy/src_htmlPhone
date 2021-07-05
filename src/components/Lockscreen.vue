@@ -16,8 +16,7 @@
 
             <span class="warningMess_content">
               <div class="transmitter">{{ elem.transmitter || elem.authorPhone }}</div>
-              <div v-if="!isSMSImage(elem.message)" class="messaggio">{{ formatEmoji(elem.message) }}</div>
-              <div v-else class="messaggio">Immagine</div>
+              <div class="messaggio">{{ formatEmoji(checkAdditionalFormat(elem.message)) }}</div>
             </span>
           </span>
         </div>
@@ -77,9 +76,6 @@ export default {
       'resetUnreadMessages',
       'sendStartupValues'
     ]),
-    formatEmoji (message) {
-      return this.$phoneAPI.convertEmoji(message)
-    },
     buildColors () {
       var total = [...this.unreadMessages, ...this.unreadAziendaMessages]
       for (var i in total) {
@@ -105,9 +101,20 @@ export default {
     onBack () {
       this.closePhone()
     },
-    isSMSImage (mess) {
-      var pattern = new RegExp('^(https?:\\/\\/)?' + '((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|' + '((\\d{1,3}\\.){3}\\d{1,3}))' + '(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*' + '(\\?[;&a-z\\d%_.~+=-]*)?' + '(\\#[-a-z\\d_]*)?$', 'i')
-      return !!pattern.test(mess)
+    formatEmoji (message) {
+      return this.$phoneAPI.convertEmoji(message)
+    },
+    checkAdditionalFormat (message) {
+      if (message.indexOf('[AUDIO]') === 0) {
+        return this.LangString('PHONE_AUDIO_MESSAGE_TITLE')
+      }
+      if (message.indexOf('[CONTACT]') === 0) {
+        return this.LangString('PHONE_CONTACT_MESSAGE_TITILE')
+      }
+      if (this.$phoneAPI.isImage(message)) {
+        return this.LangString('PHONE_IMAGE_MESSAGE_TITLE')
+      }
+      return message
     }
   },
   created () {
