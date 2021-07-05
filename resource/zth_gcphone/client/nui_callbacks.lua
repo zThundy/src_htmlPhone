@@ -242,8 +242,3 @@ RegisterNUICallback('deleteAllPhoneHistory', function(data, cb)
     gcPhoneServerT.deleteAllPhoneHistory(data.infoCall)
     cb("ok")
 end)
-
-RegisterNUICallback('setIgnoreFocus', function(data, cb)
-    ignoreFocus = data.ignoreFocus
-    cb("ok")
-end)

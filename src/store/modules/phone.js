@@ -47,10 +47,7 @@ const getters = {
       if (config.background_default !== undefined) {
         return config.background_default
       }
-      return {
-        label: 'Default',
-        value: 'apple.png'
-      }
+      return { label: 'Default', value: 'apple.png' }
     }
     return background
   },
@@ -68,10 +65,7 @@ const getters = {
       if (config && config.suoneria_default !== undefined) {
         return config.suoneria_default
       }
-      return {
-        label: 'Panters',
-        value: 'ring.ogg'
-      }
+      return { label: 'Panters', value: 'ring.ogg' }
     }
     return suoneria
   },
@@ -80,17 +74,13 @@ const getters = {
       if (window.localStorage['gc_cover'] !== undefined && window.localStorage['gc_cover'] !== null) {
         return JSON.parse(window.localStorage['gc_cover'])
       }
-      return {
-        label: 'Nessuna cover',
-        value: 'base.png'
-      }
+      return { label: 'Nessuna cover', value: 'base.png' }
     }
     return currentCover
   },
   myCovers: ({ myCovers }) => myCovers,
   suoneriaLabel: (state, getters) => getters.suoneria.label,
   zoom: ({ zoom }) => zoom,
-  // warningMessageCount: ({ config }) => config.warningMessageCount || 250,
   themeColor: ({ config }) => config.themeColor,
   colors: ({ config }) => config.colors,
   AppsHome: (state, getters) => getters.Apps.filter(app => app.inHomePage === true),
@@ -140,9 +130,6 @@ const actions = {
       commit('SET_DEFAULT_CONTACTS', config.defaultContacts)
     }
     commit('SET_CONFIG', config)
-  },
-  setEnableApp ({ commit, state }, { appName, enable = true }) {
-    commit('SET_APP_ENABLE', { appName, enable })
   },
   setVisibility ({ commit }, show) {
     commit('SET_PHONE_VISIBILITY', show)
@@ -206,12 +193,12 @@ const mutations = {
   SET_CONFIG (state, config) {
     state.config = config
   },
-  SET_APP_ENABLE (state, {appName, enable}) {
-    const appIndex = state.config.apps.findIndex(app => app.name === appName)
-    if (appIndex !== -1) {
-      Vue.set(state.config.apps[appIndex], 'enabled', enable)
-    }
-  },
+  // SET_APP_ENABLE (state, {appName, enable}) {
+  //   const appIndex = state.config.apps.findIndex(app => app.name === appName)
+  //   if (appIndex !== -1) {
+  //     Vue.set(state.config.apps[appIndex], 'enabled', enable)
+  //   }
+  // },
   SET_PHONE_VISIBILITY (state, show) {
     state.show = show
     state.tempoHide = false

@@ -6,7 +6,6 @@ menuIsOpen = false
 contacts = {}
 messages = {}
 isDead = false
-ignoreFocus = false
 hasFocus = false
 
 inCall = false
@@ -80,11 +79,6 @@ Citizen.CreateThread(function()
                 end
             end
 
-            -- if useMouse == true and hasFocus == ignoreFocus then
-            --     local nuiFocus = not hasFocus
-            --     SetNuiFocus(nuiFocus, nuiFocus)
-            --     hasFocus = nuiFocus
-            -- elseif useMouse == false and hasFocus == true then
             if hasFocus then
                 SetNuiFocus(false, false)
                 hasFocus = false
@@ -116,11 +110,6 @@ end)
 
 -- utile dal js per l'appstore, non qui :/
 --[[
-    RegisterNetEvent('gcPhone:setEnableApp')
-    AddEventHandler('gcPhone:setEnableApp', function(appName, enable)
-        SendNUIMessage({ event = 'setEnableApp', appName = appName, enable = enable })
-    end)
-
     RegisterNetEvent("gcPhone:forceOpenPhone")
     AddEventHandler("gcPhone:forceOpenPhone", function(_myPhoneNumber)
         if menuIsOpen == false then

@@ -108,15 +108,12 @@ export default {
     },
     onRejectCall () {
       this.rejectCall()
-      this.$phoneAPI.setIgnoreFocus(false)
     },
     onAcceptCall () {
       this.acceptCall()
-      this.$phoneAPI.setIgnoreFocus(true)
     },
     onIgnoreCall () {
       this.ignoreCall()
-      this.$phoneAPI.setIgnoreFocus(false)
       this.$router.push({ name: 'menu' })
     },
     startTimer () {
@@ -131,7 +128,6 @@ export default {
       if (this.appelsInfo === null) return
       if (this.appelsInfo.is_accepts === true) {
         this.status = 1
-        this.$phoneAPI.setIgnoreFocus(true)
         this.startTimer()
       }
     }
@@ -149,7 +145,6 @@ export default {
   mounted () {
     if (this.appelsInfo !== null && this.appelsInfo.initiator === true) {
       this.status = 1
-      this.$phoneAPI.setIgnoreFocus(true)
     }
   },
   created () {
@@ -168,7 +163,6 @@ export default {
     this.$bus.$off('keyUpArrowUp', this.onUp)
     this.$bus.$off('keyUpEnter', this.onEnter)
     if (this.intervalNum !== undefined) { clearInterval(this.intervalNum) }
-    this.$phoneAPI.setIgnoreFocus(false)
   }
 }
 </script>
