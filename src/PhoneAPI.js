@@ -580,7 +580,9 @@ class PhoneAPI {
 
   onupdateGlobalVolume (data) {
     data.volume = decimalAdjust('floor', data.volume, -2)
-    Howler.volume(data.volume)
+    this.soundList.forEach((elem, sound) => {
+      elem.volume = data.volume
+    })
   }
 
   onsetSoundVolume (data) {

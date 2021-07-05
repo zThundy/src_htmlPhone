@@ -22,7 +22,7 @@ const state = {
   airplane: false,
   brightnessActive: true,
   config: {
-    operator_title: 'Code',
+    operator_title: 'ThundyPhone',
     apps: [],
     themeColor: '#3399FF',
     colors: ['#0066CC'],
