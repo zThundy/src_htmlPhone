@@ -65,5 +65,5 @@ AddEventHandler("gcphone:azienda_sendEmergencyCall", function(data)
         end
     end)
 
-    SendNUIMessage({ event = "receiveAziendaCall", calls = data })
+    SendNUIMessage({ event = "receiveAziendaCall", calls = data, notifications = NOTIFICATIONS_ENABLED })
 end)

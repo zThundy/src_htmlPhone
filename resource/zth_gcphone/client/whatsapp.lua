@@ -17,7 +17,6 @@
 RegisterNetEvent("gcphone:whatsapp_updateGruppi")
 AddEventHandler("gcphone:whatsapp_updateGruppi", function(groups, number)
     -- SendNUIMessage({ event = "whatsappClearGroups" })
-    -- ESX.TriggerServerCallback("gcPhone:getPhoneNumber", function(number)
 
     local groupsToSend = {}
     for group_id, group in pairs(groups) do
@@ -45,18 +44,13 @@ AddEventHandler("gcphone:whatsapp_updateGruppi", function(groups, number)
         end
 
         for _, contact in pairs(group.partecipanti) do
-
-            -- if contact.number == myPhoneNumber then
-            -- print(number)
             if contact.number == number then
-                -- print(group.id, group.gruppo, group.icona, "inviato al NUI")
                 table.insert(groupsToSend, group)
             end
         end
     end
 
     SendNUIMessage({ event = "whatsappReceiveGroups", groups = groupsToSend })
-    -- end)
 end)
 
 RegisterNetEvent("gcphone:whatsapp_sendNotificationToMembers")
@@ -73,15 +67,12 @@ RegisterNUICallback("abbandonaGruppo", function(data, cb)
 end)
 
 RegisterNUICallback("requestWhatsappeMessages", function(data, cb)
-    -- print("requesting whatsapp messages", data.id)
-
     ESX.TriggerServerCallback("gcPhone:getMessaggiFromGroupId", function(messages)
-        -- for k, v in pairs(messages) do print(k, v) for j, m in pairs(v) do print(j, m, m.message, m.sender, m.id) end end
-        -- print(json.encode(messages))
         if messages then
             SendNUIMessage({event = "whatsappReceiveMessages", messages = messages })
         end
     end, data.id)
+    cb("ok")
 end)
 
 RegisterNUICallback("requestAllGroupsInfo", function(data, cb)

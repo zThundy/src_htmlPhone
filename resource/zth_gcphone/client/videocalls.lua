@@ -40,10 +40,12 @@ RegisterNUICallback("acceptVideoCall", function(data, cb)
 	-- local infoCall = data.infoCall
 	-- local rtcAnswer = data.rtcAnswer
 	gcPhoneServerT.acceptVideoCall(data.infoCall, data.rtcAnswer)
+    cb("ok")
 end)
 
 RegisterNUICallback("rejectVideoCall", function(data, cb)
 	-- this is useless :)
+    cb("ok")
 end)
 
 RegisterNUICallback('onVideoCandidates', function (data, cb)

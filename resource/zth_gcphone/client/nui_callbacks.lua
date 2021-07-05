@@ -22,14 +22,11 @@ end)
 
 RegisterNUICallback("sendStartupValues", function(data, cb)
     NOTIFICATIONS_ENABLED = data.notification
-
     if data.cover ~= nil then
         myCover = string.gsub(data.cover.value, ".png", "")
     end
-    
     GLOBAL_AIRPLANE = data.airplane
     gcPhoneServerT.updateAirplaneForUser(GLOBAL_AIRPLANE)
-
     -- volume = data.volume
     UpdateGlobalVolume(data.volume)
     cb("ok")
@@ -40,10 +37,8 @@ RegisterNUICallback('connettiAllaRete', function(data, cb)
         ESX.ShowNotification(Config.Language["MODEM_WRONG_PASSWORD"])
         return
     end
-
     WIFI_TEMP_DATA = { label = data.label, password = data.password }
     ESX.ShowNotification(Config.Language["MODEM_CORRECT_PASSWORD"])
-
     TriggerEvent("gcphone:updateWifi", true, WIFI_TEMP_DATA)
     StartWifiRangeCheck()
     cb("ok")
@@ -110,7 +105,6 @@ end)
 
 RegisterNUICallback('reponseText', function(data, cb)
     local resp = GetResponseText(data)
-
     cb(json.encode({ text = resp }))
 end)
 
@@ -134,7 +128,6 @@ end)
 
 RegisterNUICallback('deleteMessage', function(data, cb)
     gcPhoneServerT.deleteMessage(data.id)
-
     for k, v in ipairs(messages) do
         if v.id == data.id then
             table.remove(messages, k)
@@ -142,7 +135,6 @@ RegisterNUICallback('deleteMessage', function(data, cb)
             return
         end
     end
-
     cb("ok")
 end)
 
@@ -158,11 +150,8 @@ end)
 
 RegisterNUICallback('setReadMessageNumber', function(data, cb)
     gcPhoneServerT.setReadMessageNumber(data.number)
-
     for k, v in ipairs(messages) do
-        if v.transmitter == data.number then
-            v.isRead = 1
-        end
+        if v.transmitter == data.number then v.isRead = 1 end
     end
     cb("ok")
 end)
@@ -202,7 +191,6 @@ end)
 
 RegisterNUICallback('callEvent', function(data, cb)
     local eventName = data.eventName or ''
-
     if string.match(eventName, 'gcphone') then
         if data.data ~= nil then 
             TriggerEvent(data.eventName, data.data)
@@ -210,13 +198,11 @@ RegisterNUICallback('callEvent', function(data, cb)
             TriggerEvent(data.eventName)
         end
     end
-
     cb("ok")
 end)
 
 RegisterNUICallback('chiamataEmergenza', function(data, cb)
     local eventName = data.eventName or ''
-
     if string.match(eventName, 'gcphone') then
         if data.type ~= nil then 
             TriggerEvent(data.eventName, data)
@@ -224,7 +210,6 @@ RegisterNUICallback('chiamataEmergenza', function(data, cb)
             TriggerEvent(data.eventName)
         end
     end
-
     cb("ok")
 end)
 
@@ -237,7 +222,6 @@ RegisterNUICallback('faketakePhoto', function(data, cb)
     menuIsOpen = false
     SendNUIMessage({ show = false })
     TriggerEvent('camera:open')
-
     cb("ok")
 end)
 
@@ -245,11 +229,7 @@ RegisterNUICallback('closePhone', function(data, cb)
     menuIsOpen = false
     SendNUIMessage({ show = false })
     PhonePlayOut()
-
-    if Config.EnsurePropCleanup then
-        doCleanup()
-    end
-
+    if Config.EnsurePropCleanup then doCleanup() end
     cb("ok")
 end)
 

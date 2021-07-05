@@ -10,8 +10,10 @@ end)
 
 RegisterNUICallback('tchat_addMessage', function(data, cb)
     gcPhoneServerT.tchat_addMessage(data.channel, data.message)
+    cb("ok")
 end)
 
 RegisterNUICallback('tchat_getChannel', function(data, cb)
     gcPhoneServerT.tchat_channel(data.channel)
+    cb("ok")
 end)

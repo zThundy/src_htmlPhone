@@ -23,7 +23,7 @@ radioPower = 0
 CAHES_WIFI_MODEMS = {}
 WIFI_TEMP_DATA = {}
 isConnected = false
-myPhoneNumber = ''
+-- myPhoneNumber = ''
 
 ESX = nil
 
@@ -159,7 +159,7 @@ end
 
 RegisterNetEvent("gcPhone:updatePhoneNumber")
 AddEventHandler("gcPhone:updatePhoneNumber", function(phone_number)
-    myPhoneNumber = phone_number
+    -- myPhoneNumber = phone_number
     SendNUIMessage({ event = 'updateMyPhoneNumber', myPhoneNumber = myPhoneNumber })
 end)
 
@@ -213,15 +213,14 @@ AddEventHandler("gcphone:updateRadioSignal", function(s_radioPower)
     end
 
     radioPower = s_radioPower
-    local data = { potenza = s_radioPower }
-    SendNUIMessage({ event = "updateSegnale", data = data })
+    SendNUIMessage({ event = "updateSegnale", potenza = s_radioPower })
 end)
 
 RegisterNetEvent("gcPhone:receiveMessage")
 AddEventHandler("gcPhone:receiveMessage", function(message)
     if not message then return end
     if not GLOBAL_AIRPLANE then
-        SendNUIMessage({ event = 'newMessage', message = message })
+        SendNUIMessage({ event = 'newMessage', message = message, notifications = NOTIFICATIONS_ENABLED })
         table.insert(messages, message)
 
         if message.owner == 0 then
@@ -238,11 +237,11 @@ AddEventHandler("gcPhone:receiveMessage", function(message)
             end
 
             ESX.ShowNotification(text)
-            if NOTIFICATIONS_ENABLED then
-                PlaySoundJS('msgnotify.ogg')
-                Citizen.Wait(3000)
-                StopSoundJS('msgnotify.ogg')
-            end
+            -- if NOTIFICATIONS_ENABLED then
+            --     PlaySoundJS('msgnotify.ogg')
+            --     Citizen.Wait(3000)
+            --     StopSoundJS('msgnotify.ogg')
+            -- end
         end
     end
 end)
@@ -256,11 +255,9 @@ AddEventHandler("gcPhone:waitingCall", function(infoCall, initiator)
     if inCall then return end
     SendNUIMessage({ event = 'waitingCall', infoCall = infoCall, initiator = initiator })
 
-    if initiator == true then
+    if initiator then
         PhonePlayCall()
-        if menuIsOpen == false then
-            TogglePhone()
-        end
+        if not menuIsOpen then TogglePhone() end
     end
 end)
 
@@ -286,16 +283,13 @@ AddEventHandler("gcPhone:phoneNoSignal", function(infoCall, initiator)
         stoppedPlayingUnreachable = false
         Citizen.Wait(2000)
 
-        if stoppedPlayingUnreachable == false then
+        if not stoppedPlayingUnreachable then
             PlaySoundJS('phonenosignal.ogg')
             count = 0
             
             while true do
-                if count == 1 then
-                    gcPhoneServerT.rejectCall(infoCall)
-                end
-
-                if stoppedPlayingUnreachable == true then
+                if count == 1 then gcPhoneServerT.rejectCall(infoCall) end
+                if stoppedPlayingUnreachable then
                     stoppedPlayingUnreachable = false
                     StopSoundJS('phonenosignal.ogg')
                     return
@@ -328,10 +322,7 @@ AddEventHandler("gcPhone:acceptCall", function(infoCall, initiator)
                 Citizen.Wait(1000)
                 if initiator then
                     secondiRimanenti = secondiRimanenti - 1
-
-                    if secondiRimanenti == 0 then 
-                        gcPhoneServerT.rejectCall(infoCall)
-                    end
+                    if secondiRimanenti == 0 then gcPhoneServerT.rejectCall(infoCall) end
                 end
 
                 if Config.PhoneBoxes[infoCall.receiver_num] then
@@ -341,12 +332,10 @@ AddEventHandler("gcPhone:acceptCall", function(infoCall, initiator)
                         if distance > 1.0 then gcPhoneServerT.rejectCall(infoCall) end
                     end
                 else
-                    if radioPower == 0 then
-                        gcPhoneServerT.rejectCall(infoCall)
-                    end
+                    if radioPower == 0 then gcPhoneServerT.rejectCall(infoCall) end
                 end
             end
-        
+
             PlaySoundJS('callend.ogg')
             Wait(1500)
             StopSoundJS('callend.ogg')
@@ -365,7 +354,7 @@ AddEventHandler("gcPhone:acceptCall", function(infoCall, initiator)
         end
     end
 
-    if menuIsOpen == false then 
+    if not menuIsOpen then 
         TogglePhone()
     end
 
@@ -384,9 +373,7 @@ AddEventHandler("gcPhone:rejectCall", function(infoCall)
         gcPhoneServerT.updateParametroTariffa(infoCall.transmitter_num, "minuti", secondiRimanenti)
     end
 
-    if stoppedPlayingUnreachable == false then
-        stoppedPlayingUnreachable = true
-    end
+    if not stoppedPlayingUnreachable then stoppedPlayingUnreachable = true end
 
     if inCall then
         inCall = false
@@ -485,7 +472,7 @@ function TogglePhone()
         lastname = lastname
     })
 
-    if menuIsOpen == true then 
+    if menuIsOpen then 
         PhonePlayIn()
     else
         PhonePlayOut()

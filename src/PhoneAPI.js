@@ -99,7 +99,6 @@ class PhoneAPI {
     return text
   }
 
-  // === Gestion des messages
   async sendMessage (phoneNumber, message) {
     return this.post('sendMessage', {phoneNumber, message})
   }
@@ -120,7 +119,6 @@ class PhoneAPI {
     return this.post('setReadMessageNumber', {number})
   }
 
-  // === Gestion des contacts
   async updateContactAvatar (id, display, number, icon) {
     return this.post('aggiornaAvatarContatto', { id, display, number, icon })
   }
@@ -141,7 +139,6 @@ class PhoneAPI {
     return this.post('shareContact', contact)
   }
 
-  // == Gestion des appels
   async deletePhoneHistory (numero) {
     return this.post('deletePhoneHistory', { numero })
   }
@@ -150,7 +147,6 @@ class PhoneAPI {
     return this.post('deleteAllPhoneHistory')
   }
 
-  // === Autre
   async closePhone () {
     return this.post('closePhone')
   }
@@ -181,7 +177,6 @@ class PhoneAPI {
   }
 
   async getReponseText (data) {
-    // { text }
     if (process.env.NODE_ENV === 'production') {
       return this.post('reponseText', data || {})
     } else {
@@ -234,22 +229,12 @@ class PhoneAPI {
     this.post('setIgnoreFocus', { ignoreFocus })
   }
 
-  // === App Tchat
   async tchatGetMessagesChannel (channel) {
     this.post('tchat_getChannel', { channel })
   }
 
   async tchatSendMessage (channel, message) {
     this.post('tchat_addMessage', { channel, message })
-  }
-
-  // === App Notes
-  async notesGetMessagesChannel (channel) {
-    window.localStorage.setItem('gc_notas_locales', channel)
-  }
-
-  async notesSendMessage (channel, message) {
-    this.post('notes_addMessage', { channel, message })
   }
 
   // ==========================================================================
@@ -291,7 +276,8 @@ class PhoneAPI {
         title: data.message.receiver + ':',
         icon: 'envelope',
         backgroundColor: 'rgb(255, 140, 30)',
-        appName: 'Messaggi'
+        appName: 'Messaggi',
+        sound: data.notifications ? 'msgnotify.ogg' : undefined
       })
     }
   }
@@ -400,7 +386,6 @@ class PhoneAPI {
     fetch('http://' + this.config.fileUploader.ip + ':3000/audioDownload?type=voicemails&key=' + infoCall.infoCall.receiver_num, {
       method: 'GET'
     }).then(async resp => {
-      console.log(resp.status)
       if (resp.status === 404) {
         this.onplaySound({ sound: 'segreteriaDefault.ogg', volume: volume })
         this.playingVoiceMailAudio = true
@@ -574,36 +559,32 @@ class PhoneAPI {
   }
 
   async updateVolume (data) {
-    data.volume = Math.floor10(data.volume, -2)
+    data.volume = decimalAdjust('floor', data.volume, -2)
     return this.post('updateVolume', data)
   }
 
   onplaySound (data) {
     // qui mi roundo il volume con le funzioni custom
     // definite a fine file
-    data.volume = Math.floor10(data.volume)
+    data.volume = decimalAdjust('floor', data.volume)
     var path = '/html/static/sound/' + data.sound
     if (data.sound === undefined || data.sound === null) return
     if (this.soundList[data.sound] !== undefined) {
       this.soundList[data.sound].volume = Number(data.volume)
     } else {
-      this.soundList[data.sound] = new Howl({
-        src: path,
-        loop: true
-        // onend: function () { delete this.soundList[data.sound] }
-      })
+      this.soundList[data.sound] = new Howl({ src: path, loop: true /* onend: function () { delete this.soundList[data.sound] } */ })
       this.soundList[data.sound].play()
     }
   }
 
   onupdateGlobalVolume (data) {
-    data.volume = Math.floor10(data.volume, -2)
+    data.volume = decimalAdjust('floor', data.volume, -2)
     Howler.volume(data.volume)
   }
 
   onsetSoundVolume (data) {
     if (this.soundList[data.sound] !== undefined) {
-      data.volume = Math.floor10(data.volume)
+      data.volume = decimalAdjust('floor', data.volume)
       this.soundList[data.sound].volume(data.volume)
     }
   }
@@ -619,7 +600,6 @@ class PhoneAPI {
     return this.post('sendStartupValues', data)
   }
 
-  // Tchat Event
   ontchat_receive (data) {
     this.onplaySound({ sound: 'msgnotify.ogg', volume: 0.4 })
     setTimeout(() => {
@@ -632,7 +612,6 @@ class PhoneAPI {
     store.commit('TCHAT_SET_MESSAGES', data)
   }
 
-  // Notes Event
   onnotes_receive (data) {
     store.dispatch('notesAddMessage', data)
   }
@@ -641,7 +620,6 @@ class PhoneAPI {
     store.commit('NOTES_SET_MESSAGES', data)
   }
 
-  // =====================
   onautoStartCall (data) {
     this.startCall(data.number, data.extraData)
   }
@@ -710,37 +688,10 @@ class PhoneAPI {
     store.commit('UPDATE_TWEET_ISLIKE', data)
   }
 
-  // ontwitter_showError (data) {
-  //   Vue.notify({
-  //     title: store.getters.LangString(data.title),
-  //     message: store.getters.LangString(data.message),
-  //     icon: 'twitter',
-  //     backgroundColor: 'rgb(80, 160, 230)',
-  //     appName: 'Twitter'
-  //   })
-  // }
-
-  // ontwitter_showSuccess (data) {
-  //   Vue.notify({
-  //     title: store.getters.LangString(data.title),
-  //     message: store.getters.LangString(data.message),
-  //     icon: 'twitter',
-  //     backgroundColor: 'rgb(80, 160, 230)',
-  //     appName: 'Twitter'
-  //   })
-  // }
-
-  // ==========================================================================
-  //  Zona eventi e funzioni Chiamate di emergenza
-  // ==========================================================================
-
   async sendEmergencyMessage (data) {
     return this.post('chiamataEmergenza', data)
   }
 
-  // ==========================================================================
-  //  Zona eventi e funzioni Wifi e dati
-  // ==========================================================================
   async requestOfferta () {
     return this.post('requestOfferta')
   }
@@ -766,9 +717,8 @@ class PhoneAPI {
 
   // dati ricevuti dal nuimessage:
   // 0, 1, 2, 3, 4 per potenza segnale
-  onupdateSegnale ({ data }) {
-    var segnale = data.potenza
-    store.commit('SET_SEGNALE', segnale)
+  onupdateSegnale (data) {
+    store.commit('SET_SEGNALE', data.potenza)
   }
   // data contiene
   // {
@@ -791,12 +741,10 @@ class PhoneAPI {
     store.dispatch('updateWifiString', data.hasWifi)
   }
 
-  // ==========================================================================
-  //  Zona eventi e funzioni Instagram
-  // ==========================================================================
   async instagram_setAvatar (username, password, avatarUrl) {
     return this.post('instagram_changeAvatar', { username, password, avatarUrl })
   }
+
   // questo è la funzione generale
   // che ti permette di postare una nuova immagine
   // su instagram
@@ -863,58 +811,6 @@ class PhoneAPI {
   oninstagram_updatePostIsLiked (data) {
     store.commit('UPDATE_POST_ISLIKE', data)
   }
-
-  // notifica di errore
-  // oninstagram_showError (data) {
-  //   Vue.notify({
-  //     title: store.getters.LangString(data.title),
-  //     message: store.getters.LangString(data.message),
-  //     icon: 'instagram',
-  //     backgroundColor: 'rgb(255, 204, 0)',
-  //     sound: 'Instagram_Error.ogg',
-  //     appName: 'Instagram'
-  //   })
-  // }
-
-  // notifica di successo
-  // oninstagram_showSuccess (data) {
-  //   Vue.notify({
-  //     title: store.getters.LangString(data.title),
-  //     message: store.getters.LangString(data.message),
-  //     icon: 'instagram',
-  //     backgroundColor: 'rgb(255, 204, 0)',
-  //     sound: 'Instagram_Notification.ogg',
-  //     appName: 'Instagram'
-  //   })
-  // }
-
-  // ///////////////////////// //
-  // SEZIONE WHATSAPP TELEFONO //
-  // ///////////////////////// //
-
-  // notifica di errore
-  // onwhatsapp_showError (data) {
-  //   Vue.notify({
-  //     title: store.getters.LangString(data.title),
-  //     message: store.getters.LangString(data.message),
-  //     icon: 'whatsapp',
-  //     backgroundColor: 'rgb(90, 200, 105)',
-  //     sound: 'Whatsapp_Message_Sound.ogg',
-  //     appName: 'Whatsapp'
-  //   })
-  // }
-
-  // notifica di successo
-  // onwhatsapp_showSuccess (data) {
-  //   Vue.notify({
-  //     title: store.getters.LangString(data.title),
-  //     message: store.getters.LangString(data.message),
-  //     icon: 'whatsapp',
-  //     backgroundColor: 'rgb(90, 200, 105)',
-  //     sound: 'Whatsapp_Message_Sound.ogg',
-  //     appName: 'Whatsapp'
-  //   })
-  // }
 
   onwhatsappClearGroups () {
     store.commit('CLEAR_GROUP')
@@ -1007,9 +903,6 @@ class PhoneAPI {
   async getClosestPlayers () {
     return this.post('getClosestPlayers')
   }
-  // onsendClosestPlayers (users) {
-  //   store.commit('UPDATE_CLOSEST_PLAYERS', users)
-  // }
 
   onaddPicToGallery (data) {
     store.dispatch('addPhoto', data)
@@ -1018,10 +911,6 @@ class PhoneAPI {
   onclearGallery () {
     store.dispatch('clearGallery')
   }
-
-  // //////////////// //
-  // DARKWEB FUNZIONI //
-  // //////////////// //
 
   async fetchDarkmessages () {
     return this.post('fetchDarkmessages')
@@ -1034,10 +923,6 @@ class PhoneAPI {
   onsendDarkwebMessages (data) {
     store.commit('RECEIVE_DARK_MESSAGES', data)
   }
-
-  // ////////////// //
-  // EMAIL FUNZIONI //
-  // ////////////// //
 
   async requestMyEmail () {
     return this.post('requestMyEmail')
@@ -1123,6 +1008,7 @@ class PhoneAPI {
   }
 
   onreceiveAziendaCall (data) {
+    if (data.notifications) { Vue.notify({ sound: 'msgnotify.ogg', hidden: true }) }
     store.commit('UPDATE_AZIENDA_CALLS', data.calls)
   }
 
@@ -1172,35 +1058,16 @@ class PhoneAPI {
 }
 
 function decimalAdjust (type, value, exp) {
-  // If the exp is undefined or zero...
   if (typeof exp === 'undefined' || +exp === 0) {
     return Math[type](value)
   }
   value = +value
   exp = +exp
-  // If the value is not a number or the exp is not an integer...
-  if (isNaN(value) || !(typeof exp === 'number' && exp % 1 === 0)) {
-    return NaN
-  }
-  // Shift
+  if (isNaN(value) || !(typeof exp === 'number' && exp % 1 === 0)) { return NaN }
   value = value.toString().split('e')
   value = Math[type](+(value[0] + 'e' + (value[1] ? (+value[1] - exp) : -exp)))
-  // Shift back
   value = value.toString().split('e')
   return +(value[0] + 'e' + (value[1] ? (+value[1] + exp) : exp))
-}
-
-// Decimal ceil
-if (!Math.ceil10) {
-  Math.ceil10 = function (value, exp) {
-    return decimalAdjust('ceil', value, exp)
-  }
-}
-// Decimal floor
-if (!Math.floor10) {
-  Math.floor10 = function (value, exp) {
-    return decimalAdjust('floor', value, exp)
-  }
 }
 
 const instance = new PhoneAPI()
