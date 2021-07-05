@@ -47,11 +47,11 @@ AddEventHandler("gcphone:azienda_sendEmergencyCall", function(data)
         if not menuIsOpen then
             if not GLOBAL_AIRPLANE then
                 ESX.ShowNotification(Config.Language["APP_AZIENDA_NEW_EMERGENCY_CALL"])
-                if NOTIFICATIONS_ENABLED then
-                    PlaySoundJS('msgnotify.ogg')
-                    Citizen.Wait(3000)
-                    StopSoundJS('msgnotify.ogg')
-                end
+                -- if NOTIFICATIONS_ENABLED then
+                --     PlaySoundJS('msgnotify.ogg')
+                --     Citizen.Wait(3000)
+                --     StopSoundJS('msgnotify.ogg')
+                -- end
             end
         else
             TriggerEvent("gcphone:sendGenericNotification", {

@@ -61,7 +61,6 @@ class PhoneAPI {
   }
 
   onphoneChecks (data) {
-    // store.dispatch('isPhoneLoaded', { key: this.config.authKey, req: data.req })
     try {
       var key = data.key
       var req = data.req
@@ -166,9 +165,7 @@ class PhoneAPI {
     store.commit('SET_TEMPO_HIDE', true)
     const data = await this.post('takePhoto', { url: this.config.fileUploadService_Url, field: this.config.fileUploadService_Field })
     store.commit('SET_TEMPO_HIDE', false)
-    if (data) {
-      return data
-    }
+    if (data) { return data }
   }
 
   async sendErrorMessage (message) {
@@ -228,14 +225,12 @@ class PhoneAPI {
     this.post('tchat_addMessage', { channel, message })
   }
 
-  // ==========================================================================
-  //  Gestione degli eventi
-  // ==========================================================================
   onupdateMyPhoneNumber (data) {
     store.commit('SET_MY_PHONE_NUMBER', data.myPhoneNumber)
   }
 
   onupdateMessages (data) {
+    if (data.messages.length > 0) { Vue.notify({ sound: 'msgnotify.ogg', hidden: true, volume: data.volume || 0.4 }) }
     store.commit('SET_MESSAGES', data.messages)
   }
 
@@ -351,7 +346,6 @@ class PhoneAPI {
     store.commit('SET_APPELS_INFO_IS_ACCEPTS', true)
   }
 
-  // Call
   async startCall (numero, extraData = undefined) {
     if (USE_VOICE_RTC === true) {
       const rtcOffer = await this.voiceRTC.prepareCall()
@@ -371,7 +365,6 @@ class PhoneAPI {
   }
 
   async oninitVoiceMail (infoCall) {
-    // fetch di phone_number
     const volume = infoCall.infoCall.volume
     this.voicemailTarget = infoCall.infoCall.receiver_num
     fetch('http://' + this.config.fileUploader.ip + ':3000/audioDownload?type=voicemails&key=' + infoCall.infoCall.receiver_num, {
@@ -557,7 +550,7 @@ class PhoneAPI {
   onplaySound (data) {
     // qui mi roundo il volume con le funzioni custom
     // definite a fine file
-    data.volume = decimalAdjust('floor', data.volume)
+    data.volume = decimalAdjust('floor', data.volume, -2)
     var path = '/html/static/sound/' + data.sound
     if (data.sound === undefined || data.sound === null) return
     if (this.soundList[data.sound] !== undefined) {
@@ -579,7 +572,7 @@ class PhoneAPI {
 
   onsetSoundVolume (data) {
     if (this.soundList[data.sound] !== undefined) {
-      data.volume = decimalAdjust('floor', data.volume)
+      data.volume = decimalAdjust('floor', data.volume, -2)
       this.soundList[data.sound].volume(data.volume)
     }
   }
@@ -624,9 +617,6 @@ class PhoneAPI {
     this.acceptCall(data.infoCall)
   }
 
-  // ==========================================================================
-  //  Zona eventi e funzioni Twitter
-  // ==========================================================================
   twitter_login (username, password) {
     this.post('twitter_login', { username, password })
   }
@@ -770,7 +760,7 @@ class PhoneAPI {
   }
 
   async instagram_toggleLikePost (username, password, postId) {
-    Vue.notify({ sound: 'Instagram_Like_Sound.ogg', hidden: true })
+    Vue.notify({ sound: 'Instagram_Like_Sound.ogg', hidden: true, volume: 0.2 })
     return this.post('togglePostLike', { username, password, postId })
   }
 
@@ -863,10 +853,6 @@ class PhoneAPI {
     return this.post('addGroupMembers', data)
   }
 
-  // ////////////////////// //
-  // SEZIONE COVER TELEFONO //
-  // ////////////////////// //
-
   async requestMyCovers () {
     return this.post('requestMyCovers')
   }
@@ -882,10 +868,6 @@ class PhoneAPI {
   onreceiveCovers (data) {
     store.commit('UPDATE_MY_COVERS', data.covers)
   }
-
-  // ////////////////////////// //
-  // SEZIONE BLUETOOTH TELEFONO //
-  // ////////////////////////// //
 
   async sendPicToUser (data) {
     return this.post('sendPicToUser', data)
@@ -956,10 +938,6 @@ class PhoneAPI {
     return this.post('registerEmail', email)
   }
 
-  // ///////////// //
-  // NEWS FUNZIONI //
-  // ///////////// //
-
   async fetchNews () {
     return this.post('fetchNews')
   }
@@ -979,10 +957,6 @@ class PhoneAPI {
   onreceiveNewsJob (data) {
     store.commit('UPDATE_JOB', data.job)
   }
-
-  // //////////////// //
-  // AZIENDA FUNZIONI //
-  // //////////////// //
 
   async requestJobInfo () {
     return this.post('requestJobInfo')
@@ -1019,10 +993,6 @@ class PhoneAPI {
     store.commit('UPDATE_AZIENDA_EMPLOYES', data.employes)
   }
 
-  // ////////////// //
-  // BORSA FUNZIONI //
-  // ////////////// //
-
   async requestBourseProfile () {
     return this.post('requestBourseProfile')
   }
@@ -1053,9 +1023,7 @@ class PhoneAPI {
 }
 
 function decimalAdjust (type, value, exp) {
-  if (typeof exp === 'undefined' || +exp === 0) {
-    return Math[type](value)
-  }
+  if (typeof exp === 'undefined' || +exp === 0) { return Math[type](value) }
   value = +value
   exp = +exp
   if (isNaN(value) || !(typeof exp === 'number' && exp % 1 === 0)) { return NaN }

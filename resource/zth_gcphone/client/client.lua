@@ -22,7 +22,6 @@ radioPower = 0
 CAHES_WIFI_MODEMS = {}
 WIFI_TEMP_DATA = {}
 isConnected = false
--- myPhoneNumber = ''
 
 ESX = nil
 
@@ -160,24 +159,22 @@ end)
 
 RegisterNetEvent("gcPhone:allMessage")
 AddEventHandler("gcPhone:allMessage", function(allmessages, notReceivedMessages)
-    SendNUIMessage({ event = 'updateMessages', messages = allmessages })
+    SendNUIMessage({ event = 'updateMessages', messages = allmessages, volume = volume })
     messages = allmessages
 
     if not GLOBAL_AIRPLANE then
-        if notReceivedMessages ~= nil then
-            if notReceivedMessages > 0 then
-                if notReceivedMessages == 1 then
-                    ESX.ShowNotification(Config.Language["SINGLE_UNREAD_MESSAGE_NOTIFICATION"]:format(notReceivedMessages))
-                else
-                    ESX.ShowNotification(Config.Language["MULTIPLE_UNREAD_MESSAGES_NOTIFICATION"]:format(notReceivedMessages))
-                end
+        if notReceivedMessages ~= nil and notReceivedMessages > 0 then
+            if notReceivedMessages == 1 then
+                ESX.ShowNotification(Config.Language["SINGLE_UNREAD_MESSAGE_NOTIFICATION"]:format(notReceivedMessages))
+            else
+                ESX.ShowNotification(Config.Language["MULTIPLE_UNREAD_MESSAGES_NOTIFICATION"]:format(notReceivedMessages))
+            end
 
-                if NOTIFICATIONS_ENABLED then
-                    DrawNotification(false, false)
-                    PlaySoundJS('msgnotify.ogg')
-                    Citizen.Wait(3000)
-                    StopSoundJS('msgnotify.ogg')
-                end
+            if NOTIFICATIONS_ENABLED then
+                DrawNotification(false, false)
+                PlaySoundJS('msgnotify.ogg')
+                Citizen.Wait(3000)
+                StopSoundJS('msgnotify.ogg')
             end
         end
     end
