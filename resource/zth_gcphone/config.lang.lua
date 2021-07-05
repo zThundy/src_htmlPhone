@@ -152,6 +152,7 @@ Config.Language = {
         ["STARTCALL_MESSAGE_ERROR_1"] = "~r~Non c'è segnale per effettuare una telefonata",
         ["STARTCALL_MESSAGE_ERROR_2"] = "~r~Il telefono è occupato",
         ["STARTCALL_MESSAGE_ERROR_3"] = "~r~Non c'è segnale per effettuare una telefonata",
+        ["STARTCALL_NO_SIM_INSTALLED"] = "~r~Devi avere una sim installata",
     },
     ["en"] = {
         -- DEBUG
@@ -304,6 +305,7 @@ Config.Language = {
         ["STARTCALL_MESSAGE_ERROR_1"] = "~r~There is no signal to make a phone call",
         ["STARTCALL_MESSAGE_ERROR_2"] = "~r~The phone is busy",
         ["STARTCALL_MESSAGE_ERROR_3"] = "~r~There is no signal to make a phone call",
+        ["STARTCALL_NO_SIM_INSTALLED"] = "~r~You must have a sim in the phone",
     }
 }
 

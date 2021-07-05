@@ -27,14 +27,6 @@ class PhoneAPI {
     this.voiceRTC = null
     this.videoRTC = null
     this.soundList = {}
-    // segreteria
-    this.audioElement = new Audio()
-    this.stream = null
-    this.mediaRecorder = null
-    this.isRecordingVoiceMail = false
-    this.playingVoiceMailAudio = false
-    this.chunks = []
-    this.voicemailTarget = null
   }
 
   onsendParametersValues (data) {
@@ -364,101 +356,14 @@ class PhoneAPI {
     }
   }
 
-  async oninitVoiceMail (infoCall) {
-    const volume = infoCall.infoCall.volume
-    this.voicemailTarget = infoCall.infoCall.receiver_num
-    fetch('http://' + this.config.fileUploader.ip + ':3000/audioDownload?type=voicemails&key=' + infoCall.infoCall.receiver_num, {
-      method: 'GET'
-    }).then(async resp => {
-      if (resp.status === 404) {
-        this.onplaySound({ sound: 'segreteriaDefault.ogg', volume: volume })
-        this.playingVoiceMailAudio = true
-        setTimeout(() => {
-          this.onstopSound({sound: 'segreteriaDefault.ogg'})
-          this.playingVoiceMailAudio = false
-          this.startVoiceMailRecording()
-        }, 7500)
-      } else {
-        const blobData = await resp.blob()
-        this.audioElement.src = window.URL.createObjectURL(blobData)
-        this.audioElement.load()
-        this.audioElement.onloadeddata = async () => {
-          this.audioElement.currentTime = 0
-          this.audioElement.ontimeupdate = () => {
-            if (this.audioElement.currentTime === this.audioElement.duration) {
-              this.playVoiceMailBeep(volume)
-              this.playingVoiceMailAudio = false
-            }
-          }
-        }
-        this.audioElement.play()
-        this.playingVoiceMailAudio = true
+  removeElementAtIndex (array, index) {
+    var tempArray = []
+    array.forEach((elem) => {
+      if (array.indexOf(elem) !== index) {
+        tempArray.push(elem)
       }
     })
-    store.commit('SET_APPELS_INFO_IS_ACCEPTS', true)
-    return this.post('acceptCall', { infoCall })
-  }
-
-  async playVoiceMailBeep (volume) {
-    this.onplaySound({sound: 'voiceMailBeep.ogg', volume: volume})
-    setTimeout(() => {
-      this.onstopSound({sound: 'voiceMailBeep.ogg'})
-      this.startVoiceMailRecording()
-    }, 500)
-  }
-
-  async startVoiceMailRecording () {
-    if (this.isRecordingVoiceMail) { return }
-    this.isRecordingVoiceMail = true
-    try {
-      this.stream = await this.getStream()
-      this.prepareRecorder()
-      this.mediaRecorder.start()
-    } catch (e) { console.error(e) }
-  }
-
-  async stopVoiceMailRecording () {
-    this.mediaRecorder.stop()
-    this.mediaRecorder = null
-  }
-
-  async getStream () {
-    const stream = await navigator.mediaDevices.getUserMedia({ audio: true, video: false })
-    return stream
-  }
-
-  async prepareRecorder () {
-    if (!this.stream) { return }
-    this.mediaRecorder = new MediaRecorder(this.stream)
-    this.mediaRecorder.ignoreMutedMedia = true
-    this.mediaRecorder.addEventListener('dataavailable', (e) => {
-      if (e.data && e.data.size > 0) {
-        this.chunks.push(e.data)
-      }
-    }, true)
-    this.mediaRecorder.addEventListener('stop', (e) => {
-      this.isRecordingVoiceMail = false
-      this.stream.getTracks().forEach(t => t.stop())
-      this.stream = null
-      this.audioElement.src = ''
-      this.saveRecordedVoiceMail()
-    }, true)
-  }
-
-  async saveRecordedVoiceMail () {
-    const blobData = new Blob(this.chunks, { 'type': 'audio/ogg;codecs=opus' })
-    if (blobData.size > 0) {
-      const formData = new FormData()
-      formData.append('audio-file', blobData)
-      formData.append('filename', this.makeid(15))
-      formData.append('type', 'voicemails_messages')
-      formData.append('voicemail_target', this.voicemailTarget)
-      fetch('http://' + this.config.fileUploader.ip + ':3000/audioUpload', {
-        method: 'POST',
-        body: formData
-      })
-    }
-    this.chunks = []
+    return tempArray
   }
 
   makeid (length) {
@@ -477,18 +382,6 @@ class PhoneAPI {
   }
 
   async rejectCall (infoCall) {
-    if (this.playingVoiceMailAudio) {
-      this.onstopSound({sound: 'segreteriaDefault.ogg'})
-      if (this.audioElement !== null) {
-        this.audioElement.pause()
-        this.audioElement.src = ''
-      }
-      this.playingVoiceMailAudio = false
-    }
-    if (this.isRecordingVoiceMail) {
-      this.stopVoiceMailRecording()
-      this.isRecordingVoiceMail = false
-    }
     return this.post('rejectCall', { infoCall })
   }
 
@@ -500,11 +393,23 @@ class PhoneAPI {
     return this.post('ignoreCall', infoCall)
   }
 
+  oninitVoiceMail (data) {
+    Vue.prototype.$bus.$emit('initVoiceMail', data.infoCall)
+    store.commit('SET_APPELS_INFO_IS_ACCEPTS', true)
+    return this.post('acceptCall', { data })
+  }
+
   onwaitingCall (data) {
     store.commit('SET_APPELS_INFO_IF_EMPTY', {
       ...data.infoCall,
       initiator: data.initiator
     })
+    if (data.infoCall.receiver_num === this.config.voicemails_number && data.infoCall.noSignal === undefined) {
+      setTimeout(() => {
+        Vue.prototype.$bus.$emit('initVoiceMailListener', data)
+        store.commit('SET_APPELS_INFO_IS_ACCEPTS', true)
+      }, 3000)
+    }
   }
 
   onacceptCall (data) {
@@ -519,26 +424,13 @@ class PhoneAPI {
     store.commit('SET_APPELS_INFO_IS_ACCEPTS', true)
   }
 
-  async keyDigitEvent (data) {
-    console.log(data.pressedKey)
-  }
-
-  playKeySound (data) {
-    if (data.file) {
-      this.audioElement.src = '/html/static/sound/phoneDialogsEffect/' + data.file + '.ogg'
-      this.audioElement.volume = 0.1
-      this.audioElement.play()
-    }
-  }
-
   oncandidatesAvailable (data) {
     this.voiceRTC.addIceCandidates(data.candidates)
   }
 
   onrejectCall (data) {
-    if (this.voiceRTC !== null) {
-      this.voiceRTC.close()
-    }
+    Vue.prototype.$bus.$emit('stopVoiceMailRecording')
+    if (this.voiceRTC !== null) { this.voiceRTC.close() }
     store.commit('SET_APPELS_INFO', null)
   }
 
@@ -564,10 +456,12 @@ class PhoneAPI {
   }
 
   onupdateGlobalVolume (data) {
-    data.volume = decimalAdjust('floor', data.volume, -2)
-    this.soundList.forEach((elem, sound) => {
-      elem.volume = data.volume
-    })
+    // data.volume = decimalAdjust('floor', data.volume, -2)
+    // if (this.soundList) {
+    //   this.soundList.forEach((elem, sound) => {
+    //     elem.volume = data.volume
+    //   })
+    // }
   }
 
   onsetSoundVolume (data) {

@@ -910,6 +910,7 @@ gcPhoneT.startCall = function(phone_number, rtcOffer, extraData)
     else
         srcPhone = gcPhoneT.getPhoneNumber(srcIdentifier)
     end
+    if not srcPhone then return TriggerClientEvent("esx:showNotification", player, Config.Language["STARTCALL_NO_SIM_INSTALLED"]) end
     -- srcPhone è il numero di telefono di chi ha avviato la chiamata
     
     -- qui mi prendo tutte le informazioni del giocatore a cui sto chiamanto
@@ -973,11 +974,15 @@ gcPhoneT.startCall = function(phone_number, rtcOffer, extraData)
             end)
         else
             if segnaleTransmitter ~= nil and segnaleTransmitter.potenzaSegnale > 0 then
-                PlaySegreteria(player, Chiamate[CALL_INDEX])
+                if Chiamate[CALL_INDEX].receiver_num == '190' then
+                    TriggerClientEvent('gcPhone:waitingCall', player, Chiamate[CALL_INDEX], true)
+                else 
+                    PlaySegreteria(player, Chiamate[CALL_INDEX])
+                end
             else
+                Chiamate[CALL_INDEX].noSignal = true
                 PlayNoSignal(player, Chiamate[CALL_INDEX])
                 TriggerClientEvent("esx:showNotification", player, Config.Language["STARTCALL_MESSAGE_ERROR_3"])
-                -- xPlayer.showNotification("~r~Non c'è segnale per effettuare una telefonata")
             end
         end
 

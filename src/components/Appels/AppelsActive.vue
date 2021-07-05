@@ -49,6 +49,7 @@ export default {
       status: 0,
       showingKeypad: false,
       numero: '',
+      keySelect: 0,
       keyInfo: [
         {primary: '1', secondary: '', ascii: 48},
         {primary: '2', secondary: 'abc', ascii: 49},
@@ -63,7 +64,18 @@ export default {
         {primary: '0', secondary: '+', ascii: 57},
         {primary: '#', secondary: '', isNotNumber: true, ascii: 35}
       ],
-      keySelect: 0
+      stream: null,
+      mediaRecorder: null,
+      isRecordingVoiceMail: false,
+      voicemailTarget: null,
+      playingSound: false,
+      voicemailMenuIndex: 0,
+      listeningToVoiceMailMessages: false,
+      recordedMessagesIndex: 0,
+      recordedMessagesCache: null,
+      audioElement: new Audio(),
+      keyAudioElement: new Audio(),
+      chunks: []
     }
   },
   methods: {
@@ -80,7 +92,8 @@ export default {
     },
     onEnter () {
       if (this.showingKeypad) {
-        this.$phoneAPI.playKeySound({ file: this.keyInfo[this.keySelect].ascii })
+        this.playKeySound({ file: this.keyInfo[this.keySelect].ascii })
+        this.keyDigitEvent({ pressedKey: this.keyInfo[this.keySelect].primary })
         if (this.numero.length >= 25) this.numero = ''
         this.numero += this.keyInfo[this.keySelect].primary
         return
@@ -121,6 +134,223 @@ export default {
         this.time = 0
         this.intervalNum = setInterval(() => { this.time += 1 }, 1000)
       }
+    },
+    // SEGRETERIA //
+
+    async tts (text, cb, instance) {
+      if (text === '') { return cb(instance) }
+      instance.playSound({ sound: 'tts/' + text.charAt(0) + '.ogg', delay: 100 }, function (instance) {
+        text = text.substring(1, text.length)
+        instance.tts(text, cb, instance)
+      })
+    },
+    async initVoiceMailListener () {
+      this.listeningToVoiceMailMessages = true
+      this.playSound({ sound: 'voiceMailWelcomerPartOne.ogg' }, function (instance) {
+        instance.tts(instance.myPhoneNumber.toString(), function (instance) {
+          instance.playSound({ sound: 'voiceMailWelcomerPartTwo.ogg' })
+        }, instance)
+      })
+    },
+    async keyDigitEvent (data) {
+      if (!this.listeningToVoiceMailMessages) { return }
+      var pressedKey = Number(data.pressedKey)
+      if (this.voicemailMenuIndex === 0) {
+        if (isNaN(data.pressedKey)) return
+        if (pressedKey === 1) {
+          this.getAvailableRecordedMessages({ sourceNumber: this.myPhoneNumber }, function (data) {
+            if (data.response === undefined) {
+              data.instance.finishVoiceMailCall()
+            } else {
+              data.instance.recordedMessagesCache = data.response
+              data.instance.voicemailMenuIndex = pressedKey
+              data.instance.playSound({ sound: 'voiceMailMessageOptions.ogg' })
+            }
+          })
+        } else if (pressedKey === 2) {
+          this.voicemailMenuIndex = pressedKey
+          this.playSound({ sound: 'voiceMailEmptyOptions.ogg' })
+        } else if (pressedKey === 3) {
+          this.playSound({ sound: 'voiceMailWelcomerPartTwo.ogg' })
+        }
+      } else if (this.voicemailMenuIndex === 1) {
+        if (pressedKey === 1) {
+          this.playSound({ sound: 'recordedMessageFrom.ogg' }, function (instance) {
+            var currentRecordedMessage = instance.recordedMessagesCache[instance.recordedMessagesIndex]
+            instance.tts(currentRecordedMessage.sourceNumber, function (instance) {
+              var blobData = new Blob([Buffer.from(currentRecordedMessage.blobDataBuffer, 'base64')])
+              instance.playSound({ path: window.URL.createObjectURL(blobData) }, function (instance) {
+                instance.playSound({ sound: 'recordedMessageEnd.ogg' })
+              })
+            }, instance)
+          })
+        } else if (pressedKey === 2) {
+          if (this.recordedMessagesCache[(this.recordedMessagesIndex + 1)] !== undefined) {
+            this.playSound({ sound: 'voiceMailMessageOptions.ogg' })
+            this.recordedMessagesIndex++
+          } else {
+            this.playSound({ sound: 'noRecordedMessagesLeft.ogg' }, function (instance) {
+              instance.finishVoiceMailCall()
+            })
+          }
+        } else if (pressedKey === 3) {
+          this.deleteCurrentRecordedVoiceMail()
+        } else if (pressedKey === 4) {
+          this.recordedMessagesIndex = 0
+          this.voicemailMenuIndex = 0
+          this.playSound({ sound: 'voicemailWelcomerPartTwo.ogg' })
+        } else if (pressedKey === 5) {
+          this.playSound({ sound: 'voiceMailMessageOptions.ogg' })
+        }
+      } else if (this.voicemailMenuIndex === 2) {
+        if (pressedKey === 1) {
+          this.recordedMessagesIndex = 'all'
+          this.deleteCurrentRecordedVoiceMail()
+        } else if (pressedKey === 2) {
+          this.recordedMessagesIndex = 0
+          this.voicemailMenuIndex = 0
+          this.playSound({ sound: 'voicemailWelcomerPartTwo.ogg' })
+        } else if (pressedKey === 3) {
+          this.playSound({ sound: 'voiceMailEmptyOptions.ogg' })
+        }
+      }
+    },
+    async getAvailableRecordedMessages (data, cb) {
+      fetch('http://' + this.config.fileUploader.ip + ':3000/getAvailabledRecordedMessages?index=' + this.recordedMessagesIndex + '&target=' + data.sourceNumber, {
+        method: 'GET'
+      }).then(async resp => {
+        if (resp.status === 404) {
+          this.playSound({ sound: 'noRecordedMessagesLeft.ogg' }, function (instance) {
+            cb({ instance: instance })
+          })
+        } else {
+          const jsonResponse = await resp.json()
+          cb({ response: jsonResponse, instance: this })
+        }
+      })
+    },
+    async deleteCurrentRecordedVoiceMail () {
+      const formData = new FormData()
+      formData.append('index', this.recordedMessagesIndex)
+      formData.append('voicemail_target', this.myPhoneNumber)
+      fetch('http://' + this.config.fileUploader.ip + ':3000/recordedMessageDelete', {
+        method: 'POST',
+        body: formData
+      })
+      this.recordedMessagesCache = this.recordedMessagesIndex === 'all' ? [] : this.$phoneAPI.removeElementAtIndex(this.recordedMessagesCache, this.recordedMessagesIndex)
+      if (this.recordedMessagesCache.length === 0) {
+        this.playSound({ sound: 'noRecordedMessagesLeft.ogg' }, function (instance) {
+          instance.finishVoiceMailCall()
+        })
+      } else {
+        this.recordedMessagesIndex = this.recordedMessagesIndex - 1 < 0 ? 0 : this.recordedMessagesIndex - 1
+        this.playSound({ sound: 'voiceMailMessageOptions.ogg' })
+      }
+    },
+    async finishVoiceMailCall () {
+      this.stopSound()
+      this.voicemailMenuIndex = 0
+      this.recordedMessagesIndex = 0
+      this.listeningToVoiceMailMessages = false
+      this.onrejectCall()
+    },
+    async playSound (data, cb) {
+      console.log(this.audioElement.src)
+      if (this.audioElement.src !== '' && this.audioElement.src !== 'http://localhost:8080/' && this.playingSound) { this.audioElement.pause() }
+      if (data.volume !== undefined) this.audioElement.volume = data.volume
+      this.audioElement.src = data.path === undefined ? '/html/static/sound/' + data.sound : data.path
+      this.audioElement.onloadeddata = async () => {
+        this.audioElement.currentTime = 0
+        this.audioElement.onended = () => {
+          this.playingSound = false
+          this.audioElement.src = ''
+          // console.log('phoneapi instance', this)
+          if (cb !== undefined) { cb(this) }
+        }
+      }
+      this.audioElement.play()
+      this.playingSound = true
+    },
+    async stopSound () {
+      if (this.audioElement.src !== '' && this.audioElement.src !== 'http://localhost:8080/') { this.audioElement.pause() }
+    },
+    playKeySound (data) {
+      if (data.file) {
+        this.keyAudioElement.src = '/html/static/sound/phoneDialogsEffect/' + data.file + '.ogg'
+        this.keyAudioElement.volume = 0.1
+        this.keyAudioElement.play()
+      }
+    },
+    async initVoiceMail (data) {
+      const volume = data.infoCall.volume
+      this.voicemailTarget = data.infoCall.receiver_num
+      fetch('http://' + this.config.fileUploader.ip + ':3000/audioDownload?type=voicemails&key=' + data.infoCall.receiver_num, {
+        method: 'GET'
+      }).then(async resp => {
+        if (resp.status === 404) {
+          this.playSound({ sound: 'segreteriaDefault.ogg', volume: volume }, function (instance) {
+            instance.startVoiceMailRecording()
+          })
+        } else {
+          const blobData = await resp.json()
+          this.playSound({ path: window.URL.createObjectURL(new Blob([Buffer.from(blobData.blobDataBuffer, 'base64')])), volume: volume }, function (instance) {
+            instance.playSound({ sound: 'voiceMailBeep.ogg', volume: volume }, function (instance) {
+              instance.startVoiceMailRecording()
+            })
+          })
+        }
+      })
+    },
+    async saveRecordedVoiceMail () {
+      const blobData = new Blob(this.chunks, { 'type': 'audio/ogg;codecs=opus' })
+      if (blobData.size > 0) {
+        const formData = new FormData()
+        formData.append('audio-file', blobData)
+        formData.append('voicemail_target', this.voicemailTarget)
+        formData.append('voicemail_source', this.myPhoneNumber)
+        fetch('http://' + this.config.fileUploader.ip + ':3000/recordedMessageUpload', {
+          method: 'POST',
+          body: formData
+        })
+      }
+    },
+    async startVoiceMailRecording () {
+      if (this.isRecordingVoiceMail) { return }
+      this.isRecordingVoiceMail = true
+      try {
+        this.stream = await this.getStream()
+        this.prepareRecorder()
+      } catch (e) { console.error(e) }
+    },
+    async stopVoiceMailRecording () {
+      this.stopSound()
+      this.voicemailMenuIndex = 0
+      this.recordedMessagesIndex = 0
+      if (this.isRecordingVoiceMail) return
+      this.mediaRecorder.stop()
+      this.mediaRecorder = null
+    },
+    async getStream () {
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true, video: false })
+      return stream
+    },
+    async prepareRecorder () {
+      if (this.stream === null) { return }
+      this.mediaRecorder = new MediaRecorder(this.stream)
+      this.mediaRecorder.ignoreMutedMedia = true
+      this.mediaRecorder.addEventListener('dataavailable', (e) => {
+        if (e.data && e.data.size > 0) {
+          this.chunks.push(e.data)
+        }
+      }, true)
+      this.mediaRecorder.addEventListener('stop', (e) => {
+        this.isRecordingVoiceMail = false
+        this.stream.getTracks().forEach(t => t.stop())
+        this.stream = null
+        this.audioElement.src = ''
+        this.saveRecordedVoiceMail()
+      }, true)
+      this.mediaRecorder.start()
     }
   },
   watch: {
@@ -133,7 +363,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['LangString', 'backgroundURL', 'appelsInfo', 'appelsDisplayName', 'appelsDisplayNumber', 'myPhoneNumber']),
+    ...mapGetters(['LangString', 'backgroundURL', 'appelsInfo', 'appelsDisplayName', 'appelsDisplayNumber', 'myPhoneNumber', 'config']),
     timeDisplay () {
       if (this.time < 0) { return this.LangString('APP_PHONE_DIALING_MESSAGE') }
       const min = Math.floor(this.time / 60)
@@ -154,6 +384,10 @@ export default {
     this.$bus.$on('keyUpArrowDown', this.onDown)
     this.$bus.$on('keyUpArrowUp', this.onUp)
     this.$bus.$on('keyUpBackspace', this.onBackspace)
+
+    this.$bus.$on('initVoiceMailListener', this.initVoiceMailListener)
+    this.$bus.$on('initVoiceMail', this.initVoiceMail)
+    this.$bus.$on('stopVoiceMailRecording', this.stopVoiceMailRecording)
   },
   beforeDestroy () {
     this.$bus.$off('keyUpBackspace', this.onBackspace)
@@ -162,6 +396,10 @@ export default {
     this.$bus.$off('keyUpArrowDown', this.onDown)
     this.$bus.$off('keyUpArrowUp', this.onUp)
     this.$bus.$off('keyUpEnter', this.onEnter)
+
+    this.$bus.$off('initVoiceMailListener', this.initVoiceMailListener)
+    this.$bus.$off('initVoiceMail', this.initVoiceMail)
+    this.$bus.$off('stopVoiceMailRecording', this.stopVoiceMailRecording)
     if (this.intervalNum !== undefined) { clearInterval(this.intervalNum) }
   }
 }

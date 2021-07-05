@@ -148,7 +148,7 @@ end
 RegisterNetEvent("gcPhone:updatePhoneNumber")
 AddEventHandler("gcPhone:updatePhoneNumber", function(phone_number)
     -- myPhoneNumber = phone_number
-    SendNUIMessage({ event = 'updateMyPhoneNumber', myPhoneNumber = myPhoneNumber })
+    SendNUIMessage({ event = 'updateMyPhoneNumber', myPhoneNumber = phone_number })
 end)
 
 RegisterNetEvent("gcPhone:contactList")
