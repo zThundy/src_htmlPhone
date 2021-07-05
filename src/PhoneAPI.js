@@ -27,6 +27,7 @@ class PhoneAPI {
     this.voiceRTC = null
     this.videoRTC = null
     this.soundList = []
+    this.keyAudioElement = new Audio()
   }
 
   onsendParametersValues (data) {
@@ -444,6 +445,14 @@ class PhoneAPI {
       this.soundList[data.sound].src = path
       this.soundList[data.sound].loop = true
       this.soundList[data.sound].play()
+    }
+  }
+
+  playKeySound (data) {
+    if (data.file) {
+      this.keyAudioElement.src = '/html/static/sound/phoneDialogsEffect/' + data.file + '.ogg'
+      this.keyAudioElement.volume = 0.1
+      this.keyAudioElement.play()
     }
   }
 

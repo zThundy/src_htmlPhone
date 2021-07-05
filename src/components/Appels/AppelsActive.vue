@@ -92,7 +92,7 @@ export default {
     },
     onEnter () {
       if (this.showingKeypad) {
-        this.playKeySound({ file: this.keyInfo[this.keySelect].ascii })
+        this.$phoneAPI.playKeySound({ file: this.keyInfo[this.keySelect].ascii })
         this.keyDigitEvent({ pressedKey: this.keyInfo[this.keySelect].primary })
         if (this.numero.length >= 25) this.numero = ''
         this.numero += this.keyInfo[this.keySelect].primary
@@ -251,7 +251,7 @@ export default {
       this.voicemailMenuIndex = 0
       this.recordedMessagesIndex = 0
       this.listeningToVoiceMailMessages = false
-      this.onrejectCall()
+      this.onRejectCall()
     },
     async playSound (data, cb) {
       if (this.audioElement.src !== '' && this.audioElement.src !== 'http://localhost:8080/' && this.playingSound) { this.audioElement.pause() }
@@ -270,13 +270,6 @@ export default {
     },
     async stopSound () {
       if (this.audioElement.src !== '' && this.audioElement.src !== 'http://localhost:8080/') { this.audioElement.pause() }
-    },
-    playKeySound (data) {
-      if (data.file) {
-        this.keyAudioElement.src = '/html/static/sound/phoneDialogsEffect/' + data.file + '.ogg'
-        this.keyAudioElement.volume = 0.1
-        this.keyAudioElement.play()
-      }
     },
     async initVoiceMail (data) {
       const volume = data.volume
