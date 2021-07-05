@@ -2,7 +2,6 @@ import store from '@/store'
 import VoiceRTC from './VoiceRTC'
 import VideoRTC from './VideoRTC'
 import Vue from 'vue'
-import { Howl, Howler } from 'howler'
 import aes256 from 'aes256'
 
 import emoji from './emoji.json'
@@ -572,7 +571,9 @@ class PhoneAPI {
     if (this.soundList[data.sound] !== undefined) {
       this.soundList[data.sound].volume = Number(data.volume)
     } else {
-      this.soundList[data.sound] = new Howl({ src: path, loop: true /* onend: function () { delete this.soundList[data.sound] } */ })
+      this.soundList[data.sound] = new Audio()
+      this.soundList[data.sound].src = path
+      this.soundList[data.sound].loop = true
       this.soundList[data.sound].play()
     }
   }
