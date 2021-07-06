@@ -2,16 +2,15 @@
   <div style="width: 100%; height: 100%;" class="phone_app">
     <PhoneTitle class="decor-border" :backgroundColor="'white'" :title="LangString('APP_PHOTO_TITLE')" />
 
-    <canvas id="canvas1" width="200" height="200"></canvas>
+    <!--<canvas id="canvas1" width="200" height="200"></canvas>
     <video muted controls id="canvas2" src="https://upload.wikimedia.org/wikipedia/commons/7/79/Big_Buck_Bunny_small.ogv"></video>
-    <!--
+    -->
     <div class="general-container">
       <div class="picture-snap-cyrcle-contaniner">
         <div class="picture-snap-cyrcle-ext"></div>
         <div class="picture-snap-cyrcle-int"></div>
       </div>
     </div>
-    -->
   </div>
 </template>
 
