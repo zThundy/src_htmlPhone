@@ -397,6 +397,7 @@ class PhoneAPI {
   oninitVoiceMail (data) {
     Vue.prototype.$bus.$emit('initVoiceMail', data.infoCall)
     store.commit('SET_APPELS_INFO_IS_ACCEPTS', true)
+    return this.post('acceptCall', { infoCall })
   }
 
   onwaitingCall (data) {
@@ -405,7 +406,11 @@ class PhoneAPI {
       initiator: data.initiator
     })
     if (data.infoCall.receiver_num === this.config.voicemails_number && data.infoCall.noSignal === undefined) {
-      setTimeout(() => { Vue.prototype.$bus.$emit('initVoiceMailListener', data); store.commit('SET_APPELS_INFO_IS_ACCEPTS', true) }, 3000)
+      setTimeout(() => {
+        Vue.prototype.$bus.$emit('initVoiceMailListener', data);
+        store.commit('SET_APPELS_INFO_IS_ACCEPTS', true)
+        return this.post('acceptCall', { infoCall })
+      }, 3000)
     }
   }
 
