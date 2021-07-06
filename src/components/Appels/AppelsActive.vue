@@ -173,33 +173,39 @@ export default {
           this.playSound({ sound: 'voiceMailWelcomerPartTwo.ogg' })
         }
       } else if (this.voicemailMenuIndex === 1) {
-        if (pressedKey === 1) {
-          this.playSound({ sound: 'recordedMessageFrom.ogg' }, function (instance) {
-            var currentRecordedMessage = instance.recordedMessagesCache[instance.recordedMessagesIndex]
-            instance.tts(currentRecordedMessage.sourceNumber, function (instance) {
-              var blobData = new Blob([Buffer.from(currentRecordedMessage.blobDataBuffer, 'base64')])
-              instance.playSound({ path: window.URL.createObjectURL(blobData) }, function (instance) {
-                instance.playSound({ sound: 'recordedMessageEnd.ogg' })
-              })
-            }, instance)
+        if (this.recordedMessagesCache[this.recordedMessagesIndex] === undefined) {
+          this.playSound({ sound: 'noMoreMessagesLeft.ogg' }, function (instance) {
+            instance.finishVoiceMailCall()
           })
-        } else if (pressedKey === 2) {
-          if (this.recordedMessagesCache[(this.recordedMessagesIndex + 1)] !== undefined) {
-            this.playSound({ sound: 'voiceMailMessageOptions.ogg' })
-            this.recordedMessagesIndex++
-          } else {
-            this.playSound({ sound: 'noRecordedMessagesLeft.ogg' }, function (instance) {
-              instance.finishVoiceMailCall()
+        } else {
+          if (pressedKey === 1) {
+            this.playSound({ sound: 'recordedMessageFrom.ogg' }, function (instance) {
+              var currentRecordedMessage = instance.recordedMessagesCache[instance.recordedMessagesIndex]
+              instance.tts(currentRecordedMessage.sourceNumber, function (instance) {
+                var blobData = new Blob([Buffer.from(currentRecordedMessage.blobDataBuffer, 'base64')])
+                instance.playSound({ path: window.URL.createObjectURL(blobData) }, function (instance) {
+                  instance.playSound({ sound: 'recordedMessageEnd.ogg' })
+                })
+              }, instance)
             })
+          } else if (pressedKey === 2) {
+            if (this.recordedMessagesCache[(this.recordedMessagesIndex + 1)] !== undefined) {
+              this.playSound({ sound: 'voiceMailMessageOptions.ogg' })
+              this.recordedMessagesIndex++
+            } else {
+              this.playSound({ sound: 'noMoreMessagesLeft.ogg' }, function (instance) {
+                instance.finishVoiceMailCall()
+              })
+            }
+          } else if (pressedKey === 3) {
+            this.deleteCurrentRecordedVoiceMail()
+          } else if (pressedKey === 4) {
+            this.recordedMessagesIndex = 0
+            this.voicemailMenuIndex = 0
+            this.playSound({ sound: 'voicemailWelcomerPartTwo.ogg' })
+          } else if (pressedKey === 5) {
+            this.playSound({ sound: 'voiceMailMessageOptions.ogg' })
           }
-        } else if (pressedKey === 3) {
-          this.deleteCurrentRecordedVoiceMail()
-        } else if (pressedKey === 4) {
-          this.recordedMessagesIndex = 0
-          this.voicemailMenuIndex = 0
-          this.playSound({ sound: 'voicemailWelcomerPartTwo.ogg' })
-        } else if (pressedKey === 5) {
-          this.playSound({ sound: 'voiceMailMessageOptions.ogg' })
         }
       } else if (this.voicemailMenuIndex === 2) {
         if (pressedKey === 1) {
@@ -219,7 +225,7 @@ export default {
         method: 'GET'
       }).then(async resp => {
         if (resp.status === 404) {
-          this.playSound({ sound: 'noRecordedMessagesLeft.ogg' }, function (instance) {
+          this.playSound({ sound: 'noAvailableMessages.ogg' }, function (instance) {
             cb({ instance: instance })
           })
         } else {
@@ -238,12 +244,18 @@ export default {
       })
       this.recordedMessagesCache = this.recordedMessagesIndex === 'all' ? [] : this.$phoneAPI.removeElementAtIndex(this.recordedMessagesCache, this.recordedMessagesIndex)
       if (this.recordedMessagesCache.length === 0) {
-        this.playSound({ sound: 'noRecordedMessagesLeft.ogg' }, function (instance) {
-          instance.finishVoiceMailCall()
+        this.playSound({ sound: 'recordedMessageDeleted.ogg' }, function (instance) {
+          setTimeout(() => {
+            instance.playSound({ sound: 'noMoreMessagesLeft.ogg' }, function (instance) {
+              instance.finishVoiceMailCall()
+            })
+          }, 250)
         })
       } else {
-        this.recordedMessagesIndex = this.recordedMessagesIndex - 1 < 0 ? 0 : this.recordedMessagesIndex - 1
-        this.playSound({ sound: 'voiceMailMessageOptions.ogg' })
+        this.recordedMessagesIndex = this.recordedMessagesIndex === this.recordedMessagesCache.length ? this.recordedMessagesCache.length - 1 : this.recordedMessagesIndex
+        this.playSound({ sound: 'recordedMessageDeleted.ogg' }, function (instance) {
+          instance.playSound({ sound: 'voiceMailMessageOptions.ogg' })
+        })
       }
     },
     async finishVoiceMailCall () {
@@ -254,7 +266,7 @@ export default {
       this.onRejectCall()
     },
     async playSound (data, cb) {
-      if (this.audioElement.src !== '' && this.audioElement.src !== 'http://localhost:8080/' && this.playingSound) { this.audioElement.pause() }
+      if (this.playingSound) { this.audioElement.pause() }
       if (data.volume !== undefined) this.audioElement.volume = data.volume
       this.audioElement.src = data.path === undefined ? '/html/static/sound/' + data.sound : data.path
       this.audioElement.onloadeddata = async () => {
@@ -269,7 +281,7 @@ export default {
       this.playingSound = true
     },
     async stopSound () {
-      if (this.audioElement.src !== '' && this.audioElement.src !== 'http://localhost:8080/') { this.audioElement.pause() }
+      if (this.audioElement.src !== '' && this.audioElement.src !== 'nui://zth_gcphone/html/index.html') { this.audioElement.pause() }
     },
     async initVoiceMail (data) {
       const volume = data.volume
