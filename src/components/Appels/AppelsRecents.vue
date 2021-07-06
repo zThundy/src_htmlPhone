@@ -63,7 +63,8 @@ export default {
     },
     scrollIntoView: function () {
       this.$nextTick(() => {
-        this.$el.querySelector('.active').scrollIntoView({ behavior: 'smooth', block: 'start', inline: 'nearest' })
+        const elem = this.$el.querySelector('.active')
+        if (elem) elem.scrollIntoView({ behavior: 'smooth', block: 'start', inline: 'nearest' })
       })
     },
     onUp () {
@@ -124,6 +125,7 @@ export default {
     },
     async onEnter () {
       if (this.ignoreControls === true) return
+      if (this.historique[this.selectIndex] === null || this.historique[this.selectIndex] === undefined) return
       this.selectItem(this.historique[this.selectIndex])
     },
     save (numero) {

@@ -790,7 +790,8 @@ function SavePhoneCall(callData)
                 num = callData.receiver_num,
                 incoming = true,
                 accepts = callData.is_accepts,
-                id = id
+                id = id,
+                time = os.time() * 1000
             })
 
             SyncCallHistory(callData.transmitter_src, callData.transmitter_num)
@@ -814,7 +815,8 @@ function SavePhoneCall(callData)
                     num = num,
                     incoming = false,
                     accepts = callData.is_accepts,
-                    id = id
+                    id = id,
+                    time = os.time() * 1000
                 })
 
                 SyncCallHistory(callData.receiver_src, callData.receiver_num)
@@ -916,7 +918,6 @@ gcPhoneT.startCall = function(phone_number, rtcOffer, extraData)
     -- qui mi prendo tutte le informazioni del giocatore a cui sto chiamanto
     -- (infatti phone_number è il numero che ricevo dal telefono)
     local destPlayer, isInstalled = gcPhoneT.getIdentifierByPhoneNumber(phone_number)
-    local hasAirplane = gcPhoneT.getAirplaneForUser(destPlayer)
     local is_valid = destPlayer ~= nil and destPlayer ~= srcIdentifier
 
     Chiamate[CALL_INDEX] = {
@@ -935,55 +936,54 @@ gcPhoneT.startCall = function(phone_number, rtcOffer, extraData)
     }
 
     gcPhoneT.isAbleToCall(srcIdentifier, function(isAble, useMin, min, message)
-        Chiamate[CALL_INDEX].secondiRimanenti = min
-        segnaleTransmitter = PLAYERS_PHONE_SIGNALS[gcPhoneT.getPlayerSegnaleIndex(PLAYERS_PHONE_SIGNALS, srcIdentifier)]
-        Chiamate[CALL_INDEX].updateMinuti = useMin
+        if isAble then
+            Chiamate[CALL_INDEX].secondiRimanenti = min
+            segnaleTransmitter = PLAYERS_PHONE_SIGNALS[gcPhoneT.getPlayerSegnaleIndex(PLAYERS_PHONE_SIGNALS, srcIdentifier)]
+            Chiamate[CALL_INDEX].updateMinuti = useMin
 
-        -- qui controllo se la funzione gcPhoneT.getIdentifierByPhoneNumber ha tornato un valore valido, che non sto chiamando
-        -- me stesso, e che la sim sia installata
-        if is_valid and isInstalled and not hasAirplane then
-            gcPhoneT.getSourceFromIdentifier(destPlayer, function(srcTo)
-                if ACTIVE_CALLS[srcTo] == nil then
-                    if segnaleTransmitter ~= nil and segnaleTransmitter.potenzaSegnale > 0 then
-                        if srcTo ~= nil then
-                            segnaleReceiver = PLAYERS_PHONE_SIGNALS[gcPhoneT.getPlayerSegnaleIndex(PLAYERS_PHONE_SIGNALS, destPlayer)]
-                            if segnaleReceiver ~= nil and segnaleReceiver.potenzaSegnale > 0 then
-                                if isAble then
+            -- qui controllo se la funzione gcPhoneT.getIdentifierByPhoneNumber ha tornato un valore valido, che non sto chiamando
+            -- me stesso, e che la sim sia installata
+            if is_valid and isInstalled then
+                gcPhoneT.getSourceFromIdentifier(destPlayer, function(srcTo)
+                    if ACTIVE_CALLS[srcTo] == nil then
+                        if segnaleTransmitter ~= nil and segnaleTransmitter.potenzaSegnale > 0 then
+                            if srcTo ~= nil then
+                                segnaleReceiver = PLAYERS_PHONE_SIGNALS[gcPhoneT.getPlayerSegnaleIndex(PLAYERS_PHONE_SIGNALS, destPlayer)]
+                                if segnaleReceiver ~= nil and segnaleReceiver.potenzaSegnale > 0 then
                                     Chiamate[CALL_INDEX].receiver_src = srcTo
                                     TriggerEvent('gcPhone:addCall', Chiamate[CALL_INDEX])
                                     TriggerClientEvent('gcPhone:waitingCall', player, Chiamate[CALL_INDEX], true)
                                     TriggerClientEvent('gcPhone:waitingCall', srcTo, Chiamate[CALL_INDEX], false)
                                 else
-                                    TriggerClientEvent("esx:showNotification", player, "~r~"..message)
-                                    -- xPlayer.showNotification("~r~"..message)
+                                    PlaySegreteria(player, Chiamate[CALL_INDEX])
                                 end
                             else
                                 PlaySegreteria(player, Chiamate[CALL_INDEX])
                             end
                         else
-                            PlaySegreteria(player, Chiamate[CALL_INDEX])
+                            PlayNoSignal(player, Chiamate[CALL_INDEX])
+                            TriggerClientEvent("esx:showNotification", player, Config.Language["STARTCALL_MESSAGE_ERROR_1"])
                         end
                     else
                         PlayNoSignal(player, Chiamate[CALL_INDEX])
-                        TriggerClientEvent("esx:showNotification", player, Config.Language["STARTCALL_MESSAGE_ERROR_1"])
+                        TriggerClientEvent("esx:showNotification", player, Config.Language["STARTCALL_MESSAGE_ERROR_2"])
+                    end
+                end)
+            else
+                if segnaleTransmitter ~= nil and segnaleTransmitter.potenzaSegnale > 0 then
+                    if Chiamate[CALL_INDEX].receiver_num == '190' then
+                        TriggerClientEvent('gcPhone:waitingCall', player, Chiamate[CALL_INDEX], true)
+                    else 
+                        PlaySegreteria(player, Chiamate[CALL_INDEX])
                     end
                 else
+                    Chiamate[CALL_INDEX].noSignal = true
                     PlayNoSignal(player, Chiamate[CALL_INDEX])
-                    TriggerClientEvent("esx:showNotification", player, Config.Language["STARTCALL_MESSAGE_ERROR_2"])
+                    TriggerClientEvent("esx:showNotification", player, Config.Language["STARTCALL_MESSAGE_ERROR_3"])
                 end
-            end)
-        else
-            if segnaleTransmitter ~= nil and segnaleTransmitter.potenzaSegnale > 0 then
-                if Chiamate[CALL_INDEX].receiver_num == '190' then
-                    TriggerClientEvent('gcPhone:waitingCall', player, Chiamate[CALL_INDEX], true)
-                else 
-                    PlaySegreteria(player, Chiamate[CALL_INDEX])
-                end
-            else
-                Chiamate[CALL_INDEX].noSignal = true
-                PlayNoSignal(player, Chiamate[CALL_INDEX])
-                TriggerClientEvent("esx:showNotification", player, Config.Language["STARTCALL_MESSAGE_ERROR_3"])
             end
+        else
+            TriggerClientEvent("esx:showNotification", player, "~r~"..message)
         end
 
         CALL_INDEX = CALL_INDEX + 1
@@ -1036,13 +1036,13 @@ gcPhoneT.acceptCall = function(infoCall, rtcAnswer)
             Chiamate[id].rtcAnswer = rtcAnswer
             TriggerClientEvent('gcPhone:acceptCall', Chiamate[id].transmitter_src, Chiamate[id], true)
 
-            if id and Chiamate[id] ~= nil then
-                SetTimeout(0, function()
-                    if id then
-                        TriggerClientEvent('gcPhone:acceptCall', Chiamate[id].receiver_src, Chiamate[id], false)
-                    end
-                end)
-            end
+            -- if id and Chiamate[id] ~= nil then
+            --     SetTimeout(0, function()
+            --         if id then
+            --             TriggerClientEvent('gcPhone:acceptCall', Chiamate[id].receiver_src, Chiamate[id], false)
+            --         end
+            --     end)
+            -- end
             SavePhoneCall(Chiamate[id])
         end
     end
