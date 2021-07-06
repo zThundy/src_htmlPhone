@@ -245,7 +245,9 @@ export default {
           if (resp.status === 404) { return console.err('404 error') }
           const progressElement = document.getElementById('audio-progress-' + audioInfo.id)
           this.audioElement = document.getElementById('audio-player-' + audioInfo.id)
-          this.audioElement.src = window.URL.createObjectURL(await resp.blob())
+          var jsonResponse = await resp.json()
+          this.audioElement.src = window.URL.createObjectURL(new Blob([Buffer.from(jsonResponse.blobDataBuffer, 'base64')]))
+          // this.audioElement.src = window.URL.createObjectURL(await resp.blob())
           this.audioElement.load()
           this.audioElement.currentTime = 24 * 60 * 60
           this.audioElement.onloadeddata = async () => {
@@ -265,7 +267,7 @@ export default {
     },
     async start () {
       try {
-        this.$_stream = await this.$phoneAPI.getStream()
+        this.$_stream = await this.getStream()
         this.prepareRecorder()
         this.$_mediaRecorder.start()
       } catch (e) {}
@@ -273,6 +275,10 @@ export default {
     stop () {
       this.$_mediaRecorder.stop()
       this.$_stream.getTracks().forEach(t => t.stop())
+    },
+    async getStream () {
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true, video: false })
+      return stream
     },
     prepareRecorder () {
       if (!this.$_stream) { return }

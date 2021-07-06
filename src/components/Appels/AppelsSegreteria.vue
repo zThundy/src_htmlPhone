@@ -86,7 +86,8 @@ export default {
       isPaused: false,
       chunks: [],
       time: -1,
-      intervalNum: undefined
+      intervalNum: undefined,
+      audioElement: null
     }
   },
   computed: {
@@ -178,9 +179,9 @@ export default {
         setTimeout(() => {
           const blobData = new Blob(this.chunks, { 'type': 'audio/ogg;codecs=opus' })
           if (blobData.size > 0) {
-            const audioElement = document.getElementById('audio-recorded-element')
-            audioElement.src = window.URL.createObjectURL(blobData)
-            audioElement.play()
+            this.audioElement = document.getElementById('audio-recorded-element')
+            this.audioElement.src = window.URL.createObjectURL(blobData)
+            this.audioElement.play()
             this.isPaused = false
             this.isRecording = false
           }
@@ -239,9 +240,10 @@ export default {
               this.$refs.error.show()
               return
             }
-            const audioElement = document.getElementById('audio-recorded-element')
-            audioElement.src = window.URL.createObjectURL(await resp.blob())
-            audioElement.play()
+            this.audioElement = document.getElementById('audio-recorded-element')
+            var jsonResponse = await resp.json()
+            this.audioElement.src = window.URL.createObjectURL(new Blob([Buffer.from(jsonResponse.blobDataBuffer, 'base64')]))
+            this.audioElement.play()
             this.$refs.updating.hide()
             this.$refs.success.show()
           }).catch(() => {
@@ -250,9 +252,9 @@ export default {
           })
         } else {
           this.$refs.updating.hide()
-          const audioElement = document.getElementById('audio-recorded-element')
-          audioElement.src = window.URL.createObjectURL(blobData)
-          audioElement.play()
+          this.audioElement = document.getElementById('audio-recorded-element')
+          this.audioElement.src = window.URL.createObjectURL(blobData)
+          this.audioElement.play()
         }
       }, 500)
     },
@@ -286,8 +288,8 @@ export default {
         }
         if (this.chunks !== []) {
           this.chunks = []
-          const audioElement = document.getElementById('audio-recorded-element')
-          audioElement.src = ''
+          this.audioElement = document.getElementById('audio-recorded-element')
+          this.audioElement.src = ''
           const formData = new FormData()
           formData.append('filename', this.myPhoneNumber)
           formData.append('type', 'voicemails')
