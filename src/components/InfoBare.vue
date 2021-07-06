@@ -1,5 +1,5 @@
 <template>
-  <div style="width: auto; top: 3px;" class='phone_infoBare barre-header'>
+  <div class='barre-header'>
     <span class='operator_title'>{{ config.operator_title }}</span>
     <span class="time">
       <current-time style="font-size: 12px; margin-right: 2px;"></current-time>
@@ -81,22 +81,26 @@ export default {
 
 <style scoped>
 .barre-header {
+  width: 100%;
   height: 24px;
   font-size: 17px;
+  top: 3px;
   line-height: 24px;
   padding: 0px 20px 0px 24px;
-  width: 100%;
   color: white;
   background-color: rgba(0, 0, 0, 0.3);
   position: relative;
 }
 
 .wifi-image {
-  left: 204px;
-  bottom: 24px;
-  background-color: rgba(0, 0, 0, 0);
+  /* left: 204px; */
+  /* bottom: 24px; */
+  /* background-color: rgba(0, 0, 0, 0); */
   /* border: none; */
   position: relative;
+  float: right;
+  right: 35px;
+  top: 2px;
 }
 
 .barre-header hr {
