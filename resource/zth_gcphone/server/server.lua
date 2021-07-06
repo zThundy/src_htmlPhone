@@ -754,8 +754,8 @@ function GetCallsHistory(num)
     -- print(num)
     if CACHED_CALLS[num] then
         table.sort(CACHED_CALLS[num], function(a, b)
-            if not a.time then a.time = os.time() * 1000 end
-            if not b.time then b.time = os.time() * 1000 end
+            if a then if not a.time then a.time = os.time() * 1000 end end
+            if b then if not b.time then b.time = os.time() * 1000 end end
 
             return a.time > b.time
         end)
@@ -1019,30 +1019,26 @@ end
 
 gcPhoneT.acceptCall = function(infoCall, rtcAnswer)
     local player = source
-    local id = infoCall.id
-
-    if Chiamate[id] ~= nil then
+    if infoCall and infoCall.id and Chiamate[infoCall.id] then
+        local id = infoCall.id
         if FIXED_PHONES_INFO[id] ~= nil then
             onAcceptStaticPhone(player, infoCall, rtcAnswer)
             return
         end
 
         ACTIVE_CALLS[Chiamate[id].transmitter_src] = true
-        ACTIVE_CALLS[Chiamate[id].receiver_src] = true
         Chiamate[id].receiver_src = infoCall.receiver_src or Chiamate[id].receiver_src
+        if Chiamate[id].receiver_src then ACTIVE_CALLS[Chiamate[id].receiver_src] = true end
 
-        if Chiamate[id].transmitter_src ~= nil and Chiamate[id].receiver_src ~= nil then
+        -- print(DumpTable(Chiamate[id]))
+        if Chiamate[id].transmitter_src and Chiamate[id].receiver_src then
             Chiamate[id].is_accepts = true
             Chiamate[id].rtcAnswer = rtcAnswer
             TriggerClientEvent('gcPhone:acceptCall', Chiamate[id].transmitter_src, Chiamate[id], true)
 
-            -- if id and Chiamate[id] ~= nil then
-            --     SetTimeout(0, function()
-            --         if id then
-            --             TriggerClientEvent('gcPhone:acceptCall', Chiamate[id].receiver_src, Chiamate[id], false)
-            --         end
-            --     end)
-            -- end
+            SetTimeout(1, function()
+                TriggerClientEvent('gcPhone:acceptCall', Chiamate[id].receiver_src, Chiamate[id], false)
+            end)
             SavePhoneCall(Chiamate[id])
         end
     end
@@ -1050,16 +1046,16 @@ end
 
 -- useless for now
 gcPhoneT.ignoreCall = function(infoCall)
-
+    if infoCall.transmitter_src ~= nil then TriggerClientEvent('gcPhone:rejectCall', infoCall.transmitter_src) end
 end
 
 -- evento che toglie i minuti a chi ha
 -- fatto la telefonata
 gcPhoneT.rejectCall = function(infoCall)
     local player = source
-    local id = infoCall.id
 
-    if Chiamate[id] ~= nil then
+    if infoCall and infoCall.id and Chiamate[infoCall.id] ~= nil then
+        local id = infoCall.id
         ACTIVE_CALLS[Chiamate[id].transmitter_src] = nil
         if Chiamate[id].receiver_src ~= nil then
             ACTIVE_CALLS[Chiamate[id].receiver_src] = nil

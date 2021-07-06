@@ -1,18 +1,14 @@
 <template>
   <div class="custom-toast">
     <md-popup :value="visible" @show="$_onShow" @hide="$_onHide" :hasMask="false" :maskClosable="false">
-      
       <div :class="[ hasMask ? 'custom-toast-content' : 'custom-toast-content-nobg' ]" v-if="$slots.default">
         <slot></slot>
       </div>
 
       <div :class="[ hasMask ? 'custom-toast-content' : 'custom-toast-content-nobg' ]" v-else>
-
         <md-icon v-if="icon" :name="icon" size="lg" :svg="iconSvg"/>
         <div class="custom-toast-text" v-if="content" v-text="content"></div>
-
       </div>
-
     </md-popup>
   </div>
 </template>

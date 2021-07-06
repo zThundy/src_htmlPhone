@@ -31,7 +31,7 @@ export default {
     }
   },
   methods: {
-    ...mapActions(['updateContactPicture', 'startCall']),
+    ...mapActions(['updateContactPicture']),
     onSelect (contact) {
       if (contact.id === -1) {
         this.$router.push({ name: 'contacts.view', params: { id: contact.id } })
@@ -66,7 +66,7 @@ export default {
           this.disableList = false
           break
         case 3:
-          this.startCall({ numero: contact.number })
+          this.$phoneAPI.startCall({ numero: contact.number })
           this.disableList = false
           break
         case 4:

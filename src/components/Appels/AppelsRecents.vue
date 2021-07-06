@@ -56,7 +56,7 @@ export default {
     }
   },
   methods: {
-    ...mapActions(['startCall', 'deletePhoneHistory', 'deleteAllPhoneHistory', 'addContact', 'updateIgnoredControls']),
+    ...mapActions(['deletePhoneHistory', 'deleteAllPhoneHistory', 'addContact', 'updateIgnoredControls']),
     getContact (num) {
       const find = this.contacts.find(e => e.number === num)
       return find
@@ -95,7 +95,7 @@ export default {
       const rep = await Modal.CreateModal({ scelte })
       switch (rep.id) {
         case 0:
-          this.startCall({ numero })
+          this.$phoneAPI.startCall({ numero })
           this.updateIgnoredControls(false)
           break
         case 1:
@@ -115,7 +115,7 @@ export default {
           this.updateIgnoredControls(false)
           break
         case 6:
-          this.startCall({ numero: '#' + numero })
+          this.$phoneAPI.startCall({ numero: '#' + numero })
           this.updateIgnoredControls(false)
           break
       }

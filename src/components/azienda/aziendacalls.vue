@@ -42,7 +42,7 @@ export default {
   },
   methods: {
     ...mapMutations(['SET_AZIENDA_IGNORE_CONTROLS']),
-    ...mapActions(['startCall']),
+    ...mapActions([]),
     formatEmoji (message) {
       return this.$phoneAPI.convertEmoji(message)
     },
@@ -92,7 +92,7 @@ export default {
           if (resp.id === 'gps') {
             this.$phoneAPI.setGPS(data.coords.x, data.coords.y)
           } else if (resp.id === 'num') {
-            this.startCall({ numero: resp.number })
+            this.$phoneAPI.startCall({ numero: resp.number })
           }
           this.SET_AZIENDA_IGNORE_CONTROLS(false)
         })

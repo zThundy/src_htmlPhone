@@ -4,14 +4,12 @@
       <CurrentTime style="margin-top: 1px;" class="timeDivElements left" />
       <i v-if="notification" style="margin-top: 2px;" class="timeDivElements right fa fa-bell" />
       <i v-else style="margin-top: 2px;" class="timeDivElements right fa fa-bell-slash" />
-      
       <i v-if="isWifiOn" style="margin-top: 2px;" class="timeDivElements right fa fa-wifi" />
       <i v-if="airplane" style="margin-top: 2px;" class="timeDivElements right fa fa-plane" />
       <i v-if="bluetooth" style="margin-top: 2px;" class="timeDivElements right fa fa-bluetooth" />
     </div>
 
     <div class="line"></div>
-
     <div :class="[ 0 == currentSelectY ? 'select' : '' ]" class="quickOptions">
       <i class="immagine" v-for="(elem, key) in quickPics" v-bind:key="key" :class="[ 'fa ' + elem.img, Boolean(elem.state) ? 'active' : 'notActive', (key == currentSelectX) && (currentSelectY == 0) ? 'selected' : '' ]" />
     </div>
@@ -23,16 +21,12 @@
     <div v-if="hasUnredMessages">
       <div v-for="(elem, key) in unreadMessages" :key="key">
         <div v-if="key < 5" class="separatore"></div>
-
         <span v-if="key < 4" class="messlist">
-
           <span class="warningMess_content">
             <div class="transmitter">{{ elem.transmitter }}</div>
             <div class="messaggio">{{ formatEmoji(checkAdditionalFormat(elem.message)) }}</div>
           </span>
-
         </span>
-
       </div>
     </div>
 
@@ -74,7 +68,8 @@ export default {
       'bluetooth',
       'brightness',
       'unreadMessages',
-      'UnreadMessagesLength'
+      'UnreadMessagesLength',
+      'LangString'
     ]),
     checkState () {
       if (this.show) {
@@ -211,6 +206,7 @@ export default {
   background-color: rgb(255, 255, 255);
   border-radius: 30px;
   height: 50%;
+  z-index: 2;
 }
 
 .timeDiv {

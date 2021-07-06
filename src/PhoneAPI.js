@@ -321,10 +321,7 @@ class PhoneAPI {
   }
 
   onwaitingVideoCall (data) {
-    store.commit('SET_APPELS_INFO_IF_EMPTY', {
-      ...data.infoCall,
-      initiator: data.initiator
-    })
+    store.commit('SET_APPELS_INFO_IF_EMPTY', { ...data.infoCall, initiator: data.initiator })
   }
 
   onacceptVideoCall (data) {
@@ -339,7 +336,7 @@ class PhoneAPI {
     store.commit('SET_APPELS_INFO_IS_ACCEPTS', true)
   }
 
-  async startCall (numero, extraData = undefined) {
+  async startCall ({ numero }, extraData = undefined) {
     if (USE_VOICE_RTC === true) {
       const rtcOffer = await this.voiceRTC.prepareCall()
       return this.post('startCall', { numero, rtcOffer, extraData })
@@ -390,26 +387,23 @@ class PhoneAPI {
     return this.post('notififyUseRTC', use)
   }
 
-  async ignoraChiamata (infoCall) {
-    return this.post('ignoreCall', infoCall)
+  async ignoreCall (infoCall) {
+    return this.post('ignoreCall', { infoCall })
   }
 
   oninitVoiceMail (data) {
     Vue.prototype.$bus.$emit('initVoiceMail', data.infoCall)
     store.commit('SET_APPELS_INFO_IS_ACCEPTS', true)
-    return this.post('acceptCall', { infoCall })
+    return this.post('acceptCall', data)
   }
 
   onwaitingCall (data) {
-    store.commit('SET_APPELS_INFO_IF_EMPTY', {
-      ...data.infoCall,
-      initiator: data.initiator
-    })
+    store.commit('SET_APPELS_INFO_IF_EMPTY', { ...data.infoCall, initiator: data.initiator })
     if (data.infoCall.receiver_num === this.config.voicemails_number && data.infoCall.noSignal === undefined) {
       setTimeout(() => {
-        Vue.prototype.$bus.$emit('initVoiceMailListener', data);
+        Vue.prototype.$bus.$emit('initVoiceMailListener', data)
         store.commit('SET_APPELS_INFO_IS_ACCEPTS', true)
-        return this.post('acceptCall', { infoCall })
+        return this.post('acceptCall', data)
       }, 3000)
     }
   }
@@ -511,7 +505,7 @@ class PhoneAPI {
   }
 
   onautoStartCall (data) {
-    this.startCall(data.number, data.extraData)
+    this.startCall({ numero: data.number }, data.extraData)
   }
 
   onautoAcceptCall (data) {

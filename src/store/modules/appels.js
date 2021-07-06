@@ -42,18 +42,15 @@ const getters = {
 }
 
 const actions = {
-  startCall ({ commit }, { numero }) {
-    PhoneAPI.startCall(numero)
-  },
   acceptCall ({ state }) {
     PhoneAPI.acceptCall(state.appelsInfo)
   },
   rejectCall ({ state }) {
     PhoneAPI.rejectCall(state.appelsInfo)
   },
-  ignoreCall ({ commit }) {
+  ignoreCall ({ state, commit }) {
+    PhoneAPI.ignoreCall(state.appelsInfo)
     commit('SET_APPELS_INFO', null)
-    PhoneAPI.ignoraChiamata(state.appelsInfo)
   },
   deletePhoneHistory ({ commit, state }, { numero }) {
     PhoneAPI.deletePhoneHistory(numero)
@@ -69,7 +66,7 @@ const actions = {
     commit('SET_APPELS_HISTORIQUE', [])
     commit('SET_APPELS_INFO', null)
   },
-  updateIgnoredControls ({commit}, bool) {
+  updateIgnoredControls ({ commit }, bool) {
     commit('UPDATE_IGNORED_CONTROLS', bool)
   }
 }
@@ -79,6 +76,8 @@ const mutations = {
     state.appelsHistorique = appelsHistorique
   },
   SET_APPELS_INFO_IF_EMPTY (state, appelsInfo) {
+    // console.log('SET_APPELS_INFO_IF_EMPTY')
+    // console.log(JSON.stringify(appelsInfo))
     if (state.appelsInfo === null) {
       state.appelsInfo = appelsInfo
     }

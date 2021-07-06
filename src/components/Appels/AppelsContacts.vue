@@ -17,13 +17,13 @@ export default {
     }
   },
   methods: {
-    ...mapActions(['startCall']),
+    ...mapActions([]),
     onSelect (itemSelect) {
       if (itemSelect !== undefined) {
         if (itemSelect.custom === true) {
           this.$router.push({name: 'appels.number'})
         } else {
-          this.startCall({ numero: itemSelect.number })
+          this.$phoneAPI.startCall({ numero: itemSelect.number })
         }
       }
     }

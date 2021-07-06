@@ -1,6 +1,7 @@
 <template>
   <div class="phone_app">
-    <div :class="{ 'backblur': !isBackspace }" class="background" v-bind:style="{ background: 'url(' + backgroundURL +')' }"></div>
+    <!-- <div :class="{ 'backblur': !isBackspace }" class="background" :style="{ background: 'url(' + backgroundURL +')' }"></div> -->
+    <div class="background backblur" :style="{ background: 'url(' + backgroundURL +')' }"></div>
     <InfoBare class="infobare"/>
 
     <div class="menu">

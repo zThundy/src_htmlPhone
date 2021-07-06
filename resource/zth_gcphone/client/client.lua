@@ -350,12 +350,8 @@ end)
 
 RegisterNetEvent("gcPhone:rejectCall")
 AddEventHandler("gcPhone:rejectCall", function(infoCall)
-    -- print("--------------- call ended")
-    -- print(ESX.DumpTable(infoCall))
-
     if infoCall and infoCall.updateMinuti then
         if not inCall then secondiRimanenti = infoCall.secondiRimanenti end
-        -- print("Sto nel reject da parte del chiamante", infoCall.secondiRimanenti, secondiRimanenti, infoCall.updateMinuti)
         gcPhoneServerT.updateParametroTariffa(infoCall.transmitter_num, "minuti", secondiRimanenti)
     end
 

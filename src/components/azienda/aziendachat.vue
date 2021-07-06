@@ -47,7 +47,7 @@ export default {
   },
   methods: {
     ...mapMutations(['SET_AZIENDA_IGNORE_CONTROLS', 'SET_ALL_MESSAGES_AS_READ']),
-    ...mapActions(['startCall']),
+    ...mapActions([]),
     formatEmoji (message) {
       return this.$phoneAPI.convertEmoji(message)
     },
@@ -101,7 +101,7 @@ export default {
             this.$phoneAPI.sendAziendaMessage({ azienda: this.myAziendaInfo.name, number: currentMessage.authorPhone, message: '%pos%' })
             this.SET_AZIENDA_IGNORE_CONTROLS(false)
           } else if (resp.id === 2) {
-            this.startCall({ numero: currentMessage.authorPhone })
+            this.$phoneAPI.startCall({ numero: currentMessage.authorPhone })
             this.SET_AZIENDA_IGNORE_CONTROLS(false)
           } else if (resp.id === 3) {
             let val = currentMessage.message.match(/(-?\d+(\.\d+)?), (-?\d+(\.\d+)?)/)

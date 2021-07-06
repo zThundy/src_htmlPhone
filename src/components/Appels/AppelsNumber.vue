@@ -53,7 +53,7 @@ export default {
     }
   },
   methods: {
-    ...mapActions(['startCall']),
+    ...mapActions([]),
     onLeft () {
       this.keySelect = Math.max(this.keySelect - 1, 0)
     },
@@ -75,7 +75,7 @@ export default {
     onEnter () {
       if (this.keySelect === 12) {
         if (this.numero.length > 0) {
-          this.startCall({ numero: this.numeroFormat })
+          this.$phoneAPI.startCall({ numero: this.numeroFormat })
         }
       } else {
         if (this.numero.length >= 15) return

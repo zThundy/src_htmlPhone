@@ -86,7 +86,7 @@ export default {
   },
   components: { PhoneTitle },
   methods: {
-    ...mapActions(['setMessageRead', 'sendMessage', 'deleteMessage', 'startCall']),
+    ...mapActions(['setMessageRead', 'sendMessage', 'deleteMessage']),
     ...mapMutations(['CHANGE_BRIGHTNESS_STATE']),
     formatEmoji (message) {
       return this.$phoneAPI.convertEmoji(message)
@@ -326,7 +326,7 @@ export default {
           this.phoneNumber = number
           this.display = undefined
         } else if (data.id === 'call') {
-          this.startCall({ numero: number })
+          this.$phoneAPI.startCall({ numero: number })
         // } else if (data.id === 'copy') {
         //   try {
         //     const $copyTextarea = this.$refs.copyTextarea

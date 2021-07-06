@@ -55,6 +55,8 @@ RegisterNUICallback('startCall', function(data, cb)
 end)
 
 RegisterNUICallback('acceptCall', function(data, cb)
+    -- print(data.infoCall)
+    -- print(DumpTable(data))
     gcPhoneServerT.acceptCall(data.infoCall, data.rtcAnswer)
     cb("ok")
 end)
@@ -65,9 +67,9 @@ RegisterNUICallback('rejectCall', function(data, cb)
 end)
 
 RegisterNUICallback('ignoreCall', function(data, cb)
-    if data and data.infoCall then
-        gcPhoneServerT.ignoreCall(data.infoCall)
-    end
+    -- print(DumpTable(data.infoCall))
+    -- print("AOOOOOOOOOOOOOOOOOOOOOO")
+    gcPhoneServerT.ignoreCall(data.infoCall)
     cb("ok")
 end)
 

@@ -1,9 +1,9 @@
 <template>
-  <div class="home" v-bind:style="{ background: 'url(' + backgroundURL +')' }">
+  <div class="home" :style="{ background: 'url(' + backgroundURL +')' }">
     <InfoBare style="width: 100%;" />
     <DropdownNotifications :show="showDropdown"/>
     
-    <span v-if="showDropdown === false" class="time">
+    <span :style="computeMeteoSection()" class="time">
       <i class="meteo-icon fas fa-sun"></i>
       <current-time class="current-time"></current-time>
     </span>
@@ -14,7 +14,7 @@
         class="app_buttons"
         :style="{ backgroundImage: 'url(' + but.icons +')' }"
       >
-        <span class="puce" v-if="but.puce !== undefined && but.puce !== 0">{{ but.puce }}</span>
+        <span class="notifications-amount" v-if="but.puce !== undefined && but.puce !== 0">{{ but.puce }}</span>
       </button>
         
       <div class="btn_menu_ctn">
@@ -75,6 +75,13 @@ export default {
         return
       }
       this.closePhone()
+    },
+    computeMeteoSection () {
+      if (this.showDropdown) {
+        return {
+          opacity: '0'
+        }
+      }
     }
   },
   created () {
@@ -102,6 +109,7 @@ export default {
   top: 50px;
   /* font-size: 40px; */
   color: white;
+  transition: all 1.5s ease;
 }
 
 .time .current-time {
@@ -128,6 +136,16 @@ export default {
   align-content: center;
   justify-content: center;
   color: gray;
+
+  animation-name: blur-animation;
+  animation-duration: 0.2s;
+  animation-fill-mode: forwards;
+  animation-timing-function: ease-in;
+}
+
+@keyframes blur-animation {
+  from {filter: blur(3px);}
+  to {filter: blur(0);}
 }
 
 .home_buttons {
@@ -175,8 +193,7 @@ button {
   text-align: center;
 }
 
-
-button .puce {
+button .notifications-amount {
   position: absolute;
   display: block;
   background-color: #ff3939;

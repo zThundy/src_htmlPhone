@@ -18,7 +18,7 @@ export default {
     }
   },
   methods: {
-    ...mapActions(['deleteMessagesNumber', 'deleteAllMessages', 'startCall', 'startVideoCall']),
+    ...mapActions(['deleteMessagesNumber', 'deleteAllMessages', 'startVideoCall']),
     onSelect: function (data) {
       if (data.id === -1) {
         this.$router.push({name: 'messages.selectcontact'})
@@ -48,9 +48,9 @@ export default {
         } else if (rep.id === 2) {
           this.deleteAllMessages()
         } else if (rep.id === 4) {
-          this.startCall({ numero: data.number })
+          this.$phoneAPI.startCall({ numero: data.number })
         } else if (rep.id === 5) {
-          this.startCall({ numero: '#' + data.number })
+          this.$phoneAPI.startCall({ numero: '#' + data.number })
         } else if (rep.id === 6) {
           this.$router.push({ name: 'messages.view', params: data })
         } else if (rep.id === 7) {
