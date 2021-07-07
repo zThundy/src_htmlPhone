@@ -22,7 +22,6 @@
       </div>
 
       <div class='element' v-for='(elem, key) in datiInfo' :key="key">
-
         <md-progress
           :style="posizioni[key]"
           :size="130"
@@ -35,12 +34,10 @@
         >
           <md-icon style="color: rgb(100, 185, 255);" class="md-notice-demo-icon md-notice-demo-icon-left" :name="elem.icon"></md-icon>
         </md-progress>
-
       </div>
 
       <div style="z-index: -1; padding-top: 458px;">
         <div class='element' v-for='(elem, key) in datiInfo' :key="key + 'secondo'">
-
           <div class="md-example-child md-example-child-notice-bar md-example-child-notice-bar-7">
             <md-notice-bar
               class="noticeBars"
@@ -131,6 +128,7 @@ export default {
     },
     toastHide () {
       this.$refs.success.show()
+      this.$phoneAPI.requestOfferta()
       // questo è il timeout che nasconde
       // il toast "successo"
       setTimeout(() => {

@@ -17,7 +17,6 @@
 RegisterNetEvent("gcphone:whatsapp_updateGruppi")
 AddEventHandler("gcphone:whatsapp_updateGruppi", function(groups, number)
     -- SendNUIMessage({ event = "whatsappClearGroups" })
-
     local groupsToSend = {}
     for group_id, group in pairs(groups) do
         local index = 1
@@ -34,7 +33,6 @@ AddEventHandler("gcphone:whatsapp_updateGruppi", function(groups, number)
             else
                 group.partecipantiString = group.partecipantiString..", "..contact.display
             end
-
             index = index + 1
         end
 
@@ -131,5 +129,10 @@ RegisterNUICallback("addGroupMembers", function(data, cb)
     -- print(data.contacts)
     -- print(data.gruppo.id)
     gcPhoneServerT.whatsapp_addGroupMembers(data)
+    cb("ok")
+end)
+
+RegisterNUICallback("deleteWhatsappGroup", function(data, cb)
+    gcPhoneServerT.whatsapp_deleteGroup(data)
     cb("ok")
 end)

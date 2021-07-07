@@ -180,17 +180,8 @@ gcPhoneT.getAirplaneForUser = function(identifier)
     return GLOBAL_AIRPLANE[identifier]
 end
 
-gcPhoneT.getPlayerSegnaleIndex = function(tabella, identifier)
-	index = nil
-	
-    for i=1, #tabella do
-        if tostring(tabella[i].identifier) == tostring(identifier) then
-            -- print("index is", i, "for id", identifier)
-			index = i
-		end
-	end
-	
-	return index
+gcPhoneT.getPlayerSegnaleIndex = function(tb, identifier)
+    for i = 1, #tb do if tostring(tb[i].identifier) == tostring(identifier) then return i end end
 end
 
 gcPhoneT.useInternetData = function(identifier, value)
@@ -232,31 +223,6 @@ gcPhoneT.isAbleToSurfInternet = function(identifier, neededMB)
         return true, 0
     end
 end
-
---[[
-    NOT USED FOR NOW, BUT HEY!
-
-    gcPhoneT.isAbleToSendMessage = function(identifier, cb)
-        local phone_number = gcPhoneT.getPhoneNumber(identifier)
-        local iSegnalePlayer = gcPhoneT.getPlayerSegnaleIndex(PLAYERS_PHONE_SIGNALS, identifier)
-        local hasAirplane = gcPhoneT.getAirplaneForUser(identifier)
-        
-        if not hasAirplane and phone_number then
-            if PLAYERS_PHONE_SIGNALS[iSegnalePlayer] ~= nil and PLAYERS_PHONE_SIGNALS[iSegnalePlayer].potenzaSegnale > 0 then
-                local messaggi = GetPianoTariffarioParam(phone_number, "messaggi")
-                if messaggi > 0 then
-                    cb(true)
-                else
-                    cb(false)
-                end
-            else
-                cb(false)
-            end
-        else
-            cb(false)
-        end
-    end
-]]
 
 gcPhoneT.isAbleToCall = function(identifier, cb)
 	local phone_number = gcPhoneT.getPhoneNumber(identifier)
@@ -418,14 +384,12 @@ gcPhoneT.getSourceFromPhoneNumber = function(phone_number)
     local identifier, _ = gcPhoneT.getIdentifierByPhoneNumber(phone_number)
     local xPlayer = ESX.GetPlayerFromIdentifier(identifier)
     if xPlayer == nil then return nil end
-
     return xPlayer.source
 end
 
 gcPhoneT.getPlayerID = function(source)
     local xPlayer = ESX.GetPlayerFromId(source)
     if xPlayer == nil then return nil end
-    
     return xPlayer.identifier
 end
 
@@ -852,40 +816,30 @@ gcPhoneT.deleteAllPhoneHistory = function()
     end)
 end
 
---[[
-    USELESS
-
-    RegisterServerEvent('gcPhone:GetCallsHistory')
-    AddEventHandler('gcPhone:GetCallsHistory', function()
-        local player = tonumber(source)
-        local identifier = gcPhoneT.getPlayerID(player)
-        local num = gcPhoneT.getPhoneNumber(identifier)
-
-        SyncCallHistory(player, num)
-    end)
-]]
-
 gcPhoneT.requestOffertaFromDatabase = function()
     local player = source
-    local xPlayer = ESX.GetPlayerFromId(player)
+    local identifier = gcPhoneT.getPlayerID(player)
+    local phone_number = gcPhoneT.getPhoneNumber(identifier)
 
-    MySQL.Async.fetchAll("SELECT phone_number FROM users WHERE identifier = @identifier", {['@identifier'] = xPlayer.identifier}, function(user)
-        if #user > 0 then
-            if user[1].phone_number ~= nil then
-                MySQL.Async.fetchAll("SELECT * FROM phone_sim WHERE phone_number = @phone_number", {['@phone_number'] = user[1].phone_number}, function(sim)
-                    if #sim > 0 then
-                        minuti = math.floor(sim[1].minuti / 60)
-                        
-                        TriggerClientEvent("gcPhone:sendRequestedOfferta", player, {
-                            tonumber(minuti),
-                            tonumber(sim[1].messaggi),
-                            tonumber(sim[1].dati)
-                        }, sim[1].piano_tariffario)
-                    end
-                end)
-            end
-        end
-    end)
+    -- MySQL.Async.fetchAll("SELECT * FROM phone_sim WHERE phone_number = @phone_number", {['@phone_number'] = phone_number}, function(sim)
+    --     if #sim > 0 then
+    --         minuti = math.floor(sim[1].minuti / 60)
+    --         TriggerClientEvent("gcPhone:sendRequestedOfferta", player, {
+    --             tonumber(minuti),
+    --             tonumber(sim[1].messaggi),
+    --             tonumber(sim[1].dati)
+    --         }, sim[1].piano_tariffario)
+    --     end
+    -- end)
+    if CACHED_TARIFFS[phone_number] then
+        local sim = CACHED_TARIFFS[phone_number]
+        minuti = math.floor(sim.minuti / 60)
+        TriggerClientEvent("gcPhone:sendRequestedOfferta", player, {
+            tonumber(minuti),
+            tonumber(sim.messaggi),
+            tonumber(sim.dati)
+        }, sim.piano_tariffario)
+    end
 end
 
 gcPhoneT.startCall = function(phone_number, rtcOffer, extraData)
@@ -1029,6 +983,7 @@ gcPhoneT.acceptCall = function(infoCall, rtcAnswer)
         ACTIVE_CALLS[Chiamate[id].transmitter_src] = true
         Chiamate[id].receiver_src = infoCall.receiver_src or Chiamate[id].receiver_src
         if Chiamate[id].receiver_src then ACTIVE_CALLS[Chiamate[id].receiver_src] = true end
+        Chiamate[id].startCall_time = os.time()
 
         -- print(DumpTable(Chiamate[id]))
         if Chiamate[id].transmitter_src and Chiamate[id].receiver_src then
@@ -1046,20 +1001,19 @@ end
 
 -- useless for now
 gcPhoneT.ignoreCall = function(infoCall)
-    if infoCall.transmitter_src ~= nil then TriggerClientEvent('gcPhone:rejectCall', infoCall.transmitter_src, infoCall) end
+    if infoCall.transmitter_src ~= nil then TriggerClientEvent('gcPhone:rejectCall', infoCall.transmitter_src, infoCall, true) end
 end
 
 -- evento che toglie i minuti a chi ha
 -- fatto la telefonata
 gcPhoneT.rejectCall = function(infoCall)
     local player = source
-
     if infoCall and infoCall.id and Chiamate[infoCall.id] ~= nil then
         local id = infoCall.id
+        Chiamate[id].endCall_time = os.time()
+
         ACTIVE_CALLS[Chiamate[id].transmitter_src] = nil
-        if Chiamate[id].receiver_src ~= nil then
-            ACTIVE_CALLS[Chiamate[id].receiver_src] = nil
-        end
+        if Chiamate[id].receiver_src ~= nil then  ACTIVE_CALLS[Chiamate[id].receiver_src] = nil end
 
         if FIXED_PHONES_INFO[id] ~= nil then
             onRejectFixePhone(player, infoCall)
@@ -1078,7 +1032,7 @@ gcPhoneT.rejectCall = function(infoCall)
             TriggerClientEvent('gcPhone:rejectCall', Chiamate[id].receiver_src, Chiamate[id], callDropped)
         end
 
-        if Chiamate[id].is_accepts == false then 
+        if not Chiamate[id].is_accepts then 
             SavePhoneCall(Chiamate[id])
         end
 

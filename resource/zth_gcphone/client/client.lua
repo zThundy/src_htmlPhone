@@ -249,9 +249,6 @@ end)
 
 RegisterNetEvent("gcPhone:phoneVoiceMail")
 AddEventHandler("gcPhone:phoneVoiceMail", function(infoCall, initiator)
-    secondiRimanenti = infoCall.secondiRimanenti
-    count = 0
-
     Citizen.CreateThreadNow(function()
         stoppedPlayingUnreachable = false
         Citizen.Wait(2000)
@@ -262,9 +259,7 @@ end)
 
 RegisterNetEvent("gcPhone:phoneNoSignal")
 AddEventHandler("gcPhone:phoneNoSignal", function(infoCall, initiator)
-    Citizen.CreateThreadNow(function()
-        SendNUIMessage({ event = 'noSignal', infoCall = infoCall })
-    end)
+    SendNUIMessage({ event = 'noSignal', infoCall = infoCall })
 end)
 
 -- questo evento viene chiamato dal server quando un giocatore
@@ -277,15 +272,13 @@ AddEventHandler("gcPhone:acceptCall", function(infoCall, initiator)
 
         Citizen.CreateThread(function()
             local coords, distance = nil, nil
-            secondiRimanenti = infoCall.secondiRimanenti
-            if not infoCall.updateMinuti then secondiRimanenti = 1000000 end
             -- print("Accetto la chiamata chicco, infoCall.updateMinuti", infoCall.updateMinuti, "secondiRimanenti", secondiRimanenti)
 
             while inCall do
                 Citizen.Wait(1000)
                 if initiator then
-                    secondiRimanenti = secondiRimanenti - 1
-                    if secondiRimanenti == 0 then gcPhoneServerT.rejectCall(infoCall) end
+                    infoCall.secondiRimanenti = infoCall.secondiRimanenti - 1
+                    if infoCall.secondiRimanenti == 0 then gcPhoneServerT.rejectCall(infoCall) end
                 end
 
                 if Config.PhoneBoxes[infoCall.receiver_num] then
@@ -325,8 +318,11 @@ RegisterNetEvent("gcPhone:rejectCall")
 AddEventHandler("gcPhone:rejectCall", function(infoCall, callDropper)
     infoCall.callDropped = callDropper
     if infoCall and infoCall.updateMinuti then
-        if not inCall then secondiRimanenti = infoCall.secondiRimanenti end
-        gcPhoneServerT.updateParametroTariffa(infoCall.transmitter_num, "minuti", secondiRimanenti)
+        infoCall.callTime = infoCall.endCall_time - infoCall.startCall_time
+        if not inCall then infoCall.callTime = 0 end
+        -- print(secondi)
+        -- print(DumpTable(infoCall))
+        gcPhoneServerT.updateParametroTariffa(infoCall.transmitter_num, "minuti", (infoCall.secondiRimanenti - infoCall.callTime))
     end
 
     if not stoppedPlayingUnreachable then stoppedPlayingUnreachable = true end

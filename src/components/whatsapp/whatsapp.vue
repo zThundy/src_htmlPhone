@@ -27,12 +27,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters([
-      'LangString',
-      'gruppi',
-      'myPhoneNumber',
-      'hasWifi'
-    ])
+    ...mapGetters(['LangString', 'gruppi', 'myPhoneNumber', 'hasWifi'])
   },
   methods: {
     // ...mapMutations(['SET_DATI_INFO']),
@@ -94,19 +89,22 @@ export default {
       this.ignoreControls = true
       let scelte = [
         {id: 3, title: this.LangString('APP_WHATSAPP_EDIT_GROUP'), icons: 'fa-cog'},
-        {id: 1, title: this.LangString('APP_WHATSAPP_QUIT_GROUP'), icons: 'fa-trash', color: 'red'}
+        {id: 1, title: this.LangString('APP_WHATSAPP_QUIT_GROUP'), icons: 'fa-trash', color: 'firebrick'}
       ]
+      if (gruppo.partecipanti.creator.number === this.myPhoneNumber) {
+        scelte = [{id: 4, title: this.LangString('APP_WHATSAPP_DELETE_GROUP'), icons: 'fa-trash', color: 'red'}, ...scelte]
+      }
       if (this.currentSelected === -1) {
         scelte = [
-          {id: 0, title: this.LangString('APP_WHATSAPP_SETTINGS'), icons: 'fa-cog'},
+          // {id: 0, title: this.LangString('APP_WHATSAPP_SETTINGS'), icons: 'fa-cog'},
           {id: 2, title: this.LangString('APP_WHATSAPP_NEW_GROUP'), icons: 'fa-plus', color: 'green'}
         ]
       }
       const rep = await Modal.CreateModal({ scelte: scelte })
       switch (rep.id) {
-        case 0:
-          this.ignoreControls = false
-          break
+        // case 0:
+        //   this.ignoreControls = false
+        //   break
         case 1:
           this.ignoreControls = false
           if (this.currentSelected === 1 || this.gruppi.length === 0) { this.currentSelected = -1 } else { this.currentSelected = 0 }
@@ -119,7 +117,12 @@ export default {
           break
         case 3:
           this.ignoreControls = false
-          this.$router.push({ name: 'whatsapp.editgroup', params: { gruppo: gruppo } })
+          this.$router.push({ name: 'whatsapp.editgroup', params: { gruppo } })
+          break
+        case 4:
+          this.ignoreControls = false
+          this.$phoneAPI.post('deleteWhatsappGroup', { gruppo })
+          break
       }
     },
     onBackspace () {
@@ -136,15 +139,12 @@ export default {
       // DECOMMENTARE SE SI VUOLE SOLO SOTTO WIFI   this.$phoneAPI.sendErrorMessage('Non sei connesso al wifi')
       // DECOMMENTARE SE SI VUOLE SOLO SOTTO WIFI   return
       // DECOMMENTARE SE SI VUOLE SOLO SOTTO WIFI }
-      if (!this.gruppi[this.currentSelected].icona) {
-        this.gruppi[this.currentSelected].icona = '/html/static/img/app_whatsapp/defaultgroup.png'
-      }
+      if (!this.gruppi[this.currentSelected].icona) { this.gruppi[this.currentSelected].icona = '/html/static/img/app_whatsapp/defaultgroup.png' }
       this.$router.push({ name: 'whatsapp.gruppo', params: { gruppo: this.gruppi[this.currentSelected] } })
     }
   },
   created () {
     this.$phoneAPI.requestInfoOfGroups()
-
     this.$bus.$on('keyUpArrowDown', this.onDown)
     this.$bus.$on('keyUpArrowUp', this.onUp)
     this.$bus.$on('keyUpArrowRight', this.onRight)

@@ -48,9 +48,7 @@ local function UpdateGroupsCache()
     end
 end
 
-MySQL.ready(function()
-    UpdateGroupsCache()
-end)
+MySQL.ready(UpdateGroupsCache)
 
 local function formatTableIndex(table)
     local tb = {}
@@ -134,7 +132,6 @@ gcPhoneT.whatsapp_sendMessage = function(data)
     -- print("should be sending messages", json.encode(data))
     local player = source
     local identifier = gcPhoneT.getPlayerID(player)
-
     local isAble, mbToRemove = gcPhoneT.isAbleToSurfInternet(identifier, 1.5)
     if isAble then
         gcPhoneT.useInternetData(identifier, mbToRemove)
@@ -194,7 +191,6 @@ gcPhoneT.whatsapp_addGroupMembers = function(data)
     local isAble, mbToRemove = gcPhoneT.isAbleToSurfInternet(identifier, 1)
     if isAble then
         gcPhoneT.useInternetData(identifier, mbToRemove)
-        
         local partecipanti = formatTableIndex(getPartecipanti(data.gruppo.id))
 
         -- print(ESX.DumpTable(partecipanti))
@@ -218,8 +214,6 @@ gcPhoneT.whatsapp_addGroupMembers = function(data)
                 end
             end
         end
-
-        -- print(ESX.DumpTable(partecipanti))
 
         local isAble, mbToRemove = gcPhoneT.isAbleToSurfInternet(identifier, #partecipanti * 0.2)
         if isAble then
@@ -364,6 +358,19 @@ gcPhoneT.whatsapp_creaNuovoGruppo = function(data)
         WhatsappShowNotificationError(player, "WHATSAPP_INFO_TITLE", "WHATSAPP_NOT_ENOUGH_GIGA")
         -- TriggerClientEvent("gcphone:whatsapp_showError", "WHATSAPP_INFO_TITLE", "WHATSAPP_NOT_ENOUGH_GIGA")
     end
+end
+
+gcPhoneT.whatsapp_deleteGroup = function(data)
+    local id = data.gruppo.id
+    local player = source
+    local identifier = gcPhoneT.getPlayerID(player)
+    local phone_number = gcPhoneT.getPhoneNumber(identifier)
+    MySQL.Async.execute("DELETE FROM phone_whatsapp_groups WHERE id = @id", {['@id'] = id}, function()
+        MySQL.Async.execute("DELETE FROM phone_whatsapp_messages WHERE idgruppo = @id", {['@id'] = id}, function()
+            UpdateGroupsCache()
+            TriggerClientEvent("gcphone:whatsapp_updateGruppi", player, WHATSAPP_GROUPS, phone_number)
+        end)
+    end)
 end
 
 ESX.RegisterServerCallback("gcphone:whatsapp_editGroup", function(source, cb, group)
