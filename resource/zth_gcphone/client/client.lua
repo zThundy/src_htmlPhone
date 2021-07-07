@@ -9,7 +9,6 @@ isDead = false
 
 inCall = false
 stoppedPlayingUnreachable = false
-secondiRimanenti = 0
 NOTIFICATIONS_ENABLED = true
 GLOBAL_AIRPLANE = false
 
