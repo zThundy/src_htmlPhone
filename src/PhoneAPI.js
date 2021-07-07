@@ -27,6 +27,7 @@ class PhoneAPI {
     this.voiceRTC = null
     this.videoRTC = null
     this.soundList = []
+    this.audioElement = new Audio()
     this.keyAudioElement = new Audio()
   }
 
@@ -380,6 +381,7 @@ class PhoneAPI {
   }
 
   async rejectCall (infoCall) {
+    infoCall.callDropper = true
     return this.post('rejectCall', { infoCall })
   }
 
@@ -395,6 +397,17 @@ class PhoneAPI {
     Vue.prototype.$bus.$emit('initVoiceMail', data.infoCall)
     store.commit('SET_APPELS_INFO_IS_ACCEPTS', true)
     return this.post('acceptCall', data)
+  }
+
+  onnoSignal (data) {
+    setTimeout(() => {
+      this.audioElement.src = '/html/static/sound/phonenosignal.ogg'
+      this.audioElement.volume = 0.2
+      this.audioElement.onended = () => {
+        return this.post('rejectCall', data)
+      }
+      this.audioElement.play()
+    }, 250)
   }
 
   onwaitingCall (data) {
@@ -421,7 +434,7 @@ class PhoneAPI {
   }
 
   onrejectCall (data) {
-    Vue.prototype.$bus.$emit('stopVoiceMailRecording')
+    Vue.prototype.$bus.$emit('stopVoiceMailRecording', { callDropped: data.infoCall.callDropped })
     if (this.voiceRTC !== null) { this.voiceRTC.close() }
     store.commit('SET_APPELS_INFO', null)
   }

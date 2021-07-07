@@ -1046,7 +1046,7 @@ end
 
 -- useless for now
 gcPhoneT.ignoreCall = function(infoCall)
-    if infoCall.transmitter_src ~= nil then TriggerClientEvent('gcPhone:rejectCall', infoCall.transmitter_src) end
+    if infoCall.transmitter_src ~= nil then TriggerClientEvent('gcPhone:rejectCall', infoCall.transmitter_src, infoCall) end
 end
 
 -- evento che toglie i minuti a chi ha
@@ -1067,11 +1067,15 @@ gcPhoneT.rejectCall = function(infoCall)
         end
 
         if Chiamate[id].transmitter_src ~= nil then
-            TriggerClientEvent('gcPhone:rejectCall', Chiamate[id].transmitter_src, Chiamate[id])
+            local callDropped = nil
+            if Chiamate[id].transmitter_src ~= player then callDropped = true end
+            TriggerClientEvent('gcPhone:rejectCall', Chiamate[id].transmitter_src, Chiamate[id], callDropped)
         end
 
         if Chiamate[id].receiver_src ~= nil then
-            TriggerClientEvent('gcPhone:rejectCall', Chiamate[id].receiver_src)
+            local callDropped = nil
+            if Chiamate[id].receiver_src ~= player then callDropped = true end
+            TriggerClientEvent('gcPhone:rejectCall', Chiamate[id].receiver_src, Chiamate[id], callDropped)
         end
 
         if Chiamate[id].is_accepts == false then 

@@ -262,31 +262,8 @@ end)
 
 RegisterNetEvent("gcPhone:phoneNoSignal")
 AddEventHandler("gcPhone:phoneNoSignal", function(infoCall, initiator)
-    secondiRimanenti = infoCall.secondiRimanenti
-    count = 0
-
     Citizen.CreateThreadNow(function()
-        stoppedPlayingUnreachable = false
-        Citizen.Wait(2000)
-
-        if not stoppedPlayingUnreachable then
-            PlaySoundJS('phonenosignal.ogg')
-            count = 0
-            
-            while true do
-                if count == 1 then gcPhoneServerT.rejectCall(infoCall) end
-                if stoppedPlayingUnreachable then
-                    stoppedPlayingUnreachable = false
-                    StopSoundJS('phonenosignal.ogg')
-                    return
-                end
-                
-                Citizen.Wait(1000)
-                count = count + 1
-            end
-        else
-            stoppedPlayingUnreachable = false
-        end
+        SendNUIMessage({ event = 'noSignal', infoCall = infoCall })
     end)
 end)
 
@@ -321,10 +298,6 @@ AddEventHandler("gcPhone:acceptCall", function(infoCall, initiator)
                     if radioPower == 0 then gcPhoneServerT.rejectCall(infoCall) end
                 end
             end
-
-            PlaySoundJS('callend.ogg')
-            Wait(1500)
-            StopSoundJS('callend.ogg')
         end)
         
         if Config.EnableTokoVoip then
@@ -349,7 +322,8 @@ AddEventHandler("gcPhone:acceptCall", function(infoCall, initiator)
 end)
 
 RegisterNetEvent("gcPhone:rejectCall")
-AddEventHandler("gcPhone:rejectCall", function(infoCall)
+AddEventHandler("gcPhone:rejectCall", function(infoCall, callDropper)
+    infoCall.callDropped = callDropper
     if infoCall and infoCall.updateMinuti then
         if not inCall then secondiRimanenti = infoCall.secondiRimanenti end
         gcPhoneServerT.updateParametroTariffa(infoCall.transmitter_num, "minuti", secondiRimanenti)

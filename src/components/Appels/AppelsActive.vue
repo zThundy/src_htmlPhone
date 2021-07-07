@@ -266,6 +266,7 @@ export default {
       this.onRejectCall()
     },
     async playSound (data, cb) {
+      if (data.stop !== undefined) { this.audioElement.pause(); return }
       if (this.playingSound) { this.audioElement.pause() }
       if (data.volume !== undefined) this.audioElement.volume = data.volume
       this.audioElement.src = data.path === undefined ? '/html/static/sound/' + data.sound : data.path
@@ -324,8 +325,8 @@ export default {
         this.prepareRecorder()
       } catch (e) { console.error(e) }
     },
-    async stopVoiceMailRecording () {
-      this.stopSound()
+    async stopVoiceMailRecording (data) {
+      if (data.callDropped === true) { this.playSound({ sound: 'callend.ogg' }) } else { this.stopSound() }
       this.voicemailMenuIndex = 0
       this.recordedMessagesIndex = 0
       if (this.isRecordingVoiceMail === false) return
@@ -390,6 +391,7 @@ export default {
     this.$bus.$on('initVoiceMailListener', this.initVoiceMailListener)
     this.$bus.$on('initVoiceMail', this.initVoiceMail)
     this.$bus.$on('stopVoiceMailRecording', this.stopVoiceMailRecording)
+    this.$bus.$on('playSound', this.playSound)
   },
   beforeDestroy () {
     this.$bus.$off('keyUpBackspace', this.onBackspace)
@@ -402,6 +404,7 @@ export default {
     this.$bus.$off('initVoiceMailListener', this.initVoiceMailListener)
     this.$bus.$off('initVoiceMail', this.initVoiceMail)
     this.$bus.$off('stopVoiceMailRecording', this.stopVoiceMailRecording)
+    this.$bus.$off('playSound', this.playSound)
     if (this.intervalNum !== undefined) { clearInterval(this.intervalNum) }
   }
 }
