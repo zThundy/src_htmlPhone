@@ -69,6 +69,9 @@ Config.KeyLabel = "~INPUT_CONTEXT~"
 -- this is the prop name for the fixed phone
 Config.PhonePropModel = "prop_cs_phone_01"
 
+-- You can edit the keys if you want, but DO NOT CHANGE
+-- THE EVENT NAMES because they're used by the phone NUI to
+-- receive messages and move the cursor in the phone
 Config.Keys = {
     { code = 172, event = 'ArrowUp' },
     { code = 173, event = 'ArrowDown' },

@@ -3,7 +3,6 @@
     <PhoneTitle :title="LangString('APP_DATI_TITLE')" @back="onBackspace" :backgroundColor="'rgb(120, 205, 255)'" />
 
     <div class='elements'>
-
       <div class="toast">
         <custom-toast @hide="toastHide" :duration="4000" ref="updating">
           <md-activity-indicator
@@ -21,7 +20,7 @@
         </custom-toast>
       </div>
 
-      <div class='element' v-for='(elem, key) in datiInfo' :key="key">
+      <div v-for='(elem, key) in datiInfo' :key="key">
         <md-progress
           :style="posizioni[key]"
           :size="130"
@@ -32,17 +31,15 @@
           :rotate="90"
           :color="'rgb(100, 185, 255)'"
         >
+          <!-- <md-icon :style="Math.floor(elem.current/elem.max) == 0 ? { color: 'rgb(255, 185, 100)' } : { color: 'rgb(100, 185, 255)' }" class="md-notice-demo-icon md-notice-demo-icon-left" :name="elem.icon"></md-icon> -->
           <md-icon style="color: rgb(100, 185, 255);" class="md-notice-demo-icon md-notice-demo-icon-left" :name="elem.icon"></md-icon>
         </md-progress>
       </div>
 
       <div style="z-index: -1; padding-top: 458px;">
-        <div class='element' v-for='(elem, key) in datiInfo' :key="key + 'secondo'">
+        <div v-for='(elem, key) in datiInfo' :key="key + 'secondo'">
           <div class="md-example-child md-example-child-notice-bar md-example-child-notice-bar-7">
-            <md-notice-bar
-              class="noticeBars"
-              scrollable
-            >
+            <md-notice-bar class="noticeBars" scrollable>
               <md-icon style="color: rgb(100, 185, 255);" slot="left" class="md-notice-demo-icon md-notice-demo-icon-left" :name="elem.icon"></md-icon>
               {{elem.current}}/{{elem.max}} {{elem.suffix}}
             </md-notice-bar>
@@ -165,27 +162,6 @@ export default {
   color: rgb(100, 175, 255);
   background-color: rgba(100, 185, 255, 0.4);
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 /*
 .screen{

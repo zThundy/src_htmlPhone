@@ -107,8 +107,8 @@ export default {
     window.addEventListener('message', (event) => {
       if (event.data.keyUp !== undefined) { this.$bus.$emit('keyUp' + event.data.keyUp) }
     })
+    const keyValid = ['ArrowRight', 'ArrowLeft', 'ArrowUp', 'ArrowDown', 'Backspace', 'Enter']
     window.addEventListener('keyup', (event) => {
-      const keyValid = ['ArrowRight', 'ArrowLeft', 'ArrowUp', 'ArrowDown', 'Backspace', 'Enter']
       if (keyValid.indexOf(event.key) !== -1) {
         this.$bus.$emit('keyUp' + event.key)
         if (event.key === 'Backspace') { }

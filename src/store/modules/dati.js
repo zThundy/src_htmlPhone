@@ -46,7 +46,7 @@ const mutations = {
   },
   UPDATE_OFFERTA (state, data) {
     for (var key in data.current) {
-      state.datiInfo[key].current = data.current[key]
+      state.datiInfo[key].current = Math.floor(data.current[key])
       state.datiInfo[key].max = data.max[key]
     }
   }
@@ -73,7 +73,7 @@ if (process.env.NODE_ENV !== 'production') {
     icon: 'message',
     suffix: 'Messaggi'
   }, {
-    current: 10000,
+    current: 0,
     max: 20000,
     icon: 'discovery',
     suffix: 'Internet'

@@ -6,7 +6,6 @@ menuIsOpen = false
 contacts = {}
 messages = {}
 isDead = false
-hasFocus = false
 
 inCall = false
 stoppedPlayingUnreachable = false
@@ -66,26 +65,12 @@ Citizen.CreateThread(function()
 
     while true do
         Citizen.Wait(0)
-
         if menuIsOpen then
-            while UpdateOnscreenKeyboard() == 0 do
-                Citizen.Wait(100)
-            end
-
+            while UpdateOnscreenKeyboard() == 0 do Citizen.Wait(100) end
             for _, value in ipairs(Config.Keys) do
                 if IsControlJustPressed(1, value.code) or IsDisabledControlJustPressed(1, value.code) then
                     SendNUIMessage({ keyUp = value.event })
                 end
-            end
-
-            if hasFocus then
-                SetNuiFocus(false, false)
-                hasFocus = false
-            end
-        else
-            if hasFocus then
-                SetNuiFocus(false, false)
-                hasFocus = false
             end
         end
     end
@@ -105,17 +90,6 @@ AddEventHandler("gcphone:sendGenericNotification", function(data)
     ]]
     SendNUIMessage({ event = "genericNotification", notif = data })
 end)
-
-
--- utile dal js per l'appstore, non qui :/
---[[
-    RegisterNetEvent("gcPhone:forceOpenPhone")
-    AddEventHandler("gcPhone:forceOpenPhone", function(_myPhoneNumber)
-        if menuIsOpen == false then
-            TogglePhone()
-        end
-    end)
-]]
 
 --==================================================================================================================
 --------  Funzioni per i suoni
@@ -315,8 +289,8 @@ AddEventHandler("gcPhone:acceptCall", function(infoCall, initiator)
 end)
 
 RegisterNetEvent("gcPhone:rejectCall")
-AddEventHandler("gcPhone:rejectCall", function(infoCall, callDropped)
-    infoCall.callDropped = callDropped or infoCall.forcedCallDrop
+AddEventHandler("gcPhone:rejectCall", function(infoCall, callDropper)
+    infoCall.callDropped = callDropper
     if infoCall and infoCall.updateMinuti then
         infoCall.callTime = infoCall.endCall_time - infoCall.startCall_time
         if not inCall then infoCall.callTime = 0 end
@@ -406,7 +380,6 @@ end
 
 function TogglePhone()
     ESX.PlayerData = ESX.GetPlayerData()
-
     menuIsOpen = not menuIsOpen
     SendNUIMessage({ show = menuIsOpen })
 
