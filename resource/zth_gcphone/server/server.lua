@@ -1022,11 +1022,11 @@ gcPhoneT.rejectCall = function(infoCall)
         end
 
         if Chiamate[id].transmitter_src ~= nil then
-            TriggerClientEvent('gcPhone:rejectCall', Chiamate[id].transmitter_src, Chiamate[id], Chiamate[id].transmitter_src ~= player)
+            TriggerClientEvent('gcPhone:rejectCall', Chiamate[id].transmitter_src, Chiamate[id], Chiamate[id].transmitter_src ~= player and Chiamate[id].is_accepts)
         end
 
         if Chiamate[id].receiver_src ~= nil then
-            TriggerClientEvent('gcPhone:rejectCall', Chiamate[id].receiver_src, Chiamate[id], Chiamate[id].receiver_src ~= player)
+            TriggerClientEvent('gcPhone:rejectCall', Chiamate[id].receiver_src, Chiamate[id], Chiamate[id].receiver_src ~= player and Chiamate[id].is_accepts)
         end
 
         if not Chiamate[id].is_accepts then 

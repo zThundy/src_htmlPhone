@@ -72,7 +72,7 @@ export default {
       voicemailMenuIndex: 0,
       listeningToVoiceMailMessages: false,
       recordedMessagesIndex: 0,
-      recordedMessagesCache: null,
+      recordedMessagesCache: [],
       audioElement: new Audio(),
       keyAudioElement: new Audio(),
       chunks: []
@@ -144,11 +144,18 @@ export default {
       })
     },
     async initVoiceMailListener () {
-      this.listeningToVoiceMailMessages = true
-      this.playSound({ sound: 'voiceMailWelcomerPartOne.ogg' }, function (instance) {
-        instance.tts(instance.myPhoneNumber.toString(), function (instance) {
-          instance.playSound({ sound: 'voiceMailWelcomerPartTwo.ogg' })
-        }, instance)
+      this.getAvailableRecordedMessages({ sourceNumber: this.myPhoneNumber }, function (data) {
+        if (data.response === undefined) {
+          data.instance.finishVoiceMailCall()
+        } else {
+          data.instance.recordedMessagesCache = data.response
+          data.instance.listeningToVoiceMailMessages = true
+          data.instance.playSound({ sound: 'voiceMailWelcomerPartOne.ogg' }, function (instance) {
+            instance.tts(instance.myPhoneNumber.toString(), function (instance) {
+              instance.playSound({ sound: 'voiceMailWelcomerPartTwo.ogg' })
+            }, instance)
+          })
+        }
       })
     },
     async keyDigitEvent (data) {
@@ -157,15 +164,8 @@ export default {
       if (this.voicemailMenuIndex === 0) {
         if (isNaN(data.pressedKey)) return
         if (pressedKey === 1) {
-          this.getAvailableRecordedMessages({ sourceNumber: this.myPhoneNumber }, function (data) {
-            if (data.response === undefined) {
-              data.instance.finishVoiceMailCall()
-            } else {
-              data.instance.recordedMessagesCache = data.response
-              data.instance.voicemailMenuIndex = pressedKey
-              data.instance.playSound({ sound: 'voiceMailMessageOptions.ogg' })
-            }
-          })
+          this.voicemailMenuIndex = pressedKey
+          this.playSound({ sound: 'voiceMailMessageOptions.ogg' })
         } else if (pressedKey === 2) {
           this.voicemailMenuIndex = pressedKey
           this.playSound({ sound: 'voiceMailEmptyOptions.ogg' })
@@ -208,7 +208,7 @@ export default {
           }
         }
       } else if (this.voicemailMenuIndex === 2) {
-        if (pressedKey === 1) {
+        if (pressedKey === 1 && this.recordedMessagesCache.length !== 0) {
           this.recordedMessagesIndex = 'all'
           this.deleteCurrentRecordedVoiceMail()
         } else if (pressedKey === 2) {
