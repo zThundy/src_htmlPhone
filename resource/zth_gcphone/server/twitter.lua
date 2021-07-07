@@ -277,7 +277,7 @@ local function TwitterPostTweet(username, password, message, player, realUser)
 					authorId		ok
 				]]
 				
-				table.insert(CACHED_TWEETS, {
+				local tweet = {
 					likes = 0,
 					realUser = realUser,
 					message = message,
@@ -286,8 +286,9 @@ local function TwitterPostTweet(username, password, message, player, realUser)
 					author = user.author,
 					time = os.time() * 1000,
 					authorId = user.id
-				})
-				TriggerClientEvent('gcPhone:twitter_newTweets', -1, CACHED_TWEETS)
+				}
+				table.insert(CACHED_TWEETS, tweet)
+				TriggerClientEvent('gcPhone:twitter_newTweets', -1, tweet)
 				-- tweet = tweets[1]
 				-- if tweet then
 				-- 	tweet['author'] = user.author
@@ -353,12 +354,12 @@ local function TwitterToogleLike(username, password, tweetId, player)
 								['@id'] = like.id,
 							}, function()
 								-- like = nil
-								print(DumpTable(CACHED_LIKES[tweetId]))
-								print("removing like on message", tweet.message, "from id", like.authorId)
+								-- print(DumpTable(CACHED_LIKES[tweetId]))
+								-- print("removing like on message", tweet.message, "from id", like.authorId)
 								CACHED_LIKES[tweetId][id] = nil
 								-- table.remove(CACHED_LIKES[tweetId], id)
 								if #CACHED_LIKES[tweetId] == 0 then CACHED_LIKES[tweetId] = nil end
-								print(DumpTable(CACHED_LIKES[tweetId]))
+								-- print(DumpTable(CACHED_LIKES[tweetId]))
 								
 								tweet.likes = tweet.likes - 1
 
