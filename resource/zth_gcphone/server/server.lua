@@ -1011,6 +1011,7 @@ gcPhoneT.rejectCall = function(infoCall)
     if infoCall and infoCall.id and Chiamate[infoCall.id] ~= nil then
         local id = infoCall.id
         Chiamate[id].endCall_time = os.time()
+        Chiamate[id].forcedCallDrop = infoCall.forcedCallDrop
 
         ACTIVE_CALLS[Chiamate[id].transmitter_src] = nil
         if Chiamate[id].receiver_src ~= nil then  ACTIVE_CALLS[Chiamate[id].receiver_src] = nil end
@@ -1021,15 +1022,11 @@ gcPhoneT.rejectCall = function(infoCall)
         end
 
         if Chiamate[id].transmitter_src ~= nil then
-            local callDropped = nil
-            if Chiamate[id].transmitter_src ~= player then callDropped = true end
-            TriggerClientEvent('gcPhone:rejectCall', Chiamate[id].transmitter_src, Chiamate[id], callDropped)
+            TriggerClientEvent('gcPhone:rejectCall', Chiamate[id].transmitter_src, Chiamate[id], Chiamate[id].transmitter_src ~= player)
         end
 
         if Chiamate[id].receiver_src ~= nil then
-            local callDropped = nil
-            if Chiamate[id].receiver_src ~= player then callDropped = true end
-            TriggerClientEvent('gcPhone:rejectCall', Chiamate[id].receiver_src, Chiamate[id], callDropped)
+            TriggerClientEvent('gcPhone:rejectCall', Chiamate[id].receiver_src, Chiamate[id], Chiamate[id].receiver_src ~= player)
         end
 
         if not Chiamate[id].is_accepts then 

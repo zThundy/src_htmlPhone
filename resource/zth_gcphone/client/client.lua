@@ -315,8 +315,8 @@ AddEventHandler("gcPhone:acceptCall", function(infoCall, initiator)
 end)
 
 RegisterNetEvent("gcPhone:rejectCall")
-AddEventHandler("gcPhone:rejectCall", function(infoCall, callDropper)
-    infoCall.callDropped = callDropper
+AddEventHandler("gcPhone:rejectCall", function(infoCall, callDropped)
+    infoCall.callDropped = callDropped or infoCall.forcedCallDrop
     if infoCall and infoCall.updateMinuti then
         infoCall.callTime = infoCall.endCall_time - infoCall.startCall_time
         if not inCall then infoCall.callTime = 0 end

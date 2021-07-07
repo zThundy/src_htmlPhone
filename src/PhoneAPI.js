@@ -381,7 +381,6 @@ class PhoneAPI {
   }
 
   async rejectCall (infoCall) {
-    infoCall.callDropper = true
     return this.post('rejectCall', { infoCall })
   }
 

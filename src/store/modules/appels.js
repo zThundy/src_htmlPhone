@@ -45,7 +45,8 @@ const actions = {
   acceptCall ({ state }) {
     PhoneAPI.acceptCall(state.appelsInfo)
   },
-  rejectCall ({ state }) {
+  rejectCall ({ state }, bool) {
+    state.appelsInfo.forcedCallDrop = bool
     PhoneAPI.rejectCall(state.appelsInfo)
   },
   ignoreCall ({ state, commit }) {

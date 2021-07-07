@@ -263,10 +263,9 @@ export default {
       this.voicemailMenuIndex = 0
       this.recordedMessagesIndex = 0
       this.listeningToVoiceMailMessages = false
-      this.onRejectCall()
+      this.rejectCall(true)
     },
     async playSound (data, cb) {
-      if (data.stop !== undefined) { this.audioElement.pause(); return }
       if (this.playingSound) { this.audioElement.pause() }
       if (data.volume !== undefined) this.audioElement.volume = data.volume
       this.audioElement.src = data.path === undefined ? '/html/static/sound/' + data.sound : data.path
