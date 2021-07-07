@@ -243,8 +243,9 @@ export default {
         body: formData
       })
       this.recordedMessagesCache = this.recordedMessagesIndex === 'all' ? [] : this.$phoneAPI.removeElementAtIndex(this.recordedMessagesCache, this.recordedMessagesIndex)
+      var soundFile = this.recordedMessagesIndex === 'all' ? 'cleanedUpVoiceMailInbox.ogg' : 'recordedMessageDeleted.ogg'
       if (this.recordedMessagesCache.length === 0) {
-        this.playSound({ sound: 'recordedMessageDeleted.ogg' }, function (instance) {
+        this.playSound({ sound: soundFile }, function (instance) {
           setTimeout(() => {
             instance.playSound({ sound: 'noMoreMessagesLeft.ogg' }, function (instance) {
               instance.finishVoiceMailCall()
@@ -253,7 +254,7 @@ export default {
         })
       } else {
         this.recordedMessagesIndex = this.recordedMessagesIndex === this.recordedMessagesCache.length ? this.recordedMessagesCache.length - 1 : this.recordedMessagesIndex
-        this.playSound({ sound: 'recordedMessageDeleted.ogg' }, function (instance) {
+        this.playSound({ sound: soundFile }, function (instance) {
           instance.playSound({ sound: 'voiceMailMessageOptions.ogg' })
         })
       }
