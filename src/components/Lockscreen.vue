@@ -4,7 +4,8 @@
       <InfoBare />
 
       <div class="immagine">
-        <img src="/html/static/img/app_dati/lockscreen.png">
+        <i class="fas fa-lock"></i>
+        <!-- <img src="/html/static/img/app_dati/lockscreen.png"> -->
       </div>
 
       <div v-if="hasUnredMessages" class="messagelist">
@@ -153,16 +154,16 @@ export default {
 
 
 .immagine {
-  top: 50px;
+  top: 40px;
   position: relative;
   margin-left: auto;
   margin-right: auto;
   text-align: center;
 }
 
-.immagine img {
-  width: 100px;
-  height: 100px;
+.immagine i {
+  font-size: 80px;
+  color: white;
 }
 
 

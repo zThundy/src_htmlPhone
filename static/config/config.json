@@ -58,14 +58,14 @@
 
   "background": {
     "Apple": "apple.png",
-    "Stars": "cielostellato.png",
-    "Squares": "quadri.png",
+    "Stars": "cielostellato.jpg",
+    "Squares": "quadri.jpg",
     "Personalizzato": "Link"
   },
 
   "background_default": {
     "label": "Squares",
-    "value": "quadri.png"
+    "value": "quadri.jpg"
   },
 
   "cover_default": {
