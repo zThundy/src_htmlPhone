@@ -94,10 +94,10 @@ end)
 --------  Funzioni per i suoni
 --==================================================================================================================
 
-function PlaySoundJS(sound, v)
+function PlaySoundJS(sound, v, loop)
     local _volume = v and v or volume
     -- print("riproduco suono", sound, _volume)
-    SendNUIMessage({ event = 'playSound', sound = sound, volume = _volume })
+    SendNUIMessage({ event = 'playSound', sound = sound, volume = _volume, loop = loop })
 end
 
 function SetSoundVolumeJS(sound, v)
@@ -145,9 +145,7 @@ AddEventHandler("gcPhone:allMessage", function(allmessages, notReceivedMessages)
 
             if NOTIFICATIONS_ENABLED then
                 DrawNotification(false, false)
-                PlaySoundJS('msgnotify.ogg')
-                Citizen.Wait(3000)
-                StopSoundJS('msgnotify.ogg')
+                PlaySoundJS('msgnotify.ogg', nil, false)
             end
         end
     end
@@ -196,11 +194,6 @@ AddEventHandler("gcPhone:receiveMessage", function(message)
             end
 
             ESX.ShowNotification(text)
-            -- if NOTIFICATIONS_ENABLED then
-            --     PlaySoundJS('msgnotify.ogg')
-            --     Citizen.Wait(3000)
-            --     StopSoundJS('msgnotify.ogg')
-            -- end
         end
     end
 end)

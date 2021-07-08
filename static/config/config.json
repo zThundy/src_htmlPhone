@@ -58,14 +58,14 @@
 
   "background": {
     "Apple": "apple.png",
-    "Cielo stellato": "cielostellato.png",
-    "Rick & Morty": "rickmorty.png",
+    "Stars": "cielostellato.png",
+    "Squares": "quadri.png",
     "Personalizzato": "Link"
   },
 
   "background_default": {
-    "label": "Apple",
-    "value": "apple.png"
+    "label": "Squares",
+    "value": "quadri.png"
   },
 
   "cover_default": {
@@ -75,7 +75,6 @@
 
   "suoneria": {
     "Astronomia": "ring.ogg",
-    "Twerk": "safaera.ogg",
     "Bella Ciao": "bella_ciao.ogg",
     "Iphone 11": "iphone_11.ogg"
   },

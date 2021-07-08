@@ -99,13 +99,13 @@ if Config.EnablePhoneBoxes then
                 end
 
                 if inRangeToActivePhone and not currentPlaySound then
-                    PlaySoundJS('ring2.ogg', 0.2 + (inRangedist - Config.MaxPhoneBoxesRingRange) / - (Config.MaxPhoneBoxesRingRange * 0.8) )
+                    PlaySoundJS('ring2.ogg', 0.2 + (inRangedist - Config.MaxPhoneBoxesRingRange) / - (Config.MaxPhoneBoxesRingRange * 0.8), true)
                     currentPlaySound = true
                 elseif inRangeToActivePhone then
                     mod = mod + 1
                     if mod == 15 then
                         mod = 0
-                        SetSoundVolumeJS('ring2.ogg', 0.2 + (inRangedist - Config.MaxPhoneBoxesRingRange) / - (Config.MaxPhoneBoxesRingRange * 0.8) )
+                        SetSoundVolumeJS('ring2.ogg', 0.2 + (inRangedist - Config.MaxPhoneBoxesRingRange) / - (Config.MaxPhoneBoxesRingRange * 0.8))
                     end
                 elseif not inRangeToActivePhone and currentPlaySound then
                     currentPlaySound = false
