@@ -89,13 +89,9 @@ export default {
     onEnter () {
       if (this.hasPressed) return
       this.hasPressed = true
-      this.$phoneAPI.onplaySound({ sound: 'phoneUnlock.ogg', volume: this.volume || 0.5 })
-      setTimeout(() => {
-        this.$phoneAPI.onstopSound({ sound: 'phoneUnlock.ogg' })
-      }, 1000)
       setTimeout(() => {
         this.$router.push({ name: 'home' })
-        // this.$router.push({ name: 'photo' })
+        this.$phoneAPI.onplaySound({ sound: 'phoneUnlock.ogg', volume: this.volume || 0.5, loop: false })
       }, 450)
     },
     onBack () {
@@ -111,7 +107,7 @@ export default {
       if (message.indexOf('[CONTACT]') === 0) {
         return this.LangString('PHONE_CONTACT_MESSAGE_TITILE')
       }
-      if (this.$phoneAPI.isImage(message)) {
+      if (this.$phoneAPI.isLink(message)) {
         return this.LangString('PHONE_IMAGE_MESSAGE_TITLE')
       }
       return message

@@ -158,7 +158,7 @@ export default {
       if (message.indexOf('[CONTACT]') === 0) {
         return this.LangString('PHONE_CONTACT_MESSAGE_TITILE')
       }
-      if (this.$phoneAPI.isImage(message)) {
+      if (this.$phoneAPI.isLink(message)) {
         return this.LangString('PHONE_IMAGE_MESSAGE_TITLE')
       }
       return message

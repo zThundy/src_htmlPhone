@@ -127,7 +127,7 @@ export default {
       }
     },
     isImage (mess) {
-      return this.$phoneAPI.isImage(mess)
+      return this.$phoneAPI.isLink(mess)
     },
     async reply (tweet) {
       const authorName = tweet.author

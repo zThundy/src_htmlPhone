@@ -375,7 +375,7 @@ class PhoneAPI {
     return result
   }
 
-  isImage (message) {
+  isLink (message) {
     var pattern = new RegExp('^(https?:\\/\\/)?' + '((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|' + '((\\d{1,3}\\.){3}\\d{1,3}))' + '(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*' + '(\\?[;&a-z\\d%_.~+=-]*)?' + '(\\#[-a-z\\d_]*)?$', 'i')
     return !!pattern.test(message)
   }
@@ -454,7 +454,7 @@ class PhoneAPI {
     } else {
       this.soundList[data.sound] = new Audio()
       this.soundList[data.sound].src = path
-      this.soundList[data.sound].loop = true
+      this.soundList[data.sound].loop = data.loop || false
       this.soundList[data.sound].play()
     }
   }
@@ -497,10 +497,7 @@ class PhoneAPI {
   }
 
   ontchat_receive (data) {
-    this.onplaySound({ sound: 'msgnotify.ogg', volume: 0.4 })
-    setTimeout(() => {
-      this.onstopSound({ sound: 'msgnotify.ogg' })
-    }, 3000)
+    this.onplaySound({ sound: 'msgnotify.ogg', volume: 0.4, loop: false })
     store.commit('TCHAT_ADD_MESSAGES', data.message)
   }
 

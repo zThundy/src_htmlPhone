@@ -78,11 +78,14 @@ export default {
         var path = null
         if (this.appelsInfo.initiator === true) {
           path = '/html/static/sound/Phone_Call_Sound_Effect.ogg'
-          this.audioElement.loop = true
         } else {
           path = '/html/static/sound/' + this.suoneria.value
         }
+        // if (this.$phoneAPI.isLink(this.suoneria.value)) {
+        //   path = this.suoneria.value
+        // }
         this.audioElement.src = path
+        this.audioElement.loop = true
         this.soundCall = this.audioElement
         this.soundCall.volume = this.volume
         this.soundCall.play()

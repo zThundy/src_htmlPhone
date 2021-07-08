@@ -93,7 +93,7 @@ export default {
       }
     },
     isImage (mess) {
-      return this.$phoneAPI.isImage(mess)
+      return this.$phoneAPI.isLink(mess)
     },
     resetScroll () {
       this.$nextTick(() => {

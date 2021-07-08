@@ -163,7 +163,7 @@ export default {
       return d.toLocaleTimeString()
     },
     isImage (mess) {
-      return this.$phoneAPI.isImage(mess)
+      return this.$phoneAPI.isLink(mess)
     }
   },
   created () {

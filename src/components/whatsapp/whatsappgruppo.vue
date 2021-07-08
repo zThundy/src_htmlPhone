@@ -196,7 +196,7 @@ export default {
       }
     },
     isImage (message) {
-      return this.$phoneAPI.isImage(message)
+      return this.$phoneAPI.isLink(message)
     },
     isSMSAudio (mess) {
       return mess.message.indexOf('[AUDIO]') === 0
