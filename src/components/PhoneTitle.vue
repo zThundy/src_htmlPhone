@@ -24,11 +24,7 @@ export default {
       }
     }
   },
-  methods: {
-    back () {
-      this.$emit('back')
-    }
-  },
+  methods: { },
   props: {
     title: {
       type: String,

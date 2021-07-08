@@ -135,6 +135,7 @@
   "apps": [{
       "name": "Twitter",
       "it_IT__name": "Twitter",
+      "en_EN__name": "Twitter",
       "icons": "/html/static/img/icons_app/twitter.png",
       "routeName": "twitter.splash",
       "enabled": true
@@ -142,6 +143,7 @@
     {
       "name": "Instagram",
       "it_IT__name": "Instagram",
+      "en_EN__name": "Instagram",
       "icons": "/html/static/img/icons_app/instagram.png",
       "routeName": "instagram.splash",
       "enabled": true
@@ -149,6 +151,7 @@
     {
       "name": "Galleria",
       "it_IT__name": "Galleria",
+      "en_EN__name": "Galleria",
       "icons": "/html/static/img/icons_app/galleria.png",
       "routeName": "galleria.splash",
       "enabled": true
@@ -156,6 +159,7 @@
     {
       "name": "Whatsapp",
       "it_IT__name": "Whatsapp",
+      "en_EN__name": "Whatsapp",
       "icons": "/html/static/img/icons_app/whatsapp.png",
       "routeName": "whatsapp.splash",
       "enabled": true
@@ -163,6 +167,7 @@
     {
       "name": "Piano tariffario",
       "it_IT__name": "Piano tariffario",
+      "en_EN__name": "Tariff plans",
       "icons": "/html/static/img/icons_app/dati.png",
       "routeName": "dati.splash",
       "enabled": true
@@ -170,6 +175,7 @@
     {
       "name": "Telefono",
       "it_IT__name": "Telefono",
+      "en_EN__name": "Phone",
       "icons": "/html/static/img/icons_app/call.png",
       "routeName": "appels",
       "inHomePage": true,
@@ -178,6 +184,7 @@
     {
       "name": "Rubrica",
       "it_IT__name": "Rubrica",
+      "en_EN__name": "Contacts",
       "icons": "/html/static/img/icons_app/contacts.png",
       "routeName": "contacts",
       "enabled": true
@@ -185,6 +192,7 @@
     {
       "name": "Messaggi",
       "it_IT__name": "Messaggi",
+      "en_EN__name": "Messages",
       "icons": "/html/static/img/icons_app/sms.png",
       "routeName": "messages",
       "inHomePage": true,
@@ -192,8 +200,9 @@
       "enabled": true
     },
     {
-      "name": "Settings",
-      "it_IT__name": "Settings",
+      "name": "Impostazioni",
+      "it_IT__name": "Impostazioni",
+      "en_EN__name": "Settings",
       "icons": "/html/static/img/icons_app/settings.png",
       "routeName": "settings",
       "enabled": true
@@ -201,6 +210,7 @@
     {
       "name": "Banca",
       "it_IT__name": "Banca",
+      "en_EN__name": "Bank",
       "icons": "/html/static/img/icons_app/banca.png",
       "routeName": "bank.splash",
       "enabled": true
@@ -208,6 +218,7 @@
     {
       "name": "Borsa",
       "it_IT__name": "Borsa",
+      "en_EN__name": "Bourse",
       "icons": "/html/static/img/icons_app/borsa.png",
       "routeName": "borsa.splash",
       "enabled": true
@@ -215,6 +226,7 @@
     {
       "name": "Dark Chat",
       "it_IT__name": "Dark Chat",
+      "en_EN__name": "Dark Chat",
       "icons": "/html/static/img/icons_app/darknet.png",
       "routeName": "tchat",
       "enabled": true
@@ -222,6 +234,7 @@
     {
       "name": "Darkweb",
       "it_IT__name": "Darkweb",
+      "en_EN__name": "Darkweb",
       "icons": "/html/static/img/icons_app/darkweb.png",
       "routeName": "darkweb.splash",
       "enabled": true
@@ -229,6 +242,7 @@
     {
       "name": "Foto",
       "it_IT__name": "Foto",
+      "en_EN__name": "Camera",
       "icons": "/html/static/img/icons_app/photo.png",
       "routeName": "photo",
       "enabled": true
@@ -236,6 +250,7 @@
     {
       "name": "Email",
       "it_IT__name": "Email",
+      "en_EN__name": "Email",
       "icons": "/html/static/img/icons_app/email.png",
       "routeName": "email.splash",
       "enabled": true
@@ -243,6 +258,7 @@
     {
       "name": "News",
       "it_IT__name": "News",
+      "en_EN__name": "News",
       "icons": "/html/static/img/icons_app/news.png",
       "routeName": "news.splash",
       "enabled": true
@@ -250,6 +266,7 @@
     {
       "name": "Azienda",
       "it_IT__name": "Azienda",
+      "en_EN__name": "Azienda",
       "icons": "/html/static/img/icons_app/azienda.png",
       "routeName": "azienda.splash",
       "puceRef": "UnreadAziendaMessagesLength",
@@ -258,8 +275,17 @@
     {
       "name": "Emoji",
       "it_IT__name": "Emoji",
+      "en_EN__name": "Emojis",
       "icons": "/html/static/img/icons_app/emoji.png",
       "routeName": "emoji.splash",
+      "enabled": true
+    },
+    {
+      "name": "Calcolatrice",
+      "it_IT__name": "Calcolatrice",
+      "en_EN__name": "Calculator",
+      "icons": "/html/static/img/icons_app/calculator.png",
+      "routeName": "calculator.splash",
       "enabled": true
     }
   ],
@@ -561,6 +587,7 @@
       "APP_BOURSE_BUY_TITLE": "Quanti ne vuoi comprare?",
       "APP_BOURSE_SELL_TITLE": "Quanti ne vuoi vendere?",
       "APP_BOURSE_ERROR_INTERNET": "Non hai abbastanza giga per eseguire questa azione",
+      "APP_CALCULATOR_TITLE": "Calcolatrice",
 
       "TIMEAGO": [
         "Proprio adesso",
@@ -868,6 +895,7 @@
       "APP_BOURSE_BUY_TITLE": "How many do you want to buy?",
       "APP_BOURSE_SELL_TITLE": "How many do you want to sell?",
       "APP_BOURSE_ERROR_INTERNET": "You do not have enough internet to do this!",
+      "APP_CALCULATOR_TITLE": "Calculator",
 
       "TIMEAGO": [
         "Now",

@@ -1,8 +1,8 @@
 <template>
   <div class="elements">
-    <div class="element" :class="{'active': selectIndex === key}" v-for='(histo, key) in historique' :key="key">
+    <div class="element" :class="{'active': selectIndex === key}" v-for='(histo, key) in _callsHistory' :key="key">
       <!--<div @click.stop="selectItem(histo)" class="elem-pic" :style="stylePuce(histo)">{{histo.letter}}</div>-->
-      <img style="width: 32px; margin-left: 10px;" src="/html/static/img/icons_app/borrado.png" alt="Logotipo APR2">
+      <img style="width: 32px; margin-left: 10px;" src="/html/static/img/icons_app/borrado.png">
 
       <div class="elem-content">
         <div class="elem-content-p">{{ histo.display }}</div>
@@ -74,7 +74,7 @@ export default {
     },
     onDown () {
       if (this.ignoreControls === true) return
-      this.selectIndex = Math.min(this.historique.length - 1, this.selectIndex + 1)
+      this.selectIndex = Math.min(this._callsHistory.length - 1, this.selectIndex + 1)
       this.scrollIntoView()
     },
     async selectItem (item) {
@@ -125,8 +125,8 @@ export default {
     },
     async onEnter () {
       if (this.ignoreControls === true) return
-      if (this.historique[this.selectIndex] === null || this.historique[this.selectIndex] === undefined) return
-      this.selectItem(this.historique[this.selectIndex])
+      if (this._callsHistory[this.selectIndex] === null || this._callsHistory[this.selectIndex] === undefined) return
+      this.selectItem(this._callsHistory[this.selectIndex])
     },
     save (numero) {
       if (this.id !== -1) {
@@ -152,18 +152,13 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['LangString', 'appelsHistorique', 'contacts', 'ignoreControls', 'contacts', 'messages']),
-    historique () {
-      let grpHist = groupBy(this.appelsHistorique, 'num')
+    ...mapGetters(['LangString', 'callsHistory', 'contacts', 'ignoreControls', 'contacts', 'messages']),
+    _callsHistory () {
+      let grpHist = groupBy(this.callsHistory, 'num')
       let hist = []
       for (let key in grpHist) {
         const hg = grpHist[key]
-        const histoByDate = hg.map(e => {
-          e.date = new Date(e.time)
-          return e
-        }).sort((a, b) => {
-          return b.date - a.date
-        }).slice(0, 6)
+        const histoByDate = hg.map(e => { e.date = new Date(e.time); return e }).sort((a, b) => { return b.date - a.date }).slice(0, 6)
         const contact = this.getContact(key) || { letter: '#' }
         hist.push({
           num: key,
@@ -174,9 +169,7 @@ export default {
           icon: contact.icon
         })
       }
-      hist.sort((a, b) => {
-        return b.lastCall[0].time - a.lastCall[0].time
-      })
+      hist.sort((a, b) => { return b.lastCall[0].time - a.lastCall[0].time })
       return hist
     }
   },

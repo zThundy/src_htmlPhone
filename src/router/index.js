@@ -67,6 +67,9 @@ import AziendaSplash from '@/components/azienda/aziendasplash'
 import Emoji from '@/components/emoji/emoji'
 import EmojiSplash from '@/components/emoji/emojisplash'
 
+import Calculator from '@/components/calculator/calculator'
+import CalculatorSplash from '@/components/calculator/calculatorsplash'
+
 // import AppStore from '@/components/appstore/appstore'
 // import AppStoreSplash from '@/components/appstore/appstoresplash'
 
@@ -323,6 +326,16 @@ export default new Router({
       path: '/emoji',
       name: 'emoji',
       component: Emoji
+    },
+    {
+      path: '/calculator/splash',
+      name: 'calculator.splash',
+      component: CalculatorSplash
+    },
+    {
+      path: '/calculator',
+      name: 'calculator',
+      component: Calculator
     },
     {
       path: '*',

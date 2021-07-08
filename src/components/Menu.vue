@@ -7,16 +7,16 @@
     <div class="menu">
       <div class="menu_content">
         <div class='menu_buttons' :class="{ 'down': isBackspace }">
-          <button
-            style="font-weight: 400;"
+          <div
+            class="app_button"
             v-for="(but, key) of Apps"
             :key="but.name"
             :class="{ select: key === currentSelect }"
-            :style="{ backgroundImage: 'url(' + but.icons + ')' }"
           >
-            {{ but.intlName }}
+            <img class="app_image" :src="but.icons" />
             <span class="puce" v-if="but.puce !== undefined && but.puce !== 0">{{ but.puce }}</span>
-          </button>
+            <span class="app_name">{{ but.intlName }}</span>
+          </div>
         </div>
       </div>
     </div>
@@ -37,10 +37,9 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['UnreadMessagesLength', 'backgroundURL', 'Apps'])
+    ...mapGetters(['backgroundURL', 'Apps'])
   },
   methods: {
-    ...mapGetters(['closePhone', 'hasWifi']),
     onLeft () {
       const l = Math.floor(this.currentSelect / this.nBotonesMenu)
       const newS = (this.currentSelect + this.nBotonesMenu - 1) % this.nBotonesMenu + l * this.nBotonesMenu
@@ -133,16 +132,7 @@ export default {
 
 .backblur {
   filter: blur(6px);
-
-  /* animation-name: blackBG; */
-  /* animation-duration: 0.4s; */
-  /* animation-fill-mode: forwards; */
 }
-
-/* @keyframes blackBG { */
-/*   from { filter: blur(0px); } */
-/*   to { filter: blur(6px); } */
-/* } */
 
 .menu_content {
   display: flex;
@@ -191,49 +181,62 @@ export default {
 }
 
 
-button {
+.app_button {
   position: relative;
   border: none;
   width: 62px;
-  height: 90px;
+  height: 95px;
   margin: 8px;
 
+  display: flex;
+  flex-direction: column;
+
   color: white;
-  background-size: 52px 52px;
-  background-position: center 5px;
-  background-repeat: no-repeat;
-  background-color: transparent;
-
-  font-size: 10px;
-  padding-top: 62px;
-  font-weight: 700;
-  text-shadow: -1px 0 0 rgba(0,0,0, 0.8), 
-             1px 0 0 rgba(0,0,0, 0.8),
-             0 -1px 0 rgba(0,0,0, 0.8),
-             0 1px 0 rgba(0,0,0, 0.8);
-
-  text-align: center;
+  /* background-size: 52px 52px; */
+  /* background-position: center 5px; */
+  /* background-repeat: no-repeat; */
+  /* background-color: transparent; */
+  line-height: .6em;
 }
 
-button .puce {
+.app_button .app_image {
+  position: relative;
+  width: 50px;
+  height: 50px;
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: 10px;
+}
+
+.app_button .app_name {
+  position: relative;
+  font-size: 10px;
+  width: 100%;
+  text-shadow: -1px 0 0 rgba(0,0,0, 0.8), 1px 0 0 rgba(0,0,0, 0.8), 0 -1px 0 rgba(0,0,0, 0.8), 0 1px 0 rgba(0,0,0, 0.8);
+  font-weight: 700;
+  margin-left: auto;
+  margin-right: auto;
+  text-align: center;
+  margin-top: 10px;
+}
+
+.app_button .puce {
   position: absolute;
   display: block;
   background-color: #ff3939;
   font-size: 12px;
-  width: 16px;
-  height: 16px;
-  top: 0;
+  width: 17px;
+  height: 17px;
+  top: 5px;
   left: 42px;
-
   line-height: 19px;
   text-align: center;
   border-radius: 50%;
-  
   bottom: 32px;
   right: 10px;
 }
 
-button.select {
+.app_button.select {
   border-radius: 10px;
 
   animation-name: changeActiveState;
@@ -245,39 +248,4 @@ button.select {
   from { background-color: rgba(190, 190, 190, 0); }
   to { background-color: rgba(190, 190, 190, 0.466); }
 }
-
-/* ///////////// */
-/* APP ANIMATION */
-/* ///////////// */
-
-/*
-.white_rectangle {
-  z-index: 999;
-  position: absolute;
-
-  width: 0%;
-  height: 100%;
-  background-color: rgb(255, 255, 255);
-}
-
-.app_open {
-  position: absolute;
-  top: 0;
-  right: 0;
-
-  animation-name: openApp;
-  animation-duration: 0.5s;
-  animation-fill-mode: forwards;
-}
-
-@keyframes openApp {
-  from {
-    width: 0%;
-  }
-  to {
-    width: 100%;
-  }
-}
-*/
-
 </style>

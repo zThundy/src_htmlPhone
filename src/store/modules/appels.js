@@ -1,14 +1,14 @@
 import PhoneAPI from './../../PhoneAPI'
 
 const state = {
-  appelsHistorique: [],
+  callsHistory: [],
   appelsInfo: null,
   ignoreControls: false
 }
 
 const getters = {
   ignoreControls: ({ ignoreControls }) => ignoreControls,
-  appelsHistorique: ({ appelsHistorique }) => appelsHistorique,
+  callsHistory: ({ callsHistory }) => callsHistory,
   appelsInfo: ({ appelsInfo }) => appelsInfo,
   appelsDisplayName (state, getters) {
     if (state.appelsInfo === null) {
@@ -55,7 +55,7 @@ const actions = {
   },
   deletePhoneHistory ({ commit, state }, { numero }) {
     PhoneAPI.deletePhoneHistory(numero)
-    commit('SET_APPELS_HISTORIQUE', state.appelsHistorique.filter(h => {
+    commit('SET_APPELS_HISTORIQUE', state.callsHistory.filter(h => {
       return h.num !== numero
     }))
   },
@@ -73,8 +73,8 @@ const actions = {
 }
 
 const mutations = {
-  SET_APPELS_HISTORIQUE (state, appelsHistorique) {
-    state.appelsHistorique = appelsHistorique
+  SET_APPELS_HISTORIQUE (state, callsHistory) {
+    state.callsHistory = callsHistory
   },
   SET_APPELS_INFO_IF_EMPTY (state, appelsInfo) {
     // console.log('SET_APPELS_INFO_IF_EMPTY')
@@ -110,7 +110,36 @@ export default {
 
 if (process.env.NODE_ENV !== 'production') {
   // eslint-disable-next-line
-  state.appelsHistorique = [{"id":1,"incoming":0,"num":"336-4557","owner":"336-4557","accepts":0,"time":1528374759000},{"id":2,"incoming":0,"num":"police","owner":"336-4557","accepts":1,"time":1528374787000},{"id":3,"incoming":1,"num":"555-5555","owner":"336-4557","accepts":1,"time":1528374566000},{"id":4,"incoming":1,"num":"555-5555","owner":"336-4557","accepts":0,"time":1528371227000}]
+  state.callsHistory = [{
+    'id': 1,
+    'incoming': 0,
+    'num': '336-4557',
+    'owner': '336-4557',
+    'accepts': 0,
+    'time': 1528374759000
+  }, {
+    'id': 2,
+    'incoming': 0,
+    'num': 'police',
+    'owner': '336-4557',
+    'accepts': 1,
+    'time': 1528374787000
+  }, {
+    'id': 3,
+    'incoming': 1,
+    'num': '555-5555',
+    'owner': '336-4557',
+    'accepts': 1,
+    'time': 1528374566000
+  }, {
+    'id': 4,
+    'incoming': 1,
+    'num': '555-5555',
+    'owner': '336-4557',
+    'accepts': 0,
+    'time': 1528371227000
+  }]
+
   state.appelsInfo = {
     initiator: false,
     id: 5,
