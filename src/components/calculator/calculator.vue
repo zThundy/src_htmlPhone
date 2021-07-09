@@ -74,7 +74,8 @@ export default {
   },
   methods: {
     onBackspace () {
-      if (this.calcLabel.length > 0) {
+      // console.log(this.calcLabel.length)
+      if (this.calcLabel.length > 0 /* || this.calcLabel.length === undefined */) {
         this.calcLabel = this.calcLabel.slice(0, -1)
         return
       }
@@ -105,6 +106,7 @@ export default {
       let curr = this.currentButton
       if (curr.label === '=') {
         this.calcLabel = this.computedResult || ''
+        this.calcLabel = String(this.calcLabel)
         this.calcValue = ''
         return
       }
@@ -114,7 +116,10 @@ export default {
         return
       }
       if (this.calcLabel.length > 15) return
-      if (isNaN(Number(curr.label)) && isNaN(Number(this.calcLabel[this.calcLabel.length - 1]))) {
+      // console.log(isNaN(Number(curr.label)), isNaN(Number(this.calcLabel[this.calcLabel.length - 1])))
+      // console.log(curr.label, this.calcLabel[this.calcLabel.length - 1])
+      if (isNaN(Number(curr.label)) && isNaN(Number(this.calcLabel[this.calcLabel.length - 1])) /* && this.calcLabel[this.calcLabel.length - 1] !== undefined */) {
+        this.calcLabel = String(this.calcLabel)
         this.calcLabel = this.calcLabel.substr(0, this.calcLabel.length - 1) + curr.label + this.calcLabel.substr(this.calcLabel.length - 1 + curr.label.length)
       } else {
         this.calcLabel += String(curr.label)
@@ -156,7 +161,7 @@ export default {
 }
 
 .select {
-  filter: brightness(70%);
+  filter: brightness(80%);
   background-color: rgba(128, 128, 128, 0.2);
 }
 
@@ -200,8 +205,8 @@ export default {
   text-align: center;
   /* margin-top: auto; */
   /* margin-bottom: auto; */
-  border-top: .5px solid grey;
-  border-left: .5px solid grey;
+  border-top: .5px solid rgb(195, 195, 195);
+  border-left: .5px solid rgb(195, 195, 195);
 }
 
 .number-span {
