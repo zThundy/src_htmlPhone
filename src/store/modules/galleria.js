@@ -19,17 +19,23 @@ const actions = {
   clearGallery ({ commit, state }) {
     commit('CLEAR_GALLERY')
     window.localStorage['gc_fotografie'] = []
+  },
+  deleteSinglePicture ({ commit, state }, index) {
+    commit('DELETE_PICTURE', index)
   }
 }
 
 const mutations = {
   APP_PHOTO (state, data) {
     var foto = { link: data.link }
-    // state.fotografie[state.fotografie.length] = { link: data.link, data: data.currentDate }
     state.fotografie.push(foto)
   },
   CLEAR_GALLERY (state) {
     state.fotografie = []
+  },
+  DELETE_PICTURE (state, index) {
+    state.fotografie.splice(index - 1, 1)
+    window.localStorage['gc_fotografie'] = JSON.stringify(state.fotografie)
   }
 }
 

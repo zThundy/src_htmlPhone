@@ -39,7 +39,7 @@ export default {
     ...mapGetters(['LangString', 'fotografie', 'bluetooth'])
   },
   methods: {
-    ...mapActions(['setBackground', 'clearGallery']),
+    ...mapActions(['setBackground', 'clearGallery', 'deleteSinglePicture']),
     ...mapMutations(['CHANGE_BRIGHTNESS_STATE']),
     scrollIntoView: function () {
       this.$nextTick(() => {
@@ -92,7 +92,8 @@ export default {
           { id: 1, title: this.LangString('APP_GALLERIA_SET_WALLPAPER'), icons: 'fa-mobile' },
           { id: 2, title: this.LangString('APP_GALLERIA_INOLTRA'), icons: 'fa-paper-plane' },
           { id: 4, title: this.LangString('APP_GALLERIA_SEND_BLUETOOTH'), icons: 'fa-share-square' },
-          { id: 3, title: this.LangString('APP_GALLERIA_ELIMINA_TUTTO'), icons: 'fa-trash', color: 'orange' },
+          { id: 5, title: this.LangString('APP_GALLERIA_ELIMINA'), icons: 'fa-trash', color: 'orange' },
+          { id: 3, title: this.LangString('APP_GALLERIA_ELIMINA_TUTTO'), icons: 'fa-trash', color: 'red' },
           { id: -1, title: this.LangString('CANCEL'), icons: 'fa-undo', color: 'red' }
         ]
         const data = await Modal.CreateModal({ scelte })
@@ -135,6 +136,9 @@ export default {
               this.$phoneAPI.sendErrorMessage('Il bluetooth è disattivo')
               this.ignoredControls = false
             }
+            break
+          case 5:
+            this.deleteSinglePicture(this.currentSelect)
             break
         }
       } catch (e) { } finally { this.ignoredControls = false }

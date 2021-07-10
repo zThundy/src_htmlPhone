@@ -70,9 +70,6 @@ import EmojiSplash from '@/components/emoji/emojisplash'
 import Calculator from '@/components/calculator/calculator'
 import CalculatorSplash from '@/components/calculator/calculatorsplash'
 
-// import AppStore from '@/components/appstore/appstore'
-// import AppStoreSplash from '@/components/appstore/appstoresplash'
-
 Vue.use(Router)
 
 export default new Router({
@@ -257,16 +254,6 @@ export default new Router({
       name: 'darkweb.screen',
       component: DarkwebScreen
     },
-    // {
-    //   path: '/appstore/splash',
-    //   name: 'appstore.splash',
-    //   component: AppStoreSplash
-    // },
-    // {
-    //   path: '/appstore',
-    //   name: 'appstore',
-    //   component: AppStore
-    // },
     {
       path: '/email',
       name: 'email',
