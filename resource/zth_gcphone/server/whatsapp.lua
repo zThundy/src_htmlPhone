@@ -1,6 +1,6 @@
 local WHATSAPP_GROUPS = {}
 
-local function WhatsappShowNotificationError(player, titile, message)
+local function WhatsappShowNotificationError(player, title, message)
 	--[[
 		Vue.notify({
 			message: store.getters.LangString(data.message),
@@ -20,7 +20,7 @@ local function WhatsappShowNotificationError(player, titile, message)
 	})
 end
 
-local function WhatsappShowNotificationSuccess(player, titile, message)
+local function WhatsappShowNotificationSuccess(player, title, message)
 	--[[
 		Vue.notify({
 			message: store.getters.LangString(data.message),
