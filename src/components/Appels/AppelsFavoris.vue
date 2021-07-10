@@ -16,7 +16,7 @@ export default {
     return { }
   },
   computed: {
-    ...mapGetters(['config', 'ignoreControls']),
+    ...mapGetters(['LangString', 'config', 'ignoreControls']),
     callList () {
       return this.config.serviceCall || []
     }
@@ -31,7 +31,7 @@ export default {
       if (response.title === 'Cancella' || response.title === 'cancel') { this.updateIgnoredControls(false); return }
       // dopo aver controllato se effettivamente si preme una opzione valida
       if (response.title !== 'Cancella') {
-        const data = await Modal.CreateTextModal({ })
+        const data = await Modal.CreateTextModal({ title: this.LangString('APP_PHONE_FAVOURITES_MODAL_TITLE') })
         if (data.text !== undefined || data.text !== null) {
           this.updateIgnoredControls(false)
           // this.$phoneAPI.callEvent(rep.eventName, rep.type)

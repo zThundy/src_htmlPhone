@@ -57,27 +57,30 @@ export default {
     async addItem (event = {}) {
       const dataNotif = { ...event, id: this.currentId++, duration: parseInt(event.duration) || 3000 }
       if (dataNotif.sound) {
-        var path = '/html/static/sound/' + dataNotif.sound
+        // var path = '/html/static/sound/' + dataNotif.sound
         if (dataNotif.sound === undefined || dataNotif.sound === null) return
-        if (this.soundList[dataNotif.id] !== undefined) {
-          this.soundList[dataNotif.id].volume = Number(this.volume)
-        } else {
-          this.audioElement.src = path
-          this.audioElement.volume = Number(this.volume)
-          this.soundList[dataNotif.id] = this.audioElement
-        }
+        // if (this.soundList[dataNotif.id] !== undefined) {
+        //   this.soundList[dataNotif.id].volume = Number(this.volume)
+        // } else {
+        //   this.audioElement.src = path
+        //   this.audioElement.volume = Number(this.volume)
+        //   this.soundList[dataNotif.id] = this.audioElement
+        // }
       }
       if (!event.hidden) {
         this.list.push(dataNotif)
         if (this.currentShowing === null) this.showNotification(dataNotif)
+      } else {
+        this.$phoneAPI.onplaySound({ volume: this.volume, sound: dataNotif.sound, loop: false })
       }
     },
     showNotification (dataNotif) {
       this.currentShowing = dataNotif
-      if (this.soundList[dataNotif.id]) { this.soundList[dataNotif.id].play() }
+      // if (this.soundList[dataNotif.id]) { this.soundList[dataNotif.id].play() }
+      this.$phoneAPI.onplaySound({ volume: this.volume, sound: this.currentShowing.sound, loop: false })
       setTimeout(() => {
         this.list = this.list.filter(n => n.id !== this.currentShowing.id)
-        delete this.soundList[this.currentShowing.id]
+        // delete this.soundList[this.currentShowing.id]
         this.currentShowing = null
         setTimeout(() => {
           if (this.list[0]) { this.showNotification(this.list[0]) }

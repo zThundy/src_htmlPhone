@@ -452,10 +452,14 @@ class PhoneAPI {
     if (this.soundList[data.sound] !== undefined) {
       this.soundList[data.sound].volume = Number(data.volume)
     } else {
+      // console.log('defined new soundList', data.sound)
       this.soundList[data.sound] = new Audio()
       this.soundList[data.sound].src = path
       this.soundList[data.sound].loop = data.loop || false
       this.soundList[data.sound].play()
+      this.soundList[data.sound].onended = () => {
+        delete this.soundList[data.sound]
+      }
     }
   }
 
