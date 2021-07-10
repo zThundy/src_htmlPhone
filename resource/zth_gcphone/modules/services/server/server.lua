@@ -9,7 +9,7 @@ local function GetPlayersFromJob(job)
 	return jobPlayers
 end
 
-function notifyAlertSMS(number, alert, listSrc)
+function notifyAlertSMS(number, alert, listSrc, services)
 	local mess = Config.Language["EMERGENCY_CALL_MESSAGE"]:format(alert.numero, alert.message)
 	if alert.coords ~= nil then mess = mess .. '\n GPS: ' .. alert.coords.x .. ', ' .. alert.coords.y end
 
@@ -21,8 +21,8 @@ function notifyAlertSMS(number, alert, listSrc)
 				local phone_number = gcPhoneT.getPhoneNumber(xPlayer.identifier)
 
 				if phone_number ~= nil then
-					if Config.ServicesNames[number] then
-						_addMessage(Config.ServicesNames[number], phone_number, mess, 0, function(message)
+					if services[number] then
+						_addMessage(services[number], phone_number, mess, 0, function(message)
 							-- local message = gcPhoneT.internalAddMessage(Config.ServicesNames[number], phone_number, mess, 0)
 							TriggerClientEvent("gcPhone:receiveMessage", source, message)
 						end)
@@ -41,7 +41,7 @@ function notifyAlertSMS(number, alert, listSrc)
 	end
 end
 
-gcPhoneT.servicesStartCall = function(number, message, coords, hideNumber)
+gcPhoneT.servicesStartCall = function(number, message, coords, hideNumber, services)
 	local player = source
 	local phone_number = nil
 
@@ -51,5 +51,5 @@ gcPhoneT.servicesStartCall = function(number, message, coords, hideNumber)
 	end
 	
 	if hideNumber or not phone_number then phone_number = Config.Language["EMERGENCY_CALL_NO_NUMBER"] end
-	notifyAlertSMS(number, { message = message, coords = coords, numero = phone_number }, GetPlayersFromJob(number))
+	notifyAlertSMS(number, { message = message, coords = coords, numero = phone_number }, GetPlayersFromJob(number), services)
 end

@@ -583,6 +583,7 @@ class PhoneAPI {
   }
 
   async sendEmergencyMessage (data) {
+    data.services = this.config.serviceCall
     return this.post('chiamataEmergenza', data)
   }
 

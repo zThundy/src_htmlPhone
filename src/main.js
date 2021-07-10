@@ -5,10 +5,7 @@ import store from './store'
 import VueTimeago from './TimeAgo'
 import PhoneAPI from './PhoneAPI'
 import Notification from './components/Notification'
-import AutoFocus from './directives/autofocus'
-// import VueRecord from 'vue-record'
 
-// Vue.use(VueRecord)
 Vue.use(VueTimeago)
 Vue.use(Notification)
 Vue.config.productionTip = false
@@ -28,7 +25,12 @@ const filter = function (text, length, clamp) {
   return content[1].length > length ? `${content[0]}.${content[1].slice(0, length) + clamp}` : content
 }
 
-Vue.directive('autofocus', AutoFocus)
+const directive = {
+  inserted (el) {
+    el.focus()
+  }
+}
+Vue.directive('autofocus', directive)
 Vue.filter('truncate', filter)
 
 /* eslint-disable no-new */

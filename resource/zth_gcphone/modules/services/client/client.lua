@@ -12,9 +12,24 @@ end
 
 local ids = 0
 
+function GetServicesList(serv)
+    local services = {}
+    for _, v in pairs(serv) do
+        if v.subMenu then
+            for _, sub in pairs(v.subMenu) do
+                services[sub.type.number] = v.display
+                break
+            end
+        end
+    end
+    return services
+end
+
 RegisterNetEvent('esx_addons_gcphone:call')
 AddEventHandler('esx_addons_gcphone:call', function(data)
     local coords = data.coords
+    local services = GetServicesList(data.services)
+    
     if coords == nil then
         coords = GetEntityCoords(GetPlayerPed(-1))
     end
@@ -65,6 +80,6 @@ AddEventHandler('esx_addons_gcphone:call', function(data)
             x = coords.x,
             y = coords.y,
             z = coords.z
-        })
+        }, false, services)
     end
 end)
