@@ -4,7 +4,7 @@ TriggerEvent('esx:getSharedObject', function(obj) ESX = obj end)
 
 local tunnel = module("modules/TunnelV2")
 gcPhoneT = {}
-tunnel.bindInterface("gcphone_server_t", gcPhoneT)
+tunnel.bindInterface(Config.AuthKey, "gcphone_server_t", gcPhoneT)
 
 Chiamate = {}
 CALL_INDEX = 10

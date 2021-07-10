@@ -1,6 +1,6 @@
 cartesimT = {}
 local tunnel = module("zth_gcphone", "modules/TunnelV2")
-tunnel.bindInterface("cartesim_server_t", cartesimT)
+tunnel.bindInterface(Config.AuthKey, "cartesim_server_t", cartesimT)
 
 ESX.RegisterUsableItem(Config.SimItemName, function(source)
 	local xPlayer = ESX.GetPlayerFromId(source)
@@ -222,7 +222,7 @@ ESX.RegisterServerCallback("esx_cartesim:GetOffertaByNumber", function(source, c
 	end)
 end)
 
-ESX.RegisterServerCallback("esx_cartesim:rinnovaOfferta", function(source, cb, label, number)
+ESX.RegisterServerCallback("esx_cartesim:renewOffer", function(source, cb, label, number)
 	local xPlayer = ESX.GetPlayerFromId(source)
 	local moneys = xPlayer.getAccount("bank").money
 
@@ -279,7 +279,6 @@ ESX.RegisterServerCallback("esx_cartesim:acquistaOffertaCheckSoldi", function(so
 		CACHED_NUMBERS[number].piano_tariffatio = table.label
 
 		cb(true)
-		return
 	else
 		cb(false)
 	end

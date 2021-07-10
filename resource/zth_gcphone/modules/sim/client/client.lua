@@ -1,6 +1,6 @@
 local tunnel = module("zth_gcphone", "modules/TunnelV2")
 -- gcPhoneServerT = tunnel.getInterface("gcphone_server_t", "gcphone_server_t")
-cartesimServerT = tunnel.getInterface("cartesim_server_t", "cartesim_server_t")
+cartesimServerT = tunnel.getInterface(Config.AuthKey, "cartesim_server_t", "cartesim_server_t")
 
 Citizen.CreateThread(function()
 	while ESX == nil do Citizen.Wait(100) end
@@ -179,7 +179,7 @@ function openOfferteMenu()
 					end
 
 					if data2.current.value == "rinnova_offerta" then
-						ESX.TriggerServerCallback("esx_cartesim:rinnovaOfferta", function(ok)
+						ESX.TriggerServerCallback("esx_cartesim:renewOffer", function(ok)
 							if ok then
 								ESX.ShowNotification(Config.Language["SIM_TARIFFS_RENEWED_OK"])
 							else

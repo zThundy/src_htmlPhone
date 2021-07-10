@@ -1,6 +1,6 @@
 -- Configuration
 local tunnel = module("modules/TunnelV2")
-gcPhoneServerT = tunnel.getInterface("gcphone_server_t", "gcphone_server_t")
+gcPhoneServerT = tunnel.getInterface(Config.AuthKey, "gcphone_server_t", "gcphone_server_t")
 
 menuIsOpen = false
 contacts = {}

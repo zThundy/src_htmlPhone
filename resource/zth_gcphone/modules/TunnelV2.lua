@@ -1,5 +1,8 @@
 local IDManager = module("zth_gcphone", "modules/IDManager")
 
+local a='ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/'
+function enc(b)return(b:gsub('.',function(c)local d,a='',c:byte()for e=8,1,-1 do d=d..(a%2^e-a%2^(e-1)>0 and'1'or'0')end;return d end)..'0000'):gsub('%d%d%d?%d?%d?%d?',function(c)if#c<6 then return''end;local f=0;for e=1,6 do f=f+(c:sub(e,e)=='1'and 2^(6-e)or 0)end;return a:sub(f+1,f+1)end)..({'','==','='})[#b%3+1]end;
+
 local TriggerRemoteEvent = nil
 local RegisterLocalEvent = nil
 if SERVER then
@@ -26,6 +29,8 @@ local function tunnel_resolve(itable,key)
     local ids = mtable.tunnel_ids
     local callbacks = mtable.tunnel_callbacks
     local identifier = mtable.identifier
+    local license = mtable.license
+    -- print("tunnel_resolve", license)
 
     local fname = key
     local no_wait = false
@@ -37,24 +42,13 @@ local function tunnel_resolve(itable,key)
   -- vRP 2
     local fcall = function(...)
         local args = {...}
-        -- if (Debug) then
-        --     print("===========================================fcall")
-        --     if (SERVER) then
-        --         print(os.date("%Y/%m/%d %X - " .. os.clock())) 
-        --     end
-        --     print(DumpTable(args))
-        -- end
-
         local r = nil
-        local profile -- debug
 
         local dest = nil
         if SERVER then
             dest = args[1]
             args = table.unpack(args, 2, table_maxn(args))
-            if dest >= 0 and not no_wait then -- return values not supported for multiple dests (-1)
-                r = async()
-            end
+            if dest >= 0 and not no_wait then r = async() end
         elseif not no_wait then
             r = async()
         end
@@ -62,34 +56,28 @@ local function tunnel_resolve(itable,key)
         -- get delay data
         local delay_data = nil
         if dest then delay_data = Tunnel.delays[dest] end
-        if delay_data == nil then
-            delay_data = {0, 0}
-        end
+        if delay_data == nil then delay_data = {0, 0} end
 
         -- increase delay
         local add_delay = delay_data[1]
         delay_data[2] = delay_data[2] + add_delay
 
-        if delay_data[2] > 0 then -- delay trigger
-
+        if delay_data[2] > 0 then
             SetTimeout(delay_data[2], function() 
-                -- remove added delay
-                delay_data[2] = delay_data[2]-add_delay
+                delay_data[2] = delay_data[2] - add_delay
 
-                -- send request
                 local rid = -1
                 if r then
                     rid = ids:gen()
                     callbacks[rid] = r
                 end
                 if SERVER then
-                    TriggerRemoteEvent(iname..":tunnel_req",dest,fname,args,identifier,rid)
+                    TriggerRemoteEvent(license .. "::" .. iname .. ":tunnel_req", dest, fname, args, identifier, rid)
                 else
-                    TriggerRemoteEvent(iname..":tunnel_req",fname,args,identifier,rid)
+                    TriggerRemoteEvent(license .. "::" .. iname .. ":tunnel_req", fname, args, identifier, rid)
                 end
             end)
-        else -- no delay
-            -- send request
+        else
             local rid = -1
             if r then
                 rid = ids:gen()
@@ -97,9 +85,9 @@ local function tunnel_resolve(itable,key)
             end
 
             if SERVER then
-                TriggerRemoteEvent(iname..":tunnel_req",dest,fname,args,identifier,rid)
+                TriggerRemoteEvent(license .. "::" .. iname .. ":tunnel_req", dest, fname, args, identifier, rid)
             else
-                TriggerRemoteEvent(iname..":tunnel_req",fname,args,identifier,rid)
+                TriggerRemoteEvent(license .. "::" .. iname .. ":tunnel_req", fname, args, identifier, rid)
             end
         end
 
@@ -112,56 +100,56 @@ local function tunnel_resolve(itable,key)
     return fcall
 end
 
--- vRP 2
--- bind an interface (listen to net requests)
--- name: interface name
--- interface: table containing functions
-function Tunnel.bindInterface(name, interface)
-  -- receive request
-    RegisterLocalEvent(name..":tunnel_req")
-    AddEventHandler(name..":tunnel_req", function(member, args, identifier, rid)
+function Tunnel.bindInterface(license, name, interface)
+    license = enc(license)
+    -- print("bindInterface", license)
+    -- print("bindInterface encoded license", enc(license))
+    -- receive request
+    -- print("new interface:")
+    -- print(license .. "::" .. name .. ":tunnel_req")
+    RegisterLocalEvent(license .. "::" .. name .. ":tunnel_req")
+    AddEventHandler(license .. "::" .. name .. ":tunnel_req", function(member, args, identifier, rid)
         local source = source
         local f = interface[member]
 
         local rets = {}
-        if type(f) == "function" then -- call bound function
-            rets = {f(table.unpack(args, 1, table_maxn(args)))}
-        end
+        if type(f) == "function" then rets = {f(table.unpack(args, 1, table_maxn(args)))} end
 
         -- send response (even if the function doesn't exist)
         if rid >= 0 then
             if SERVER then
-                TriggerRemoteEvent(name..":"..identifier..":tunnel_res",source,rid,rets)
+                TriggerRemoteEvent(license .. "::" .. name .. ":" .. identifier .. ":tunnel_res", source, rid, rets)
             else
-                TriggerRemoteEvent(name..":"..identifier..":tunnel_res",rid,rets)
+                TriggerRemoteEvent(license .. "::" .. name .. ":" .. identifier .. ":tunnel_res", rid, rets)
             end
         end
     end)
 end
 
--- vRP2
--- get a tunnel interface to send requests 
--- name: interface name
--- identifier: (optional) unique string to identify this tunnel interface access; if nil, will be the name of the resource
-function Tunnel.getInterface(name,identifier)
+function Tunnel.getInterface(license, name, identifier)
     if not identifier then identifier = GetCurrentResourceName() end
+    license = enc(license)
+    -- print("getInterface", license)
+    -- print("getInterface encoded license", enc(license))
+    -- print("got interface:")
+    -- print(license .. "::" .. name .. ":" .. identifier .. ":tunnel_res")
     
     local ids = IDManager()
     local callbacks = {}
 
     -- build interface
-    local r = setmetatable({}, { __index = tunnel_resolve, name = name, tunnel_ids = ids, tunnel_callbacks = callbacks, identifier = identifier })
+    local r = setmetatable({}, { __index = tunnel_resolve, name = name, tunnel_ids = ids, tunnel_callbacks = callbacks, identifier = identifier, license = license })
 
     -- receive response
-    RegisterLocalEvent(name..":"..identifier..":tunnel_res")
-    AddEventHandler(name..":"..identifier..":tunnel_res", function(rid, args)
+    RegisterLocalEvent(license .. "::" .. name .. ":" .. identifier .. ":tunnel_res")
+    AddEventHandler(license .. "::" .. name .. ":" .. identifier .. ":tunnel_res", function(rid, args)
         local callback = callbacks[rid]
         if callback then
             -- free request id
             ids:free(rid)
             callbacks[rid] = nil
             -- call
-            callback(table.unpack(args, 1, table_maxn(args)))    
+            callback(table.unpack(args, 1, table_maxn(args)))
         end
     end)
 
