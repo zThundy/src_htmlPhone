@@ -249,15 +249,6 @@ ESX.RegisterServerCallback("esx_cartesim:renewOffer", function(source, cb, label
 	end
 end)
 
-ESX.RegisterServerCallback("esx_cartesim:getPianoTariffario", function(source, cb, label)
-	for k, v in pairs(Config.Tariffs) do
-		if v.label == label then
-			cb(v)
-			return
-		end
-	end
-end)
-
 ESX.RegisterServerCallback("esx_cartesim:acquistaOffertaCheckSoldi", function(source, cb, table, number)
 	local xPlayer = ESX.GetPlayerFromId(source)
 	local moneys = xPlayer.getAccount("bank").money

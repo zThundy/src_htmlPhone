@@ -839,6 +839,12 @@ gcPhoneT.requestOffertaFromDatabase = function()
             tonumber(sim.messaggi),
             tonumber(sim.dati)
         }, sim.piano_tariffario)
+    else
+        TriggerClientEvent("gcPhone:sendRequestedOfferta", player, {
+            0,
+            0,
+            0
+        }, "nessuno")
     end
 end
 

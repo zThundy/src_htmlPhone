@@ -330,18 +330,22 @@ end)
 
 RegisterNetEvent("gcPhone:sendRequestedOfferta")
 AddEventHandler("gcPhone:sendRequestedOfferta", function(dati, label)
-    ESX.TriggerServerCallback("esx_cartesim:getPianoTariffario", function(massimo)
-        -- print("Tariffa telefono", massimo.minuti, massimo.messaggi, massimo.dati)
-        -- local info = 
+    if label == "nessuno" then
         SendNUIMessage({ event = "updateOfferta", data = {
             current = dati,
-            max = {
-                massimo.minuti,
-                massimo.messaggi,
-                massimo.dati
-            }
+            max = { 0, 0, 0 }
         } })
-    end, label)
+    else
+        for k, v in pairs(Config.Tariffs) do
+            if v.label == label then
+                SendNUIMessage({ event = "updateOfferta", data = {
+                    current = dati,
+                    max = { v.minuti, v.messaggi, v.dati }
+                } })
+                break
+            end
+        end
+    end
 end)
 
 RegisterNetEvent("gcPhone:candidates")
