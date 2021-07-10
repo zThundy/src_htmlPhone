@@ -12,8 +12,6 @@ stoppedPlayingUnreachable = false
 NOTIFICATIONS_ENABLED = true
 GLOBAL_AIRPLANE = false
 
-currentPlaySound = false
-
 volume = 0.5
 
 radioPower = 0
@@ -120,7 +118,6 @@ end
 
 RegisterNetEvent("gcPhone:updatePhoneNumber")
 AddEventHandler("gcPhone:updatePhoneNumber", function(phone_number)
-    -- myPhoneNumber = phone_number
     SendNUIMessage({ event = 'updateMyPhoneNumber', myPhoneNumber = phone_number })
 end)
 
@@ -151,26 +148,9 @@ AddEventHandler("gcPhone:allMessage", function(allmessages, notReceivedMessages)
     end
 end)
 
---[[
-    RegisterNetEvent("gcPhone:getBourse")
-    AddEventHandler("gcPhone:getBourse", function(bourse)
-        SendNUIMessage({ event = 'updateBourse', bourse = bourse })
-    end)
-]]
-
 RegisterNetEvent("gcphone:updateValoriDati")
 AddEventHandler("gcphone:updateValoriDati", function(table)
     SendNUIMessage({ event = "updateDati", data = table })
-end)
-
-RegisterNetEvent("gcphone:updateRadioSignal")
-AddEventHandler("gcphone:updateRadioSignal", function(s_radioPower)
-    if radioPower == 0 and radioPower ~= s_radioPower then
-        gcPhoneServerT.allUpdate()
-    end
-
-    radioPower = s_radioPower
-    SendNUIMessage({ event = "updateSegnale", potenza = s_radioPower })
 end)
 
 RegisterNetEvent("gcPhone:receiveMessage")
@@ -286,8 +266,6 @@ AddEventHandler("gcPhone:rejectCall", function(infoCall, callDropped)
     if infoCall and infoCall.updateMinuti then
         if infoCall.startCall_time and infoCall.endCall_time then infoCall.callTime = infoCall.endCall_time - infoCall.startCall_time end
         if not inCall then infoCall.callTime = 0 end
-        -- print(secondi)
-        -- print(DumpTable(infoCall))
         gcPhoneServerT.updateParametroTariffa(infoCall.transmitter_num, "minuti", (infoCall.secondiRimanenti - infoCall.callTime))
     end
 
@@ -320,13 +298,8 @@ end)
 
 RegisterNetEvent("gcPhone:historyCalls")
 AddEventHandler("gcPhone:historyCalls", function(history)
-    -- print(DumpTable(history))
     SendNUIMessage({ event = 'historyCalls', history = history })
 end)
-
---====================================================================================
---  Event NUI - Appels
---====================================================================================
 
 RegisterNetEvent("gcPhone:sendRequestedOfferta")
 AddEventHandler("gcPhone:sendRequestedOfferta", function(dati, label)

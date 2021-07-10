@@ -115,7 +115,8 @@ function ObfuscateFile(path, file, cb) {
         if (err) { return console.log(err) }
         
         obf.stop()
-        console.log(chalk.cyan('  FILE OFFUSCATO (' + file + '). FANCULO DUMPERS.\n  SEED GENERATO: ' + newseed))
+        // console.log(chalk.cyan('  FILE OFFUSCATO (' + file + '). FANCULO DUMPERS.\n  SEED GENERATO: ' + newseed))
+        console.log(chalk.cyan('  FILE OFFUSCATO (' + file + '). FANCULO DUMPERS.\n  SEED GENERATO: ****'))
         if (cb) cb();
       });
     });

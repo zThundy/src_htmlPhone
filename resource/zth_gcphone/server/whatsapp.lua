@@ -224,8 +224,11 @@ gcPhoneT.whatsapp_addGroupMembers = function(data)
                 ['@partecipanti'] = json.encode(partecipanti)
             }, function(rowsChanged)
                 if rowsChanged > 0 then
-                    UpdateGroupsCache()
-                    UpdateGroupLabels(player)
+                    if WHATSAPP_GROUPS[tonumber(data.gruppo.id)] then
+                        WHATSAPP_GROUPS[tonumber(data.gruppo.id)].partecipanti = json.encode(partecipanti)
+                        UpdateGroupLabels(player)
+                    end
+                    -- UpdateGroupsCache()
                     -- TriggerClientEvent("gcphone:whatsapp_updateGruppi", player, UpdateGroupsCache(), myNumber)
                 end
             end)
@@ -268,7 +271,8 @@ gcPhoneT.whatsapp_leaveGroup = function(group)
 
             if #partecipanti == 0 then
                 MySQL.Async.execute("DELETE FROM phone_whatsapp_groups WHERE id = @id", {['@id'] = group.id}, function()
-                    UpdateGroupsCache()
+                    -- UpdateGroupsCache()
+                    WHATSAPP_GROUPS[tonumber(group.id)] = nil
                     UpdateGroupLabels(player)
                 end)
                 return
@@ -278,7 +282,8 @@ gcPhoneT.whatsapp_leaveGroup = function(group)
                 ['@partecipanti'] = json.encode(partecipanti),
                 ['@id'] = group.id
             }, function()
-                UpdateGroupsCache()
+                -- UpdateGroupsCache()
+                WHATSAPP_GROUPS[tonumber(group.id)].partecipanti = json.encode(partecipanti)
                 UpdateGroupLabels(player)
             end)
         end)
@@ -347,7 +352,13 @@ gcPhoneT.whatsapp_creaNuovoGruppo = function(data)
             ['@partecipanti'] = json.encode(partecipanti)
         }, function(id)
             if id then
-                UpdateGroupsCache()
+                WHATSAPP_GROUPS[tonumber(id)] = {
+                    icona = data.groupImage or '/html/static/img/app_whatsapp/defaultgroup.png',
+                    id = id,
+                    gruppo = data.groupTitle,
+                    partecipanti = json.encode(partecipanti)
+                }
+                -- UpdateGroupsCache()
                 UpdateGroupLabels(player)
             else
                 WhatsappShowNotificationError(player, "WHATSAPP_INFO_TITLE", "WHATSAPP_ERROR_CREATING_GROUP")
@@ -367,7 +378,8 @@ gcPhoneT.whatsapp_deleteGroup = function(data)
     local phone_number = gcPhoneT.getPhoneNumber(identifier)
     MySQL.Async.execute("DELETE FROM phone_whatsapp_groups WHERE id = @id", {['@id'] = id}, function()
         MySQL.Async.execute("DELETE FROM phone_whatsapp_messages WHERE idgruppo = @id", {['@id'] = id}, function()
-            UpdateGroupsCache()
+            -- UpdateGroupsCache()
+            WHATSAPP_GROUPS[tonumber(id)] = nil
             TriggerClientEvent("gcphone:whatsapp_updateGruppi", player, WHATSAPP_GROUPS, phone_number)
         end)
     end)
@@ -385,7 +397,9 @@ ESX.RegisterServerCallback("gcphone:whatsapp_editGroup", function(source, cb, gr
             ['@icona'] = group.icona,
             ['@id'] = group.id
         }, function(rowsChanged)
-            UpdateGroupsCache()
+            WHATSAPP_GROUPS[tonumber(group.id)].gruppo = group.gruppo
+            WHATSAPP_GROUPS[tonumber(group.id)].icona = group.icona
+            -- UpdateGroupsCache()
             UpdateGroupLabels(player)
             if rowsChanged > 0 then cb(true) else cb(false) end
         end)
