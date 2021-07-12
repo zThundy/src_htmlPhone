@@ -100,8 +100,8 @@ export default {
       } else {
         scelte = [{id: 2, title: this.LangString('APP_WHATSAPP_NEW_GROUP'), icons: 'fa-plus', color: 'green'}]
       }
-      const rep = await Modal.CreateModal({ scelte: scelte })
-      switch (rep.id) {
+      const resp = await Modal.CreateModal({ scelte: scelte })
+      switch (resp.id) {
         case 1:
           this.ignoreControls = false
           if (this.currentSelected === 1 || this.gruppi.length === 0) { this.currentSelected = -1 } else { this.currentSelected = 0 }
