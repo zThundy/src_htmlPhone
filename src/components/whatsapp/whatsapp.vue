@@ -2,7 +2,7 @@
   <div style="width: 330px; height: 100%;">
     <PhoneTitle :title="LangString('APP_WHATSAPP_TITLE')" :textColor="'black'" :backgroundColor="'rgb(112,255,125)'" @back="onBackspace"/>
 
-    <div v-for="(s, i) in gruppi" :key="s.gruppo" class="whatsapp-menu-item" :class="{select: i === currentSelected}">
+    <div v-for="(s, i) in gruppi" :key="s.gruppo" class="whatsapp-menu-item" :class="{ select: i === currentSelected }">
       <img :src="hasImage(s)" class="immagineGruppo">
       <div class="titoloGruppo">{{ formatEmoji(s.gruppo) }}
         <div class="sottotitoloGruppo">{{ s.partecipantiString }}</div>
@@ -168,7 +168,7 @@ export default {
   flex-basis: 0;
   height: 75px;
   padding-top: 10px;
-  padding-left: 5px;
+  padding-left: 10px;
   display: flex;
   color: rgb(108, 250, 108);
 }

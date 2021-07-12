@@ -12,7 +12,6 @@
           <!-- <transition-page :isChanging="isChanging"/> :class="{ 'transition': isChanging }" :style="getStyle(brightness)" -->
           <!-- <video id="target-stream" class="content-area" style="display: none;" autoplay muted></video> -->
           <notification />
-
           <router-view />
           <!--
             assegnando i componenti inferiori a vari path posso mostrare più
@@ -34,7 +33,6 @@
 </template>
 
 <script>
-
 import './PhoneBaseStyle.scss'
 import './assets/css/font-awesome.min.css'
 import './assets/css/cssgram.css'

@@ -3,6 +3,7 @@ import PhoneAPI from './../../PhoneAPI'
 
 const state = {
   show: process.env.NODE_ENV !== 'production',
+  // show: false,
   tempoHide: false,
   myPhoneNumber: '555#####',
   background: JSON.parse(window.localStorage['gc_background'] || null),

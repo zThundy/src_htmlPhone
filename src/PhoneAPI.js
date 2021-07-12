@@ -1,6 +1,6 @@
 import store from '@/store'
 import VoiceRTC from './VoiceRTC'
-import VideoRTC from './VideoRTC'
+// import VideoRTC from './VideoRTC'
 import Vue from 'vue'
 import aes256 from 'aes256'
 
@@ -203,7 +203,7 @@ class PhoneAPI {
       }
       if (this.config.enableWebRTC === true) {
         this.voiceRTC = new VoiceRTC(this.config.RTCConfig, this.config.RTCFilters)
-        this.videoRTC = new VideoRTC(this.config.RTCConfig)
+        // this.videoRTC = new VideoRTC(this.config.RTCConfig)
         USE_VOICE_RTC = true
       }
       this.notififyUseRTC(this.config.enableWebRTC)
@@ -299,43 +299,43 @@ class PhoneAPI {
   }
 
   // Video Calls
-  async startVideoCall (numero, extraData = undefined) {
-    if (USE_VOICE_RTC === true) {
-      const rtcOffer = await this.videoRTC.prepareCall()
-      return this.post('startVideoCall', { numero, rtcOffer, extraData })
-    } else {
-      return this.sendErrorMessage(store.getters.LangString('PHONE_RTC_NOT_ENABLED'))
-    }
-  }
+  // async startVideoCall (numero, extraData = undefined) {
+  //   if (USE_VOICE_RTC === true) {
+  //     const rtcOffer = await this.videoRTC.prepareCall()
+  //     return this.post('startVideoCall', { numero, rtcOffer, extraData })
+  //   } else {
+  //     return this.sendErrorMessage(store.getters.LangString('PHONE_RTC_NOT_ENABLED'))
+  //   }
+  // }
 
-  async acceptVideoCall (infoCall) {
-    if (USE_VOICE_RTC === true) {
-      const rtcAnswer = await this.videoRTC.acceptCall(infoCall)
-      return this.post('acceptVideoCall', { infoCall, rtcAnswer })
-    } else {
-      return this.sendErrorMessage(store.getters.LangString('PHONE_RTC_NOT_ENABLED'))
-    }
-  }
+  // async acceptVideoCall (infoCall) {
+  //   if (USE_VOICE_RTC === true) {
+  //     const rtcAnswer = await this.videoRTC.acceptCall(infoCall)
+  //     return this.post('acceptVideoCall', { infoCall, rtcAnswer })
+  //   } else {
+  //     return this.sendErrorMessage(store.getters.LangString('PHONE_RTC_NOT_ENABLED'))
+  //   }
+  // }
 
-  async rejectVideoCall (infoCall) {
-    return this.post('rejectVideoCall', { infoCall })
-  }
+  // async rejectVideoCall (infoCall) {
+  //   return this.post('rejectVideoCall', { infoCall })
+  // }
 
-  onwaitingVideoCall (data) {
-    store.commit('SET_APPELS_INFO_IF_EMPTY', { ...data.infoCall, initiator: data.initiator })
-  }
+  // onwaitingVideoCall (data) {
+  //   store.commit('SET_APPELS_INFO_IF_EMPTY', { ...data.infoCall, initiator: data.initiator })
+  // }
 
-  onacceptVideoCall (data) {
-    if (USE_VOICE_RTC === true) {
-      if (data.initiator === true) {
-        this.voiceRTC.onReceiveAnswer(data.infoCall.rtcAnswer)
-      }
-      this.voiceRTC.addEventListener('onCandidate', (candidates) => {
-        this.post('onVideoCandidates', { id: data.infoCall.id, candidates })
-      })
-    }
-    store.commit('SET_APPELS_INFO_IS_ACCEPTS', true)
-  }
+  // onacceptVideoCall (data) {
+  //   if (USE_VOICE_RTC === true) {
+  //     if (data.initiator === true) {
+  //       this.voiceRTC.onReceiveAnswer(data.infoCall.rtcAnswer)
+  //     }
+  //     this.voiceRTC.addEventListener('onCandidate', (candidates) => {
+  //       this.post('onVideoCandidates', { id: data.infoCall.id, candidates })
+  //     })
+  //   }
+  //   store.commit('SET_APPELS_INFO_IS_ACCEPTS', true)
+  // }
 
   async startCall ({ numero }, extraData = undefined) {
     if (USE_VOICE_RTC === true) {

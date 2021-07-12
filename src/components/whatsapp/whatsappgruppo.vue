@@ -23,7 +23,7 @@
     <div style="width: 100%; height: 605px;" id='sms_list'>
       <div v-for="(s, i) of messaggi[String(gruppo.id)]" :key="i" class="whatsapp-menu-item">
         <div v-if="isSMSAudio(s)" style="overflow: auto;">
-          <div v-if="isSentByMe(s)" class="bubble daMe" :class="{select: i === currentSelected}">
+          <div v-if="isSentByMe(s)" class="bubble daMe" :class="{ select: i === currentSelected }">
             <div class="whatsapp-audio-player">
               <div class="whatsapp-audio-player-title">
                 <span>{{ s.sender }}</span>
@@ -34,7 +34,7 @@
             </div>
           </div>
 
-          <div v-else class="bubble daAltri" :class="{select: i === currentSelected}">
+          <div v-else class="bubble daAltri" :class="{ select: i === currentSelected }">
             <div class="whatsapp-audio-player">
               <div class="whatsapp-audio-player-title">
                 <span>{{ s.sender }}</span>
@@ -47,13 +47,13 @@
         </div>
 
         <div v-else-if="!isImage(s.message)" style="overflow: auto;">
-          <div v-if="isSentByMe(s)" class="bubble daMe" :class="{select: i === currentSelected}">{{ s.sender }}: {{ formatEmoji(s.message) }}</div>
-          <div v-else class="bubble daAltri" :class="{select: i === currentSelected}">{{ s.sender }}: {{ formatEmoji(s.message) }}</div>
+          <div v-if="isSentByMe(s)" class="bubble daMe" :class="{ select: i === currentSelected }">{{ s.sender }}: {{ formatEmoji(s.message) }}</div>
+          <div v-else class="bubble daAltri" :class="{ select: i === currentSelected }">{{ s.sender }}: {{ formatEmoji(s.message) }}</div>
         </div>
 
         <div v-else style="overflow: auto;">
-          <img v-if="isSentByMe(s)" class="sms-img bubble daMe" :class="{select: i === currentSelected}" :src="s.message">
-          <img v-else class="sms-img bubble daAltri" :class="{select: i === currentSelected}" :src="s.message">
+          <img v-if="isSentByMe(s)" class="sms-img bubble daMe" :class="{ select: i === currentSelected }" :src="s.message">
+          <img v-else class="sms-img bubble daAltri" :class="{ select: i === currentSelected }" :src="s.message">
         </div>
       </div>
     </div>
@@ -62,7 +62,7 @@
       <div class='whatsapp-write-input'>
         <input type="text" :placeholder="LangString('APP_WHATSAPP_PLACEHOLDER_ENTER_MESSAGE')" v-autofocus>
         <i v-if="!isRecording" class="fas fa-paper-plane"></i>
-        <i v-else class="fas fa-microphone"></i>
+        <i v-else style="background-color: rgb(220, 0, 12);" class="fas fa-microphone"></i>
       </div>
     </div>
 
