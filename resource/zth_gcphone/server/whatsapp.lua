@@ -64,9 +64,7 @@ end
 
 local function GetContact(identifier, number)
     for _, contact in pairs(CACHED_CONTACTS[tostring(identifier)]) do
-        -- print(contact.number, number)
         if contact.number == number then
-            -- print(DumpTable(contact))
             return contact
         end
     end
@@ -76,21 +74,17 @@ end
 local function UpdateGroupLabels(source)
     local identifier = gcPhoneT.getPlayerID(source)
     local number = gcPhoneT.getPhoneNumber(identifier)
-    -- local groups = UpdateGroupsCache()
 
     for _, group in pairs(WHATSAPP_GROUPS) do
         local members = json.decode(group.partecipanti)
         for index, member in pairs(members) do
-            -- print(member.number)
             local contact = GetContact(identifier, member.number)
             if contact then
-                -- print(DumpTable(contact))
                 member.display = contact.display
             end
         end
     end
 
-    -- print(DumpTable(WHATSAPP_GROUPS))
     TriggerClientEvent("gcphone:whatsapp_updateGruppi", source, WHATSAPP_GROUPS, number)
 end
 
@@ -103,7 +97,6 @@ ESX.RegisterServerCallback("gcPhone:getMessaggiFromGroupId", function(source, cb
         for k, v in pairs(result) do
             -- inserisco i valori nella table come li vuole vue
             -- diobestemmia
-            -- print("index on server is", k)
             table.insert(messages[tostring(v.idgruppo)], {
                 id = v.idgruppo,
                 sender = v.sender,
@@ -117,7 +110,6 @@ ESX.RegisterServerCallback("gcPhone:getMessaggiFromGroupId", function(source, cb
             cb(messages)
         else
             WhatsappShowNotificationError(source, "WHATSAPP_INFO_TITLE", "WHATSAPP_NOT_ENOUGH_GIGA")
-            -- TriggerClientEvent("gcphone:whatsapp_showError", "WHATSAPP_INFO_TITLE", "WHATSAPP_NOT_ENOUGH_GIGA")
             cb(false)
         end
     end)
@@ -129,7 +121,6 @@ gcPhoneT.getAllGroups = function()
 end
 
 gcPhoneT.whatsapp_sendMessage = function(data)
-    -- print("should be sending messages", json.encode(data))
     local player = source
     local identifier = gcPhoneT.getPlayerID(player)
     local isAble, mbToRemove = gcPhoneT.isAbleToSurfInternet(identifier, 1.5)
@@ -141,13 +132,10 @@ gcPhoneT.whatsapp_sendMessage = function(data)
             ['@sender'] = data.phoneNumber,
             ['@message'] = data.messaggio
         }, function(id)
-            -- print("ho fatto la query. id è", id)
             if id > 0 then
                 local group = WHATSAPP_GROUPS[tonumber(data.id)]
                 for _, val in pairs(json.decode(group.partecipanti)) do
-                    -- print(val.number, "il numero del partecipante è questo")
                     local g_source = gcPhoneT.getSourceFromPhoneNumber(val.number)
-                    -- print(g_source, "ho ricevuto la source")
                     if g_source ~= nil then
                         -- message, label, sender, id | sender, label, message, id
                         TriggerClientEvent("gcphone:whatsapp_sendNotificationToMembers", g_source, data.phoneNumber, group.gruppo, data.messaggio, data.id)
@@ -157,7 +145,6 @@ gcPhoneT.whatsapp_sendMessage = function(data)
         end)
     else
         WhatsappShowNotificationError(source, "WHATSAPP_INFO_TITLE", "WHATSAPP_NOT_ENOUGH_GIGA")
-        -- TriggerClientEvent("gcphone:whatsapp_showError", "WHATSAPP_INFO_TITLE", "WHATSAPP_NOT_ENOUGH_GIGA")
     end
 end
 
@@ -193,17 +180,12 @@ gcPhoneT.whatsapp_addGroupMembers = function(data)
         gcPhoneT.useInternetData(identifier, mbToRemove)
         local partecipanti = formatTableIndex(getPartecipanti(data.gruppo.id))
 
-        -- print(ESX.DumpTable(partecipanti))
-        -- print(ESX.DumpTable(data.selected))
-        -- print("---------------------------------------------")
-
         for _, val in pairs(data.contacts) do
             if partecipanti[tostring(val.id)] ~= nil then partecipanti[tostring(val.id)] = nil end
             if partecipanti[tonumber(val.id)] ~= nil then partecipanti[tonumber(val.id)] = nil end
             -- visto che nel js non ho voglia di passare contacts su i mutuate states
             -- controllo qua se il contatto non è stato toccato
             if val.number ~= myNumber then
-                -- + 1 A CAZZIO DIOCAN MA PORCODDIO
                 if data.selected[tonumber(val.id) + 1] then
                     partecipanti[tonumber(val.id)] = {
                         display = val.display,
@@ -228,17 +210,13 @@ gcPhoneT.whatsapp_addGroupMembers = function(data)
                         WHATSAPP_GROUPS[tonumber(data.gruppo.id)].partecipanti = json.encode(partecipanti)
                         UpdateGroupLabels(player)
                     end
-                    -- UpdateGroupsCache()
-                    -- TriggerClientEvent("gcphone:whatsapp_updateGruppi", player, UpdateGroupsCache(), myNumber)
                 end
             end)
         else
             WhatsappShowNotificationError(player, "WHATSAPP_INFO_TITLE", "WHATSAPP_NOT_ENOUGH_GIGA")
-            -- TriggerClientEvent("gcphone:whatsapp_showError", "WHATSAPP_INFO_TITLE", "WHATSAPP_NOT_ENOUGH_GIGA")
         end
     else
         WhatsappShowNotificationError(player, "WHATSAPP_INFO_TITLE", "WHATSAPP_NOT_ENOUGH_GIGA")
-        -- TriggerClientEvent("gcphone:whatsapp_showError", "WHATSAPP_INFO_TITLE", "WHATSAPP_NOT_ENOUGH_GIGA")
     end
 end
 
@@ -247,7 +225,6 @@ gcPhoneT.whatsapp_leaveGroup = function(group)
     local identifier = gcPhoneT.getPlayerID(player)
     local number = gcPhoneT.getPhoneNumber(identifier)
 
-    -- print(number, group.id)
     local isAble, mbToRemove = gcPhoneT.isAbleToSurfInternet(identifier, 5.0)
     if isAble then
         gcPhoneT.useInternetData(identifier, mbToRemove)
@@ -255,9 +232,6 @@ gcPhoneT.whatsapp_leaveGroup = function(group)
         MySQL.Async.fetchAll("SELECT * FROM phone_whatsapp_groups WHERE id = @id", {['@id'] = group.id}, function(r)
             if r[1] == nil then return end
             local partecipanti = formatTableIndex(json.decode(r[1].partecipanti))
-
-            -- print(ESX.DumpTable(partecipanti))
-            -- print("-------------------------------------------")
             
             for id, v in pairs(partecipanti) do
                 if v.number == number then
@@ -266,12 +240,8 @@ gcPhoneT.whatsapp_leaveGroup = function(group)
                 end
             end
 
-            -- print(ESX.DumpTable(partecipanti))
-            -- print(#partecipanti)
-
             if #partecipanti == 0 then
                 MySQL.Async.execute("DELETE FROM phone_whatsapp_groups WHERE id = @id", {['@id'] = group.id}, function()
-                    -- UpdateGroupsCache()
                     WHATSAPP_GROUPS[tonumber(group.id)] = nil
                     UpdateGroupLabels(player)
                 end)
@@ -282,14 +252,12 @@ gcPhoneT.whatsapp_leaveGroup = function(group)
                 ['@partecipanti'] = json.encode(partecipanti),
                 ['@id'] = group.id
             }, function()
-                -- UpdateGroupsCache()
                 WHATSAPP_GROUPS[tonumber(group.id)].partecipanti = json.encode(partecipanti)
                 UpdateGroupLabels(player)
             end)
         end)
     else
         WhatsappShowNotificationError(player, "WHATSAPP_INFO_TITLE", "WHATSAPP_NOT_ENOUGH_GIGA")
-        -- TriggerClientEvent("gcphone:whatsapp_showError", "WHATSAPP_INFO_TITLE", "WHATSAPP_NOT_ENOUGH_GIGA")
     end
 end
 
@@ -321,10 +289,6 @@ gcPhoneT.whatsapp_creaNuovoGruppo = function(data)
     if isAble then
         gcPhoneT.useInternetData(identifier, mbToRemove)
 
-        -- print(ESX.DumpTable(partecipanti))
-        -- print(ESX.DumpTable(data.selected))
-        -- print("--------------------------------------------")
-
         for _, val in pairs(data.contacts) do
             if data.selected[tonumber(val.id) + 1] then
                 partecipanti[tonumber(val.id)] = {
@@ -337,8 +301,6 @@ gcPhoneT.whatsapp_creaNuovoGruppo = function(data)
         end
 
         partecipanti = formatTableIndex(partecipanti)
-        -- print(ESX.DumpTable(partecipanti))
-
         partecipanti["creator"] = {
             display = data.myInfo.display,
             number = data.myInfo.number,
@@ -358,16 +320,13 @@ gcPhoneT.whatsapp_creaNuovoGruppo = function(data)
                     gruppo = data.groupTitle,
                     partecipanti = json.encode(partecipanti)
                 }
-                -- UpdateGroupsCache()
                 UpdateGroupLabels(player)
             else
                 WhatsappShowNotificationError(player, "WHATSAPP_INFO_TITLE", "WHATSAPP_ERROR_CREATING_GROUP")
             end
-            -- TriggerClientEvent("gcphone:whatsapp_updateGruppi", player, UpdateGroupsCache(), phone_number)
         end)
     else
         WhatsappShowNotificationError(player, "WHATSAPP_INFO_TITLE", "WHATSAPP_NOT_ENOUGH_GIGA")
-        -- TriggerClientEvent("gcphone:whatsapp_showError", "WHATSAPP_INFO_TITLE", "WHATSAPP_NOT_ENOUGH_GIGA")
     end
 end
 
@@ -378,7 +337,6 @@ gcPhoneT.whatsapp_deleteGroup = function(data)
     local phone_number = gcPhoneT.getPhoneNumber(identifier)
     MySQL.Async.execute("DELETE FROM phone_whatsapp_groups WHERE id = @id", {['@id'] = id}, function()
         MySQL.Async.execute("DELETE FROM phone_whatsapp_messages WHERE idgruppo = @id", {['@id'] = id}, function()
-            -- UpdateGroupsCache()
             WHATSAPP_GROUPS[tonumber(id)] = nil
             TriggerClientEvent("gcphone:whatsapp_updateGruppi", player, WHATSAPP_GROUPS, phone_number)
         end)
@@ -399,13 +357,11 @@ ESX.RegisterServerCallback("gcphone:whatsapp_editGroup", function(source, cb, gr
         }, function(rowsChanged)
             WHATSAPP_GROUPS[tonumber(group.id)].gruppo = group.gruppo
             WHATSAPP_GROUPS[tonumber(group.id)].icona = group.icona
-            -- UpdateGroupsCache()
             UpdateGroupLabels(player)
             if rowsChanged > 0 then cb(true) else cb(false) end
         end)
     else
         WhatsappShowNotificationError(source, "WHATSAPP_INFO_TITLE", "WHATSAPP_NOT_ENOUGH_GIGA")
-        -- TriggerClientEvent("gcphone:whatsapp_showError", "WHATSAPP_INFO_TITLE", "WHATSAPP_NOT_ENOUGH_GIGA")
         cb(false)
     end
 end)
