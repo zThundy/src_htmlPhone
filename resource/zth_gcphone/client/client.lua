@@ -129,7 +129,7 @@ end)
 
 RegisterNetEvent("gcPhone:allMessage")
 AddEventHandler("gcPhone:allMessage", function(allmessages, notReceivedMessages)
-    SendNUIMessage({ event = 'updateMessages', messages = allmessages, volume = volume })
+    SendNUIMessage({ event = 'updateMessages', messages = allmessages, volume = volume, received = notReceivedMessages })
     messages = allmessages
 
     if not GLOBAL_AIRPLANE then
@@ -139,11 +139,9 @@ AddEventHandler("gcPhone:allMessage", function(allmessages, notReceivedMessages)
             else
                 ESX.ShowNotification(Config.Language["MULTIPLE_UNREAD_MESSAGES_NOTIFICATION"]:format(notReceivedMessages))
             end
-
-            if NOTIFICATIONS_ENABLED then
-                DrawNotification(false, false)
-                PlaySoundJS('msgnotify.ogg', nil, false)
-            end
+            -- if NOTIFICATIONS_ENABLED then
+            --     DrawNotification(false, false)
+            -- end
         end
     end
 end)

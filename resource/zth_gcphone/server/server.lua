@@ -1,6 +1,5 @@
 ESX = nil
 TriggerEvent('esx:getSharedObject', function(obj) ESX = obj end)
--- gcPhone = {}
 
 local tunnel = module("modules/TunnelV2")
 gcPhoneT = {}
@@ -12,7 +11,6 @@ CALL_INDEX = 10
 local PLAYERS_PHONE_SIGNALS = {}
 local PLAYERS_PHONE_WIFI = {}
 ACTIVE_CALLS = {}
--- built_phones = false
 phone_loaded = false
 
 GLOBAL_AIRPLANE = {}
@@ -42,7 +40,6 @@ MySQL.ready(function()
         gcPhone.debug(Config.Language["CACHING_STARTUP_1"])
         MySQL.Async.fetchAll("SELECT * FROM phone_users_contacts", {}, function(contacts)
             for id, contact in pairs(contacts) do
-                -- print(DumpTable(contact))
                 if not CACHED_CONTACTS[tostring(contact.identifier)] then CACHED_CONTACTS[tostring(contact.identifier)] = {} end
                 table.insert(CACHED_CONTACTS[tostring(contact.identifier)], contact)
             end
@@ -50,7 +47,6 @@ MySQL.ready(function()
             gcPhone.debug(Config.Language["CACHING_STARTUP_2"])
             MySQL.Async.fetchAll("SELECT * FROM phone_messages", {}, function(messages)
                 for id, message in pairs(messages) do
-                    -- print(DumpTable(message))
                     if not CACHED_MESSAGES[message.receiver] then CACHED_MESSAGES[message.receiver] = {} end
                     table.insert(CACHED_MESSAGES[message.receiver], message)
                 end
@@ -98,10 +94,6 @@ local function GetPianoTariffarioParam(phone_number, param)
     if CACHED_TARIFFS[phone_number] and CACHED_TARIFFS[phone_number][param] then
         result = CACHED_TARIFFS[phone_number][param]
     end
-    -- local result = MySQL.Sync.fetchScalar("SELECT " .. param .. " FROM sim WHERE phone_number = @phone_number", {
-    --     ['@phone_number'] = phone_number
-    -- })
-    -- print(phone_number, param)
     return result and result or 0
 end
 
@@ -112,10 +104,6 @@ local function UpdatePianoTariffario(phone_number, param, value)
         if CACHED_TARIFFS[phone_number] and CACHED_TARIFFS[phone_number][param] then
             CACHED_TARIFFS[phone_number][param] = value
         end
-		-- MySQL.Async.execute('UPDATE sim SET '..param..' = @'..param..' WHERE phone_number = @phone_number', {
-		-- 	['@phone_number'] = phone_number,
-		-- 	['@'..param] = value
-		-- })
 	end
 end
 
@@ -133,16 +121,10 @@ gcPhoneT.allUpdate = function()
         TriggerClientEvent("gcPhone:contactList", player, getContacts(identifier))
 
         local notReceivedMessages = getUnreceivedMessages(phone_number)
-        -- if notReceivedMessages > 0 then setMessagesReceived(num) end
-
         TriggerClientEvent("gcPhone:allMessage", player, getMessages(phone_number), notReceivedMessages)
         SyncCallHistory(player, phone_number)
     end)
 end
-
---==================================================================================================================
--------- Eventi e Funzioni del segnale radio e del WiFi
---==================================================================================================================
 
 gcPhoneT.updateAirplaneForUser = function(bool)
     local player = source
@@ -302,12 +284,7 @@ gcPhoneT.getItemAmount = function(item)
     end
 end
 
---==================================================================================================================
--------- Utils
---==================================================================================================================
-
 gcPhoneT.updateCachedNumber = function(number, identifier, isChanging)
-    -- print(number, identifier, isChanging)
     number = tostring(number)
 
     if identifier then
@@ -392,10 +369,6 @@ gcPhoneT.getPlayerID = function(source)
     if xPlayer == nil then return nil end
     return xPlayer.identifier
 end
-
---==================================================================================================================
--------- Funzioni Contatti
---==================================================================================================================
 
 function getContacts(identifier)
     if not CACHED_CONTACTS[tostring(identifier)] then CACHED_CONTACTS[tostring(identifier)] = {} end
@@ -493,22 +466,14 @@ gcPhoneT.deleteContact = function(id)
     end)
 end
 
---==================================================================================================================
--------- Eventi e Funzioni dei Messaggi
---==================================================================================================================
-
 function getMessages(number)
-    -- return MySQL.Sync.fetchAll("SELECT phone_messages.* FROM phone_messages LEFT JOIN users ON users.identifier = @identifier WHERE phone_messages.receiver = users.phone_number", { ['@identifier'] = identifier })
     if not number then return {} end
     if not CACHED_MESSAGES[number] then CACHED_MESSAGES[number] = {} end
     return CACHED_MESSAGES[number]
 end
 
 function addMessage(source, identifier, phone_number, message)
-    -- print(source, identifier, phone_number, message)
     local player = tonumber(source)
-    -- local xPlayer = ESX.GetPlayerFromId(player)
-
     local otherIdentifier, isInstalled = gcPhoneT.getIdentifierByPhoneNumber(phone_number)
     local myPhone = gcPhoneT.getPhoneNumber(identifier)
     local hasAirplane = gcPhoneT.getAirplaneForUser(otherIdentifier)
@@ -535,10 +500,7 @@ function addMessage(source, identifier, phone_number, message)
                                 if isInstalled and not hasAirplane then
                                     -- print("sim installata")
                                     -- se la sim è installata allora mando il telefono e gli mando la notifica
-                                    -- local retIndex = gcPhoneT.getPlayerSegnaleIndex(PLAYERS_PHONE_SIGNALS, otherIdentifier)
-                                    -- print(retIndex)
                                     segnaleReceiver = PLAYERS_PHONE_SIGNALS[gcPhoneT.getPlayerSegnaleIndex(PLAYERS_PHONE_SIGNALS, otherIdentifier)]
-                                    -- print(ESX.DumpTable(segnaleReceiver), ESX.DumpTable(PLAYERS_PHONE_SIGNALS))
                                     if segnaleReceiver ~= nil and segnaleReceiver.potenzaSegnale > 0 then
                                         TriggerClientEvent("gcPhone:receiveMessage", target_source, tomess)
                                         setMessageReceived(phone_number, myPhone)
@@ -546,7 +508,6 @@ function addMessage(source, identifier, phone_number, message)
                                 else
                                     -- questo è l'evento che ti fa il bing quando invii il messaggio
                                     -- lo ho tolto così non fa la notifica
-                                    -- TriggerClientEvent("gcPhone:receiveMessage", tonumber(target_source), tomess)
                                     setMessageReceived(phone_number, myPhone)
                                 end
                             end
@@ -555,15 +516,12 @@ function addMessage(source, identifier, phone_number, message)
                 end)
             else
                 TriggerClientEvent("esx:showNotification", player, Config.Language["ADD_MESSAGE_ERROR_1"])
-                -- xPlayer.showNotification("Hai finito i messaggi previsti dal tuo piano tariffario", "error")
             end
         else
             TriggerClientEvent("esx:showNotification", player, Config.Language["ADD_MESSAGE_ERROR_2"])
-        	-- xPlayer.showNotification("Non c'è segnale per mandare un messaggio", "error")
         end
     else
         TriggerClientEvent("esx:showNotification", player, Config.Language["ADD_MESSAGE_ERROR_3"])
-        -- xPlayer.showNotification("Impossibile mandare il messaggio, il numero selezionato non esiste", "error")
     end 
 end
 
@@ -582,7 +540,6 @@ function _addMessage(transmitter, receiver, message, owner, cb)
         ['@isRead'] = owner,
         ['@owner'] = owner
     }, function(id)
-        -- print(os.time())
         local message = {
             id = id,
             transmitter = transmitter,
@@ -681,7 +638,6 @@ gcPhoneT.deleteReceivedMessages = function(identifier)
     CACHED_MESSAGES[receiver_number] = {}
     -- need to choose the clean table or the complete delete of table
     -- maybe i'll leave the empty table
-    -- CACHED_MESSAGES[receiver_number] = nil
 
     MySQL.Async.execute("DELETE FROM phone_messages WHERE `receiver` = @receiver", { ['@receiver'] = receiver_number })
 end
@@ -705,17 +661,7 @@ gcPhoneT.deleteAll = function()
     TriggerClientEvent("deleteAllPhoneHistory", player, {})
 end
 
---==================================================================================================================
--------- Eventi e Funzioni delle chiamate
---==================================================================================================================
-
 function GetCallsHistory(num)
-    -- local result = MySQL.Sync.fetchAll("SELECT * FROM phone_calls WHERE phone_calls.owner = @num ORDER BY time DESC LIMIT 120", { ['@num'] = num })
-    -- return result
-    -- print(DumpTable(CACHED_CALLS[num]))
-    -- print("------------------------------")
-    -- print(DumpTable(CACHED_CALLS))
-    -- print(num)
     if CACHED_CALLS[num] then
         table.sort(CACHED_CALLS[num], function(a, b)
             if a then if not a.time then a.time = os.time() * 1000 end end
@@ -730,17 +676,12 @@ end
 
 function SyncCallHistory(player, num)
     local histo = GetCallsHistory(num)
-    -- print("SyncCallHistory")
-    -- print(player, num)
-    -- print(DumpTable(histo))
     if histo then
         TriggerClientEvent('gcPhone:historyCalls', player, histo)
     end
 end
 
 function SavePhoneCall(callData)
-    -- print("SavePhoneCall")
-    -- print(DumpTable(callData))
     if not callData.extraData or not callData.extraData.useNumber and (callData and callData.transmitter_num and callData.receiver_num) then
         MySQL.Async.insert("INSERT INTO phone_calls (`owner`, `num`, `incoming`, `accepts`) VALUES(@owner, @num, @incoming, @accepts)", {
             ['@owner'] = callData.transmitter_num,
@@ -820,17 +761,7 @@ gcPhoneT.requestOffertaFromDatabase = function()
     local player = source
     local identifier = gcPhoneT.getPlayerID(player)
     local phone_number = gcPhoneT.getPhoneNumber(identifier)
-
-    -- MySQL.Async.fetchAll("SELECT * FROM phone_sim WHERE phone_number = @phone_number", {['@phone_number'] = phone_number}, function(sim)
-    --     if #sim > 0 then
-    --         minuti = math.floor(sim[1].minuti / 60)
-    --         TriggerClientEvent("gcPhone:sendRequestedOfferta", player, {
-    --             tonumber(minuti),
-    --             tonumber(sim[1].messaggi),
-    --             tonumber(sim[1].dati)
-    --         }, sim[1].piano_tariffario)
-    --     end
-    -- end)
+    
     if CACHED_TARIFFS[phone_number] then
         local sim = CACHED_TARIFFS[phone_number]
         minuti = math.floor(sim.minuti / 60)

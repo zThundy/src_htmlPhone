@@ -133,7 +133,7 @@ RegisterNUICallback('deleteMessage', function(data, cb)
     for k, v in ipairs(messages) do
         if v.id == data.id then
             table.remove(messages, k)
-            SendNUIMessage({event = 'updateMessages', messages = messages})
+            SendNUIMessage({ event = 'updateMessages', messages = messages, received = 0 })
             return
         end
     end

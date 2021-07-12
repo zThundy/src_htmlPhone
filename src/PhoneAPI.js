@@ -224,7 +224,7 @@ class PhoneAPI {
   }
 
   onupdateMessages (data) {
-    if (data.messages.length > 0) { Vue.notify({ sound: 'msgnotify.ogg', hidden: true, volume: data.volume || 0.4 }) }
+    if (Number(data.received) > 0) { Vue.notify({ sound: 'msgnotify.ogg', hidden: true, volume: data.volume || 0.2 }) }
     store.commit('SET_MESSAGES', data.messages)
   }
 
