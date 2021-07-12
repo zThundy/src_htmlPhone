@@ -501,7 +501,6 @@ class PhoneAPI {
   }
 
   ontchat_receive (data) {
-    this.onplaySound({ sound: 'msgnotify.ogg', volume: 0.4, loop: false })
     store.commit('TCHAT_ADD_MESSAGES', data.message)
   }
 

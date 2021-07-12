@@ -35,8 +35,8 @@ Citizen.CreateThread(function()
     gcPhoneServerT.allUpdate()
 end)
 
-RegisterNetEvent("esx_ambulancejob:setDeathStatus")
-AddEventHandler('esx_ambulancejob:setDeathStatus', function(_isDead) isDead = _isDead end)
+RegisterNetEvent(Config.AmbulanceJobEventName)
+AddEventHandler(Config.AmbulanceJobEventName, function(_isDead) isDead = _isDead end)
 
 --====================================================================================
 --  

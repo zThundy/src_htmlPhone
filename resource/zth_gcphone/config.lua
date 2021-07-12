@@ -2,6 +2,10 @@ Config = {}
 
 Config.AuthKey = "YOUR_KEY_HERE"
 
+-- this will be the event name used by the phone to tell if a player is
+-- dead or not. You MUST know how to implement it, see client.lua for more info
+Config.AmbulanceJobEventName = "esx_ambulancejob:setDeathStatus"
+
 -- for tokovoip addon ask zthundy on discord for a custom version of
 -- the voip
 -- ONLY ONE CAN BE TRUE

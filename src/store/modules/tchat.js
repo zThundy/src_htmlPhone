@@ -58,6 +58,7 @@ const mutations = {
   },
   TCHAT_ADD_MESSAGES (state, { message }) {
     if (message.channel === state.currentChannel) {
+      PhoneAPI.onplaySound({ sound: 'msgnotify.ogg', volume: 0.4, loop: false })
       state.messagesChannel.push(message)
     }
   },

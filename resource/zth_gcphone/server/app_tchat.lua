@@ -21,20 +21,22 @@ local function TchatAddMessage(channel, message)
 end
 
 gcPhoneT.tchat_channel = function(channel)
-	local identifier = gcPhoneT.getPlayerID(source)
+	local player = source
+	local identifier = gcPhoneT.getPlayerID(player)
 	
 	local isAble, mbToRemove = gcPhoneT.isAbleToSurfInternet(identifier, 0.5)
 	if isAble then
 		gcPhoneT.useInternetData(identifier, mbToRemove)
 		
 		TchatGetMessageChannel(identifier, channel, function(messages)
-			TriggerClientEvent('gcPhone:tchat_channel', source, channel, messages)
+			TriggerClientEvent('gcPhone:tchat_channel', player, channel, messages)
 		end)
 	end
 end
 
 gcPhoneT.tchat_addMessage = function(channel, message)
-	local identifier = gcPhoneT.getPlayerID(source)
+	local player = source
+	local identifier = gcPhoneT.getPlayerID(player)
 	
 	local isAble, mbToRemove = gcPhoneT.isAbleToSurfInternet(identifier, 0.05)
 	if isAble then
