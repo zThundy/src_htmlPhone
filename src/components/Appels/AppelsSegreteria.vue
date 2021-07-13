@@ -307,7 +307,7 @@ export default {
       if (this.currentSelect === 4) { this.saveRecording() }
     },
     onRight () {
-      if (this.currentSelect === 4) return
+      if (this.currentSelect === 4 || this.currentSelect === -1) return
       this.currentSelect = this.currentSelect + 1
     },
     onDown () {
