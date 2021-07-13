@@ -1,6 +1,6 @@
-# src_htmlphone
+# zth_gcPhone
 
-> A Vue.js project
+> Custom version of the gcPhone v.4 with rewritten builder and vue framework
 
 ## Build Setup
 
