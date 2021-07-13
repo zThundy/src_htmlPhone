@@ -52,7 +52,6 @@ MySQL.ready(function()
                 end
 
                 MySQL.Async.fetchAll("SELECT * FROM phone_calls", {}, function(calls)
-                    -- CACHED_CALLS = calls
                     for _, call in pairs(calls) do
                         if not CACHED_CALLS[call.owner] then CACHED_CALLS[call.owner] = {} end
                         table.insert(CACHED_CALLS[call.owner], call)
@@ -72,21 +71,23 @@ MySQL.ready(function()
     end)
 end)
 
-Citizen.CreateThreadNow(function()
-    while true do
-        Citizen.Wait(Config.TimeToSaveTariffs * 1000)
-        gcPhone.debug(Config.Language["DEBUG_STARTED_SAVING_OF_TARIFFS"])
-        for _, v in pairs(CACHED_TARIFFS) do
-            MySQL.Async.execute("UPDATE phone_sim SET minuti = @m, messaggi = @s, dati = @i WHERE id = @id", {
-                ['@m'] = v.minuti,
-                ['@s'] = v.messaggi,
-                ['@i'] = v.dati,
-                ['@id'] = v.id
-            })
-            Citizen.Wait(50)
+if Config.EnableRadioTwoers then
+    Citizen.CreateThreadNow(function()
+        while true do
+            Citizen.Wait(Config.TimeToSaveTariffs * 1000)
+            gcPhone.debug(Config.Language["DEBUG_STARTED_SAVING_OF_TARIFFS"])
+            for _, v in pairs(CACHED_TARIFFS) do
+                MySQL.Async.execute("UPDATE phone_sim SET minuti = @m, messaggi = @s, dati = @i WHERE id = @id", {
+                    ['@m'] = v.minuti,
+                    ['@s'] = v.messaggi,
+                    ['@i'] = v.dati,
+                    ['@id'] = v.id
+                })
+                Citizen.Wait(50)
+            end
         end
-    end
-end)
+    end)
+end
 
 local function GetPianoTariffarioParam(phone_number, param)
     while not phone_loaded do Citizen.Wait(100) end

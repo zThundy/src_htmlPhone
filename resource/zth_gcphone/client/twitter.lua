@@ -5,27 +5,27 @@ end)
 
 RegisterNetEvent("gcPhone:twitter_getFavoriteTweets")
 AddEventHandler("gcPhone:twitter_getFavoriteTweets", function(tweets)
-    SendNUIMessage({event = 'twitter_favoritetweets', tweets = tweets})
+    SendNUIMessage( {event = 'twitter_favoritetweets', tweets = tweets })
 end)
 
 RegisterNetEvent("gcPhone:twitter_newTweets")
 AddEventHandler("gcPhone:twitter_newTweets", function(tweet)
-	SendNUIMessage({event = 'twitter_newTweet', tweet = tweet})
+	SendNUIMessage({ event = 'twitter_newTweet', tweet = tweet })
 end)
 
 RegisterNetEvent("gcPhone:twitter_updateTweetLikes")
 AddEventHandler("gcPhone:twitter_updateTweetLikes", function(tweetId, likes)
-    SendNUIMessage({event = 'twitter_updateTweetLikes', tweetId = tweetId, likes = likes})
+    SendNUIMessage({ event = 'twitter_updateTweetLikes', tweetId = tweetId, likes = likes })
 end)
 
 RegisterNetEvent("gcPhone:twitter_setAccount")
 AddEventHandler("gcPhone:twitter_setAccount", function(username, password, avatarUrl)
-    SendNUIMessage({event = 'twitter_setAccount', username = username, password = password, avatarUrl = avatarUrl})
+    SendNUIMessage({ event = 'twitter_setAccount', username = username, password = password, avatarUrl = avatarUrl })
 end)
 
 RegisterNetEvent("gcPhone:twitter_createAccount")
 AddEventHandler("gcPhone:twitter_createAccount", function(account)
-    SendNUIMessage({event = 'twitter_createAccount', account = account})
+    SendNUIMessage({ event = 'twitter_createAccount', account = account })
 end)
 
 --[[
@@ -42,7 +42,7 @@ end)
 
 RegisterNetEvent("gcPhone:twitter_setTweetLikes")
 AddEventHandler("gcPhone:twitter_setTweetLikes", function(tweetId, has_like)
-    SendNUIMessage({event = 'twitter_setTweetLikes', tweetId = tweetId, has_like = has_like})
+    SendNUIMessage({ event = 'twitter_setTweetLikes', tweetId = tweetId, has_like = has_like })
 end)
 
 RegisterNUICallback('twitter_login', function(data, cb)

@@ -1,22 +1,7 @@
--- notifiche
-
---[[
-    RegisterNetEvent("gcPhone:whatsapp_showError")
-    AddEventHandler("gcPhone:whatsapp_showError", function(title, message)
-        SendNUIMessage({ event = 'whatsapp_showError', message = message, title = title, volume = volume })
-    end)
-
-    RegisterNetEvent("gcPhone:whatsapp_showSuccess")
-    AddEventHandler("gcPhone:whatsapp_showSuccess", function(title, message)
-        SendNUIMessage({ event = 'whatsapp_showSuccess', message = message, title = title, volume = volume })
-    end)
-]]
-
 -- eventi e funzioni per funzionamento
 
 RegisterNetEvent("gcphone:whatsapp_updateGruppi")
 AddEventHandler("gcphone:whatsapp_updateGruppi", function(groups, number)
-    -- SendNUIMessage({ event = "whatsappClearGroups" })
     local groupsToSend = {}
     for group_id, group in pairs(groups) do
         local index = 1
@@ -53,13 +38,10 @@ end)
 
 RegisterNetEvent("gcphone:whatsapp_sendNotificationToMembers")
 AddEventHandler("gcphone:whatsapp_sendNotificationToMembers", function(sender, label, message, id)
-    -- print("sto per inviare notifica a telefono", sender, label, message, id)
     SendNUIMessage({ event = "whatsappShowMessageNotification", info = { sender = sender, label = label, message = message, id = id } })
 end)
 
 RegisterNUICallback("abbandonaGruppo", function(data, cb)
-    -- print(data)
-    -- print(data.gruppo)
     gcPhoneServerT.whatsapp_leaveGroup(data.gruppo)
     cb("ok")
 end)
@@ -74,7 +56,6 @@ RegisterNUICallback("requestWhatsappeMessages", function(data, cb)
 end)
 
 RegisterNUICallback("requestAllGroupsInfo", function(data, cb)
-    -- print("requestAllGroupsInfo")
     gcPhoneServerT.getAllGroups()
     cb("ok")
 end)
@@ -84,30 +65,9 @@ RegisterNUICallback("sendMessageInGroup", function(data, cb)
         local myPos = GetEntityCoords(PlayerPedId())
         data.messaggio = 'GPS: ' .. myPos.x .. ', ' .. myPos.y
     end
-    -- print(data)
-    -- print(data.messaggio, data.id, data.phoneNumber)
-    -- print("ho ricevuto il messaggio da NUI ed è", data.messaggio, data.phoneNumber)
     gcPhoneServerT.whatsapp_sendMessage(data)
     cb("ok")
 end)
-
---[[
-    contacts:
-        0:
-            display: "stoprovando"
-            icon: "https://u.trs.tn/tohqw.jpg"
-            id: 1
-            number: "5554444"
-            selected: true
-        1:
-            display: "questoenuovo"
-            id: 2
-            number: "55529322"
-            selected: true
-    infoGroup:
-        title: "Nessun titolo"
-        icon: null
-]]
 
 RegisterNUICallback("inviaValoriPost", function(data, cb)
     gcPhoneServerT.whatsapp_creaNuovoGruppo(data)
@@ -126,8 +86,6 @@ RegisterNUICallback("updateGroup", function(data, cb)
 end)
 
 RegisterNUICallback("addGroupMembers", function(data, cb)
-    -- print(data.contacts)
-    -- print(data.gruppo.id)
     gcPhoneServerT.whatsapp_addGroupMembers(data)
     cb("ok")
 end)

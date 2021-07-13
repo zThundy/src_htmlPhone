@@ -176,10 +176,6 @@ AddEventHandler("gcPhone:receiveMessage", function(message)
     end
 end)
 
---====================================================================================
---  Function client | Appels
---====================================================================================
-
 RegisterNetEvent("gcPhone:waitingCall")
 AddEventHandler("gcPhone:waitingCall", function(infoCall, initiator)
     if inCall then return end
@@ -371,50 +367,34 @@ function TogglePhone()
     end
 end
 
----------------------------------------------------------------------------------
--- CALLBACK DELLE RETI WIFI
----------------------------------------------------------------------------------
-
 function AggiornaRetiWifi(r)
-    -- print("sto aggiornando retiwifi")
-    -- print(json.encode(retiWifiServer))
     CAHES_WIFI_MODEMS = r
-
     -- aggiorna la lista del wifi
     SendNUIMessage({ event = "updateRetiWifi", data = CAHES_WIFI_MODEMS })
     -- aggiorna l'icona del wifi
     SendNUIMessage({ event = "updateWifi", data = { hasWifi = isConnected } })
 end
 
-RegisterNetEvent("gcphone:updateWifi")
-AddEventHandler("gcphone:updateWifi", function(connected, rete)
-    -- print("updating isConnected")
+function UpdateWifiInfo(connected, rete)
     isConnected = connected
     SendNUIMessage({ event = "updateWifi", data = {hasWifi = isConnected} })
     gcPhoneServerT.updateReteWifi(isConnected, rete)
-end)
+end
 
 -- funzione che controlla se sei nel range o no
 -- quando ti connetti al wifi
 function StartWifiRangeCheck()
-    local found = false
-
     Citizen.CreateThread(function()
+        local found = false
         while true do
-            Citizen.Wait(2000)
             found = false
-
             if isConnected then
-                -- print("sei connesso")
                 for k, v in pairs(CAHES_WIFI_MODEMS) do
-                    -- print(v.label, WIFI_TEMP_DATA.label, v.password, WIFI_TEMP_DATA.password)
                     if v.label == WIFI_TEMP_DATA.label and v.password == WIFI_TEMP_DATA.password then
                         found = true
-                        -- print("rete trovata")
                         break
                     end
                 end
-                -- print(found)
                 if not found then
                     isConnected = false
                     WIFI_TEMP_DATA = {}
@@ -423,6 +403,7 @@ function StartWifiRangeCheck()
             else
                 return
             end
+            Citizen.Wait(2000)
         end
     end)
 end

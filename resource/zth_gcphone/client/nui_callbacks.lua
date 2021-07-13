@@ -39,7 +39,7 @@ RegisterNUICallback('connettiAllaRete', function(data, cb)
     end
     WIFI_TEMP_DATA = { label = data.label, password = data.password }
     ESX.ShowNotification(Config.Language["MODEM_CORRECT_PASSWORD"])
-    TriggerEvent("gcphone:updateWifi", true, WIFI_TEMP_DATA)
+    UpdateWifiInfo(true, WIFI_TEMP_DATA)
     StartWifiRangeCheck()
     cb("ok")
 end)

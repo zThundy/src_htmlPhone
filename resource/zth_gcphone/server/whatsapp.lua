@@ -1,15 +1,6 @@
 local WHATSAPP_GROUPS = {}
 
 local function WhatsappShowNotificationError(player, title, message)
-	--[[
-		Vue.notify({
-			message: store.getters.LangString(data.message),
-			title: store.getters.LangString(data.title) + ':',
-			icon: data.icon,
-			backgroundColor: data.color,
-			appName: data.appName
-		})
-	]]
 	TriggerClientEvent("gcphone:sendGenericNotification", player, {
 		message = message,
 		title = title,
@@ -21,15 +12,6 @@ local function WhatsappShowNotificationError(player, title, message)
 end
 
 local function WhatsappShowNotificationSuccess(player, title, message)
-	--[[
-		Vue.notify({
-			message: store.getters.LangString(data.message),
-			title: store.getters.LangString(data.title) + ':',
-			icon: data.icon,
-			backgroundColor: data.color,
-			appName: data.appName
-		})
-	]]
 	TriggerClientEvent("gcphone:sendGenericNotification", player, {
 		message = message,
 		title = title,

@@ -3,9 +3,7 @@ myCover = nil
 
 local function RefreshCovers()
     local covers = gcPhoneServerT.cover_requestCovers()
-    -- ESX.TriggerServerCallback("gcphone:cover_requestCovers", function(covers)
     SendNUIMessage({ event = "receiveCovers", covers = covers })
-    -- end)
 end
 
 local function ChangeCover(label, cover)
@@ -25,9 +23,7 @@ Citizen.CreateThread(function()
 		scale = vector3(0.8, 0.8, 0.8),
         action = function()
             local covers = gcPhoneServerT.cover_requestCovers()
-            -- ESX.TriggerServerCallback("gcphone:cover_requestCovers", function(covers)
-            openShopMenu(covers)
-            -- end)
+            OpenShopMenu(covers)
 		end,
         onExit = function()
             ESX.UI.Menu.CloseAll()
@@ -49,24 +45,12 @@ Citizen.CreateThread(function()
 		SetBlipColour(blip, info.color)
 		SetBlipScale(blip, info.scale)
 		SetBlipAsShortRange(blip, true)
-		-- SetBlipAlpha(blip, 255)
 
 		BeginTextCommandSetBlipName("STRING")
 		AddTextComponentString(info.name)
 		EndTextCommandSetBlipName(blip)
 	end
 end)
-
---[[
-    AddEventHandler("gridsystem:hasExitedMarker", function(marker)
-        if marker == nil then return end
-        if marker.name == "negozio_cover" then
-            ESX.UI.Menu.CloseAll()
-            ChangeCover(Config.Language["NO_COVER_LABEL"], "base")
-            SendNUIMessage({ show = false })
-        end
-    end)
-]]
 
 RegisterNUICallback("requestMyCovers", function(data, cb)
     RefreshCovers()
@@ -75,27 +59,12 @@ end)
 
 RegisterNUICallback("changingCover", function(data, cb)
     myCover = string.gsub(data.cover.value, ".png", "")
-    -- print("changingCover", myCover)
-    onCoverChange()
+    OnCoverChange()
     cb("ok")
 end)
 
-function openShopMenu(myCovers)
+function OpenShopMenu(myCovers)
     local elements = {}
-    -- print(DumpTable(myCovers))
-    -- isMenuOpened = true
-
-    -- Citizen.CreateThread(function()
-    --     while isMenuOpened do
-    --         if GetDistanceBetweenCoords(GetEntityCoords(GetPlayerPed(-1)), Config.CoverShop, true) >= 5.0 then
-    --             isMenuOpened = false
-    --             ESX.UI.Menu.CloseAll()
-    --             ChangeCover(Config.Language["NO_COVER_LABEL"], "base")
-    --             SendNUIMessage({ show = false })
-    --         end
-    --         Citizen.Wait(1000)
-    --     end
-    -- end)
 
     -- qui mi preparo la table per controllare quale cover ho già e quali no
     local tempCovers = {}
@@ -109,7 +78,6 @@ function openShopMenu(myCovers)
 
     -- onMenuSelect
     onMenuSelect = function(data, _)
-        -- print(DumpTable(data))
         if data.current.value == nil then return end
         local value = data.current.value
         local name = data.current.name
@@ -126,9 +94,6 @@ function openShopMenu(myCovers)
             SendNUIMessage({ show = false })
             ChangeCover(value.label, name)
         end, name)
-        -- ESX.UI.Menu.CloseAll()
-        -- SendNUIMessage({ show = false })
-        -- ChangeCover(value.label, name)
     end
 
     -- onMenuChangeIndex
