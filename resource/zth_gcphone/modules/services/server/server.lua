@@ -1,11 +1,9 @@
 local function GetPlayersFromJob(job)
 	local jobPlayers = {}
-
 	for index, source in pairs(ESX.GetPlayers()) do
 		local xPlayer = ESX.GetPlayerFromId(source)
 		if xPlayer ~= nil and xPlayer.getJob().name == job then table.insert(jobPlayers, xPlayer.source) end
     end
-
 	return jobPlayers
 end
 
