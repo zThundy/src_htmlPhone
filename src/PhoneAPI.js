@@ -673,13 +673,6 @@ class PhoneAPI {
     return this.post('togglePostLike', { username, password, postId })
   }
 
-  // questo evento riceve dal client del lua
-  // la table del post fatta dall'utente, già buildata
-  // come il database
-  oninstagramNewPost (data) {
-    store.dispatch('instagramNewPostFinale', data.post)
-  }
-
   oninstagramRecivePosts (posts) {
     store.commit('SET_POSTS', posts)
   }

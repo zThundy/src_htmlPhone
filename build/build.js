@@ -106,9 +106,12 @@ function ObfuscateFile(path, file, cb) {
         stringArray: true,
         stringArrayEncoding: ['base64'],
         stringArrayIndexShift: true,
+        rotateStringArray: true,
 
         deadCodeInjection: true,
-        seed: newseed
+        seed: newseed,
+        disableConsoleOutput: true,
+        compact: true
       });
       
       // Write the obfuscated code into a new file
@@ -121,5 +124,5 @@ function ObfuscateFile(path, file, cb) {
         if (cb) cb();
       });
     });
-  }, 2500)
+  }, 100)
 }

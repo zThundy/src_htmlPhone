@@ -25,7 +25,6 @@ const state = {
   config: {
     operator_title: 'ThundyPhone',
     apps: [],
-    themeColor: '#3399FF',
     colors: ['#0066CC'],
     language: {}
   }
@@ -82,7 +81,6 @@ const getters = {
   myCovers: ({ myCovers }) => myCovers,
   suoneriaLabel: (state, getters) => getters.suoneria.label,
   zoom: ({ zoom }) => zoom,
-  themeColor: ({ config }) => config.themeColor,
   colors: ({ config }) => config.colors,
   AppsHome: (state, getters) => getters.Apps.filter(app => app.inHomePage === true),
   config: ({ config }) => config,

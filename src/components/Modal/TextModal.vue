@@ -44,9 +44,9 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['LangString', 'themeColor']),
+    ...mapGetters(['LangString']),
     color () {
-      return this.themeColor || '#2A56C6'
+      return '#2A56C6'
     }
   },
   methods: {

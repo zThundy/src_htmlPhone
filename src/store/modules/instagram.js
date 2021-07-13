@@ -46,11 +46,6 @@ const actions = {
     }
     PhoneAPI.instagram_postImage(state.instagramUsername, state.instagramPassword, imageTable)
   },
-  // questa è l'ultima funzione che aggiunge effettivamente il
-  // post su nui
-  instagramNewPostFinale ({ commit }, post) {
-    commit('ADD_POST', { post })
-  },
   // questa funzione ti permette di creare un nuovo account
   instagramCreateNewAccount (_, {username, password, avatarUrl}) {
     PhoneAPI.instagram_createAccount(username, password, avatarUrl)
@@ -115,9 +110,6 @@ const mutations = {
   },
   SET_TWITTER_NOTIFICATION_SOUND (state, { notificationSound }) {
     state.instagramNotificationSound = notificationSound
-  },
-  ADD_POST (state, { instaPost }) {
-    state.instaPosts = [instaPost, ...state.instaPosts]
   },
   UPDATE_POST_LIKES (state, { postId, likes }) {
     const instagramIndex = state.instaPosts.findIndex(t => t.id === postId)

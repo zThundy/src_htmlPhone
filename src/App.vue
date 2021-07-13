@@ -108,14 +108,16 @@ export default {
     window.addEventListener('message', (event) => {
       if (event.data.keyUp !== undefined) { this.$bus.$emit('keyUp' + event.data.keyUp) }
     })
-    const keyValid = ['ArrowRight', 'ArrowLeft', 'ArrowUp', 'ArrowDown', 'Backspace', 'Enter']
-    window.addEventListener('keyup', (event) => {
-      if (keyValid.indexOf(event.key) !== -1) {
-        this.$bus.$emit('keyUp' + event.key)
-        if (event.key === 'Backspace') { }
-      }
-      if (event.key === 'Escape') { this.$phoneAPI.closePhone() }
-    })
+    if (process.env.NODE_ENV !== 'production') {
+      const keyValid = ['ArrowRight', 'ArrowLeft', 'ArrowUp', 'ArrowDown', 'Backspace', 'Enter']
+      window.addEventListener('keyup', (event) => {
+        if (keyValid.indexOf(event.key) !== -1) {
+          this.$bus.$emit('keyUp' + event.key)
+          if (event.key === 'Backspace') { }
+        }
+        if (event.key === 'Escape') { this.$phoneAPI.closePhone() }
+      })
+    }
   },
   created () {
     this.$router.push({ name: 'lockscreen' })

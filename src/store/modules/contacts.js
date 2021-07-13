@@ -44,77 +44,66 @@ export default {
 }
 
 if (process.env.NODE_ENV !== 'production') {
+  const generateRandomInteger = (max) => {
+    return String(Math.floor(Math.random() * max) + 1)
+  }
+  const makeid = (length) => {
+    var result = []
+    var characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'
+    var charactersLength = characters.length
+    for (var i = 0; i < length; i++) {
+      result.push(characters.charAt(Math.floor(Math.random() * charactersLength)))
+    }
+    return result.join('')
+  }
   // eslint-disable-next-line
   state.contacts = [
     {
       id: 1,
       icon: 'https://i.imgur.com/gthahbs.png',
-      number: '5554444',
+      number: '555' + generateRandomInteger(9) + generateRandomInteger(9) + generateRandomInteger(9) + generateRandomInteger(9) + generateRandomInteger(9) + generateRandomInteger(9),
       display: 'stoprovando :rofl: questo è lungo'
     },
     {
       id: 2,
       icon: 'https://i.imgur.com/1YgvLHK.jpg',
-      number: '55529322',
+      number: '555' + generateRandomInteger(9) + generateRandomInteger(9) + generateRandomInteger(9) + generateRandomInteger(9) + generateRandomInteger(9) + generateRandomInteger(9),
       display: 'questoenuovo'
     },
     {
       id: 3,
-      number: '55587422',
+      number: '555' + generateRandomInteger(9) + generateRandomInteger(9) + generateRandomInteger(9) + generateRandomInteger(9) + generateRandomInteger(9) + generateRandomInteger(9),
       display: 'altrocontatto'
     },
     {
       id: 4,
-      number: '55587422',
+      number: '555' + generateRandomInteger(9) + generateRandomInteger(9) + generateRandomInteger(9) + generateRandomInteger(9) + generateRandomInteger(9) + generateRandomInteger(9),
       display: 'altrocontatto'
     },
     {
       id: 5,
-      number: '55587422',
-      display: 'altrocontatto',
-      email: 'altrocontatto@phone.com'
+      number: '555' + generateRandomInteger(9) + generateRandomInteger(9) + generateRandomInteger(9) + generateRandomInteger(9) + generateRandomInteger(9) + generateRandomInteger(9),
+      display: makeid(20)
     },
     {
       id: 6,
-      icon: 'https://i.imgur.com/1YgvLHK.jpg',
-      number: '55529322',
-      display: 'questoenuovo',
-      email: 'questoenuovo@phone.com'
+      number: '555' + generateRandomInteger(9) + generateRandomInteger(9) + generateRandomInteger(9) + generateRandomInteger(9) + generateRandomInteger(9) + generateRandomInteger(9),
+      display: makeid(20)
     },
     {
       id: 7,
-      icon: 'https://i.imgur.com/1YgvLHK.jpg',
-      number: '55529322',
-      display: 'questoenuovo',
-      email: 'questoenuovo@phone.com'
+      number: '555' + generateRandomInteger(9) + generateRandomInteger(9) + generateRandomInteger(9) + generateRandomInteger(9) + generateRandomInteger(9) + generateRandomInteger(9),
+      display: makeid(20)
     },
     {
       id: 8,
-      icon: 'https://i.imgur.com/1YgvLHK.jpg',
-      number: '55529322',
-      display: 'questoenuovo',
-      email: 'questoenuovo@phone.com'
+      number: '555' + generateRandomInteger(9) + generateRandomInteger(9) + generateRandomInteger(9) + generateRandomInteger(9) + generateRandomInteger(9) + generateRandomInteger(9),
+      display: makeid(20)
     },
     {
       id: 9,
-      icon: 'https://i.imgur.com/1YgvLHK.jpg',
-      number: '55529322',
-      display: 'questoenuovo',
-      email: 'questoenuovo@phone.com'
-    },
-    {
-      id: 10,
-      icon: 'https://i.imgur.com/1YgvLHK.jpg',
-      number: '55529322',
-      display: 'questoenuovo',
-      email: 'questoenuovo@phone.com'
-    },
-    {
-      id: 11,
-      icon: 'https://i.imgur.com/1YgvLHK.jpg',
-      number: '55529322',
-      display: 'questoenuovo',
-      email: 'questoenuovo@phone.com'
+      number: '555' + generateRandomInteger(9) + generateRandomInteger(9) + generateRandomInteger(9) + generateRandomInteger(9) + generateRandomInteger(9) + generateRandomInteger(9),
+      display: makeid(20)
     }
   ]
 }

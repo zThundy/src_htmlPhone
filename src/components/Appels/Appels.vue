@@ -36,7 +36,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['LangString', 'themeColor', 'ignoreControls']),
+    ...mapGetters(['LangString', 'ignoreControls']),
     ...mapActions(['updateIgnoredControls']),
     subMenu () {
       return [{
@@ -55,14 +55,6 @@ export default {
     }
   },
   methods: {
-    getColorItem (index) {
-      if (this.currentMenuIndex === index) {
-        return {
-          color: this.themeColor
-        }
-      }
-      return {}
-    },
     swapMenu (index) {
       this.currentMenuIndex = index
     },
