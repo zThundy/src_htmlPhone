@@ -22,6 +22,10 @@ Config.Language = {
         ["CACHE_NUMBERS_1"] = "Aggiornato il numero %s per l'identifier %s",
         ["CACHE_NUMBERS_2"] = "Rimosso il numero %s dalla cache",
         ["CACHE_NUMBERS_3"] = "Utente %s sta entrando nel server, registrando %s come numero 'inUse'",
+        ["CACHE_TWITTER_1"] = "Messaggi di twitter caricati in cache",
+        ["CACHE_TWITTER_2"] = "Like di twitter caricati in cache",
+        ["CACHE_INSTAGRAM_1"] = "Messaggi di instagram caricati in cache",
+        ["CACHE_INSTAGRAM_2"] = "Like di instagram caricati in cache",
 
         -- CLIENT FILES
         ["APP_AZIENDA_NEW_EMERGENCY_CALL"] = "Nuova chiamata di emergenza",
@@ -175,6 +179,10 @@ Config.Language = {
         ["CACHE_NUMBERS_1"] = "Updated number %s for identifier %s",
         ["CACHE_NUMBERS_2"] = "Removed number %s from the cache",
         ["CACHE_NUMBERS_3"] = "User %s is joining, registering %s as 'inUse' number",
+        ["CACHE_TWITTER_1"] = "Twitter messages cache loaded",
+        ["CACHE_TWITTER_2"] = "Twitter likes cache loaded",
+        ["CACHE_INSTAGRAM_1"] = "Instagram messages cache loaded",
+        ["CACHE_INSTAGRAM_2"] = "Instagram likes cache loaded",
 
         -- CLIENT FILES
         ["APP_AZIENDA_NEW_EMERGENCY_CALL"] = "New emergency call",
