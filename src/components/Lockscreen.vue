@@ -116,7 +116,7 @@ export default {
   },
   created () {
     // this.$phoneAPI.requestInfoOfGroups()
-    this.$phoneAPI.requestOfferta()
+    // this.$phoneAPI.requestOfferta()
     this.setupUnreadMessages()
     // this.$phoneAPI.requestMyCovers()
     this.sendStartupValues()

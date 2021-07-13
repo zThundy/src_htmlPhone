@@ -88,7 +88,7 @@ RegisterNUICallback('onCandidates', function (data, cb)
 end)
 
 RegisterNUICallback("requestOfferta", function(data, cb)
-    gcPhoneServerT.requestOffertaFromDatabase()
+    gcPhoneServerT.requestOfferFromCache()
     cb("ok")
 end)
 

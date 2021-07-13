@@ -124,6 +124,10 @@ gcPhoneT.allUpdate = function()
         local notReceivedMessages = getUnreceivedMessages(phone_number)
         TriggerClientEvent("gcPhone:allMessage", player, getMessages(phone_number), notReceivedMessages)
         SyncCallHistory(player, phone_number)
+
+        -- qui aggiorno la nui e la tariffa quando metti la sim o quando entri nel server;
+        -- messa per ultima così tutte le cache sono aggiornate a questo punto e siamo tutti felici
+        gcPhoneT.requestOfferFromCache()
     end)
 end
 
@@ -758,25 +762,16 @@ gcPhoneT.deleteAllPhoneHistory = function()
     end)
 end
 
-gcPhoneT.requestOffertaFromDatabase = function()
+gcPhoneT.requestOfferFromCache = function()
     local player = source
     local identifier = gcPhoneT.getPlayerID(player)
     local phone_number = gcPhoneT.getPhoneNumber(identifier)
     
     if CACHED_TARIFFS[phone_number] then
         local sim = CACHED_TARIFFS[phone_number]
-        minuti = math.floor(sim.minuti / 60)
-        TriggerClientEvent("gcPhone:sendRequestedOfferta", player, {
-            tonumber(minuti),
-            tonumber(sim.messaggi),
-            tonumber(sim.dati)
-        }, sim.piano_tariffario)
+        TriggerClientEvent("gcPhone:sendRequestedOfferta", player, { tonumber(math.floor(sim.minuti / 60)), tonumber(sim.messaggi), tonumber(sim.dati) }, sim.piano_tariffario)
     else
-        TriggerClientEvent("gcPhone:sendRequestedOfferta", player, {
-            0,
-            0,
-            0
-        }, "nessuno")
+        TriggerClientEvent("gcPhone:sendRequestedOfferta", player, { 0, 0, 0 }, "nessuno")
     end
 end
 
