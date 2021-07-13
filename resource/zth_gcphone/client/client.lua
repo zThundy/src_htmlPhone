@@ -14,7 +14,6 @@ GLOBAL_AIRPLANE = false
 
 volume = 0.5
 
-radioPower = 0
 CAHES_WIFI_MODEMS = {}
 WIFI_TEMP_DATA = {}
 isConnected = false
@@ -228,7 +227,7 @@ AddEventHandler("gcPhone:acceptCall", function(infoCall, initiator)
                         if distance > 1.0 then gcPhoneServerT.rejectCall(infoCall) end
                     end
                 else
-                    if radioPower == 0 then gcPhoneServerT.rejectCall(infoCall) end
+                    if Reti.potenzaSegnale == 0 then gcPhoneServerT.rejectCall(infoCall) end
                 end
             end
         end)
@@ -388,20 +387,19 @@ function StartWifiRangeCheck()
         local found = false
         while true do
             found = false
-            if isConnected then
-                for k, v in pairs(CAHES_WIFI_MODEMS) do
-                    if v.label == WIFI_TEMP_DATA.label and v.password == WIFI_TEMP_DATA.password then
-                        found = true
-                        break
-                    end
+            if not isConnected then return end
+            
+            for k, v in pairs(CAHES_WIFI_MODEMS) do
+                if v.label == WIFI_TEMP_DATA.label and v.password == WIFI_TEMP_DATA.password then
+                    found = true
+                    break
                 end
-                if not found then
-                    isConnected = false
-                    WIFI_TEMP_DATA = {}
-                    gcPhoneServerT.updateReteWifi(isConnected, nil)
-                end
-            else
-                return
+            end
+            
+            if not found then
+                isConnected = false
+                WIFI_TEMP_DATA = {}
+                gcPhoneServerT.updateReteWifi(isConnected, nil)
             end
             Citizen.Wait(2000)
         end
