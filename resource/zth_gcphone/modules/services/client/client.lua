@@ -12,7 +12,7 @@ end
 
 local ids = 0
 
-function GetServicesList(serv)
+local function GetServicesList(serv)
     local services = {}
     for _, v in pairs(serv) do
         if v.subMenu then
@@ -24,6 +24,68 @@ function GetServicesList(serv)
     end
     return services
 end
+
+local function CheckForDispatchScript()
+    if Config.HasDispatchScript then
+        ids = ids + 1
+
+        TriggerServerEvent("dispatch:svNotify", {
+			code = Config.Language["EMERGENCY_CALL_CODE"],
+			street = GetStreetAndZone(),
+			id = ids,
+			priority = 3,
+			title = Config.Language["EMERGENCY_CALL_LABEL"],
+			position = {
+				x = coords.x,
+				y = coords.y,
+				z = coords.z
+			},
+            blipname = Config.Language["EMERGENCY_CALL_BLIP_LABEL"],
+            color = 2,
+            sprite = 304,
+            fadeOut = 30,
+            duration = 10000,
+            officer = Config.Language["EMERGENCY_CALL_CALLER_LABEL"]
+		})
+    end
+end
+
+--[[
+    TUTORIAL
+
+    To create an event for an emergency call you will need:
+    1) Define the job label and name in the config.json inside the /html/config folder
+    2) Go to your script code and add the event name below using these arugments as data
+        @coords are the coordinates where the service call will be sent; you can use the
+        table format or the vector3 format, it doesn't matter
+        @text will be the message that will be sent to the choosen emergency number
+        if you leave the text field as nil, the script will open the text box to let the user
+        write his own message
+        @services is an internal table reveived by the nui. Just use the example below
+        @type will be a table containing some informations
+        @type.number will be the number (or in this case the job name) that will be used to send
+        the emergency call
+
+    Example (client-side):
+        TriggerEvent("esx_addons_gcphone:call", {
+            coords = GetEntityCoords(GetPlayerPed(-1)),
+            services = { subMenu = { type = { number = "police" } } },
+            text = "Help i'm beeing robbed",
+            type = {
+                number = "police"
+            }
+        })
+    
+    Example (server-side):
+        TriggerClientEvent("esx_addons_gcphone:call", source, {
+            coords = GetEntityCoords(GetPlayerPed(-1)),
+            services = { subMenu = { type = { number = "police" } } },
+            text = "Help i'm beeing robbed",
+            type = {
+                number = "police"
+            }
+        })
+]]
 
 RegisterNetEvent('esx_addons_gcphone:call')
 AddEventHandler('esx_addons_gcphone:call', function(data)
@@ -52,28 +114,7 @@ AddEventHandler('esx_addons_gcphone:call', function(data)
         end
     end
 
-    if Config.HasDispatchScript and number == "police" then
-        ids = ids + 1
-
-        TriggerServerEvent("dispatch:svNotify", {
-			code = Config.Language["EMERGENCY_CALL_CODE"],
-			street = GetStreetAndZone(),
-			id = ids,
-			priority = 3,
-			title = Config.Language["EMERGENCY_CALL_LABEL"],
-			position = {
-				x = coords.x,
-				y = coords.y,
-				z = coords.z
-			},
-            blipname = Config.Language["EMERGENCY_CALL_BLIP_LABEL"],
-            color = 2,
-            sprite = 304,
-            fadeOut = 30,
-            duration = 10000,
-            officer = Config.Language["EMERGENCY_CALL_CALLER_LABEL"]
-		})
-    end
+    CheckForDispatchScript()
 
     if message ~= nil and message ~= "" then
         gcPhoneServerT.servicesStartCall(number, message, {
