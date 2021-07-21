@@ -21,7 +21,6 @@ function notifyAlertSMS(number, alert, listSrc, services)
 				if phone_number ~= nil then
 					if services[number] then
 						_addMessage(services[number], phone_number, mess, 0, function(message)
-							-- local message = gcPhoneT.internalAddMessage(Config.ServicesNames[number], phone_number, mess, 0)
 							TriggerClientEvent("gcPhone:receiveMessage", source, message)
 						end)
 					else
@@ -51,3 +50,23 @@ gcPhoneT.servicesStartCall = function(number, message, coords, hideNumber, servi
 	if hideNumber or not phone_number then phone_number = Config.Language["EMERGENCY_CALL_NO_NUMBER"] end
 	notifyAlertSMS(number, { message = message, coords = coords, numero = phone_number }, GetPlayersFromJob(number), services)
 end
+
+--[[
+	OLD AND DEPRECATED EVENT
+]]
+
+RegisterServerEvent("esx_phone:send")
+AddEventHandler("esx_phone:send", function(job, message, _, coords)
+	print("^1[ZTH_Phone] ^0[^3" + GetInvokingResource() + "^0] The esx_phone:send event is deprecated, please use the client event esx_addons_gcphone:call")
+	local player = source
+	if player then
+		TriggerClientEvent("esx_addons_gcphone:call", player, {
+            coords = coords,
+            services = { subMenu = { type = { number = job } } },
+            text = message,
+            type = {
+                number = job
+            }
+        })
+	end
+end)
