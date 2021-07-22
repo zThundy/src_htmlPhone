@@ -43,6 +43,9 @@ end
 
 --[[
     OLD AND DEPRECATED EVENT
+
+    Please these are shitty old events.
+    Try to not to use them please :)
 ]]
 
 RegisterServerEvent("esx_phone:send")
@@ -53,5 +56,16 @@ AddEventHandler("esx_phone:send", function(job, message, _, coords)
     local player = source
     if player then
         TriggerClientEvent("esx_addons_gcphone:call", player, { coords = coords, job = job, message = message })
+    end
+end)
+
+RegisterServerEvent("esx_addons_gcphone:startCall")
+AddEventHandler("esx_addons_gcphone:startCall", function(job, message, _, _)
+    local res = GetInvokingResource()
+    if not res then res = "UNK_RESOURCE" end
+    print("^1[ZTH_Phone] ^0[^3" .. res .. "^0] The esx_addons_gcphone:startCall event is deprecated, please use the client event esx_addons_gcphone:call")
+    local player = source
+    if player then
+        TriggerClientEvent("esx_addons_gcphone:call", player, { job = job, message = message })
     end
 end)
