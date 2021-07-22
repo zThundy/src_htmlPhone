@@ -150,11 +150,6 @@ function Reti:InitScript()
                 end
             end
 
-            -- print(DumpTable(self.retiWifiVicine))
-            -- print("---------------------------------")
-            -- print(DumpTable(retiWifi))
-            AggiornaRetiWifi(self.retiWifiVicine)
-
             Citizen.Wait(Config.CheckDistanceWaitWifi * 1000)
         end
     end)

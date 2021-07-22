@@ -71,7 +71,8 @@ end
 RegisterNetEvent('esx_addons_gcphone:call')
 AddEventHandler('esx_addons_gcphone:call', function(data)
     if not data.coords then data.coords = GetEntityCoords(GetPlayerPed(-1)) end
-    if not data.job then return gcPhone.debug(Config.Language["CHECK_JOB_NAME_EMERGENCY_CALLS"]) end 
+    if not data.job then return gcPhone.debug(Config.Language["CHECK_JOB_NAME_EMERGENCY_CALLS"]) end
+    if not data.display then data.display = data.job end
 
     if data.message == nil then
         DisplayOnscreenKeyboard(1, "FMMC_MPM_NA", "", "", "", "", "", 200)
