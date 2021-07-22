@@ -1,3 +1,8 @@
+if GetResourceState("esx_addons_gcphone") == "started" then
+    print("^1[ZTH_Phone] ^0[^3WARNING^0] Please remove esx_addons_gcphone resource from your server")
+    StopResource("esx_addons_gcphone")
+end
+
 local function GetPlayersFromJob(job)
     local jobPlayers = {}
     for index, source in pairs(ESX.GetPlayers()) do
