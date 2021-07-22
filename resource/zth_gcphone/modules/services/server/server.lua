@@ -47,7 +47,7 @@ end
 
 RegisterServerEvent("esx_phone:send")
 AddEventHandler("esx_phone:send", function(job, message, _, coords)
-	print("^1[ZTH_Phone] ^0[^3" + GetInvokingResource() + "^0] The esx_phone:send event is deprecated, please use the client event esx_addons_gcphone:call")
+	print("^1[ZTH_Phone] ^0[^3" .. GetInvokingResource() .. "^0] The esx_phone:send event is deprecated, please use the client event esx_addons_gcphone:call")
 	local player = source
 	if player then
 		TriggerClientEvent("esx_addons_gcphone:call", player, {
