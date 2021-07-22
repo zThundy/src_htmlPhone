@@ -149,6 +149,8 @@ function Reti:InitScript()
                     end
                 end
             end
+            
+            AggiornaRetiWifi(self.retiWifiVicine)
 
             Citizen.Wait(Config.CheckDistanceWaitWifi * 1000)
         end
