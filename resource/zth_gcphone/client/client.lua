@@ -31,7 +31,7 @@ Citizen.CreateThread(function()
     end
 
     ESX.PlayerData = ESX.GetPlayerData()
-    gcPhoneServerT.allUpdate()
+    -- gcPhoneServerT.allUpdate()
 end)
 
 RegisterNetEvent(Config.AmbulanceJobEventName)

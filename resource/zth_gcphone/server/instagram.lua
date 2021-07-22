@@ -3,7 +3,7 @@ local CACHED_LIKES = {}
 local CACHED_ACCOUNTS = {}
 
 MySQL.ready(function()
-    MySQL.Async.execute("DELETE FROM phone_instagram_posts WHERE (DATEDIFF(CURRENT_DATE, time) > 20)", {})
+    MySQL.Async.execute("DELETE FROM phone_instagram_posts WHERE (DATEDIFF(CURRENT_DATE, data) > 20)", {})
 
     MySQL.Async.fetchAll("SELECT * FROM phone_instagram_posts", {}, function(posts)
         CACHED_POSTS = posts

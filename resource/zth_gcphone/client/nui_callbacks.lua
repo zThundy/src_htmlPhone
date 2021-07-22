@@ -206,6 +206,11 @@ end)
 RegisterNUICallback('chiamataEmergenza', function(data, cb)
     local eventName = data.eventName or ''
     if string.match(eventName, 'gcphone') then
+        -- remove useless data
+        data.item.icon = nil
+        data.item.subMenu = nil
+        -- transfer typed message to the correct place
+        if data.text then data.item.message = data.text end
         TriggerEvent(data.eventName, data.item)
     end
     cb("ok")
