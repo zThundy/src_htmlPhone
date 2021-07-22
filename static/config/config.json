@@ -87,45 +87,37 @@
     "police": true
   },
 
-  "serviceCall": [{
+  "serviceCall": [
+    {
       "display": "Polizia",
       "icon": "/html/static/img/app_favourites/polizia.png",
+      "job": "police",
       "subMenu": [{
-          "title": "Invia un messaggio",
-          "icons": "fa-phone",
-          "eventName": "esx_addons_gcphone:call",
-          "type": {
-            "number": "police"
-          }
-        }
-      ]
+        "title": "Invia un messaggio",
+        "icons": "fa-phone",
+        "eventName": "esx_addons_gcphone:call"
+      }]
     },
     {
       "display": "Medici",
       "icon": "/html/static/img/app_favourites/ems.png",
+      "job": "ambulance",
       "subMenu": [{
         "title": "Invia un messaggio",
         "icons": "fa-phone",
-        "eventName": "esx_addons_gcphone:call",
-        "type": {
-          "number": "ambulance"
-        }
+        "eventName": "esx_addons_gcphone:call"
       }]
     },
     {
       "display": "Taxi",
       "backgroundColor": "yellow",
       "icon": "/html/static/img/app_favourites/taxi.png",
-      "subMenu": [
-        {
-          "title": "Invia un messaggio",
-		      "icons": "fa-phone",
-          "eventName": "esx_addons_gcphone:call",
-          "type": {
-            "number": "taxi"
-          }
-        }
-      ]
+      "job": "taxi",
+      "subMenu": [{
+        "title": "Invia un messaggio",
+        "icons": "fa-phone",
+        "eventName": "esx_addons_gcphone:call"
+      }]
     }
   ],
 
