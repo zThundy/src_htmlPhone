@@ -79,6 +79,7 @@ export default {
       // if (this.soundList[dataNotif.id]) { this.soundList[dataNotif.id].play() }
       this.$phoneAPI.onplaySound({ volume: this.volume, sound: this.currentShowing.sound, loop: false })
       setTimeout(() => {
+        if (this.currentShowing === null || this.currentShowing === undefined) return
         this.list = this.list.filter(n => n.id !== this.currentShowing.id)
         // delete this.soundList[this.currentShowing.id]
         this.currentShowing = null
