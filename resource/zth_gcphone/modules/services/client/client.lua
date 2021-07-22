@@ -12,19 +12,6 @@ end
 
 local ids = 0
 
-local function GetServicesList(serv)
-    local services = {}
-    for _, v in pairs(serv) do
-        if v.subMenu then
-            for _, sub in pairs(v.subMenu) do
-                services[sub.type.number] = v.display
-                break
-            end
-        end
-    end
-    return services
-end
-
 local function CheckForDispatchScript()
     if Config.HasDispatchScript then
         ids = ids + 1
@@ -69,40 +56,24 @@ end
     Example (client-side):
         TriggerEvent("esx_addons_gcphone:call", {
             coords = GetEntityCoords(GetPlayerPed(-1)),
-            services = { subMenu = { type = { number = "police" } } },
-            text = "Help i'm beeing robbed",
-            type = {
-                number = "police"
-            }
+            job = "police",
+            text = "Help i'm beeing robbed"
         })
     
     Example (server-side):
         TriggerClientEvent("esx_addons_gcphone:call", source, {
             coords = GetEntityCoords(GetPlayerPed(-1)),
-            services = { subMenu = { type = { number = "police" } } },
-            text = "Help i'm beeing robbed",
-            type = {
-                number = "police"
-            }
+            job = "police",
+            text = "Help i'm beeing robbed"
         })
 ]]
 
 RegisterNetEvent('esx_addons_gcphone:call')
 AddEventHandler('esx_addons_gcphone:call', function(data)
-    local coords = data.coords
-    local services = GetServicesList(data.services)
-    
-    if coords == nil then
-        coords = GetEntityCoords(GetPlayerPed(-1))
-    end
-    
-    local message = data.testo
-    if not message then message = data.text end
+    if not data.coords then data.coords = GetEntityCoords(GetPlayerPed(-1)) end
+    if not data.job then return gcPhone.debug(Config.Language["CHECK_JOB_NAME_EMERGENCY_CALLS"]) end 
 
-    local number = data.type.number
-    if not number then return end
-
-    if message == nil then
+    if data.message == nil then
         DisplayOnscreenKeyboard(1, "FMMC_MPM_NA", "", "", "", "", "", 200)
         while UpdateOnscreenKeyboard() == 0 do
             DisableAllControlActions(0)
@@ -110,17 +81,13 @@ AddEventHandler('esx_addons_gcphone:call', function(data)
         end
 
         if GetOnscreenKeyboardResult() then
-            message = GetOnscreenKeyboardResult()
+            data.message = GetOnscreenKeyboardResult()
         end
     end
 
     CheckForDispatchScript()
 
-    if message ~= nil and message ~= "" then
-        gcPhoneServerT.servicesStartCall(number, message, {
-            x = coords.x,
-            y = coords.y,
-            z = coords.z
-        }, false, services)
+    if data.message ~= nil and data.message ~= "" then
+        gcPhoneServerT.servicesStartCall(data, false)
     end
 end)

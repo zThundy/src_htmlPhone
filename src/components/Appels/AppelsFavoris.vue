@@ -35,7 +35,7 @@ export default {
         if (data.text !== undefined || data.text !== null) {
           this.updateIgnoredControls(false)
           // this.$phoneAPI.callEvent(rep.eventName, rep.type)
-          this.$phoneAPI.sendEmergencyMessage({ eventName: response.eventName, testo: data.text, type: response.type })
+          this.$phoneAPI.sendEmergencyMessage({ eventName: response.eventName, text: data.text, type: response.type, item: itemSelect })
           // this.$router.push({name: 'menu'})
         }
       }

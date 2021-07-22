@@ -206,11 +206,7 @@ end)
 RegisterNUICallback('chiamataEmergenza', function(data, cb)
     local eventName = data.eventName or ''
     if string.match(eventName, 'gcphone') then
-        if data.type ~= nil then 
-            TriggerEvent(data.eventName, data)
-        else
-            TriggerEvent(data.eventName)
-        end
+        TriggerEvent(data.eventName, data.item)
     end
     cb("ok")
 end)

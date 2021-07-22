@@ -7,48 +7,38 @@ local function GetPlayersFromJob(job)
 	return jobPlayers
 end
 
-function notifyAlertSMS(number, alert, listSrc, services)
-	local mess = Config.Language["EMERGENCY_CALL_MESSAGE"]:format(alert.numero, alert.message)
-	if alert.coords ~= nil then mess = mess .. '\n GPS: ' .. alert.coords.x .. ', ' .. alert.coords.y end
+local function SendEmergencyCall(data, listSrc)
+	local _message = Config.Language["EMERGENCY_CALL_MESSAGE"]:format(data.phone_number, data.message)
+	if coords ~= nil then _message = _message .. '\n GPS: ' .. data.coords.x .. ', ' .. data.coords.y end
 
 	for _, source in pairs(listSrc) do
 		if not Config.EnableAziendaAppCalls then
-			local xPlayer = ESX.GetPlayerFromId(source)
+			local identifier = gcPhoneT.getPlayerID(player)
+			local phone_number = gcPhoneT.getPhoneNumber(identifier)
 
-			if xPlayer ~= nil then
-				local phone_number = gcPhoneT.getPhoneNumber(xPlayer.identifier)
-
-				if phone_number ~= nil then
-					if services[number] then
-						_addMessage(services[number], phone_number, mess, 0, function(message)
-							TriggerClientEvent("gcPhone:receiveMessage", source, message)
-						end)
-					else
-						xPlayer.showNotification(Config.Language["EMERGENCY_CALL_MESSAGE_ERROR"])
-					end
-				end
+			if phone_number ~= nil then
+				_addMessage(data.display, phone_number, _message, 0, function(message)
+					TriggerClientEvent("gcPhone:receiveMessage", source, message)
+				end)
 			end
 		else
-			alert.newMessage = mess
-			alert.coords.x = tonumber(string.format("%.3f", alert.coords.x))
-			alert.coords.y = tonumber(string.format("%.3f", alert.coords.y))
-			alert = gcPhoneT.azienda_sendAziendaCallNotification(alert)
-			TriggerClientEvent("gcphone:azienda_sendEmergencyCall", source, alert)
+			data.newMessage = _message
+			data.coords.x = tonumber(string.format("%.3f", data.coords.x))
+			data.coords.y = tonumber(string.format("%.3f", data.coords.y))
+			data = gcPhoneT.azienda_sendAziendaCallNotification(data)
+			TriggerClientEvent("gcphone:azienda_sendEmergencyCall", source, data)
 		end
 	end
 end
 
-gcPhoneT.servicesStartCall = function(number, message, coords, hideNumber, services)
+gcPhoneT.servicesStartCall = function(data, hideNumber)
 	local player = source
-	local phone_number = nil
-
 	if player ~= nil and player ~= 0 then
 		local identifier = gcPhoneT.getPlayerID(player)
-		phone_number = gcPhoneT.getPhoneNumber(identifier)
+		data.phone_number = gcPhoneT.getPhoneNumber(identifier)
 	end
-	
-	if hideNumber or not phone_number then phone_number = Config.Language["EMERGENCY_CALL_NO_NUMBER"] end
-	notifyAlertSMS(number, { message = message, coords = coords, numero = phone_number }, GetPlayersFromJob(number), services)
+	if hideNumber or not data.phone_number then data.phone_number = Config.Language["EMERGENCY_CALL_NO_NUMBER"] end
+	SendEmergencyCall(data, GetPlayersFromJob(job))
 end
 
 --[[
@@ -62,11 +52,8 @@ AddEventHandler("esx_phone:send", function(job, message, _, coords)
 	if player then
 		TriggerClientEvent("esx_addons_gcphone:call", player, {
             coords = coords,
-            services = { subMenu = { type = { number = job } } },
-            text = message,
-            type = {
-                number = job
-            }
+            job = job,
+            text = message
         })
 	end
 end)

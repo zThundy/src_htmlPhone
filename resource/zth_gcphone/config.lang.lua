@@ -26,6 +26,7 @@ Config.Language = {
         ["CACHE_TWITTER_2"] = "Like di twitter caricati in cache",
         ["CACHE_INSTAGRAM_1"] = "Messaggi di instagram caricati in cache",
         ["CACHE_INSTAGRAM_2"] = "Like di instagram caricati in cache",
+        ["CHECK_JOB_NAME_EMERGENCY_CALLS"] = "Controlla che il job nel config.json nella cartella html sia definito correttamente",
 
         -- CLIENT FILES
         ["APP_AZIENDA_NEW_EMERGENCY_CALL"] = "Nuova chiamata di emergenza",
@@ -183,6 +184,7 @@ Config.Language = {
         ["CACHE_TWITTER_2"] = "Twitter likes cache loaded",
         ["CACHE_INSTAGRAM_1"] = "Instagram messages cache loaded",
         ["CACHE_INSTAGRAM_2"] = "Instagram likes cache loaded",
+        ["CHECK_JOB_NAME_EMERGENCY_CALLS"] = "Please check that the job inside the config.json in the html folder is defined correctly",
 
         -- CLIENT FILES
         ["APP_AZIENDA_NEW_EMERGENCY_CALL"] = "New emergency call",
