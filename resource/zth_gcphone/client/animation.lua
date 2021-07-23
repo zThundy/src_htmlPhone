@@ -13,200 +13,200 @@ local lastAnim = nil
 
 
 local lib = {
-	['cellphone@'] = {
-		['out'] = {
-			['text'] = 'cellphone_text_in',
-			['call'] = 'cellphone_call_listen_base',
-		},
-		['text'] = {
-			['out'] = 'cellphone_text_out',
-			['call'] = 'cellphone_text_to_call',
-		},
-		['call'] = {
-			['out'] = 'cellphone_call_out',
-			['text'] = 'cellphone_call_to_text',
-		}
-	},
-	['anim@cellphone@in_car@ps'] = {
-		['out'] = {
-			['text'] = 'cellphone_text_in',
-			['call'] = 'cellphone_call_in',
-		},
-		['text'] = {
-			['out'] = 'cellphone_text_out',
-			['call'] = 'cellphone_text_to_call',
-		},
-		['call'] = {
-			['out'] = 'cellphone_horizontal_exit',
-			['text'] = 'cellphone_call_to_text',
-		}
-	}
+    ['cellphone@'] = {
+        ['out'] = {
+            ['text'] = 'cellphone_text_in',
+            ['call'] = 'cellphone_call_listen_base',
+        },
+        ['text'] = {
+            ['out'] = 'cellphone_text_out',
+            ['call'] = 'cellphone_text_to_call',
+        },
+        ['call'] = {
+            ['out'] = 'cellphone_call_out',
+            ['text'] = 'cellphone_call_to_text',
+        }
+    },
+    ['anim@cellphone@in_car@ps'] = {
+        ['out'] = {
+            ['text'] = 'cellphone_text_in',
+            ['call'] = 'cellphone_call_in',
+        },
+        ['text'] = {
+            ['out'] = 'cellphone_text_out',
+            ['call'] = 'cellphone_text_to_call',
+        },
+        ['call'] = {
+            ['out'] = 'cellphone_horizontal_exit',
+            ['text'] = 'cellphone_call_to_text',
+        }
+    }
 }
 
 
 function newPhoneProp()
-	ped = GetPlayerPed(-1)
-	
-	deletePhone()
+    ped = GetPlayerPed(-1)
+    
+    deletePhone()
 
-	if Config.Covers[myCover] ~= nil then
-		phoneModel = GetHashKey(Config.Covers[myCover].prop)
-	else
-		phoneModel = GetHashKey(Config.BaseCover.prop)
-	end
+    if Config.Covers[myCover] ~= nil then
+        phoneModel = GetHashKey(Config.Covers[myCover].prop)
+    else
+        phoneModel = GetHashKey(Config.BaseCover.prop)
+    end
 
-	RequestModel(phoneModel)
-	while not HasModelLoaded(phoneModel) do Citizen.Wait(1) end
+    RequestModel(phoneModel)
+    while not HasModelLoaded(phoneModel) do Citizen.Wait(1) end
 
-	phoneProp = CreateObject(phoneModel, 1.0, 1.0, 1.0, 1, 1, 0)
-	local bone = GetPedBoneIndex(ped, 28422)
-	AttachEntityToEntity(phoneProp, ped, bone, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1, 1, 0, 0, 2, 1)
+    phoneProp = CreateObject(phoneModel, 1.0, 1.0, 1.0, 1, 1, 0)
+    local bone = GetPedBoneIndex(ped, 28422)
+    AttachEntityToEntity(phoneProp, ped, bone, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1, 1, 0, 0, 2, 1)
 
-	-- SetEntityAsNoLongerNeeded(phoneModel)
+    -- SetEntityAsNoLongerNeeded(phoneModel)
 
-	table.insert(CACHED_PROPS, phoneProp)
+    table.insert(CACHED_PROPS, phoneProp)
 end
 
 
 function onCoverChange()
-	if #CACHED_PROPS > 2 then doCleanup() end
+    if #CACHED_PROPS > 2 then doCleanup() end
 
-	newPhoneProp()
+    newPhoneProp()
 end
 
 
 function deletePhone()
-	if phoneProp ~= 0 then
-		Citizen.InvokeNative(0xAE3CBE5BF394C9C9 , Citizen.PointerValueIntInitialized(phoneProp))
-		phoneProp = 0
-	end
+    if phoneProp ~= 0 then
+        Citizen.InvokeNative(0xAE3CBE5BF394C9C9 , Citizen.PointerValueIntInitialized(phoneProp))
+        phoneProp = 0
+    end
 end
 
 
 function doCleanup()
-	for k, v in pairs(CACHED_PROPS) do
-		if DoesEntityExist(v) then
-			Citizen.InvokeNative(0xAE3CBE5BF394C9C9 , Citizen.PointerValueIntInitialized(v))
-		end
-	end
+    for k, v in pairs(CACHED_PROPS) do
+        if DoesEntityExist(v) then
+            Citizen.InvokeNative(0xAE3CBE5BF394C9C9 , Citizen.PointerValueIntInitialized(v))
+        end
+    end
 
-	CACHED_PROPS = {}
-	gcPhone.debug(Config.Language["ANIMATIONS_CLEANUP_DEBUG_1"])
+    CACHED_PROPS = {}
+    gcPhone.debug(Config.Language["ANIMATIONS_CLEANUP_DEBUG_1"])
 end
 
 
 --[[
-	out || text || Call ||
+    out || text || Call ||
 --]]
 function PhonePlayAnim(status)
-	if currentStatus == status then
-		return
-	end
+    if currentStatus == status then
+        return
+    end
 
-	ped = GetPlayerPed(-1)
+    ped = GetPlayerPed(-1)
 
-	local dict = "cellphone@"
-	if IsPedInAnyVehicle(ped, false) then dict = "anim@cellphone@in_car@ps" end
+    local dict = "cellphone@"
+    if IsPedInAnyVehicle(ped, false) then dict = "anim@cellphone@in_car@ps" end
 
-	RequestAnimDict(dict)
-	while not HasAnimDictLoaded(dict) do Citizen.Wait(1) end
+    RequestAnimDict(dict)
+    while not HasAnimDictLoaded(dict) do Citizen.Wait(1) end
 
-	-- first time:
-	-- currentStatus = "out"
-	-- status = "text"
-	----------------------------
-	-- second time:
-	-- currentStatus = "text"
-	-- status = "out"
-	local anim = lib[dict][currentStatus][status]
-	if currentStatus ~= 'out' then StopAnimTask(ped, lastDict, lastAnim, 1.0) end
+    -- first time:
+    -- currentStatus = "out"
+    -- status = "text"
+    ----------------------------
+    -- second time:
+    -- currentStatus = "text"
+    -- status = "out"
+    local anim = lib[dict][currentStatus][status]
+    if currentStatus ~= 'out' then StopAnimTask(ped, lastDict, lastAnim, 1.0) end
 
-	TaskPlayAnim(ped, dict, anim, 3.0, -1, -1, 50, 0, false, false, false)
+    TaskPlayAnim(ped, dict, anim, 3.0, -1, -1, 50, 0, false, false, false)
 
-	if status ~= 'out' and currentStatus == 'out' then
-		Citizen.Wait(380)
-		newPhoneProp()
-	end
+    if status ~= 'out' and currentStatus == 'out' then
+        Citizen.Wait(380)
+        newPhoneProp()
+    end
 
-	--[[
-		Citizen.CreateThreadNow(function()
-			while true do
-				ped = GetPlayerPed(-1)
-				-- print("looping animation")
-				-- print(currentStatus, status)
-				if status == "out" then
-					-- print("should breaking this")
-					StopAnimTask(ped, lastDict, lastAnim, 1.0)
-					return
-				end
-				if not IsEntityPlayingAnim(ped, lastDict, lastAnim, 3) then
-					TaskPlayAnim(ped, lastDict, lastAnim, 3.0, -1, -1, 50, 0, false, false, false)
-				end
-				Citizen.Wait(2000)
-			end
-		end)
-	]]
+    --[[
+        Citizen.CreateThreadNow(function()
+            while true do
+                ped = GetPlayerPed(-1)
+                -- print("looping animation")
+                -- print(currentStatus, status)
+                if status == "out" then
+                    -- print("should breaking this")
+                    StopAnimTask(ped, lastDict, lastAnim, 1.0)
+                    return
+                end
+                if not IsEntityPlayingAnim(ped, lastDict, lastAnim, 3) then
+                    TaskPlayAnim(ped, lastDict, lastAnim, 3.0, -1, -1, 50, 0, false, false, false)
+                end
+                Citizen.Wait(2000)
+            end
+        end)
+    ]]
 
-	lastDict = dict
-	lastAnim = anim
-	currentStatus = status
+    lastDict = dict
+    lastAnim = anim
+    currentStatus = status
 
-	if status == 'out' then
-		Citizen.Wait(180)
-		deletePhone()
-		StopAnimTask(ped, lastDict, lastAnim, 1.0)
-	end
+    if status == 'out' then
+        Citizen.Wait(180)
+        deletePhone()
+        StopAnimTask(ped, lastDict, lastAnim, 1.0)
+    end
 end
 
 
 function PhonePlayOut()
-	PhonePlayAnim('out')
+    PhonePlayAnim('out')
 end
 
 
 function PhonePlayText()
-	PhonePlayAnim('text')
+    PhonePlayAnim('text')
 end
 
 
 function PhonePlayCall()
-	PhonePlayAnim('call')
+    PhonePlayAnim('call')
 end
 
 
 function PhonePlayIn() 
-	if currentStatus == 'out' then
-		PhonePlayText()
-	end
+    if currentStatus == 'out' then
+        PhonePlayText()
+    end
 end
 
 
 AddEventHandler("onResourceStop", function(res)
-	if res == GetCurrentResourceName() then
-		deletePhone()
+    if res == GetCurrentResourceName() then
+        deletePhone()
 
-		doCleanup()
-	end
+        doCleanup()
+    end
 end)
 
 
 RegisterNetEvent("gcphone:animations_doCleanup")
 AddEventHandler("gcphone:animations_doCleanup", function()
-	doCleanup()
+    doCleanup()
 end)
 
 
 --[[
-	Citizen.CreateThread(function()
-		local idle = 0
-		while true do
-			if not menuIsOpen then idle = 2000 end
+    Citizen.CreateThread(function()
+        local idle = 0
+        while true do
+            if not menuIsOpen then idle = 2000 end
 
-			if currentStatus == "out" and not IsEntityPlayingAnim(ped, "cellphone@", "cellphone_text_in", 50) then
-				
-			end
+            if currentStatus == "out" and not IsEntityPlayingAnim(ped, "cellphone@", "cellphone_text_in", 50) then
+                
+            end
 
-			Citizen.Wait(idle)
-		end
-	end)
+            Citizen.Wait(idle)
+        end
+    end)
 ]]

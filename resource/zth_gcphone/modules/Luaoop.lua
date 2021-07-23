@@ -630,16 +630,12 @@ function class.data(t)
 end
 
 -- SHORTCUTS
-setmetatable(
-    class,
-    {
-        __call = function(t, name, ...)
-            return class.new(name, ...)
-        end
-    }
-)
+setmetatable(class, {
+    __call = function(t, name, ...)
+        return class.new(name, ...)
+    end
+})
 
 -- NAMESPACES
 Luaoop.class = class
-
 return Luaoop

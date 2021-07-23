@@ -4,9 +4,6 @@ local debug = false
 SERVER = IsDuplicityVersion()
 CLIENT = not SERVER
 
--- print("============ IS_SERVER:"..tostring(SERVER))
--- print("============ IS_CLIENT:"..tostring(CLIENT))
-
 local modules = {}
 function module(rsc, path) -- load a LUA resource file as module
     if path == nil then -- shortcut for vrp, can omit the resource parameter
@@ -19,9 +16,6 @@ function module(rsc, path) -- load a LUA resource file as module
     if modules[key] then -- cached module
         return table.unpack(modules[key])
     else
-        -- print(rsc, path..".lua", LoadResourceFile(rsc, path..".lua"))
-        -- print(rsc)
-        -- print(path..".lua")
         local f, err = load(LoadResourceFile(rsc, path..".lua"))
         if f then
             local ar = { pcall(f) }

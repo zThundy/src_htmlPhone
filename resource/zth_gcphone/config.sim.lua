@@ -12,11 +12,11 @@ Config.HiddenNumberFormat = "555#####"
 -- will be located
 Config.TariffsShop = vector3(53.59, -1584.38, 29.6)
 Config.TariffsBlip = {
-	enable = true,
-	name = "Life invader",
-	sprite = 606,
-	color = 1,
-	scale = 0.8
+    enable = true,
+    name = "Life invader",
+    sprite = 606,
+    color = 1,
+    scale = 0.8
 }
 
 -- this is the list of tariffs plan that the user can buy
@@ -26,8 +26,8 @@ Config.TariffsBlip = {
 -- @dati = are the mbs that a user can use to navigate in the internet
 -- @price = is the price for that offer (same for renewal)
 Config.Tariffs = {
-	{label = "Entry Level", minuti = 5, messaggi = 50, dati = 200, price = 5000},
-	{label = "Promozione Young", minuti = 10, messaggi = 100, dati = 250, price = 10000},
-	{label = "Imprenditore", minuti = 15, messaggi = 150, dati = 300, price = 15000},
-	{label = "Super Offer", minuti = 20, messaggi = 200, dati = 350, price = 20000}
+    {label = "Entry Level", minuti = 5, messaggi = 50, dati = 200, price = 5000},
+    {label = "Promozione Young", minuti = 10, messaggi = 100, dati = 250, price = 10000},
+    {label = "Imprenditore", minuti = 15, messaggi = 150, dati = 300, price = 15000},
+    {label = "Super Offer", minuti = 20, messaggi = 200, dati = 350, price = 20000}
 }

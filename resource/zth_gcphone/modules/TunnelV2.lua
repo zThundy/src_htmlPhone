@@ -102,11 +102,6 @@ end
 
 function Tunnel.bindInterface(license, name, interface)
     license = enc(license)
-    -- print("bindInterface", license)
-    -- print("bindInterface encoded license", enc(license))
-    -- receive request
-    -- print("new interface:")
-    -- print(license .. "::" .. name .. ":tunnel_req")
     RegisterLocalEvent(license .. "::" .. name .. ":tunnel_req")
     AddEventHandler(license .. "::" .. name .. ":tunnel_req", function(member, args, identifier, rid)
         local source = source
@@ -129,11 +124,6 @@ end
 function Tunnel.getInterface(license, name, identifier)
     if not identifier then identifier = GetCurrentResourceName() end
     license = enc(license)
-    -- print("getInterface", license)
-    -- print("getInterface encoded license", enc(license))
-    -- print("got interface:")
-    -- print(license .. "::" .. name .. ":" .. identifier .. ":tunnel_res")
-    
     local ids = IDManager()
     local callbacks = {}
 
