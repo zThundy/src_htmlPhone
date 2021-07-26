@@ -32,3 +32,8 @@ RegisterNUICallback("sellCrypto", function(data, cb)
     SendNUIMessage({ event = "receiveMyCrypto", crypto = gcPhoneServerT.getMyCrypto() })
     cb("ok")
 end)
+
+RegisterNetEvent("gcPhone:bourse_receivePersonalCrypto")
+AddEventHandler("gcPhone:bourse_receivePersonalCrypto", function(crypto)
+    SendNUIMessage({ event = "receiveMyCrypto", crypto = crypto })
+end)

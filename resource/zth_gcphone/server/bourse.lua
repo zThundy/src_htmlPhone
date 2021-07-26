@@ -184,6 +184,7 @@ gcPhoneT.buyCrypto = function(data)
                     ['@id'] = crypto.id
                 }, function()
                     CACHED_USER_CRYPTO = FetchPersonalCrypto()
+                    TriggerClientEvent("gcPhone:bourse_receivePersonalCrypto", player, CACHED_USER_CRYPTO[xPlayer.identifier])
                 end)
             else
                 MySQL.Async.insert("INSERT INTO phone_user_crypto(identifier, name, amount, price) VALUES(@identifier, @name, @amount, @price)", {
@@ -193,6 +194,7 @@ gcPhoneT.buyCrypto = function(data)
                     ['@price'] = data.crypto.currentMarket
                 }, function(id)
                     CACHED_USER_CRYPTO = FetchPersonalCrypto()
+                    TriggerClientEvent("gcPhone:bourse_receivePersonalCrypto", player, CACHED_USER_CRYPTO[xPlayer.identifier])
                 end)
             end
 
@@ -230,6 +232,7 @@ gcPhoneT.sellCrypto = function(data)
                     ['@id'] = crypto.id
                 }, function()
                     CACHED_USER_CRYPTO = FetchPersonalCrypto()
+                    TriggerClientEvent("gcPhone:bourse_receivePersonalCrypto", player, CACHED_USER_CRYPTO[xPlayer.identifier])
                 end)
 
                 -- for id, v in pairs(CACHED_USER_CRYPTO[xPlayer.identifier]) do
@@ -246,6 +249,7 @@ gcPhoneT.sellCrypto = function(data)
                     ['@id'] = crypto.id
                 }, function()
                     CACHED_USER_CRYPTO = FetchPersonalCrypto()
+                    TriggerClientEvent("gcPhone:bourse_receivePersonalCrypto", player, CACHED_USER_CRYPTO[xPlayer.identifier])
                 end)
 
                 -- for id, v in pairs(CACHED_USER_CRYPTO[xPlayer.identifier]) do
