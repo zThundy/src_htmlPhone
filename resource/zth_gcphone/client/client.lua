@@ -26,20 +26,13 @@ Citizen.CreateThread(function()
 		Citizen.Wait(100)
     end
 
-    while ESX.GetPlayerData().job == nil do
-        Citizen.Wait(500)
-    end
-
-    ESX.PlayerData = ESX.GetPlayerData()
+    while ESX.GetPlayerData().job == nil do Citizen.Wait(500) end
     -- gcPhoneServerT.allUpdate()
 end)
 
 RegisterNetEvent(Config.AmbulanceJobEventName)
 AddEventHandler(Config.AmbulanceJobEventName, function(_isDead) isDead = _isDead end)
 
---====================================================================================
---  
---====================================================================================
 Citizen.CreateThread(function()
     RegisterKeyMapping('+openPhone', Config.Language["SETTINGS_KEY_LABEL"], 'keyboard', Config.KeyToOpenPhone)
     RegisterCommand('+openPhone', function()
@@ -75,15 +68,6 @@ end)
 
 RegisterNetEvent("gcphone:sendGenericNotification")
 AddEventHandler("gcphone:sendGenericNotification", function(data)
-    --[[
-        Vue.notify({
-            message: store.getters.LangString(data.message),
-            title: store.getters.LangString(data.title) + ':',
-            icon: data.icon,
-            backgroundColor: data.color,
-            appName: data.appName
-        })
-    ]]
     SendNUIMessage({ event = "genericNotification", notif = data })
 end)
 
@@ -138,9 +122,6 @@ AddEventHandler("gcPhone:allMessage", function(allmessages, notReceivedMessages)
             else
                 ESX.ShowNotification(Config.Language["MULTIPLE_UNREAD_MESSAGES_NOTIFICATION"]:format(notReceivedMessages))
             end
-            -- if NOTIFICATIONS_ENABLED then
-            --     DrawNotification(false, false)
-            -- end
         end
     end
 end)
@@ -211,7 +192,6 @@ AddEventHandler("gcPhone:acceptCall", function(infoCall, initiator)
 
         Citizen.CreateThread(function()
             local coords, distance = nil, nil
-            -- print("Accetto la chiamata chicco, infoCall.updateMinuti", infoCall.updateMinuti, "secondiRimanenti", secondiRimanenti)
 
             while inCall do
                 Citizen.Wait(1000)
@@ -233,7 +213,6 @@ AddEventHandler("gcPhone:acceptCall", function(infoCall, initiator)
         end)
         
         if Config.EnableTokoVoip then
-            -- print("aggiungo in canale "..infoCall.id)
             TokovoipEnstablishCall(infoCall.id)
         elseif Config.EnableSaltyChat then
             if infoCall then
@@ -245,10 +224,7 @@ AddEventHandler("gcPhone:acceptCall", function(infoCall, initiator)
         end
     end
 
-    if not menuIsOpen then 
-        TogglePhone()
-    end
-
+    if not menuIsOpen then  TogglePhone() end
     PhonePlayCall()
     SendNUIMessage({ event = 'acceptCall', infoCall = infoCall, initiator = initiator })
 end)
@@ -266,16 +242,10 @@ AddEventHandler("gcPhone:rejectCall", function(infoCall, callDropped)
 
     if inCall then
         inCall = false
-        -- Citizen.InvokeNative(0xE036A705F989E049)
-        -- NetworkClearVoiceChannel
-        -- NetworkSetTalkerProximity(2.5)
-        -- print("rimuovo canale "..TokoVoipID)
         if Config.EnableTokoVoip then
-            -- print("aggiungo in canale "..infoCall.id)
             TokovoipEndCall(TokoVoipID)
         elseif Config.EnableSaltyChat then
             local endPoint = gcPhoneServerT.getEndpointSource()
-            -- print(endPoint, GetPlayerServerId(PlayerId()))
             if endPoint then
                 gcPhoneServerT.EndCall(endPoint)
                 gcPhoneServerT.removeEndpointSource()
@@ -341,7 +311,6 @@ function GetResponseText(d)
 end
 
 function TogglePhone()
-    ESX.PlayerData = ESX.GetPlayerData()
     menuIsOpen = not menuIsOpen
     SendNUIMessage({ show = menuIsOpen })
 
