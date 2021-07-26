@@ -31,7 +31,10 @@ Citizen.CreateThread(function()
 end)
 
 RegisterNetEvent(Config.AmbulanceJobEventName)
-AddEventHandler(Config.AmbulanceJobEventName, function(_isDead) isDead = _isDead end)
+AddEventHandler(Config.AmbulanceJobEventName, function(_isDead)
+    isDead = _isDead
+    if isDead and menuIsOpen then TogglePhone() end
+end)
 
 Citizen.CreateThread(function()
     RegisterKeyMapping('+openPhone', Config.Language["SETTINGS_KEY_LABEL"], 'keyboard', Config.KeyToOpenPhone)
@@ -77,7 +80,6 @@ end)
 
 function PlaySoundJS(sound, v, loop)
     local _volume = v and v or volume
-    -- print("riproduco suono", sound, _volume)
     SendNUIMessage({ event = 'playSound', sound = sound, volume = _volume, loop = loop })
 end
 
