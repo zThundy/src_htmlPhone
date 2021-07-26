@@ -8,6 +8,7 @@ Config.Language = {
         ["CACHING_STARTUP_1"] = "Cache dei numeri caricata dal database",
         ["CACHING_STARTUP_2"] = "Cache dei contatti caricata dal database",
         ["CACHING_STARTUP_3"] = "Cache dei messaggi caricati dal database",
+        ["CACHING_STARTUP_5"] = "Cache dei numeri di telefono aggiornata dal database",
         ["CACHING_STARTUP_4"] = "Telefono inizializzato",
         ["WIFI_LOAD_DEBUG_1"] = "Caricamento delle torri radio da database completato",
         ["WIFI_LOAD_DEBUG_2"] = "Caricamento dei router da database completato",
@@ -27,6 +28,7 @@ Config.Language = {
         ["CACHE_INSTAGRAM_1"] = "Messaggi di instagram caricati in cache",
         ["CACHE_INSTAGRAM_2"] = "Like di instagram caricati in cache",
         ["CHECK_JOB_NAME_EMERGENCY_CALLS"] = "Controlla che il job nel config.json nella cartella html sia definito correttamente",
+        ["DEBUG_NO_SIM_FOUND"] = "Giocatore con indeitifier %s non ha un numero di telefono installato",
 
         -- CLIENT FILES
         ["APP_AZIENDA_NEW_EMERGENCY_CALL"] = "Nuova chiamata di emergenza",
@@ -166,6 +168,7 @@ Config.Language = {
         ["CACHING_STARTUP_1"] = "Numbers cache loaded from sim database",
         ["CACHING_STARTUP_2"] = "Contacts cache loaded from phone contacts database",
         ["CACHING_STARTUP_3"] = "Messages cache loaded from phone messages database",
+        ["CACHING_STARTUP_5"] = "Numbers cache updated from the database",
         ["CACHING_STARTUP_4"] = "Phone initialized",
         ["WIFI_LOAD_DEBUG_1"] = "Finished loading towers from database",
         ["WIFI_LOAD_DEBUG_2"] = "Finished loading routers from database",
@@ -185,6 +188,7 @@ Config.Language = {
         ["CACHE_INSTAGRAM_1"] = "Instagram messages cache loaded",
         ["CACHE_INSTAGRAM_2"] = "Instagram likes cache loaded",
         ["CHECK_JOB_NAME_EMERGENCY_CALLS"] = "Please check that the job inside the config.json in the html folder is defined correctly",
+        ["DEBUG_NO_SIM_FOUND"] = "Player with identifier %s does not have a sim installed",
 
         -- CLIENT FILES
         ["APP_AZIENDA_NEW_EMERGENCY_CALL"] = "New emergency call",
