@@ -37,34 +37,43 @@ MySQL.ready(function()
             CACHED_NUMBERS[tostring(v.phone_number)] = { identifier = v.identifier, inUse = false }
         end
 
-        gcPhone.debug(Config.Language["CACHING_STARTUP_1"])
-        MySQL.Async.fetchAll("SELECT * FROM phone_users_contacts", {}, function(contacts)
-            for id, contact in pairs(contacts) do
-                if not CACHED_CONTACTS[tostring(contact.identifier)] then CACHED_CONTACTS[tostring(contact.identifier)] = {} end
-                table.insert(CACHED_CONTACTS[tostring(contact.identifier)], contact)
+        gcPhone.debug(Config.Language["CACHING_STARTUP_5"])
+        MySQL.Async.fetchAll("SELECT phone_number, identifier FROM users WHERE phone_number IS NOT NULL", {}, function(users)
+            for _, v in pairs(users) do
+                if CACHED_NUMBERS[tostring(v.phone_number)] and CACHED_NUMBERS[tostring(v.phone_number)].identifier == v.identifier then
+                    CACHED_NUMBERS[tostring(v.phone_number)].inUse = true
+                end
             end
 
-            gcPhone.debug(Config.Language["CACHING_STARTUP_2"])
-            MySQL.Async.fetchAll("SELECT * FROM phone_messages", {}, function(messages)
-                for id, message in pairs(messages) do
-                    if not CACHED_MESSAGES[message.receiver] then CACHED_MESSAGES[message.receiver] = {} end
-                    table.insert(CACHED_MESSAGES[message.receiver], message)
+            gcPhone.debug(Config.Language["CACHING_STARTUP_1"])
+            MySQL.Async.fetchAll("SELECT * FROM phone_users_contacts", {}, function(contacts)
+                for id, contact in pairs(contacts) do
+                    if not CACHED_CONTACTS[tostring(contact.identifier)] then CACHED_CONTACTS[tostring(contact.identifier)] = {} end
+                    table.insert(CACHED_CONTACTS[tostring(contact.identifier)], contact)
                 end
 
-                MySQL.Async.fetchAll("SELECT * FROM phone_calls", {}, function(calls)
-                    for _, call in pairs(calls) do
-                        if not CACHED_CALLS[call.owner] then CACHED_CALLS[call.owner] = {} end
-                        table.insert(CACHED_CALLS[call.owner], call)
+                gcPhone.debug(Config.Language["CACHING_STARTUP_2"])
+                MySQL.Async.fetchAll("SELECT * FROM phone_messages", {}, function(messages)
+                    for id, message in pairs(messages) do
+                        if not CACHED_MESSAGES[message.receiver] then CACHED_MESSAGES[message.receiver] = {} end
+                        table.insert(CACHED_MESSAGES[message.receiver], message)
                     end
 
-                    gcPhone.debug(Config.Language["CACHING_STARTUP_3"])
-                    for _, v in pairs(numbers) do
-                        CACHED_TARIFFS[v.phone_number] = v
-                    end
-                    
-                    gcPhone.debug(Config.Language["WIFI_LOAD_DEBUG_8"])
-                    gcPhone.debug(Config.Language["CACHING_STARTUP_4"])
-                    phone_loaded = true
+                    MySQL.Async.fetchAll("SELECT * FROM phone_calls", {}, function(calls)
+                        for _, call in pairs(calls) do
+                            if not CACHED_CALLS[call.owner] then CACHED_CALLS[call.owner] = {} end
+                            table.insert(CACHED_CALLS[call.owner], call)
+                        end
+
+                        gcPhone.debug(Config.Language["CACHING_STARTUP_3"])
+                        for _, v in pairs(numbers) do
+                            CACHED_TARIFFS[v.phone_number] = v
+                        end
+                        
+                        gcPhone.debug(Config.Language["WIFI_LOAD_DEBUG_8"])
+                        gcPhone.debug(Config.Language["CACHING_STARTUP_4"])
+                        phone_loaded = true
+                    end)
                 end)
             end)
         end)

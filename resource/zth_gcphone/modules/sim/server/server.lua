@@ -60,15 +60,17 @@ end)
 
 RegisterServerEvent("esx:playerLoaded")
 AddEventHandler('esx:playerLoaded', function(source, xPlayer)
-    local phone_number = gcPhoneT.getPhoneNumber(xPlayer.identifier)
+    local identifier = xPlayer.identifier
+    if not identifier then identifier = gcPhoneT.getPlayerID(source) end
+    local phone_number = gcPhoneT.getPhoneNumber(identifier)
 
     if phone_number ~= nil then
-        gcPhoneT.updateCachedNumber(phone_number, xPlayer.identifier, false)
+        gcPhoneT.updateCachedNumber(phone_number, identifier, false)
 
         if CACHED_TARIFFS[phone_number] then
             for _, v in pairs(Config.Tariffs) do
                 if v.label == CACHED_TARIFFS[phone_number].piano_tariffario then
-                    TriggerClientEvent("gcphone:updateValoriDati", xPlayer.source, {
+                    TriggerClientEvent("gcphone:updateValoriDati", source, {
                         {
                             current = tonumber(math.floor(CACHED_TARIFFS[phone_number].minuti / 60)),
                             max = tonumber(v.minuti),
@@ -92,6 +94,8 @@ AddEventHandler('esx:playerLoaded', function(source, xPlayer)
                 end
             end
         end
+    else
+        gcPhone.debug(Config.Language["DEBUG_NO_SIM_FOUND"]:format(identifier))
     end
 end)
 
