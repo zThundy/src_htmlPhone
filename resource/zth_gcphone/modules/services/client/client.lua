@@ -57,14 +57,16 @@ end
         TriggerEvent("esx_addons_gcphone:call", {
             coords = GetEntityCoords(GetPlayerPed(-1)),
             job = "police",
-            text = "Help i'm beeing robbed"
+            text = "Help i'm beeing robbed",
+            display = "Police"
         })
     
     Example (server-side):
         TriggerClientEvent("esx_addons_gcphone:call", source, {
             coords = GetEntityCoords(GetPlayerPed(-1)),
             job = "police",
-            text = "Help i'm beeing robbed"
+            text = "Help i'm beeing robbed",
+            display = "Police"
         })
 ]]
 
