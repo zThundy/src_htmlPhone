@@ -24,7 +24,6 @@ CACHED_TARIFFS = {}
 AddEventHandler("playerDropped", function(reason)
     local player = source
     TriggerClientEvent("gcphone:animations_doCleanup", player)
-
     gcPhone.debug(Config.Language["ANIMATIONS_CLEANUP_DEBUG_2"])
 end)
 
