@@ -292,12 +292,14 @@ end
 gcPhoneT.updateCachedNumber = function(number, identifier, isChanging)
     number = tostring(number)
 
+    -- check if the identifier is given to log it correctly
     if identifier then
         gcPhone.debug(Config.Language["CACHE_NUMBERS_1"]:format(number, identifier))
     else
         gcPhone.debug(Config.Language["CACHE_NUMBERS_2"]:format(number))
     end
 
+    -- get the old number for this given isdentifier
     local oldNumber = gcPhoneT.getPhoneNumber(identifier)
 
     -- qui controllo se la il numero sta venendo cambiato
