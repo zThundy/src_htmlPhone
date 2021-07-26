@@ -2,12 +2,6 @@ cartesimT = {}
 local tunnel = module("zth_gcphone", "modules/TunnelV2")
 tunnel.bindInterface(Config.AuthKey, "cartesim_server_t", cartesimT)
 
-ESX.RegisterUsableItem(Config.SimItemName, function(source)
-    local xPlayer = ESX.GetPlayerFromId(source)
-    xPlayer.removeInventoryItem(Config.SimItemName, 1)
-    NewSim(source)
-end)
-
 local function GenerateUniquePhoneNumber(result)
     local numbers = {}
     for index, value in pairs(result) do
@@ -48,7 +42,8 @@ local function NewSim(source)
                     minuti = 0,
                     messaggi = 0,
                     dati = 0,
-                    id = id
+                    id = id,
+                    nome_sim = phone_number
                 }
             end)
         else
@@ -56,6 +51,12 @@ local function NewSim(source)
         end
     end)
 end
+
+ESX.RegisterUsableItem(Config.SimItemName, function(source)
+    local xPlayer = ESX.GetPlayerFromId(source)
+    xPlayer.removeInventoryItem(Config.SimItemName, 1)
+    NewSim(source)
+end)
 
 RegisterServerEvent("esx:playerLoaded")
 AddEventHandler('esx:playerLoaded', function(source, xPlayer)
@@ -127,51 +128,55 @@ cartesimT.daiSim = function(number, c_id)
     end
 end
 
-cartesimT.eliminaSim = function(sim)
+cartesimT.eliminaSim = function(old_number)
     local player = source
-    local xPlayer = ESX.GetPlayerFromId(player)
+    local identifier = gcPhoneT.getPlayerID(player)
+    local phone_number = gcPhoneT.getPhoneNumber(identifier)
 
-    MySQL.Async.execute('UPDATE `users` SET phone_number = @phone_number WHERE `identifier` = @identifier', {
-        ['@identifier'] = xPlayer.identifier,
-        ['@phone_number'] = 0
-    })
+    -- MySQL.Async.fetchAll('SELECT phone_number FROM phone_sim WHERE identifier = @identifier', {['@identifier'] = xPlayer.identifier}, function (result)
+    --     for i=1, #result, 1 do
+    --         local simZ = result[i].phone_number
+    --         if simZ == sim then
+    --             MySQL.Async.execute('DELETE FROM phone_sim WHERE phone_number = @phone_number', {['@phone_number'] = simZ})
+    --             gcPhoneT.updateCachedNumber(sim, false, false)
+    --             CACHED_TARIFFS[simZ] = nil
+    --             break
+    --         end
+    --     end
+    -- end)
 
-    MySQL.Async.fetchAll('SELECT phone_number FROM phone_sim WHERE identifier = @identifier', {['@identifier'] = xPlayer.identifier}, function (result)
-        for i=1, #result, 1 do
-            local simZ = result[i].phone_number
+    if tostring(old_number) == tostring(phone_number) then
+        MySQL.Async.execute('UPDATE `users` SET phone_number = @phone_number WHERE `identifier` = @identifier', {
+            ['@identifier'] = identifier,
+            ['@phone_number'] = 0
+        })
+    end
 
-            if simZ == sim then
-                MySQL.Async.execute('DELETE FROM phone_sim WHERE phone_number = @phone_number', {['@phone_number'] = simZ})
-                gcPhoneT.updateCachedNumber(sim, false, false)
-                CACHED_TARIFFS[simZ] = nil
-                break
-            end
-        end
-    end)
+    MySQL.Async.execute('DELETE FROM phone_sim WHERE phone_number = @phone_number', {['@phone_number'] = old_number})
+    gcPhoneT.updateCachedNumber(old_number, false, false)
+    CACHED_TARIFFS[old_number] = nil
 end
 
 cartesimT.usaSim = function(sim)
     local player = source
-    local xPlayer = ESX.GetPlayerFromId(player)
+    local identifier = gcPhoneT.getPlayerID(player)
     
-    TriggerClientEvent("gcPhone:myPhoneNumber", player, sim.number)
-    TriggerClientEvent("gcPhone:UpdateNumber", player, sim.number)
-    gcPhoneT.updateCachedNumber(sim.number, xPlayer.identifier, true)
-    CACHED_TARIFFS[sim.number].identifier = xPlayer.identifier
+    gcPhoneT.updateCachedNumber(sim.number, identifier, true)
+    CACHED_TARIFFS[sim.number].identifier = identifier
     CACHED_TARIFFS[sim.number].phone_number = sim.number
 
     MySQL.Async.execute('UPDATE users SET phone_number = @phone_number WHERE identifier = @identifier', {
-        ['@identifier'] = xPlayer.getIdentifier(),
+        ['@identifier'] = identifier,
         ['@phone_number'] = sim.number
     })
 end
 
 cartesimT.rinominaSim = function(number, name)
     local player = source
-    local xPlayer = ESX.GetPlayerFromId(player)
+    local identifier = gcPhoneT.getPlayerID(player)
 
     MySQL.Async.execute('UPDATE phone_sim SET nome_sim = @nome_sim WHERE identifier = @identifier AND phone_number = @phone_number', {
-        ['@identifier'] = xPlayer.identifier,
+        ['@identifier'] = identifier,
         ['@phone_number'] = number,
         ['@nome_sim'] = name
     })
@@ -180,29 +185,41 @@ cartesimT.rinominaSim = function(number, name)
     CACHED_TARIFFS[number].nome_sim = name
 end
 
-ESX.RegisterServerCallback('esx_cartesim:GetList', function(source, cb)
+cartesimT.getSimList = function()
     local player = source
-    local xPlayer = ESX.GetPlayerFromId(player)
+    local identifier = gcPhoneT.getPlayerID(player)
     local cartesim = {}
 
-    MySQL.Async.fetchAll("SELECT * FROM phone_sim WHERE identifier = @identifier", {['@identifier'] = xPlayer.getIdentifier()}, function(data) 
-        for _, v in pairs(data) do
-            table.insert(cartesim, {number = v.phone_number, nome_sim = v.nome_sim, info = {label = v.piano_tariffario, minuti = v.minuti, messaggi = v.messaggi, dati = v.dati}})
+    -- MySQL.Async.fetchAll("SELECT * FROM phone_sim WHERE identifier = @identifier", {['@identifier'] = xPlayer.getIdentifier()}, function(data) 
+    --     for _, v in pairs(data) do
+    --         table.insert(cartesim, {number = v.phone_number, nome_sim = v.nome_sim, info = {label = v.piano_tariffario, minuti = v.minuti, messaggi = v.messaggi, dati = v.dati}})
+    --     end
+    --     cb(cartesim)
+    -- end)
+    for number, v in pairs(CACHED_TARIFFS) do
+        if identifier == v.identifier then
+            if v.nome_sim ~= '' then
+                table.insert(cartesim, { label = tostring(v.nome_sim), value = v, piano_tariffario = v.piano_tariffario })
+            else
+                table.insert(cartesim, { label = tostring(number), value = v, piano_tariffario = v.piano_tariffario })
+            end
         end
-        cb(cartesim)
-    end)
-end)
+    end
+    return cartesim
+end
 
-ESX.RegisterServerCallback("esx_cartesim:GetOffertaByNumber", function(source, cb, number)
-    MySQL.Async.fetchAll("SELECT * FROM phone_sim WHERE phone_number = @phone_number", {['@phone_number'] = number}, function(result)
-        if #result > 0 then
-            cb(result[1])
-        end
-    end)
-end)
+cartesimT.getOfferFromNumber = function(number)
+    -- MySQL.Async.fetchAll("SELECT * FROM phone_sim WHERE phone_number = @phone_number", {['@phone_number'] = number}, function(result)
+    --     if #result > 0 then
+    --         cb(result[1])
+    --     end
+    -- end)
+    return CACHED_TARIFFS[number]
+end
 
-ESX.RegisterServerCallback("esx_cartesim:renewOffer", function(source, cb, label, number)
-    local xPlayer = ESX.GetPlayerFromId(source)
+cartesimT.renewOffer = function(label, number)
+    local player = source
+    local xPlayer = ESX.GetPlayerFromId(player)
     local moneys = xPlayer.getAccount("bank").money
 
     for k, v in pairs(Config.Tariffs) do
@@ -220,36 +237,68 @@ ESX.RegisterServerCallback("esx_cartesim:renewOffer", function(source, cb, label
             CACHED_TARIFFS[number].messaggi = v.messaggi
             CACHED_TARIFFS[number].dati = v.dati
 
-            cb(true)
-            return
+            return true
         else
-            cb(false)
+            return false
         end
     end
-end)
+end
 
-ESX.RegisterServerCallback("esx_cartesim:acquistaOffertaCheckSoldi", function(source, cb, table, number)
-    local xPlayer = ESX.GetPlayerFromId(source)
+cartesimT.buyOffer = function(label, number)
+    local player = source
+    local xPlayer = ESX.GetPlayerFromId(player)
     local moneys = xPlayer.getAccount("bank").money
+    local tb = {}
 
-    if moneys >= table.price then
-        xPlayer.removeAccountMoney("bank", table.price)
+    -- this check is done serverside because users can inject
+    -- code in client and change the values as they like
+    for _, v in pairs(Config.Tariffs) do
+        if v.label == label then
+            tb = v
+            break
+        end
+    end
+
+    if moneys >= tb.price then
+        xPlayer.removeAccountMoney("bank", tb.price)
 
         MySQL.Async.execute("UPDATE phone_sim SET piano_tariffario = @piano_tariffario, minuti = @minuti, messaggi = @messaggi, dati = @dati WHERE phone_number = @phone_number", {
             ['@phone_number'] = number,
-            ['@piano_tariffario'] = table.label,
-            ['@minuti'] = table.minuti * 60,
-            ['@messaggi'] = table.messaggi,
-            ['@dati'] = table.dati
+            ['@piano_tariffario'] = tb.label,
+            ['@minuti'] = tb.minuti * 60,
+            ['@messaggi'] = tb.messaggi,
+            ['@dati'] = tb.dati
         })
         
-        CACHED_TARIFFS[number].minuti = table.minuti * 60
-        CACHED_TARIFFS[number].messaggi = table.messaggi
-        CACHED_TARIFFS[number].dati = table.dati
-        CACHED_NUMBERS[number].piano_tariffatio = table.label
+        CACHED_TARIFFS[number].minuti = tb.minuti * 60
+        CACHED_TARIFFS[number].messaggi = tb.messaggi
+        CACHED_TARIFFS[number].dati = tb.dati
+        CACHED_TARIFFS[number].piano_tariffario = tb.label
+        CACHED_NUMBERS[number].piano_tariffario = tb.label
 
-        cb(true)
+        TriggerClientEvent("gcphone:updateValoriDati", player, {
+            {
+                current = tonumber(math.floor(tb.minuti)),
+                max = tonumber(tb.minuti),
+                icon = "phone",
+                suffix = Config.Language["PHONE_TARIFFS_APP_LABEL_1"]
+            },
+            {
+                current = tonumber(tb.messaggi),
+                max = tonumber(tb.messaggi),
+                icon = "message",
+                suffix = Config.Language["PHONE_TARIFFS_APP_LABEL_2"]
+            },
+            {
+                current = tonumber(tb.dati),
+                max = tonumber(tb.dati),
+                icon = "discovery",
+                suffix = Config.Language["PHONE_TARIFFS_APP_LABEL_3"]
+            }
+        })
+
+        return true
     else
-        cb(false)
+        return false
     end
-end)
+end
