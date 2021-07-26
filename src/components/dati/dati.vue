@@ -4,7 +4,7 @@
 
     <div class='elements'>
       <div class="toast">
-        <custom-toast @hide="toastHide" :duration="4000" ref="updating">
+        <custom-toast @hide="toastHide" :duration="2000" ref="updating">
           <md-activity-indicator
             :size="20"
             :text-size="16"
@@ -131,7 +131,7 @@ export default {
       setTimeout(() => {
         this.disableBackspace = false
         this.$refs.success.hide()
-      }, 2000)
+      }, 1500)
     }
   },
   created () {
