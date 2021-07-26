@@ -1,5 +1,4 @@
 local tunnel = module("zth_gcphone", "modules/TunnelV2")
--- gcPhoneServerT = tunnel.getInterface("gcphone_server_t", "gcphone_server_t")
 cartesimServerT = tunnel.getInterface(Config.AuthKey, "cartesim_server_t", "cartesim_server_t")
 
 Citizen.CreateThread(function()
@@ -14,7 +13,10 @@ Citizen.CreateThread(function()
         color = { r = 55, b = 55, g = 255 },
         scale =  vector3(0.8, 0.8, 0.8),
         action = function()
-            openOfferteMenu()
+            OpenShopMenu()
+        end,
+        onExit = function()
+            ESX.UI.Menu.CloseAll()
         end,
         msg = Config.Language["HELPNOTIFICATION_SIM_SHOP_LABEL"],
     })
@@ -27,7 +29,6 @@ Citizen.CreateThread(function()
         SetBlipColour(blip, info.color)
         SetBlipScale(blip, info.scale)
         SetBlipAsShortRange(blip, true)
-        -- SetBlipAlpha(blip, 255)
 
         BeginTextCommandSetBlipName("STRING")
         AddTextComponentString(info.name)
@@ -41,166 +42,143 @@ end)
 
 function OpenSimMenu()
     ESX.UI.Menu.CloseAll()
-    local elements = {}
-    ESX.TriggerServerCallback('esx_cartesim:GetList', function(sim)
-        for _, v in pairs(sim) do
-            if v.nome_sim ~= '' then
-                table.insert(elements, { label = tostring(v.nome_sim), value = v, piano_tariffario = v.piano_tariffario })
-            else
-                table.insert(elements, { label = tostring(v.number), value = v, piano_tariffario = v.piano_tariffario })
+    local elements = cartesimServerT.getSimList()
+    
+    ESX.UI.Menu.Open('default', GetCurrentResourceName(), 'phone_change', {
+        title = Config.Language["SIM_MENU_TITLE"],
+        elements = elements,
+    }, function(data, menu)
+        local phone_number = data.current.value.phone_number
+        ESX.UI.Menu.Open('default', GetCurrentResourceName(), 'sim_change', {
+            title = tostring(phone_number),
+            elements = {
+                { label = Config.Language["SIM_MENU_CHOICE_1"], value = 'sim_use' },
+                { label = Config.Language["SIM_MENU_CHOICE_2"], value = 'sim_give' },
+                { label = Config.Language["SIM_MENU_CHOICE_3"], value = 'sim_rename' },
+                { label = Config.Language["SIM_MENU_CHOICE_4"], value = 'sim_delete' }
+            },
+        }, function(data2, menu2)
+            if data2.current.value == 'sim_use' then
+                ESX.UI.Menu.CloseAll()
+                cartesimServerT.usaSim({ number = phone_number, piano_tariffario = data.current.piano_tariffario })
+                ESX.ShowNotification(Config.Language["SIM_USED_MESSAGE_OK"]:format(phone_number))
+                Citizen.Wait(2000)
+                gcPhoneServerT.allUpdate()
+            end
+
+            if data2.current.value == 'sim_give' then
+                ESX.UI.Menu.CloseAll()
+                local closestPlayer, closestDistance = ESX.Game.GetClosestPlayer()
+                if closestPlayer == -1 or closestDistance > 3.0 then
+                    ESX.ShowNotification(Config.Language["SIM_NO_PLAYER_NEARBY"])
+                else
+                    cartesimServerT.daiSim(phone_number, GetPlayerServerId(closestPlayer))
+                end
+                Citizen.Wait(2000)
+                gcPhoneServerT.allUpdate()
+            end
+
+            if data2.current.value == 'sim_rename' then
+                ESX.UI.Menu.CloseAll()
+                ESX.UI.Menu.Open('dialog', GetCurrentResourceName(), 'usate_dialog_money', {
+                    title = Config.Language["SIM_RENAME_MENU_LABEL"]
+                }, function(data3, menu3)
+                    local sim_name = tostring(data3.value)
+
+                    if #sim_name > 20 then
+                        ESX.ShowNotification(Config.Language["SIM_RENAME_ERROR"])
+                        menu3.close()
+                        return
+                    end
+
+                    cartesimServerT.rinominaSim(phone_number, sim_name)
+                    ESX.ShowNotification(Config.Language["SIM_RENAME_OK"])
+                    ESX.UI.Menu.CloseAll()
+                end, function(data3, menu3)
+                    menu3.close()
+                    ESX.ShowNotification(Config.Language["SIM_RENAME_CANCEL"])
+                end)
+            end
+
+            if data2.current.value == 'sim_delete' then
+                ESX.UI.Menu.CloseAll()
+                cartesimServerT.eliminaSim(phone_number)
+                ESX.ShowNotification(Config.Language["SIM_DESTROY_OK"]:format(phone_number))
+                Citizen.Wait(2000)
+                gcPhoneServerT.allUpdate()
+            end
+
+            menu2.close()
+        end, function(data2, menu2)
+            menu2.close()
+        end)
+
+    end, function(data, menu)
+        menu.close()
+    end)
+end
+
+
+function OpenShopMenu()
+    ESX.UI.Menu.CloseAll()
+    local elements = cartesimServerT.getSimList()
+
+    ESX.UI.Menu.Open('default', GetCurrentResourceName(), 'sim_listasim_numeri', {
+        title = Config.Language["SIM_TARIFFS_SHOP_TITLE"],
+        elements = elements
+    }, function(data, menu)
+        local phone_number = data.current.value.phone_number
+        local offerta = cartesimServerT.getOfferFromNumber(phone_number)
+        if offerta.piano_tariffario == "nessuno" then
+            elements = {
+                {label = Config.Language["SIM_TARIFFS_SHOP_NO_OFFER"]},
+                {label = Config.Language["SIM_TARIFFS_SHOP_CHOOSE_OFFER"], value = "scegli_offerta", icon = 22}
+            }
+        else
+            for k, v in pairs(Config.Tariffs) do
+                if v.label == offerta.piano_tariffario then
+                    elements = {
+                        {label = Config.Language["SIM_TARIFFS_OFFER_LABEL_1"]:format(v.label)},
+                        {label = Config.Language["SIM_TARIFFS_OFFER_LABEL_2"]:format(v.minuti)},
+                        {label = Config.Language["SIM_TARIFFS_OFFER_LABEL_3"]:format(v.messaggi)},
+                        {label = Config.Language["SIM_TARIFFS_OFFER_LABEL_4"]:format(v.dati)},
+                        {label = Config.Language["SIM_TARIFFS_OFFER_LABEL_5"], value = "scegli_offerta", icon = 22},
+                        {label = Config.Language["SIM_TARIFFS_OFFER_LABEL_6"], value = "rinnova_offerta", icon = 22}
+                    }
+                end
             end
         end
-        
-        ESX.UI.Menu.Open('default', GetCurrentResourceName(), 'phone_change', {
-            title = Config.Language["SIM_MENU_TITLE"],
-            elements = elements,
-        }, function(data, menu)
-            ESX.UI.Menu.Open('default', GetCurrentResourceName(), 'sim_change', {
-                title = tostring(data.current.value.number),
-                elements = {
-                    { label = Config.Language["SIM_MENU_CHOICE_1"], value = 'sim_use' },
-                    { label = Config.Language["SIM_MENU_CHOICE_2"], value = 'sim_give' },
-                    { label = Config.Language["SIM_MENU_CHOICE_3"], value = 'sim_rename' },
-                    { label = Config.Language["SIM_MENU_CHOICE_4"], value = 'sim_delete' }
-                },
-            }, function(data2, menu2)
 
-                if data2.current.value == 'sim_use' then
-                    ESX.UI.Menu.CloseAll()
-                    cartesimServerT.usaSim({ number = data.current.value.number, piano_tariffario = data.current.piano_tariffario })
-                    -- TriggerServerEvent('esx_cartesim:sim_use', {number = data.current.value.number, piano_tariffario = data.current.piano_tariffario})
-                    ESX.ShowNotification(Config.Language["SIM_USED_MESSAGE_OK"]:format(data.current.value.number))
-                    Citizen.Wait(2000)
-                    gcPhoneServerT.allUpdate()
-                end
+        ESX.UI.Menu.Open('default', GetCurrentResourceName(), 'sim_listasim_piani', {
+            title = phone_number,
+            elements = elements
+        }, function(data2, menu2)
+            if data2.current.value == "scegli_offerta" then
+                OpenSimInfoMenu(phone_number)
+            end
 
-                if data2.current.value == 'sim_give' then
-                    ESX.UI.Menu.CloseAll()
-                    local closestPlayer, closestDistance = ESX.Game.GetClosestPlayer()
-                    if closestPlayer == -1 or closestDistance > 3.0 then
-                        ESX.ShowNotification(Config.Language["SIM_NO_PLAYER_NEARBY"])
-                    else
-                        cartesimServerT.daiSim(data.current.value.number, GetPlayerServerId(closestPlayer))
-                        -- TriggerServerEvent('esx_cartesim:sim_give', data.current.value.number, GetPlayerServerId(closestPlayer))
-                    end
-                    Citizen.Wait(2000)
-                    gcPhoneServerT.allUpdate()
-                end
-
-                if data2.current.value == 'sim_rename' then
-                    ESX.UI.Menu.CloseAll()
-                    local numero = data.current.value.number
-
-                    ESX.UI.Menu.Open('dialog', GetCurrentResourceName(), 'usate_dialog_money', {
-                        title = Config.Language["SIM_RENAME_MENU_LABEL"]
-                    }, function(data3, menu3)
-                        local sim_name = tostring(data3.value)
-    
-                        if #sim_name > 20 then
-                            ESX.ShowNotification(Config.Language["SIM_RENAME_ERROR"])
-                            menu3.close()
-                            return
-                        end
-
-                        cartesimServerT.rinominaSim(numero, sim_name)
-                        -- TriggerServerEvent('esx_cartesim:sim_rename', numero, sim_name)
-                        ESX.ShowNotification(Config.Language["SIM_RENAME_OK"])
-
-                        ESX.UI.Menu.CloseAll()
-                    end, function(data3, menu3)
-                        menu3.close()
-    
-                        ESX.ShowNotification(Config.Language["SIM_RENAME_CANCEL"])
-                    end)
-                end
-
-                if data2.current.value == 'sim_delete' then
-                    ESX.UI.Menu.CloseAll()
-                    cartesimServerT.eliminaSim(data.current.value.number)
-                    -- TriggerServerEvent('esx_cartesim:sim_delete', data.current.value.number)
-                    ESX.ShowNotification(Config.Language["SIM_DESTROY_OK"]:format(data.current.value.number))
-                    Citizen.Wait(2000)
-                    gcPhoneServerT.allUpdate()
-                end
-
-                menu2.close()
-            end, function(data2, menu2)
-                menu2.close()
-            end)
-
-        end, function(data, menu)
-            menu.close()
-        end)
-    end)
-end
-
-
-function openOfferteMenu()
-    ESX.UI.Menu.CloseAll()
-    local elementi = {}
-    local elementi2 = {}
-
-    ESX.TriggerServerCallback('esx_cartesim:GetList', function(sim)
-        for i=1, #sim, 1 do
-            table.insert(elementi, {label = sim[i].number, value = sim[i]})
-        end
-
-        ESX.UI.Menu.Open('default', GetCurrentResourceName(), 'sim_listasim_numeri', {
-            title = Config.Language["SIM_TARIFFS_SHOP_TITLE"],
-            elements = elementi
-        }, function(data, menu)
-            ESX.TriggerServerCallback("esx_cartesim:GetOffertaByNumber", function(offerta)
-                if offerta.piano_tariffario == "nessuno" then
-                    elementi2 = {
-                        {label = Config.Language["SIM_TARIFFS_SHOP_NO_OFFER"]},
-                        {label = Config.Language["SIM_TARIFFS_SHOP_CHOOSE_OFFER"], value = "scegli_offerta", icon = 22}
-                    }
+            if data2.current.value == "rinnova_offerta" then
+                local ok = cartesimServerT.renewOffer(offerta.piano_tariffario, phone_number)
+                if ok then
+                    ESX.ShowNotification(Config.Language["SIM_TARIFFS_RENEWED_OK"])
                 else
-                    for k, v in pairs(Config.Tariffs) do
-                        if v.label == offerta.piano_tariffario then
-                            elementi2 = {
-                                {label = Config.Language["SIM_TARIFFS_OFFER_LABEL_1"]:format(v.label)},
-                                {label = Config.Language["SIM_TARIFFS_OFFER_LABEL_2"]:format(v.minuti)},
-                                {label = Config.Language["SIM_TARIFFS_OFFER_LABEL_3"]:format(v.messaggi)},
-                                {label = Config.Language["SIM_TARIFFS_OFFER_LABEL_4"]:format(v.dati)},
-                                {label = Config.Language["SIM_TARIFFS_OFFER_LABEL_5"], value = "scegli_offerta", icon = 22},
-                                {label = Config.Language["SIM_TARIFFS_OFFER_LABEL_6"], value = "rinnova_offerta", icon = 22}
-                            }
-                        end
-                    end
+                    ESX.ShowNotification(Config.Language["SIM_TARIFFS_RENEWED_ERROR"])
+                    OpenShopMenu()
                 end
-
-                ESX.UI.Menu.Open('default', GetCurrentResourceName(), 'sim_listasim_piani', {
-                    title = data.current.value.number,
-                    elements = elementi2
-                }, function(data2, menu2)
-                    if data2.current.value == "scegli_offerta" then
-                        openListaOfferte(data.current.value.number)
-                    end
-
-                    if data2.current.value == "rinnova_offerta" then
-                        ESX.TriggerServerCallback("esx_cartesim:renewOffer", function(ok)
-                            if ok then
-                                ESX.ShowNotification(Config.Language["SIM_TARIFFS_RENEWED_OK"])
-                            else
-                                ESX.ShowNotification(Config.Language["SIM_TARIFFS_RENEWED_ERROR"])
-                                openOfferteMenu()
-                            end
-                        end, offerta.piano_tariffario, data.current.value.number)
-                    end
-                end, function(data2, menu2)
-                    ESX.UI.Menu.CloseAll()
-                end)
-            end, data.current.value.number)
-        end, function(data, menu)
+            end
+        end, function(data2, menu2)
             ESX.UI.Menu.CloseAll()
         end)
+    end, function(data, menu)
+        ESX.UI.Menu.CloseAll()
     end)
 end
 
-function openListaOfferte(number)
+function OpenSimInfoMenu(number)
     ESX.UI.Menu.CloseAll()
 
+    -- this is just visual, the logic to renew is server
+    -- sided
     local elementi = {}
     for k, v in pairs(Config.Tariffs) do
         table.insert(elementi, {label = v.label, value = v})
@@ -211,7 +189,6 @@ function openListaOfferte(number)
         elements = elementi
     }, function(data, menu)
         local v = data.current.value
-
         ESX.UI.Menu.Open('default', GetCurrentResourceName(), 'sim_compra_piano', {
             title = number,
             elements = {
@@ -223,21 +200,19 @@ function openListaOfferte(number)
             }
         }, function(data2, menu2)
             if data2.current.value == "acquista" then
-                ESX.TriggerServerCallback("esx_cartesim:acquistaOffertaCheckSoldi", function(ok)
-                    if ok then
-                        ESX.ShowNotification(Config.Language["SIM_TARIFFS_BUY_OK"])
-                    else
-                        ESX.ShowNotification(Config.Language["SIM_TARIFFS_BUY_ERROR"])
-                        openListaOfferte(number)
-                    end
-                    
-                    ESX.UI.Menu.CloseAll()
-                end, v, number)
+                local ok = cartesimServerT.buyOffer(v.label, number)
+                if ok then
+                    ESX.ShowNotification(Config.Language["SIM_TARIFFS_BUY_OK"])
+                else
+                    ESX.ShowNotification(Config.Language["SIM_TARIFFS_BUY_ERROR"])
+                    OpenSimInfoMenu(number)
+                end
+                
+                ESX.UI.Menu.CloseAll()
             end
         end, function(data2, menu2)
             menu2.close()
         end)
-
     end, function(data, menu)
         menu.close()
     end)
