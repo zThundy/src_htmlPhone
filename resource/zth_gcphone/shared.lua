@@ -13,13 +13,10 @@ function Reti.Debug(msg)
     end
 end
 
--- if the file is registered server side
-if IsDuplicityVersion() then
-    function showXNotification(t, message)
-        if t and t.showNotification then
-            t.showNotification(message)
-        else
-            gcPhone.debug(Config.Language["NO_XPLAYER_NOTIFICATION"])
-        end
+function showXNotification(t, message)
+    if t and t.showNotification then
+        t.showNotification(message)
+    else
+        gcPhone.debug(Config.Language["NO_XPLAYER_NOTIFICATION"])
     end
 end
