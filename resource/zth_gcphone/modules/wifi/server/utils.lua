@@ -32,7 +32,6 @@ end
 
 function Reti.AddReteWifi(source, rete, cb)
     local xPlayer = ESX.GetPlayerFromId(source)
-
     MySQL.Async.execute('INSERT INTO phone_wifi_nets(steam_id, label, password, x, y, z, due_date) VALUES(@steam_id, @label, @password, @x, @y, @z, @due_date)', {
         ['@steam_id'] = xPlayer.identifier,
         ['@label'] = rete.label,
@@ -43,8 +42,7 @@ function Reti.AddReteWifi(source, rete, cb)
         ['@due_date'] = os.date("%Y-%m-%d %H:%m:%S", rete.due_date)
     }, function(rowsChanged)
         if rowsChanged > 0 then
-            xPlayer.showNotification(Config.Language["WIFI_MODEM_CREATED_OK"])
-
+            showXNotification(xPlayer, Config.Language["WIFI_MODEM_CREATED_OK"])
             table.insert(CACHED_WIFIS, {
                 steam_id = xPlayer.identifier,
                 label = rete.label,
@@ -56,10 +54,9 @@ function Reti.AddReteWifi(source, rete, cb)
             })
             CACHED_WIFIS = Reti.loadRetiWifi()
             Reti.Debug(Config.Language["WIFI_LOAD_DEBUG_4"])
-
             if cb ~= nil then cb(true) end
         else
-            xPlayer.showNotification(Config.Language["WIFI_MODEM_CREATED_ERROR"])
+            showXNotification(xPlayer, Config.Language["WIFI_MODEM_CREATED_ERROR"])
             if cb ~= nil then cb(false) end
         end
     end)
@@ -72,8 +69,7 @@ function Reti.RemoveReteWifi(source, rete)
         ['@steam_id'] = rete.owner_id
     }, function(rowsChanged)
         if rowsChanged > 0 then
-            xPlayer.showNotification(Config.Language["WIFI_MODEM_DELETE_OK"])
-
+            showXNotification(xPlayer, Config.Language["WIFI_MODEM_DELETE_OK"])
             for id, r in pairs(CACHED_WIFIS) do
                 if r.steam_id == rete.owner_id then
                     CACHED_WIFIS[id] = nil
@@ -83,7 +79,7 @@ function Reti.RemoveReteWifi(source, rete)
             CACHED_WIFIS = Reti.loadRetiWifi()
             Reti.Debug(Config.Language["WIFI_LOAD_DEBUG_4"])
         else
-            xPlayer.showNotification(Config.Language["WIFI_MODEM_DELETE_ERROR"])
+            showXNotification(xPlayer, Config.Language["WIFI_MODEM_DELETE_ERROR"])
         end
     end)
 end
@@ -96,8 +92,7 @@ function Reti.UpdateReteWifi(source, rete, param)
         ['@'..param] = rete[param]
     }, function(rowsChanged)
         if rowsChanged > 0 then
-            xPlayer.showNotification(Config.Language["WIFI_MODEM_UPDATE_OK"])
-
+            showXNotification(xPlayer, Config.Language["WIFI_MODEM_UPDATE_OK"])
             for id, r in pairs(CACHED_WIFIS) do
                 if r.steam_id == rete.owner_id then
                     r[param] = rete[param]
@@ -107,7 +102,7 @@ function Reti.UpdateReteWifi(source, rete, param)
             CACHED_WIFIS = Reti.loadRetiWifi()
             Reti.Debug(Config.Language["WIFI_LOAD_DEBUG_4"])
         else
-            xPlayer.showNotification(Config.Language["WIFI_MODEM_UPDATE_ERROR"])
+            showXNotification(xPlayer, Config.Language["WIFI_MODEM_UPDATE_ERROR"])
         end
     end)
 end

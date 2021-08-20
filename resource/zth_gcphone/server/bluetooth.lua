@@ -12,6 +12,6 @@ gcPhoneT.bluetooth_changeEnabledState = function(state)
     local player = source
     local xPlayer = ESX.GetPlayerFromId(player)
 
-    if state then xPlayer.showNotification(Config.Language["BLUETOOTH_ON"]) else xPlayer.showNotification(Config.Language["BLUETOOTH_OFF"]) end
+    if state then showXNotification(xPlayer, Config.Language["BLUETOOTH_ON"]) else showXNotification(xPlayer, Config.Language["BLUETOOTH_OFF"]) end
     USERS_BLUETOOTH[xPlayer.identifier] = state
 end

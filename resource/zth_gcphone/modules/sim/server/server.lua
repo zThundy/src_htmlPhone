@@ -32,7 +32,7 @@ local function NewSim(source)
                 ['@messaggi'] = 0,
                 ['@dati'] = 0
             }, function(id)
-                xPlayer.showNotification(Config.Language["SIM_CREATED_MESSAGE_OK"])
+                showXNotification(xPlayer, Config.Language["SIM_CREATED_MESSAGE_OK"])
                 gcPhoneT.updateCachedNumber(phone_number, xPlayer.identifier, false)
 
                 CACHED_TARIFFS[phone_number] = {
@@ -47,7 +47,7 @@ local function NewSim(source)
                 }
             end)
         else
-            xPlayer.showNotification(Config.Language["SIM_CREATED_MESSAGE_ERROR"])
+            showXNotification(xPlayer, Config.Language["SIM_CREATED_MESSAGE_ERROR"])
         end
     end)
 end
@@ -105,8 +105,8 @@ cartesimT.daiSim = function(number, c_id)
     local xPlayer2 = ESX.GetPlayerFromId(c_id)
             
     if number ~= nil then
-        xPlayer.showNotification(Config.Language["SIM_GIVEN_MESSAGE_1"]:format(number))
-        xPlayer2.showNotification(Config.Language["SIM_GIVEN_MESSAGE_2"]:format(number))
+        showXNotification(xPlayer, Config.Language["SIM_GIVEN_MESSAGE_1"]:format(number))
+        showXNotification(xPlayer2, Config.Language["SIM_GIVEN_MESSAGE_2"]:format(number))
 
         gcPhoneT.updateCachedNumber(number, xPlayer2.identifier, false)
 

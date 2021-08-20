@@ -32,7 +32,7 @@ gcPhoneT.modem_createModem = function(label, password, coords)
             end)
         end)
     else
-        xPlayer.showNotification(Config.Language["MODEM_CREATION_TIMEOUT_MESSAGE"]:format(Config.WaitBeforeCreatingAgaing))
+        showXNotification(xPlayer, Config.Language["MODEM_CREATION_TIMEOUT_MESSAGE"]:format(Config.WaitBeforeCreatingAgaing))
     end
 end
 
@@ -56,7 +56,7 @@ gcPhoneT.modem_rinnovaModem = function()
             end
         end)
     else
-        xPlayer.showNotification(Config.Language["MODEM_CREATION_NOT_ENOUGH_MONEY"])
+        showXNotification(xPlayer, Config.Language["MODEM_CREATION_NOT_ENOUGH_MONEY"])
     end
 end
 
@@ -70,7 +70,7 @@ gcPhoneT.modem_cambiaPassword = function(password)
         Reti.UpdateReteWifi(player, { password = password }, "password")
         TriggerClientEvent("gcphone:modem_updateMenu", player)
     else
-        xPlayer.showNotification(Config.Language["MODEM_CREATION_NOT_ENOUGH_MONEY"])
+        showXNotification(xPlayer, Config.Language["MODEM_CREATION_NOT_ENOUGH_MONEY"])
     end
 end
 
@@ -80,12 +80,12 @@ gcPhoneT.modem_compraModem = function()
 
     if xPlayer.getAccount("bank").money >= Config.BuyModemPrice then
         xPlayer.addInventoryItem(Config.ModemItemName, 1)
-        xPlayer.showNotification(Config.Language["MODEM_BOUGHT_OK"])
+        showXNotification(xPlayer, Config.Language["MODEM_BOUGHT_OK"])
 
         xPlayer.removeAccountMoney("bank", Config.BuyModemPrice)
         TriggerClientEvent("gcphone:modem_updateMenu", player)
     else
-        xPlayer.showNotification(Config.Language["MODEM_CREATION_NOT_ENOUGH_MONEY"])
+        showXNotification(xPlayer, Config.Language["MODEM_CREATION_NOT_ENOUGH_MONEY"])
     end
 end
 
