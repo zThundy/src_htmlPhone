@@ -9,10 +9,10 @@ MySQL.ready(function()
         CACHED_POSTS = posts
         MySQL.Async.fetchAll("SELECT * FROM phone_instagram_accounts", {}, function(accounts)
             for _, account in pairs(accounts) do
-                for _, tweet in pairs(CACHED_POSTS) do
-                    if tweet.authorId == account.id then
-                        tweet.authorIcon = account.avatar_url
-                        tweet.author = account.username
+                for _, post in pairs(CACHED_POSTS) do
+                    if post.authorId == account.id then
+                        post.authorIcon = account.avatar_url
+                        post.author = account.username
                     end
                 end
                 account.author = account.username
@@ -164,7 +164,7 @@ gcPhoneT.instagram_nuovoPost = function(username, password, data)
                     didascalia = data.didascalia,
                     filter = data.filter,
                     likes = 0,
-                    time = os.time() * 1000
+                    data = os.time() * 1000
                 }
                 table.insert(CACHED_POSTS, post)
                 TriggerClientEvent('gcPhone:instagram_updatePosts', player, CACHED_POSTS)
