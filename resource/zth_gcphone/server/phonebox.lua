@@ -15,14 +15,11 @@ end
 function CallStaticPhone(player, phone_number, rtcOffer, extraData)
     local indexCall = CALL_INDEX
     CALL_INDEX = CALL_INDEX + 1
-
     local hidden = string.sub(phone_number, 1, 1) == '#'
     if hidden == true then
         phone_number = string.sub(phone_number, 2)
     end
-    
 	local identifier = gcPhoneT.getPlayerID(player)
-
     local srcPhone = ''
     if extraData ~= nil and extraData.useNumber ~= nil then
         srcPhone = extraData.useNumber
@@ -53,7 +50,6 @@ function CallStaticPhone(player, phone_number, rtcOffer, extraData)
         TriggerClientEvent('gcPhone:waitingCall', player, Chiamate[indexCall], true)
     else
         TriggerClientEvent("esx:showNotification", player, Config.Language["PHONEBOX_PHONE_OCCUPIED"])
-        -- xPlayer.showNotification("Il telefono è occupato", "error")
     end
 end
 
