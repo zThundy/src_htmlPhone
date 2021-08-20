@@ -15,10 +15,8 @@ else
 end
 
 local Tunnel = {}
--- define per dest regulator
 Tunnel.delays = {}
 
--- set the base delay between Triggers for this destination in milliseconds (0 for instant trigger)
 function Tunnel.setDestDelay(dest, delay)
     Tunnel.delays[dest] = {delay, 0}
 end
@@ -65,7 +63,6 @@ local function tunnel_resolve(itable, key)
         if delay_data[2] > 0 then
             SetTimeout(delay_data[2], function() 
                 delay_data[2] = delay_data[2] - add_delay
-
                 local rid = -1
                 if r then
                     rid = ids:gen()
@@ -83,20 +80,17 @@ local function tunnel_resolve(itable, key)
                 rid = ids:gen()
                 callbacks[rid] = r
             end
-
             if SERVER then
                 TriggerRemoteEvent(license .. "::" .. iname .. ":tunnel_req:" .. c, dest, fname, args, identifier, rid)
             else
                 TriggerRemoteEvent(license .. "::" .. iname .. ":tunnel_req:" .. c, fname, args, identifier, rid)
             end
         end
-
         if r then
             return r:wait()
         end
     end
-
-    itable[key] = fcall -- add generated call to table (optimization)
+    itable[key] = fcall
     return fcall
 end
 
@@ -110,8 +104,6 @@ function Tunnel.bindInterface(license, name, interface)
         local f = interface[member]
         local rets = {}
         if type(f) == "function" then rets = {f(table.unpack(args, 1, table_maxn(args)))} end
-
-        -- send response (even if the function doesn't exist)
         if rid >= 0 then
             if SERVER then
                 TriggerRemoteEvent(license .. "::" .. name .. ":" .. identifier .. ":tunnel_res:" .. c, source, rid, rets)
@@ -128,11 +120,7 @@ function Tunnel.getInterface(license, name, identifier)
     license = enc(license)
     local ids = IDManager()
     local callbacks = {}
-
-    -- build interface
     local r = setmetatable({}, { __index = tunnel_resolve, name = name, tunnel_ids = ids, tunnel_callbacks = callbacks, identifier = identifier, license = license, c = c })
-
-    -- receive response
     RegisterLocalEvent(license .. "::" .. name .. ":" .. identifier .. ":tunnel_res:" .. c)
     AddEventHandler(license .. "::" .. name .. ":" .. identifier .. ":tunnel_res:" .. c, function(rid, args)
         local callback = callbacks[rid]
@@ -144,7 +132,6 @@ function Tunnel.getInterface(license, name, identifier)
             callback(table.unpack(args, 1, table_maxn(args)))
         end
     end)
-
     return r
 end
 
