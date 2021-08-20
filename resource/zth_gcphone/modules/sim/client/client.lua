@@ -1,46 +1,7 @@
 local tunnel = module("zth_gcphone", "modules/TunnelV2")
 cartesimServerT = tunnel.getInterface(Config.AuthKey, "cartesim_server_t", "cartesim_server_t")
 
-Citizen.CreateThread(function()
-    while ESX == nil do Citizen.Wait(100) end
-    while ESX.GetPlayerData().job == nil do Citizen.Wait(500) end
-    
-    local coords = Config.TariffsShop
-    TriggerEvent('gridsystem:registerMarker', {
-        name = "piano_tariffario",
-        type = 20,
-        pos = coords,
-        color = { r = 55, b = 55, g = 255 },
-        scale =  vector3(0.8, 0.8, 0.8),
-        action = function()
-            OpenShopMenu()
-        end,
-        onExit = function()
-            ESX.UI.Menu.CloseAll()
-        end,
-        msg = Config.Language["HELPNOTIFICATION_SIM_SHOP_LABEL"],
-    })
-
-    local info = Config.TariffsBlip
-    if info.enable then
-        local blip = AddBlipForCoord(coords.x, coords.y, coords.z)
-        SetBlipHighDetail(blip, true)
-        SetBlipSprite(blip, info.sprite)
-        SetBlipColour(blip, info.color)
-        SetBlipScale(blip, info.scale)
-        SetBlipAsShortRange(blip, true)
-
-        BeginTextCommandSetBlipName("STRING")
-        AddTextComponentString(info.name)
-        EndTextCommandSetBlipName(blip)
-    end
-
-    RegisterKeyMapping('+openSimMenu', Config.Language["SETTINGS_SIM_KEY_LABEL"], 'keyboard', Config.SimCardKey)
-    RegisterCommand('+openSimMenu', function() OpenSimMenu() end, false)
-    RegisterCommand('-openSimMenu', function() end, false)
-end)
-
-function OpenSimMenu()
+local function OpenSimMenu()
     ESX.UI.Menu.CloseAll()
     local elements = cartesimServerT.getSimList()
     
@@ -118,8 +79,51 @@ function OpenSimMenu()
     end)
 end
 
+local function OpenSimInfoMenu(number)
+    ESX.UI.Menu.CloseAll()
 
-function OpenShopMenu()
+    -- this is just visual, the logic to renew is server
+    -- sided
+    local elementi = {}
+    for k, v in pairs(Config.Tariffs) do
+        table.insert(elementi, {label = v.label, value = v})
+    end
+    
+    ESX.UI.Menu.Open('default', GetCurrentResourceName(), 'sim_scegli_piano', {
+        title = number,
+        elements = elementi
+    }, function(data, menu)
+        local v = data.current.value
+        ESX.UI.Menu.Open('default', GetCurrentResourceName(), 'sim_compra_piano', {
+            title = number,
+            elements = {
+                {label = Config.Language["SIM_TARIFFS_OFFER_LABEL_2"]:format(v.minuti)},
+                {label = Config.Language["SIM_TARIFFS_OFFER_LABEL_3"]:format(v.messaggi)},
+                {label = Config.Language["SIM_TARIFFS_OFFER_LABEL_4"]:format(v.dati)},
+                {label = Config.Language["SIM_TARIFFS_OFFER_LABEL_7"]:format(v.price)},
+                {label = Config.Language["SIM_TARIFFS_OFFER_LABEL_BUY"], value = "acquista"}
+            }
+        }, function(data2, menu2)
+            if data2.current.value == "acquista" then
+                local ok = cartesimServerT.buyOffer(v.label, number)
+                if ok then
+                    ESX.ShowNotification(Config.Language["SIM_TARIFFS_BUY_OK"])
+                else
+                    ESX.ShowNotification(Config.Language["SIM_TARIFFS_BUY_ERROR"])
+                    OpenSimInfoMenu(number)
+                end
+                
+                ESX.UI.Menu.CloseAll()
+            end
+        end, function(data2, menu2)
+            menu2.close()
+        end)
+    end, function(data, menu)
+        menu.close()
+    end)
+end
+
+local function OpenShopMenu()
     ESX.UI.Menu.CloseAll()
     local elements = cartesimServerT.getSimList()
 
@@ -174,46 +178,41 @@ function OpenShopMenu()
     end)
 end
 
-function OpenSimInfoMenu(number)
-    ESX.UI.Menu.CloseAll()
-
-    -- this is just visual, the logic to renew is server
-    -- sided
-    local elementi = {}
-    for k, v in pairs(Config.Tariffs) do
-        table.insert(elementi, {label = v.label, value = v})
-    end
+Citizen.CreateThread(function()
+    while ESX == nil do Citizen.Wait(100) end
+    while ESX.GetPlayerData().job == nil do Citizen.Wait(500) end
     
-    ESX.UI.Menu.Open('default', GetCurrentResourceName(), 'sim_scegli_piano', {
-        title = number,
-        elements = elementi
-    }, function(data, menu)
-        local v = data.current.value
-        ESX.UI.Menu.Open('default', GetCurrentResourceName(), 'sim_compra_piano', {
-            title = number,
-            elements = {
-                {label = Config.Language["SIM_TARIFFS_OFFER_LABEL_2"]:format(v.minuti)},
-                {label = Config.Language["SIM_TARIFFS_OFFER_LABEL_3"]:format(v.messaggi)},
-                {label = Config.Language["SIM_TARIFFS_OFFER_LABEL_4"]:format(v.dati)},
-                {label = Config.Language["SIM_TARIFFS_OFFER_LABEL_7"]:format(v.price)},
-                {label = Config.Language["SIM_TARIFFS_OFFER_LABEL_BUY"], value = "acquista"}
-            }
-        }, function(data2, menu2)
-            if data2.current.value == "acquista" then
-                local ok = cartesimServerT.buyOffer(v.label, number)
-                if ok then
-                    ESX.ShowNotification(Config.Language["SIM_TARIFFS_BUY_OK"])
-                else
-                    ESX.ShowNotification(Config.Language["SIM_TARIFFS_BUY_ERROR"])
-                    OpenSimInfoMenu(number)
-                end
-                
-                ESX.UI.Menu.CloseAll()
-            end
-        end, function(data2, menu2)
-            menu2.close()
-        end)
-    end, function(data, menu)
-        menu.close()
-    end)
-end
+    local coords = Config.TariffsShop
+    TriggerEvent('gridsystem:registerMarker', {
+        name = "piano_tariffario",
+        type = 20,
+        pos = coords,
+        color = { r = 55, b = 55, g = 255 },
+        scale =  vector3(0.8, 0.8, 0.8),
+        action = function()
+            OpenShopMenu()
+        end,
+        onExit = function()
+            ESX.UI.Menu.CloseAll()
+        end,
+        msg = Config.Language["HELPNOTIFICATION_SIM_SHOP_LABEL"],
+    })
+
+    local info = Config.TariffsBlip
+    if info.enable then
+        local blip = AddBlipForCoord(coords.x, coords.y, coords.z)
+        SetBlipHighDetail(blip, true)
+        SetBlipSprite(blip, info.sprite)
+        SetBlipColour(blip, info.color)
+        SetBlipScale(blip, info.scale)
+        SetBlipAsShortRange(blip, true)
+
+        BeginTextCommandSetBlipName("STRING")
+        AddTextComponentString(info.name)
+        EndTextCommandSetBlipName(blip)
+    end
+
+    RegisterKeyMapping('+openSimMenu', Config.Language["SETTINGS_SIM_KEY_LABEL"], 'keyboard', Config.SimCardKey)
+    RegisterCommand('+openSimMenu', function() OpenSimMenu() end, false)
+    RegisterCommand('-openSimMenu', function() end, false)
+end)

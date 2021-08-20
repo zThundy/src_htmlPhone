@@ -1,5 +1,4 @@
 myCover = nil
--- local isMenuOpened = false
 
 local function RefreshCovers()
     local covers = gcPhoneServerT.cover_requestCovers()
@@ -11,59 +10,7 @@ local function ChangeCover(label, cover)
     SendNUIMessage({ event = "changePhoneCover", cover = cover, label = label })
 end
 
-Citizen.CreateThread(function()
-    while ESX == nil do Citizen.Wait(100) end
-
-    local coords = Config.CoverShop
-    TriggerEvent('gridsystem:registerMarker', {
-		name = "negozio_cover",
-		type = 20,
-		pos = coords,
-		color = { r = 55, g = 255, b = 55 },
-		scale = vector3(0.8, 0.8, 0.8),
-        action = function()
-            local covers = gcPhoneServerT.cover_requestCovers()
-            OpenShopMenu(covers)
-		end,
-        onExit = function()
-            ESX.UI.Menu.CloseAll()
-            ChangeCover(Config.Language["NO_COVER_LABEL"], "base")
-            SendNUIMessage({ show = false })
-        end,
-        -- need to think about this cause idk if i like this
-        -- onEnter = function()
-        --     SendNUIMessage({ show = true })
-        -- end,
-		msg = Config.Language["HELPNOTIFICATION_COVER_SHOP_LABEL"],
-	})
-
-    local info = Config.CoverShopBlip
-    if info.enable then
-		local blip = AddBlipForCoord(coords.x, coords.y, coords.z)
-		SetBlipHighDetail(blip, true)
-		SetBlipSprite(blip, info.sprite)
-		SetBlipColour(blip, info.color)
-		SetBlipScale(blip, info.scale)
-		SetBlipAsShortRange(blip, true)
-
-		BeginTextCommandSetBlipName("STRING")
-		AddTextComponentString(info.name)
-		EndTextCommandSetBlipName(blip)
-	end
-end)
-
-RegisterNUICallback("requestMyCovers", function(data, cb)
-    RefreshCovers()
-    cb("ok")
-end)
-
-RegisterNUICallback("changingCover", function(data, cb)
-    myCover = string.gsub(data.cover.value, ".png", "")
-    OnCoverChange()
-    cb("ok")
-end)
-
-function OpenShopMenu(myCovers)
+local function OpenShopMenu(myCovers)
     local elements = {}
 
     -- qui mi preparo la table per controllare quale cover ho già e quali no
@@ -116,3 +63,55 @@ function OpenShopMenu(myCovers)
         elements = elements
     }, onMenuSelect, onMenuClose, onMenuChangeIndex)
 end
+
+RegisterNUICallback("requestMyCovers", function(data, cb)
+    RefreshCovers()
+    cb("ok")
+end)
+
+RegisterNUICallback("changingCover", function(data, cb)
+    myCover = string.gsub(data.cover.value, ".png", "")
+    OnCoverChange()
+    cb("ok")
+end)
+
+Citizen.CreateThread(function()
+    while ESX == nil do Citizen.Wait(100) end
+
+    local coords = Config.CoverShop
+    TriggerEvent('gridsystem:registerMarker', {
+		name = "negozio_cover",
+		type = 20,
+		pos = coords,
+		color = { r = 55, g = 255, b = 55 },
+		scale = vector3(0.8, 0.8, 0.8),
+        action = function()
+            local covers = gcPhoneServerT.cover_requestCovers()
+            OpenShopMenu(covers)
+		end,
+        onExit = function()
+            ESX.UI.Menu.CloseAll()
+            ChangeCover(Config.Language["NO_COVER_LABEL"], "base")
+            SendNUIMessage({ show = false })
+        end,
+        -- need to think about this cause idk if i like this
+        -- onEnter = function()
+        --     SendNUIMessage({ show = true })
+        -- end,
+		msg = Config.Language["HELPNOTIFICATION_COVER_SHOP_LABEL"],
+	})
+
+    local info = Config.CoverShopBlip
+    if info.enable then
+		local blip = AddBlipForCoord(coords.x, coords.y, coords.z)
+		SetBlipHighDetail(blip, true)
+		SetBlipSprite(blip, info.sprite)
+		SetBlipColour(blip, info.color)
+		SetBlipScale(blip, info.scale)
+		SetBlipAsShortRange(blip, true)
+
+		BeginTextCommandSetBlipName("STRING")
+		AddTextComponentString(info.name)
+		EndTextCommandSetBlipName(blip)
+	end
+end)
