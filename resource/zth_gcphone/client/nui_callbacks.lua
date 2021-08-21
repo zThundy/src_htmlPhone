@@ -183,7 +183,7 @@ RegisterNUICallback('aggiornaAvatarContatto', function(data, cb)
 end)
 
 RegisterNUICallback('getContacts', function(data, cb)
-    cb(json.encode(contacts))
+    cb(json.encode(PERSONAL_CONTACTS))
 end)
 
 RegisterNUICallback('setGPS', function(data, cb)
