@@ -100,7 +100,6 @@ end)
 gcPhoneT.getBourseProfile = function()
     local player = source
 	local xPlayer = ESX.GetPlayerFromId(player)
-    
 	local isAble, mbToRemove = gcPhoneT.isAbleToSurfInternet(xPlayer.identifier, 0.5)
     if isAble then
         gcPhoneT.useInternetData(xPlayer.identifier, mbToRemove)
@@ -162,6 +161,11 @@ gcPhoneT.requestCryptoValues = function()
 end
 
 gcPhoneT.buyCrypto = function(data)
+    -- if for some reason the user did not select any
+    -- valid options and the data is null then the function
+    -- will return false immediatly
+    if not data.crypto then return false end
+
     local player = source
     local xPlayer = ESX.GetPlayerFromId(player)
     local money = xPlayer.getAccount("bank").money
@@ -216,7 +220,6 @@ end
 gcPhoneT.sellCrypto = function(data)
     local player = source
     local xPlayer = ESX.GetPlayerFromId(player)
-    -- print(ESX.DumpTable(data))
 
     if data.crypto.amount >= data.amount then
         local isAble, mbToRemove = gcPhoneT.isAbleToSurfInternet(xPlayer.identifier, 0.5)
