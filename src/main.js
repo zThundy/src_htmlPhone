@@ -25,11 +25,7 @@ const filter = function (text, length, clamp) {
   return content[1].length > length ? `${content[0]}.${content[1].slice(0, length) + clamp}` : content
 }
 
-const directive = {
-  inserted (el) {
-    el.focus()
-  }
-}
+const directive = { inserted (el) { el.focus() } }
 Vue.directive('autofocus', directive)
 Vue.filter('truncate', filter)
 
