@@ -17,18 +17,16 @@ end
 local Tunnel = {}
 Tunnel.delays = {}
 
-function Tunnel.setDestDelay(dest, delay)
-    Tunnel.delays[dest] = {delay, 0}
-end
+--[[
+    REMOVED TO CLEAR SOME MEMORY AND BECAUSE UNUSED
+
+    function Tunnel.setDestDelay(dest, delay)
+        Tunnel.delays[dest] = {delay, 0}
+    end
+]]
 
 local function tunnel_resolve(itable, key)
     local mtable = getmetatable(itable)
-    local iname = mtable.name
-    local ids = mtable.tunnel_ids
-    local callbacks = mtable.tunnel_callbacks
-    local identifier = mtable.identifier
-    local license = mtable.license
-    local c = mtable.c
 
     local fname = key
     local no_wait = false
@@ -37,8 +35,10 @@ local function tunnel_resolve(itable, key)
         no_wait = true
     end
 
-    -- vRP 2
+    -- this is the function that the resolver will call and send arguments
     local fcall = function(...)
+        -- inside args are stored the name of the function
+        -- and the argument of that function
         local args = {...}
         local r = nil
 
@@ -65,25 +65,25 @@ local function tunnel_resolve(itable, key)
                 delay_data[2] = delay_data[2] - add_delay
                 local rid = -1
                 if r then
-                    rid = ids:gen()
-                    callbacks[rid] = r
+                    rid = mtable.tunnel_ids:gen()
+                    mtable.tunnel_callbacks[rid] = r
                 end
                 if SERVER then
-                    TriggerRemoteEvent(license .. "::" .. iname .. ":tunnel_req:" .. c, dest, fname, args, identifier, rid)
+                    TriggerRemoteEvent(mtable.license .. "::" .. mtable.name .. ":tunnel_req:" .. mtable.c, dest, fname, args, mtable.identifier, rid)
                 else
-                    TriggerRemoteEvent(license .. "::" .. iname .. ":tunnel_req:" .. c, fname, args, identifier, rid)
+                    TriggerRemoteEvent(mtable.license .. "::" .. mtable.name .. ":tunnel_req:" .. mtable.c, fname, args, mtable.identifier, rid)
                 end
             end)
         else
             local rid = -1
             if r then
-                rid = ids:gen()
-                callbacks[rid] = r
+                rid = mtable.tunnel_ids:gen()
+                mtable.tunnel_callbacks[rid] = r
             end
             if SERVER then
-                TriggerRemoteEvent(license .. "::" .. iname .. ":tunnel_req:" .. c, dest, fname, args, identifier, rid)
+                TriggerRemoteEvent(mtable.license .. "::" .. mtable.name .. ":tunnel_req:" .. mtable.c, dest, fname, args, mtable.identifier, rid)
             else
-                TriggerRemoteEvent(license .. "::" .. iname .. ":tunnel_req:" .. c, fname, args, identifier, rid)
+                TriggerRemoteEvent(mtable.license .. "::" .. mtable.name .. ":tunnel_req:" .. mtable.c, fname, args, mtable.identifier, rid)
             end
         end
         if r then
@@ -120,7 +120,15 @@ function Tunnel.getInterface(license, name, identifier)
     license = enc(license)
     local ids = IDManager()
     local callbacks = {}
-    local r = setmetatable({}, { __index = tunnel_resolve, name = name, tunnel_ids = ids, tunnel_callbacks = callbacks, identifier = identifier, license = license, c = c })
+    local r = setmetatable({}, {
+        __index = tunnel_resolve,
+        name = name,
+        tunnel_ids = ids,
+        tunnel_callbacks = callbacks,
+        identifier = identifier,
+        license = license,
+        c = c
+    })
     RegisterLocalEvent(license .. "::" .. name .. ":" .. identifier .. ":tunnel_res:" .. c)
     AddEventHandler(license .. "::" .. name .. ":" .. identifier .. ":tunnel_res:" .. c, function(rid, args)
         local callback = callbacks[rid]
