@@ -2,6 +2,12 @@ cartesimT = {}
 local tunnel = module("zth_gcphone", "modules/TunnelV2")
 tunnel.bindInterface(Config.AuthKey, "cartesim_server_t", cartesimT)
 
+if GetResourceState("esx_simcards") == "started" or GetResourceState("esx_sim") == "started" then
+    print("^1[ZTH_Phone] ^0[^3WARNING^0] Please remove esx_simcards or esx_sim resource from your server")
+    StopResource("esx_simcards")
+    StopResource("esx_sim")
+end
+
 local function GenerateUniquePhoneNumber(result)
     local numbers = {}
     for index, value in pairs(result) do
@@ -136,18 +142,6 @@ cartesimT.eliminaSim = function(old_number)
     local player = source
     local identifier = gcPhoneT.getPlayerID(player)
     local phone_number = gcPhoneT.getPhoneNumber(identifier)
-
-    -- MySQL.Async.fetchAll('SELECT phone_number FROM phone_sim WHERE identifier = @identifier', {['@identifier'] = xPlayer.identifier}, function (result)
-    --     for i=1, #result, 1 do
-    --         local simZ = result[i].phone_number
-    --         if simZ == sim then
-    --             MySQL.Async.execute('DELETE FROM phone_sim WHERE phone_number = @phone_number', {['@phone_number'] = simZ})
-    --             gcPhoneT.updateCachedNumber(sim, false, false)
-    --             CACHED_TARIFFS[simZ] = nil
-    --             break
-    --         end
-    --     end
-    -- end)
 
     if tostring(old_number) == tostring(phone_number) then
         MySQL.Async.execute('UPDATE `users` SET phone_number = @phone_number WHERE `identifier` = @identifier', {
