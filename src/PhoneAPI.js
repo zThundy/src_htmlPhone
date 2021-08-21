@@ -174,10 +174,6 @@ class PhoneAPI {
     }
   }
 
-  async faketakePhoto () {
-    return this.post('faketakePhoto')
-  }
-
   async callEvent (eventName, data) {
     return this.post('callEvent', {eventName, data})
   }

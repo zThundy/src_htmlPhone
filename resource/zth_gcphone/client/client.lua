@@ -67,15 +67,10 @@ Citizen.CreateThread(function()
     end
 end)
 
-
 RegisterNetEvent("gcphone:sendGenericNotification")
 AddEventHandler("gcphone:sendGenericNotification", function(data)
     SendNUIMessage({ event = "genericNotification", notif = data })
 end)
-
---==================================================================================================================
---------  Funzioni per i suoni
---==================================================================================================================
 
 function PlaySoundJS(sound, v, loop)
     local _volume = v and v or volume

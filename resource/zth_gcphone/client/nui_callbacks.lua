@@ -15,7 +15,6 @@ RegisterNUICallback("sendErrorMessage", function(data, cb)
 end)
 
 RegisterNUICallback("updateVolume", function(data, cb)
-    -- volume = data.volume
     UpdateGlobalVolume(data.volume)
     cb("ok")
 end)
@@ -27,7 +26,6 @@ RegisterNUICallback("sendStartupValues", function(data, cb)
     end
     GLOBAL_AIRPLANE = data.airplane
     gcPhoneServerT.updateAirplaneForUser(GLOBAL_AIRPLANE)
-    -- volume = data.volume
     UpdateGlobalVolume(data.volume)
     cb("ok")
 end)
@@ -55,8 +53,6 @@ RegisterNUICallback('startCall', function(data, cb)
 end)
 
 RegisterNUICallback('acceptCall', function(data, cb)
-    -- print(data.infoCall)
-    -- print(DumpTable(data))
     gcPhoneServerT.acceptCall(data.infoCall, data.rtcAnswer)
     cb("ok")
 end)
@@ -67,8 +63,6 @@ RegisterNUICallback('rejectCall', function(data, cb)
 end)
 
 RegisterNUICallback('ignoreCall', function(data, cb)
-    -- print(DumpTable(data.infoCall))
-    -- print("AOOOOOOOOOOOOOOOOOOOOOO")
     gcPhoneServerT.ignoreCall(data.infoCall)
     cb("ok")
 end)
@@ -218,13 +212,6 @@ end)
 
 RegisterNUICallback('deleteALL', function(data, cb)
     gcPhoneServerT.deleteAll()
-    cb("ok")
-end)
-
-RegisterNUICallback('faketakePhoto', function(data, cb)
-    menuIsOpen = false
-    SendNUIMessage({ show = false })
-    TriggerEvent('camera:open')
     cb("ok")
 end)
 
