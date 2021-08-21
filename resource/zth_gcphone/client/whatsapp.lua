@@ -6,7 +6,6 @@ AddEventHandler("gcphone:whatsapp_updateGruppi", function(groups, number)
     for group_id, group in pairs(groups) do
         local index = 1
         group.partecipanti = json.decode(group.partecipanti)
-
         group.partecipantiString = ""
         for _, contact in pairs(group.partecipanti) do
             -- se il numero che loopa è il tuo, allora sostituisce il display
@@ -20,12 +19,10 @@ AddEventHandler("gcphone:whatsapp_updateGruppi", function(groups, number)
             end
             index = index + 1
         end
-
         if string.len(group.partecipantiString) > 50 then
             group.partecipantiString = string.sub(group.partecipantiString, 50)
             group.partecipantiString = group.partecipantiString.."..."
         end
-
         for _, contact in pairs(group.partecipanti) do
             if contact.number == number then
                 table.insert(groupsToSend, group)

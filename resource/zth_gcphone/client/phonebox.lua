@@ -66,26 +66,20 @@ end)
 
 if Config.EnablePhoneBoxes then
     Citizen.CreateThread(function()
-        local mod = 0
+        local mod, inRangedist, dist = 0, 0, 0
         local inRangeToActivePhone = false
-        local inRangedist = 0
-        local dist = 0
         local p_coords = nil
 
         while true do
             if #PHONE_BOXES_STATUS > 0 then
                 p_coords = GetEntityCoords(GetPlayerPed(-1))
-
                 for i, v in pairs(PHONE_BOXES_STATUS) do
                     dist = v.coords - p_coords
-
                     if dist <= Config.MaxPhoneBoxesRingRange then
                         inRangeToActivePhone = true
                         inRangedist = dist
-
                         if dist <= 1.0 then 
                             ESX.ShowHelpNotification(Config.Language["HELPNOTIFICATION_PHONE_BOXES_ANSWER"]:format(Config.KeyLabel))
-
                             if IsControlJustPressed(1, Config.KeyTakeCall) then
                                 AnswerPhone(PHONE_BOXES_STATUS[i])
                                 PHONE_BOXES_STATUS[i] = {}
@@ -93,7 +87,6 @@ if Config.EnablePhoneBoxes then
                                 USING_PHONE_BOX = true
                             end
                         end
-
                         break
                     end
                 end
@@ -127,24 +120,19 @@ if Config.EnablePhoneBoxes then
         while true do
             idle = 1
             p_coords = GetEntityCoords(GetPlayerPed(-1))
-
             if not USING_PHONE_BOX then
                 for number, v in pairs(Config.PhoneBoxes) do
                     dist = Vdist(v.coords - p_coords)
-
                     if dist <= 2.5 then
                         if not props[number] then
                             props[number] = CreateObject(GetHashKey(Config.PhonePropModel), v.coords.x, v.coords.y, v.coords.z, false, true, false)
                         end
-
                         if dist <= 2.0 then
                             ESX.ShowHelpNotification(Config.Language["HELPNOTIFICATION_PHONE_BOXES_CALL"]:format(Config.KeyLabel))
-
                             if IsControlJustPressed(0, Config.KeyTakeCall) then
                                 if not number then
                                     number = getPhoneBoxNumber(v.coords)
                                 end
-                                -- local phoneboxnumber = getPhoneBoxNumber(GetEntityCoords(GetClosestObjectOfType(pedPos.x, pedPos.y, pedPos.z, 1.0, params.currentModel, false, 1, 1)))
                                 StartFixedCall(number)
                             end
                         end
@@ -163,21 +151,3 @@ if Config.EnablePhoneBoxes then
         end
     end)
 end
-
---[[
-    OLD SHIT :)
-    AddEventHandler("gcPhone:phoneBoxActions", function(functionName, params)
-        if functionName == 'StartFixedCall' then
-            if params and params.currentModel then
-                local pedPos = GetEntityCoords(GetPlayerPed(-1), false)
-                local phoneboxnumber = getPhoneBoxNumber(GetEntityCoords(GetClosestObjectOfType(pedPos.x, pedPos.y, pedPos.z, 1.0, params.currentModel, false, 1, 1)))
-
-                StartFixedCall(phoneboxnumber, params.currentModel)
-            else
-                StartFixedCall()
-            end
-        elseif functionName == 'showFixePhoneNumber' then
-            showFixePhoneNumber(params)
-        end
-    end)
-]]

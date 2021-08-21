@@ -11,7 +11,6 @@ local currentStatus = 'out'
 local lastDict = nil
 local lastAnim = nil
 
-
 local lib = {
     ['cellphone@'] = {
         ['out'] = {
@@ -43,30 +42,21 @@ local lib = {
     }
 }
 
-
 function newPhoneProp()
     ped = GetPlayerPed(-1)
-    
     deletePhone()
-
     if Config.Covers[myCover] ~= nil then
         phoneModel = GetHashKey(Config.Covers[myCover].prop)
     else
         phoneModel = GetHashKey(Config.BaseCover.prop)
     end
-
     RequestModel(phoneModel)
     while not HasModelLoaded(phoneModel) do Citizen.Wait(1) end
-
     phoneProp = CreateObject(phoneModel, 1.0, 1.0, 1.0, 1, 1, 0)
     local bone = GetPedBoneIndex(ped, 28422)
     AttachEntityToEntity(phoneProp, ped, bone, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1, 1, 0, 0, 2, 1)
-
-    -- SetEntityAsNoLongerNeeded(phoneModel)
-
     table.insert(CACHED_PROPS, phoneProp)
 end
-
 
 function onCoverChange()
     if #CACHED_PROPS > 2 then doCleanup() end
@@ -74,14 +64,12 @@ function onCoverChange()
     newPhoneProp()
 end
 
-
 function deletePhone()
     if phoneProp ~= 0 then
         Citizen.InvokeNative(0xAE3CBE5BF394C9C9 , Citizen.PointerValueIntInitialized(phoneProp))
         phoneProp = 0
     end
 end
-
 
 function doCleanup()
     for k, v in pairs(CACHED_PROPS) do
@@ -93,7 +81,6 @@ function doCleanup()
     CACHED_PROPS = {}
     gcPhone.debug(Config.Language["ANIMATIONS_CLEANUP_DEBUG_1"])
 end
-
 
 --[[
     out || text || Call ||
@@ -128,25 +115,6 @@ function PhonePlayAnim(status)
         newPhoneProp()
     end
 
-    --[[
-        Citizen.CreateThreadNow(function()
-            while true do
-                ped = GetPlayerPed(-1)
-                -- print("looping animation")
-                -- print(currentStatus, status)
-                if status == "out" then
-                    -- print("should breaking this")
-                    StopAnimTask(ped, lastDict, lastAnim, 1.0)
-                    return
-                end
-                if not IsEntityPlayingAnim(ped, lastDict, lastAnim, 3) then
-                    TaskPlayAnim(ped, lastDict, lastAnim, 3.0, -1, -1, 50, 0, false, false, false)
-                end
-                Citizen.Wait(2000)
-            end
-        end)
-    ]]
-
     lastDict = dict
     lastAnim = anim
     currentStatus = status
@@ -158,28 +126,23 @@ function PhonePlayAnim(status)
     end
 end
 
-
 function PhonePlayOut()
     PhonePlayAnim('out')
 end
-
 
 function PhonePlayText()
     PhonePlayAnim('text')
 end
 
-
 function PhonePlayCall()
     PhonePlayAnim('call')
 end
-
 
 function PhonePlayIn() 
     if currentStatus == 'out' then
         PhonePlayText()
     end
 end
-
 
 AddEventHandler("onResourceStop", function(res)
     if res == GetCurrentResourceName() then
@@ -189,24 +152,7 @@ AddEventHandler("onResourceStop", function(res)
     end
 end)
 
-
 RegisterNetEvent("gcphone:animations_doCleanup")
 AddEventHandler("gcphone:animations_doCleanup", function()
     doCleanup()
 end)
-
-
---[[
-    Citizen.CreateThread(function()
-        local idle = 0
-        while true do
-            if not menuIsOpen then idle = 2000 end
-
-            if currentStatus == "out" and not IsEntityPlayingAnim(ped, "cellphone@", "cellphone_text_in", 50) then
-                
-            end
-
-            Citizen.Wait(idle)
-        end
-    end)
-]]
