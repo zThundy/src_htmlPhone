@@ -136,7 +136,7 @@ function Tunnel.getInterface(license, name, identifier)
             -- free request id
             ids:free(rid)
             callbacks[rid] = nil
-            -- call
+            -- call of function
             callback(table.unpack(args, 1, table_maxn(args)))
         end
     end)
