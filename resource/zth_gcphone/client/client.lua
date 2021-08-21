@@ -8,7 +8,6 @@ messages = {}
 isDead = false
 
 inCall = false
-stoppedPlayingUnreachable = false
 NOTIFICATIONS_ENABLED = true
 GLOBAL_AIRPLANE = false
 
@@ -96,10 +95,6 @@ end
 function StopSoundJS(sound)
     SendNUIMessage({ event = 'stopSound', sound = sound })
 end
- 
---====================================================================================
---  Events
---====================================================================================
 
 RegisterNetEvent("gcPhone:updatePhoneNumber")
 AddEventHandler("gcPhone:updatePhoneNumber", function(phone_number)
@@ -116,7 +111,6 @@ RegisterNetEvent("gcPhone:allMessage")
 AddEventHandler("gcPhone:allMessage", function(allmessages, notReceivedMessages)
     SendNUIMessage({ event = 'updateMessages', messages = allmessages, volume = volume, received = notReceivedMessages })
     messages = allmessages
-
     if not GLOBAL_AIRPLANE then
         if notReceivedMessages ~= nil and notReceivedMessages > 0 then
             if notReceivedMessages == 1 then
@@ -139,12 +133,10 @@ AddEventHandler("gcPhone:receiveMessage", function(message)
     if not GLOBAL_AIRPLANE then
         SendNUIMessage({ event = 'newMessage', message = message, notifications = NOTIFICATIONS_ENABLED })
         table.insert(messages, message)
-
         if message.owner == 0 then
             local text = Config.Language["MESSAGE_NOTIFICATION_NO_TRANSMITTER"]
             if Config.ShowNumberNotification then
                 text = Config.Language["MESSAGE_NOTIFICATION_TRANSMITTER"]:format(message.transmitter)
-
                 for _, contact in pairs(contacts) do
                     if contact.number == message.transmitter then
                         text = Config.Language["MESSAGE_NOTIFICATION_TRANSMITTER"]:format(contact.display)
@@ -152,7 +144,6 @@ AddEventHandler("gcPhone:receiveMessage", function(message)
                     end
                 end
             end
-
             ESX.ShowNotification(text)
         end
     end
@@ -162,7 +153,6 @@ RegisterNetEvent("gcPhone:waitingCall")
 AddEventHandler("gcPhone:waitingCall", function(infoCall, initiator)
     if inCall then return end
     SendNUIMessage({ event = 'waitingCall', infoCall = infoCall, initiator = initiator })
-
     if initiator then
         PhonePlayCall()
         if not menuIsOpen then TogglePhone() end
@@ -172,7 +162,6 @@ end)
 RegisterNetEvent("gcPhone:phoneVoiceMail")
 AddEventHandler("gcPhone:phoneVoiceMail", function(infoCall, initiator)
     Citizen.CreateThreadNow(function()
-        stoppedPlayingUnreachable = false
         Citizen.Wait(2000)
         infoCall.volume = volume
         SendNUIMessage({ event = 'initVoiceMail', infoCall = infoCall, initiator = initiator })
@@ -239,8 +228,6 @@ AddEventHandler("gcPhone:rejectCall", function(infoCall, callDropped)
         if not inCall then infoCall.callTime = 0 end
         gcPhoneServerT.updateParametroTariffa(infoCall.transmitter_num, "minuti", (infoCall.secondiRimanenti - infoCall.callTime))
     end
-
-    if not stoppedPlayingUnreachable then stoppedPlayingUnreachable = true end
 
     if inCall then
         inCall = false
@@ -315,11 +302,7 @@ end
 function TogglePhone()
     menuIsOpen = not menuIsOpen
     SendNUIMessage({ show = menuIsOpen })
-
-    if needAuth then
-        gcPhoneServerT.authServer()
-    end
-    
+    if needAuth then gcPhoneServerT.authServer() end
     local firstname, lastname = gcPhoneServerT.getFirstnameAndLastname()
     local firstjob, secondjob = gcPhoneServerT.getFirstAndSecondJob()
     SendNUIMessage({
@@ -329,7 +312,6 @@ function TogglePhone()
         firstname = firstname,
         lastname = lastname
     })
-
     if menuIsOpen then 
         PhonePlayIn()
     else
@@ -359,14 +341,12 @@ function StartWifiRangeCheck()
         while true do
             found = false
             if not isConnected then return end
-            
             for k, v in pairs(CAHES_WIFI_MODEMS) do
                 if v.label == WIFI_TEMP_DATA.label and v.password == WIFI_TEMP_DATA.password then
                     found = true
                     break
                 end
             end
-            
             if not found then
                 isConnected = false
                 WIFI_TEMP_DATA = {}
