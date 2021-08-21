@@ -1,14 +1,10 @@
 function Reti.getLowestDistanceTIndex(coords)
-    local indice = 0
-    local lowestDistance = 0
-
-    local torre = nil
-    local tempDistanza = nil
+    local indice, lowestDistance = 0, 0
+    local torre, tempDistanza = nil, nil
 
     for i = 1, #torriRadio do
         torre = torriRadio[i]
         tempDistanza = Vdist(tonumber(torre.x) * 1.0, tonumber(torre.y) * 1.0, coords.z, coords.x, coords.y, coords.z)
-        -- print(tempDistanza)
 
         if tempDistanza < Config.RaggioTorri then
             if lowestDistance == 0 then

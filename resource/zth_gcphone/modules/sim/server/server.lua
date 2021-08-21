@@ -113,9 +113,7 @@ cartesimT.daiSim = function(number, c_id)
     if number ~= nil then
         showXNotification(xPlayer, Config.Language["SIM_GIVEN_MESSAGE_1"]:format(number))
         showXNotification(xPlayer2, Config.Language["SIM_GIVEN_MESSAGE_2"]:format(number))
-
         gcPhoneT.updateCachedNumber(number, xPlayer2.identifier, false)
-
         MySQL.Async.fetchAll("SELECT phone_number FROM users WHERE identifier = @identifier AND phone_number = @number", {
             ['@identifier'] = xPlayer.identifier,
             ['@number'] = number
@@ -158,11 +156,9 @@ end
 cartesimT.usaSim = function(sim)
     local player = source
     local identifier = gcPhoneT.getPlayerID(player)
-    
     gcPhoneT.updateCachedNumber(sim.number, identifier, true)
     CACHED_TARIFFS[sim.number].identifier = identifier
     CACHED_TARIFFS[sim.number].phone_number = sim.number
-
     MySQL.Async.execute('UPDATE users SET phone_number = @phone_number WHERE identifier = @identifier', {
         ['@identifier'] = identifier,
         ['@phone_number'] = sim.number
@@ -172,13 +168,11 @@ end
 cartesimT.rinominaSim = function(number, name)
     local player = source
     local identifier = gcPhoneT.getPlayerID(player)
-
     MySQL.Async.execute('UPDATE phone_sim SET nome_sim = @nome_sim WHERE identifier = @identifier AND phone_number = @phone_number', {
         ['@identifier'] = identifier,
         ['@phone_number'] = number,
         ['@nome_sim'] = name
     })
-    
     CACHED_TARIFFS[number].phone_number = number
     CACHED_TARIFFS[number].nome_sim = name
 end
@@ -187,13 +181,6 @@ cartesimT.getSimList = function()
     local player = source
     local identifier = gcPhoneT.getPlayerID(player)
     local cartesim = {}
-
-    -- MySQL.Async.fetchAll("SELECT * FROM phone_sim WHERE identifier = @identifier", {['@identifier'] = xPlayer.getIdentifier()}, function(data) 
-    --     for _, v in pairs(data) do
-    --         table.insert(cartesim, {number = v.phone_number, nome_sim = v.nome_sim, info = {label = v.piano_tariffario, minuti = v.minuti, messaggi = v.messaggi, dati = v.dati}})
-    --     end
-    --     cb(cartesim)
-    -- end)
     for number, v in pairs(CACHED_TARIFFS) do
         if identifier == v.identifier then
             if v.nome_sim ~= '' then
@@ -207,11 +194,6 @@ cartesimT.getSimList = function()
 end
 
 cartesimT.getOfferFromNumber = function(number)
-    -- MySQL.Async.fetchAll("SELECT * FROM phone_sim WHERE phone_number = @phone_number", {['@phone_number'] = number}, function(result)
-    --     if #result > 0 then
-    --         cb(result[1])
-    --     end
-    -- end)
     return CACHED_TARIFFS[number]
 end
 
@@ -219,22 +201,18 @@ cartesimT.renewOffer = function(label, number)
     local player = source
     local xPlayer = ESX.GetPlayerFromId(player)
     local moneys = xPlayer.getAccount("bank").money
-
     for k, v in pairs(Config.Tariffs) do
         if v.label == label and moneys >= v.price then
             xPlayer.removeAccountMoney("bank", v.price)
-
             MySQL.Async.execute("UPDATE phone_sim SET minuti = @minuti, messaggi = @messaggi, dati = @dati WHERE phone_number = @phone_number", {
                 ['@phone_number'] = number,
                 ['@minuti'] = v.minuti * 60,
                 ['@messaggi'] = v.messaggi,
                 ['@dati'] = v.dati
             })
-            
             CACHED_TARIFFS[number].minuti = v.minuti * 60
             CACHED_TARIFFS[number].messaggi = v.messaggi
             CACHED_TARIFFS[number].dati = v.dati
-
             return true
         else
             return false
@@ -247,7 +225,6 @@ cartesimT.buyOffer = function(label, number)
     local xPlayer = ESX.GetPlayerFromId(player)
     local moneys = xPlayer.getAccount("bank").money
     local tb = {}
-
     -- this check is done serverside because users can inject
     -- code in client and change the values as they like
     for _, v in pairs(Config.Tariffs) do
@@ -256,10 +233,8 @@ cartesimT.buyOffer = function(label, number)
             break
         end
     end
-
     if moneys >= tb.price then
         xPlayer.removeAccountMoney("bank", tb.price)
-
         MySQL.Async.execute("UPDATE phone_sim SET piano_tariffario = @piano_tariffario, minuti = @minuti, messaggi = @messaggi, dati = @dati WHERE phone_number = @phone_number", {
             ['@phone_number'] = number,
             ['@piano_tariffario'] = tb.label,
@@ -267,13 +242,11 @@ cartesimT.buyOffer = function(label, number)
             ['@messaggi'] = tb.messaggi,
             ['@dati'] = tb.dati
         })
-        
         CACHED_TARIFFS[number].minuti = tb.minuti * 60
         CACHED_TARIFFS[number].messaggi = tb.messaggi
         CACHED_TARIFFS[number].dati = tb.dati
         CACHED_TARIFFS[number].piano_tariffario = tb.label
         CACHED_NUMBERS[number].piano_tariffario = tb.label
-
         TriggerClientEvent("gcphone:updateValoriDati", player, {
             {
                 current = tonumber(math.floor(tb.minuti)),
@@ -294,7 +267,6 @@ cartesimT.buyOffer = function(label, number)
                 suffix = Config.Language["PHONE_TARIFFS_APP_LABEL_3"]
             }
         })
-
         return true
     else
         return false

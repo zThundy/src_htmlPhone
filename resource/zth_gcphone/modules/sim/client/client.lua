@@ -126,7 +126,6 @@ end
 local function OpenShopMenu()
     ESX.UI.Menu.CloseAll()
     local elements = cartesimServerT.getSimList()
-
     ESX.UI.Menu.Open('default', GetCurrentResourceName(), 'sim_listasim_numeri', {
         title = Config.Language["SIM_TARIFFS_SHOP_TITLE"],
         elements = elements
@@ -160,7 +159,6 @@ local function OpenShopMenu()
             if data2.current.value == "scegli_offerta" then
                 OpenSimInfoMenu(phone_number)
             end
-
             if data2.current.value == "rinnova_offerta" then
                 local ok = cartesimServerT.renewOffer(offerta.piano_tariffario, phone_number)
                 if ok then
@@ -170,12 +168,8 @@ local function OpenShopMenu()
                     OpenShopMenu()
                 end
             end
-        end, function(data2, menu2)
-            ESX.UI.Menu.CloseAll()
-        end)
-    end, function(data, menu)
-        ESX.UI.Menu.CloseAll()
-    end)
+        end, function(data2, menu2) ESX.UI.Menu.CloseAll() end)
+    end, function(data, menu) ESX.UI.Menu.CloseAll() end)
 end
 
 Citizen.CreateThread(function()

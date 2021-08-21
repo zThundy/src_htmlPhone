@@ -1,8 +1,4 @@
 function Reti.loadRetiWifi()
-    -- local reti = MySQL.Sync.fetchAll('SELECT * FROM phone_wifi_nets', {})
-    -- for i = 1, #CACHED_WIFIS do
-    -- 	reti[i].pos = vector3(reti[i].x, reti[i].y, reti[i].z)
-    -- end
     for _, v in pairs(CACHED_WIFIS) do
         v.pos = vector3(v.x, v.y, v.z)
     end
@@ -64,7 +60,6 @@ end
 
 function Reti.RemoveReteWifi(source, rete)
     local xPlayer = ESX.GetPlayerFromId(source)
-
     MySQL.Async.execute('DELETE * FROM phone_wifi_nets WHERE steam_id = @steam_id', {
         ['@steam_id'] = rete.owner_id
     }, function(rowsChanged)
@@ -86,7 +81,6 @@ end
 
 function Reti.UpdateReteWifi(source, rete, param)
     local xPlayer = ESX.GetPlayerFromId(source)
-
     MySQL.Async.execute('UPDATE phone_wifi_nets SET '..param..' = @'..param..' WHERE steam_id = @steam_id', {
         ['@steam_id'] = tostring(xPlayer.identifier),
         ['@'..param] = rete[param]
@@ -109,15 +103,12 @@ end
 
 function Reti.CheckDueDate()
     Reti.Debug(Config.Language["WIFI_LOAD_DEBUG_5"])
-    
     for index, rete in pairs(CACHED_WIFIS) do
         if rete.not_expire == 0 then
             local due_date = math.floor(rete.due_date / 1000)
             local created = math.floor(rete.created / 1000)
-
             if os.difftime(created, due_date) >= 0 then
                 Reti.Debug(Config.Language["WIFI_LOAD_DEBUG_6"]:format(rete.steam_id))
-
                 MySQL.Async.execute("DELETE FROM phone_wifi_nets WHERE steam_id = @steam_id AND label = @label", {
                     ['@steam_id'] = rete.steam_id,
                     ['@label'] = rete.label
