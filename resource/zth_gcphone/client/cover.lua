@@ -29,18 +29,16 @@ local function OpenShopMenu(myCovers)
         local value = data.current.value
         local name = data.current.name
 
-        ESX.TriggerServerCallback("gcphone:cover_buyCover", function(ok)
-            if ok then
-                ESX.ShowNotification(Config.Language["COVER_BOUGHT_OK"])
-                RefreshCovers()
-            else
-                ESX.ShowNotification(Config.Language["COVER_BOUGHT_ERROR"])
-            end
+        if gcPhoneServerT.cover_buyCover(name) then
+            ESX.ShowNotification(Config.Language["COVER_BOUGHT_OK"])
+            RefreshCovers()
+        else
+            ESX.ShowNotification(Config.Language["COVER_BOUGHT_ERROR"])
+        end
 
-            ESX.UI.Menu.CloseAll()
-            SendNUIMessage({ show = false })
-            ChangeCover(value.label, name)
-        end, name)
+        ESX.UI.Menu.CloseAll()
+        SendNUIMessage({ show = false })
+        ChangeCover(value.label, name)
     end
 
     -- onMenuChangeIndex
