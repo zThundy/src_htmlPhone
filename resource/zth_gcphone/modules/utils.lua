@@ -34,14 +34,12 @@ function module(rsc, path) -- load a LUA resource file as module
 end
 
 -- generate a task metatable (helper to return delayed values with timeout)
---- dparams: default params in case of timeout or empty cbr()
---- timeout: milliseconds, default 5000
+-- @dparams: default params in case of timeout or empty cbr()
+-- @timeout: milliseconds, default 5000
 function Task(callback, dparams, timeout) 
     if timeout == nil then timeout = 5000 end
-
     local r = {}
     r.done = false
-
     local finish = function(params) 
         if not r.done then
             if params == nil then params = dparams or {} end
@@ -49,10 +47,8 @@ function Task(callback, dparams, timeout)
             callback(table.unpack(params))
         end
     end
-
     setmetatable(r, {__call = function(t,params) finish(params) end })
     SetTimeout(timeout, function() finish(dparams) end)
-
     return r
 end
 
@@ -97,7 +93,7 @@ function DuplicateTable(tb)
     return res
 end
 
-function areturn(self, ...)
+local function areturn(self, ...)
     self.r = {...}
     self.p:resolve(self.r)
 end
