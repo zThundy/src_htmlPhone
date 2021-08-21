@@ -3,7 +3,7 @@ local tunnel = module("modules/TunnelV2")
 gcPhoneServerT = tunnel.getInterface(Config.AuthKey, "gcphone_server_t", "gcphone_server_t")
 
 menuIsOpen = false
-contacts = {}
+PERSONAL_CONTACTS = {}
 messages = {}
 isDead = false
 
@@ -103,8 +103,8 @@ end)
 
 RegisterNetEvent("gcPhone:contactList")
 AddEventHandler("gcPhone:contactList", function(_contacts)
-    contacts = _contacts
-    SendNUIMessage({ event = 'updateContacts', contacts = contacts })
+    PERSONAL_CONTACTS = _contacts
+    SendNUIMessage({ event = 'updateContacts', contacts = PERSONAL_CONTACTS })
 end)
 
 RegisterNetEvent("gcPhone:allMessage")
@@ -137,7 +137,7 @@ AddEventHandler("gcPhone:receiveMessage", function(message)
             local text = Config.Language["MESSAGE_NOTIFICATION_NO_TRANSMITTER"]
             if Config.ShowNumberNotification then
                 text = Config.Language["MESSAGE_NOTIFICATION_TRANSMITTER"]:format(message.transmitter)
-                for _, contact in pairs(contacts) do
+                for _, contact in pairs(PERSONAL_CONTACTS) do
                     if contact.number == message.transmitter then
                         text = Config.Language["MESSAGE_NOTIFICATION_TRANSMITTER"]:format(contact.display)
                         break
