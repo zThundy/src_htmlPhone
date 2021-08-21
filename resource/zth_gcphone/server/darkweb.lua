@@ -11,7 +11,6 @@ gcPhoneT.darkweb_fetchDarkmessages = function()
             for i = #r, 1, -1 do
                 i = tonumber(i)
                 messages[i] = r[i]
-
                 if tostring(identifier) == tostring(r[i].author) then
                     messages[i].mine = 1
                 else
@@ -35,7 +34,6 @@ end
 gcPhoneT.darkweb_sendDarkMessage = function(data)
     local player = source
     local identifier = gcPhoneT.getPlayerID(player)
-	
 	local isAble, mbToRemove = gcPhoneT.isAbleToSurfInternet(identifier, 0.5)
     if isAble then
         gcPhoneT.useInternetData(identifier, mbToRemove)

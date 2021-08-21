@@ -156,12 +156,10 @@ gcPhoneT.whatsapp_addGroupMembers = function(data)
     local player = source
     local identifier = gcPhoneT.getPlayerID(player)
     local myNumber = gcPhoneT.getPhoneNumber(identifier)
-
     local isAble, mbToRemove = gcPhoneT.isAbleToSurfInternet(identifier, 1)
     if isAble then
         gcPhoneT.useInternetData(identifier, mbToRemove)
         local partecipanti = formatTableIndex(getPartecipanti(data.gruppo.id))
-
         for _, val in pairs(data.contacts) do
             if partecipanti[tostring(val.id)] ~= nil then partecipanti[tostring(val.id)] = nil end
             if partecipanti[tonumber(val.id)] ~= nil then partecipanti[tonumber(val.id)] = nil end
@@ -182,7 +180,6 @@ gcPhoneT.whatsapp_addGroupMembers = function(data)
         local isAble, mbToRemove = gcPhoneT.isAbleToSurfInternet(identifier, #partecipanti * 0.2)
         if isAble then
             gcPhoneT.useInternetData(identifier, mbToRemove)
-
             MySQL.Async.execute("UPDATE phone_whatsapp_groups SET partecipanti = @partecipanti WHERE id = @id", {
                 ['@id'] = data.gruppo.id,
                 ['@partecipanti'] = json.encode(partecipanti)
@@ -206,22 +203,18 @@ gcPhoneT.whatsapp_leaveGroup = function(group)
     local player = source
     local identifier = gcPhoneT.getPlayerID(player)
     local number = gcPhoneT.getPhoneNumber(identifier)
-
     local isAble, mbToRemove = gcPhoneT.isAbleToSurfInternet(identifier, 5.0)
     if isAble then
         gcPhoneT.useInternetData(identifier, mbToRemove)
-
         MySQL.Async.fetchAll("SELECT * FROM phone_whatsapp_groups WHERE id = @id", {['@id'] = group.id}, function(r)
             if r[1] == nil then return end
             local partecipanti = formatTableIndex(json.decode(r[1].partecipanti))
-            
             for id, v in pairs(partecipanti) do
                 if v.number == number then
                     partecipanti[tonumber(id)] = nil
                     break
                 end
             end
-
             if #partecipanti == 0 then
                 MySQL.Async.execute("DELETE FROM phone_whatsapp_groups WHERE id = @id", {['@id'] = group.id}, function()
                     WHATSAPP_GROUPS[tonumber(group.id)] = nil
@@ -229,7 +222,6 @@ gcPhoneT.whatsapp_leaveGroup = function(group)
                 end)
                 return
             end
-
             MySQL.Async.execute("UPDATE phone_whatsapp_groups SET partecipanti = @partecipanti WHERE id = @id", {
                 ['@partecipanti'] = json.encode(partecipanti),
                 ['@id'] = group.id
@@ -243,34 +235,14 @@ gcPhoneT.whatsapp_leaveGroup = function(group)
     end
 end
 
---[[
-    contacts:
-        0:
-            display: "stoprovando"
-            icon: "https://u.trs.tn/tohqw.jpg"
-            id: 1
-            number: "5554444"
-            selected: true
-        1:
-            display: "questoenuovo"
-            id: 2
-            number: "55529322"
-            selected: true
-    infoGroup:
-        title: "Nessun titolo"
-        image: null
-]]
-
 gcPhoneT.whatsapp_creaNuovoGruppo = function(data)
     local player = source
     local identifier = gcPhoneT.getPlayerID(player)
     local phone_number = gcPhoneT.getPhoneNumber(identifier)
     local partecipanti = {}
-
     local isAble, mbToRemove = gcPhoneT.isAbleToSurfInternet(identifier, 1.5)
     if isAble then
         gcPhoneT.useInternetData(identifier, mbToRemove)
-
         for _, val in pairs(data.contacts) do
             if data.selected[tonumber(val.id) + 1] then
                 partecipanti[tonumber(val.id)] = {
@@ -281,7 +253,6 @@ gcPhoneT.whatsapp_creaNuovoGruppo = function(data)
                 }
             end
         end
-
         partecipanti = formatTableIndex(partecipanti)
         partecipanti["creator"] = {
             display = data.myInfo.display,
@@ -289,7 +260,6 @@ gcPhoneT.whatsapp_creaNuovoGruppo = function(data)
             id = lastId,
             icon = '/html/static/img/app_whatsapp/defaultgroup.png'
         }
-
         MySQL.Async.insert("INSERT INTO phone_whatsapp_groups(icona, gruppo, partecipanti) VALUES(@icona, @gruppo, @partecipanti)", {
             ['@icona'] = data.groupImage or '/html/static/img/app_whatsapp/defaultgroup.png',
             ['@gruppo'] = data.groupTitle,
@@ -327,11 +297,9 @@ end
 
 ESX.RegisterServerCallback("gcphone:whatsapp_editGroup", function(source, cb, group)
     local identifier = gcPhoneT.getPlayerID(source)
-
     local isAble, mbToRemove = gcPhoneT.isAbleToSurfInternet(identifier, 2.5)
     if isAble then
         gcPhoneT.useInternetData(identifier, mbToRemove)
-        
         MySQL.Async.execute("UPDATE phone_whatsapp_groups SET gruppo = @gruppo, icona = @icona WHERE id = @id", {
             ['@gruppo'] = group.gruppo,
             ['@icona'] = group.icona,

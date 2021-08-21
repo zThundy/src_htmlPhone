@@ -57,15 +57,6 @@ end
 local function InstagramGetPosts(accountId)
     table.sort(CACHED_POSTS, function(a, b) return a.id > b.id end)
     if not accountId then
-        -- MySQL.Async.fetchAll([===[
-        -- 	SELECT phone_instagram_posts.*,
-        -- 		phone_instagram_accounts.username as author,
-        -- 		phone_instagram_accounts.avatar_url as authorIcon
-        -- 	FROM phone_instagram_posts
-        -- 	LEFT JOIN phone_instagram_accounts
-        -- 		ON phone_instagram_posts.authorId = phone_instagram_accounts.id
-        -- 	ORDER BY id DESC LIMIT 50
-        -- ]===], {}, cb)
         return CACHED_POSTS
     else
         local posts = {}
@@ -84,30 +75,11 @@ local function InstagramGetPosts(accountId)
         end
         table.sort(posts, function(a, b) return a.id > b.id end)
         return posts
-        -- MySQL.Async.fetchAll([===[
-        -- 	SELECT phone_instagram_posts.*,
-        -- 		phone_instagram_accounts.username as author,
-        -- 		phone_instagram_accounts.avatar_url as authorIcon,
-        -- 		phone_instagram_likes.id AS isLike
-        -- 	FROM phone_instagram_posts
-        -- 	LEFT JOIN phone_instagram_accounts
-        -- 		ON phone_instagram_posts.authorId = phone_instagram_accounts.id
-        -- 	LEFT JOIN phone_instagram_likes 
-        -- 		ON phone_instagram_posts.id = phone_instagram_likes.postId AND phone_instagram_likes.authorId = @accountId
-        -- 	ORDER BY id DESC LIMIT 50
-        -- ]===], {['@accountId'] = accountId}, cb)
     end
 end
 
 
 local function GetInstagramUser(username, password)
-    -- MySQL.Async.fetchAll("SELECT * FROM phone_instagram_accounts WHERE username = @username AND password = @password", {['@username'] = username, ['@password'] = password}, function(data)
-    -- 	if #data > 0 then
-    -- 		cb(data[1])
-    -- 	else
-    -- 		cb(false)
-    -- 	end
-    -- end)
     for _, account in pairs(CACHED_ACCOUNTS) do
         if account.username == username and account.password == password then
             return account

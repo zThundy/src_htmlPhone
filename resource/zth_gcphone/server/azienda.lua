@@ -95,16 +95,9 @@ gcPhoneT.azienda_requestJobInfo = function()
     local jobPlayers = GetPlayersWithJob(xPlayer.job.name)
     local myJobInfo, myAziendaInfo = {}, {}
 
-    -- for i, v in pairs(xPlayer) do
-    --     print(i, v)
-    -- end
-
-    -- print(xPlayer.firstname, xPlayer.lastname)
-
     local isAble, mbToRemove = gcPhoneT.isAbleToSurfInternet(xPlayer.identifier, 0.5)
     if isAble then
         gcPhoneT.useInternetData(xPlayer.identifier, mbToRemove)
-
         if Config.MinAziendaGrade[xPlayer.job.name] then
             local firstname, lastname = gcPhoneT.getFirstnameAndLastname(xPlayer.identifier)
             myJobInfo = {
@@ -114,10 +107,7 @@ gcPhoneT.azienda_requestJobInfo = function()
                 buttons = {},
                 name = firstname .. " " .. lastname
             }
-
             myJobInfo.buttons = GetButtons(xPlayer.job.name, xPlayer.job.grade)
-            -- print(json.encode(myJobInfo.buttons))
-
             TriggerEvent('esx_addonaccount:getSharedAccount', "society_"..xPlayer.job.name, function(account)
                 if account ~= nil then
                     myAziendaInfo.money = account.money
@@ -165,12 +155,10 @@ end
 gcPhoneT.azienda_sendAziendaMessage = function(azienda, number, message)
     local player = source
     local xPlayer = ESX.GetPlayerFromId(player)
-
     local isAble, mbToRemove = gcPhoneT.isAbleToSurfInternet(xPlayer.identifier, 0.1)
     if isAble then
         gcPhoneT.useInternetData(xPlayer.identifier, mbToRemove)
         local firstname, lastname = gcPhoneT.getFirstnameAndLastname(xPlayer.identifier)
-
         MySQL.Async.insert("INSERT INTO phone_azienda_messages(azienda, authorIdentifier, authorNumber, authorName, message) VALUES(@azienda, @identifier, @number, @name, @message)", {
             ['@azienda'] = azienda,
             ['@identifier'] = xPlayer.identifier,
@@ -198,16 +186,6 @@ gcPhoneT.azienda_sendAziendaMessage = function(azienda, number, message)
 end
 
 gcPhoneT.azienda_employeAction = function(action, employe)
-    -- {
-    --     steamid: 1283,
-    --     grade: 0,
-    --     gradeName: 'Dipendente',
-    --     name: 'Frank Trullal',
-    --     phoneNumber: 5557392,
-    --     salary: 0,
-    --     isOnline: false
-    -- },
-
     local player = source
     local c_xPlayer = ESX.GetPlayerFromIdentifier(employe.steamid)
 	local xPlayer = ESX.GetPlayerFromId(player)
@@ -243,14 +221,12 @@ gcPhoneT.azienda_employeAction = function(action, employe)
     else
         AziendaShowNotification(player, 'AZIENDA_INFO_TITLE', 'APP_AZIENDA_NOTIF_NO_CONNECTION')
     end
-
     UpdateAziendaEmployes(xPlayer.job.name)
 end
 
 gcPhoneT.azienda_requestAziendaMessages = function()
     local player = source
     local xPlayer = ESX.GetPlayerFromId(player)
-
     GetAziendaMessages(player, xPlayer.job.name, function(messages)
         local isAble, mbToRemove = gcPhoneT.isAbleToSurfInternet(xPlayer.identifier, #messages * 0.01)
         if isAble then
@@ -267,7 +243,6 @@ gcPhoneT.azienda_sendAziendaCallNotification = function(data)
     local player = source
 	local identifier = gcPhoneT.getPlayerID(player)
     local phone_number = gcPhoneT.getPhoneNumber(identifier)
-
     data.emergencyNumber = data.number
     data.number = phone_number
     return data

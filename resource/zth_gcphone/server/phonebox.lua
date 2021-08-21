@@ -8,7 +8,6 @@ local function isNumberInCall(phone_number)
     for _, infoCall in pairs(Chiamate) do
         if infoCall.receiver_num == phone_number then return true end
     end
-
     return false
 end
 
@@ -26,9 +25,7 @@ function CallStaticPhone(player, phone_number, rtcOffer, extraData)
     else
         srcPhone = gcPhoneT.getPhoneNumber(identifier)
     end
-
     local canCall = not isNumberInCall(phone_number)
-
     if canCall then
         Chiamate[indexCall] = {
             id = indexCall,
@@ -43,9 +40,7 @@ function CallStaticPhone(player, phone_number, rtcOffer, extraData)
             extraData = extraData,
             coords = Config.PhoneBoxes[phone_number].coords
         }
-        
         FIXED_PHONES_INFO[indexCall] = Chiamate[indexCall]
-
         TriggerClientEvent('gcPhone:notifyFixePhoneChange', -1, FIXED_PHONES_INFO)
         TriggerClientEvent('gcPhone:waitingCall', player, Chiamate[indexCall], true)
     else
@@ -57,23 +52,18 @@ function onAcceptStaticPhone(player, infoCall, rtcAnswer)
     local id = infoCall.id
     if Chiamate[id] ~= nil then
         Chiamate[id].receiver_src = player
-
         ACTIVE_CALLS[Chiamate[id].transmitter_src] = true
         ACTIVE_CALLS[Chiamate[id].receiver_src] = true
-
         if Chiamate[id].transmitter_src ~= nil and Chiamate[id].receiver_src ~= nil then
             Chiamate[id].is_accepts = true
             Chiamate[id].forceSaveAfter = true
             Chiamate[id].rtcAnswer = rtcAnswer
             FIXED_PHONES_INFO[id] = nil
             TriggerClientEvent('gcPhone:notifyFixePhoneChange', -1, FIXED_PHONES_INFO)
-
             TriggerClientEvent('gcPhone:acceptCall', Chiamate[id].transmitter_src, Chiamate[id], true)
-
             if Chiamate[id] ~= nil then
                 SetTimeout(0, function() TriggerClientEvent('gcPhone:acceptCall', Chiamate[id].receiver_src, Chiamate[id], false) end)
             end
-
             SavePhoneCall(Chiamate[id])
         end
     end
@@ -83,10 +73,8 @@ function onRejectFixePhone(player, infoCall, rtcAnswer)
     local id = infoCall.id
     FIXED_PHONES_INFO[id] = nil
     TriggerClientEvent('gcPhone:notifyFixePhoneChange', -1, FIXED_PHONES_INFO)
-
     TriggerClientEvent('gcPhone:rejectCall', Chiamate[id].transmitter_src, "TEST")
     if Chiamate[id].is_accepts == false then SavePhoneCall(Chiamate[id]) end
-
     Chiamate[id] = nil 
 end
 

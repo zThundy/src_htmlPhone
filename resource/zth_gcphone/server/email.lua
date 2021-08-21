@@ -5,7 +5,6 @@ local function FetchAllEmails(email, cb)
         }, function(r)
             local temp = {}
             for k, v in pairs(r) do table.insert(temp, v) end
-
             cb(temp)
         end)
     end
@@ -26,7 +25,6 @@ end
 gcPhoneT.email_requestMyEmail = function()
     local player = source
     local identifier = gcPhoneT.getPlayerID(player)
-
     local isAble, mbToRemove = gcPhoneT.isAbleToSurfInternet(identifier, 0.5)
     if isAble then
         gcPhoneT.useInternetData(identifier, mbToRemove)
@@ -50,19 +48,10 @@ end
 gcPhoneT.email_sendEmail = function(data)
     local player = source
     local identifier = gcPhoneT.getPlayerID(player)
-
     GetUserEmail(identifier, function(myEmail)
         local isAble, mbToRemove = gcPhoneT.isAbleToSurfInternet(identifier, 1.0)
         if isAble then
             gcPhoneT.useInternetData(identifier, mbToRemove)
-
-            --[[
-                transmitter: this.myEmail,
-                receiver: '',
-                title: '',
-                message: '',
-                pic: '/html/static/img/app_email/defaultpic.png'
-            ]]
 
             MySQL.Async.execute("INSERT INTO phone_emails(sender, receiver, title, message, pic) VALUES(@sender, @receiver, @title, @message, @pic)", {
                 ['@sender'] = myEmail,
@@ -79,7 +68,6 @@ gcPhoneT.email_sendEmail = function(data)
                 color = "rgb(216, 71, 49)",
                 appName = "Email"
             })
-            -- TriggerClientEvent("esx:showNotification", player, "~r~Non hai abbastanza giga per poter inviare questa email")
         end
     end)
 end
@@ -87,7 +75,6 @@ end
 gcPhoneT.email_requestEmails = function()
     local player = source
     local identifier = gcPhoneT.getPlayerID(player)
-
     GetUserEmail(identifier, function(email)
         FetchAllEmails(email, function(emails)
             local isAble, mbToRemove = gcPhoneT.isAbleToSurfInternet(identifier, #emails * 0.05)
@@ -102,7 +89,6 @@ gcPhoneT.email_requestEmails = function()
                     color = "rgb(216, 71, 49)",
                     appName = "Email"
                 })
-                -- TriggerClientEvent("esx:showNotification", player, "~r~Non hai abbastanza giga per poter scaricare le tue email")
             end
         end)
     end)
@@ -112,7 +98,6 @@ gcPhoneT.email_deleteEmail = function(emailID)
     MySQL.Async.execute("DELETE FROM phone_emails WHERE id = @id", {['@id'] = emailID}, function()
         local player = source
         local identifier = gcPhoneT.getPlayerID(player)
-
         GetUserEmail(identifier, function(email)
             FetchAllEmails(email, function(emails)
                 local isAble, mbToRemove = gcPhoneT.isAbleToSurfInternet(identifier, #emails * 0.05)
@@ -128,7 +113,6 @@ gcPhoneT.email_deleteEmail = function(emailID)
                         color = "rgb(216, 71, 49)",
                         appName = "Email"
                     })
-                    -- TriggerClientEvent("esx:showNotification", player, "~r~Non hai abbastanza giga per poter scaricare le tue email")
                 end
             end)
         end)
@@ -138,7 +122,6 @@ end
 gcPhoneT.email_registerEmail = function(email)
     local player = source
     local identifier = gcPhoneT.getPlayerID(player)
-
     local isAble, mbToRemove = gcPhoneT.isAbleToSurfInternet(identifier, 0.5)
     if isAble then
         gcPhoneT.useInternetData(identifier, mbToRemove)
@@ -154,21 +137,18 @@ gcPhoneT.email_registerEmail = function(email)
             color = "rgb(216, 71, 49)",
             appName = "Email"
         })
-        -- TriggerClientEvent("esx:showNotification", player, "~r~Non hai abbastanza giga per poter registrare la tua email")
     end
 end
 
 gcPhoneT.email_requestSentEmails = function(myEmail)
     local player = source
     local identifier = gcPhoneT.getPlayerID(player)
-
     GetUserEmail(identifier, function(email)
         MySQL.Async.fetchAll("SELECT * FROM phone_emails WHERE sender = @sender ORDER BY id DESC LIMIT 50", {
             ['@sender'] = email
         }, function(r)
             local temp = {}
             for k, v in pairs(r) do table.insert(temp, v) end
-
             TriggerClientEvent("gcphone:email_sendRequestedSentEmails", player, temp)
         end)
     end)
