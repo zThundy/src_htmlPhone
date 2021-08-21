@@ -21,50 +21,30 @@ gcPhoneT.cover_requestCovers = function()
     return CACHED_COVERS[identifier]
 end
 
---[[
-    ESX.RegisterServerCallback("gcphone:cover_requestCovers", function(source, cb)
-        local identifier = gcPhoneT.getPlayerID(source)
-        if CACHED_COVERS[identifier] == nil then CACHED_COVERS[identifier] = {} end
-
-        if xPlayer ~= nil then
-            MySQL.Async.fetchAll("SELECT * FROM phone_user_covers WHERE identifier = @identifier", {['@identifier'] = xPlayer.identifier}, function(result)
-                CACHED_COVERS[xPlayer.identifier] = {}
-                -- lo ho fatto hardcoded in vue
-                -- CACHED_COVERS[xPlayer.identifier][Config.BaseCover.label] = {label = Config.BaseCover.label, value = "base.png"}
-                for index, val in pairs(result) do
-                    local name = string.gsub(val.cover, ".png", "")
-                    local cfg = Config.Covers[name]
-                    CACHED_COVERS[xPlayer.identifier][cfg.label] = {label = cfg.label, value = val.cover}
-                end
-                cb(CACHED_COVERS[xPlayer.identifier])
-            end)
-        end
-    end)
-]]
-
-ESX.RegisterServerCallback("gcphone:cover_buyCover", function(source, cb, cover)
-    local xPlayer = ESX.GetPlayerFromId(source)
+gcPhoneT.cover_buyCover = function(cover)
+    local player = source
+    local xPlayer = ESX.GetPlayerFromId(player)
     if CACHED_COVERS[xPlayer.identifier] == nil then CACHED_COVERS[xPlayer.identifier] = {} end
 
     if xPlayer ~= nil then
         if xPlayer.getAccount("bank").money >= Config.Covers[cover].price then
-            MySQL.Async.insert("INSERT INTO phone_user_covers(identifier, cover) VALUES(@identifier, @cover)", {
+            -- this is just a one time insert syncronus query so who cares?
+            local id = MySQL.Sync.insert("INSERT INTO phone_user_covers(identifier, cover) VALUES(@identifier, @cover)", {
                 ['@identifier'] = xPlayer.identifier,
                 ['@cover'] = cover..".png"
-            }, function(id)
-                if id == 0 then
-                    cb(false)
-                else
-                    if Config.Covers[cover].price ~= 0 then
-                        xPlayer.removeAccountMoney("bank", Config.Covers[cover].price)
-                    end
-                    local cfg = Config.Covers[cover]
-                    CACHED_COVERS[xPlayer.identifier][cfg.label] = { label = cfg.label, value = cover .. ".png" }
-                    cb(true)
+            })
+            if id == 0 then
+                return false
+            else
+                if Config.Covers[cover].price ~= 0 then
+                    xPlayer.removeAccountMoney("bank", Config.Covers[cover].price)
                 end
-            end)
+                local cfg = Config.Covers[cover]
+                CACHED_COVERS[xPlayer.identifier][cfg.label] = { label = cfg.label, value = cover .. ".png" }
+                return true
+            end
         else
-            cb(false)
+            return false
         end
     end
-end)
+end
