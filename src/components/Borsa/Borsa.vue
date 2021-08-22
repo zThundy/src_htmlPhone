@@ -138,6 +138,7 @@ export default {
       this.currentSelect = -1
     },
     onEnter () {
+      if (this.currentSelect === -1) return
       if (this.ignoreControls) return
       if (this.currentPage === 0) {
         this.ignoreControls = true
