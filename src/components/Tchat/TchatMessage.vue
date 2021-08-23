@@ -2,7 +2,7 @@
   <div class="phone_app">
     <PhoneTitle :title="channelName" :backgroundColor="'rgb(122, 122, 122)'" :textColor="'white'" @back="onQuit"/>
     
-    <div class="messages-container" ref="elementsDiv">
+    <div class="messages-container">
       <div class="message-container" :class="{ select: key === currentSelect }" v-for='(mess, key) in tchatMessages' :key="key">
         <span class='sms_message'>
           <span>{{ formatEmoji(mess.message) }}</span>
@@ -40,8 +40,8 @@ export default {
   },
   watch: {
     tchatMessages () {
-      const c = this.$refs.elementsDiv
-      c.scrollTop = c.scrollHeight
+      this.currentSelect = this.tchatMessages.length - 1
+      this.scrollIntoView()
     }
   },
   methods: {
@@ -108,11 +108,7 @@ export default {
     this.scrollIntoView()
     this.setChannel(this.$route.params.channel)
   },
-  mounted () {
-    window.c = this.$refs.elementsDiv
-    const c = this.$refs.elementsDiv
-    c.scrollTop = c.scrollHeight
-  },
+  mounted () {},
   beforeDestroy () {
     this.$bus.$off('keyUpArrowDown', this.onDown)
     this.$bus.$off('keyUpArrowUp', this.onUp)
