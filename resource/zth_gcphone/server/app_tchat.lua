@@ -9,6 +9,7 @@ local function TchatGetMessageChannel(identifier, channel, cb)
 end
 
 local function TchatAddMessage(channel, message)
+    print("TchatAddMessage", channel, message)
     MySQL.Async.insert("INSERT INTO phone_app_chat (`channel`, `message`) VALUES(@channel, @message)", {
         ['@channel'] = channel,
         ['@message'] = message
