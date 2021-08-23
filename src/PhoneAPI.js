@@ -501,7 +501,7 @@ class PhoneAPI {
   }
 
   ontchat_channel (data) {
-    store.commit('TCHAT_SET_MESSAGES', data)
+    store.commit('TCHAT_SET_MESSAGES', data.messages)
   }
 
   onnotes_receive (data) {

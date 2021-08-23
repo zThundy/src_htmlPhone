@@ -171,12 +171,14 @@ export default {
   color: white;
 }
 
-.elementi{
+.elementi {
   height: calc(100% - 54px);
-  overflow-y: auto;
+  overflow-y: hidden;
+  width: 100%;
   background-color: rgb(26, 26, 26);
   color: #a6a28c
 }
+
 .elemento{
   height: 42px;
   line-height: 42px;

@@ -15,13 +15,13 @@ const getters = {
 
 const actions = {
   tchatReset ({commit}) {
-    commit('TCHAT_SET_MESSAGES', { messages: [] })
+    commit('TCHAT_SET_MESSAGES', [])
     commit('TCHAT_SET_CHANNEL', { channel: null })
     commit('TCHAT_REMOVES_ALL_CHANNELS')
   },
   tchatSetChannel ({ state, commit, dispatch }, { channel }) {
     if (state.currentChannel !== channel) {
-      commit('TCHAT_SET_MESSAGES', { messages: [] })
+      commit('TCHAT_SET_MESSAGES', [])
       commit('TCHAT_SET_CHANNEL', { channel })
       dispatch('tchatGetMessagesChannel', { channel })
     }
@@ -56,13 +56,13 @@ const mutations = {
     state.channels = []
     localStorage[LOCAL_NAME] = JSON.stringify(state.channels)
   },
-  TCHAT_ADD_MESSAGES (state, { message }) {
+  TCHAT_ADD_MESSAGES (state, message) {
     if (message.channel === state.currentChannel) {
       PhoneAPI.onplaySound({ sound: 'msgnotify.ogg', volume: 0.4, loop: false })
       state.messagesChannel.push(message)
     }
   },
-  TCHAT_SET_MESSAGES (state, { messages }) {
+  TCHAT_SET_MESSAGES (state, messages) {
     state.messagesChannel = messages
   }
 }
