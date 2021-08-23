@@ -1,6 +1,5 @@
 RegisterNetEvent("gcPhone:tchat_receive")
 AddEventHandler("gcPhone:tchat_receive", function(message)
-    print("gcPhone:tchat_receive", json.encode(message))
     SendNUIMessage({ event = 'tchat_receive', message = message })
 end)
 

@@ -1,21 +1,11 @@
 <template>
   <div class="phone_app">
     <PhoneTitle :title="LangString('APP_DARKTCHAT_TITLE')" :backgroundColor="'rgb(122, 122, 122)'" :textColor="'white'" @back="onBack" />
-    
-    <div style="padding-top: 20px;" class="slice"></div>
 
-    <div class="elementi" style="padding-top: 47px; padding-left:10px;" @contextmenu.prevent="addChannelOption">
-      <div class="elemento" style="background-color: rgb(26, 26, 26);" v-for='(elem, key) in tchatChannels' 
-        v-bind:key="elem.channel"
-        v-bind:class="{ select: key === currentSelect}"
-      >
-
-        <!-- <span class="diese">#</span>{{elem.channel}} -->
-        <div class="elem-title">
-          <div class="glitch"># {{ formatEmoji(elem.channel) }}</div>
-        </div>
+    <div class="darkchat-channels" @contextmenu.prevent="addChannelOption">
+      <div class="darkchat-channel" v-for='(elem, key) in tchatChannels' :key="elem.channel" :class="{ select: key === currentSelect}">
+        <div class="glitch"># {{ formatEmoji(elem.channel) }}</div>
       </div>
-
     </div>
   </div>
 </template>
@@ -127,7 +117,7 @@ export default {
         }
         // questo controllo sotto vede se
         // il canale ha un nome abbastanza lungo
-        if (channel.length > 0) {
+        if (channel.length > 0 && channel.length < 30) {
           this.currentSelect = 0
           this.tchatAddChannel({ channel })
           this.ignoreControls = false
@@ -158,85 +148,24 @@ export default {
 </script>
 
 <style type="scss">
-.list{
+.darkchat-channels {
   height: 100%;
-}
-
-.title{
-  padding-top: 22px;
-  padding-left: 16px;
-  height: 54px;
-  line-height: 34px;
-  font-weight: 700;
-  color: white;
-}
-
-.elementi {
-  height: calc(100% - 54px);
-  overflow-y: hidden;
   width: 100%;
+  overflow-y: hidden;
   background-color: rgb(26, 26, 26);
-  color: #a6a28c
 }
 
-.elemento{
+.darkchat-channel {
   height: 42px;
   line-height: 42px;
   display: flex;
   align-items: center;
   position: relative;
+  padding-left: 10px;
 }
 
-.elem-title{
-  margin-left: 6px;
-  font-size: 20px;
-  text-transform: capitalize;
-  transition: .15s;
-  font-weight: 400;
-}
-
-.elem-title .diese {
-  color: #0079d3;
-  font-size: 22px;
-  font-weight: 700;
-  line-height: 40px;
-}
-
-.elemento.select, .elemento:hover{
-   background-color: rgba(255, 255, 255, 0.082);
-   color: #0079d3;
-   
-}
-.elemento.select .elem-title, .elemento:hover .elem-title {
-  margin-left: 15px;
-}
-.elemento.select .elem-title .diese, .elemento:hover .elem-title .diese {
-  color:rgb(122, 122, 122);
-}
-
-.elementi::-webkit-scrollbar-track {
-  box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
-  background-color: #F5F5F5;
-}
-.elementi::-webkit-scrollbar {
-  width: 3px;
-  background-color: transparent;
-}
-.elementi::-webkit-scrollbar-thumb {
-  background-color: rgb(122, 122, 122);
-}
-
-.slice {
-  position: absolute;
-  padding: 2rem 20%;
-}
-
-.slice:nth-child(2) {
-  top: 24px;
-  background: rgb(122, 122, 122);
-  color: white;
-  clip-path: polygon(0 58%, 400% 50%, 100% 50%, 0 100%);
-  padding: 3rem 70% 25%;
+.darkchat-channel.select {
+  background-color: rgba(255, 255, 255, 0.08);
 }
 
 .glitch {
@@ -248,62 +177,42 @@ export default {
   color: #fff;
   font-size: 25px;
   font-family: 'Fira Mono', monospace;
-
   animation: glitch 1s linear infinite;
 }
 
-@keyframes glitch{
-  2%,64%{
-    transform: translate(2px,0) skew(0deg);
-  }
-  4%,60%{
-    transform: translate(-2px,0) skew(0deg);
-  }
-  62%{
-    transform: translate(0,0) skew(5deg); 
-  }
+@keyframes glitch {
+  2%, 64% { transform: translate(2px, 0) skew(0deg); }
+  4%, 60% { transform: translate(-2px, 0) skew(0deg); }
+  62% { transform: translate(0, 0) skew(5deg); }
 }
 
-.glitch:before,
-.glitch:after{
+.glitch:before, .glitch:after {
   content: attr(title);
   position: absolute;
   left: 0;
 }
 
-.glitch:before{
+.glitch:before {
   animation: glitchTop 1s linear infinite;
   clip-path: polygon(0 0, 100% 0, 100% 33%, 0 33%);
   -webkit-clip-path: polygon(0 0, 100% 0, 100% 33%, 0 33%);
 }
 
-@keyframes glitchTop{
-  2%,64%{
-    transform: translate(2px,-2px);
-  }
-  4%,60%{
-    transform: translate(-2px,2px);
-  }
-  62%{
-    transform: translate(13px,-1px) skew(-13deg); 
-  }
+@keyframes glitchTop {
+  2%, 64% { transform: translate(2px, -2px); }
+  4%, 60% { transform: translate(-2px, 2px); }
+  62% { transform: translate(13px, -1px) skew(-13deg); }
 }
 
-.glitch:after{
+.glitch:after {
   animation: glitchBotom 1.5s linear infinite;
   clip-path: polygon(0 67%, 100% 67%, 100% 100%, 0 100%);
   -webkit-clip-path: polygon(0 67%, 100% 67%, 100% 100%, 0 100%);
 }
 
-@keyframes glitchBotom{
-  2%,64%{
-    transform: translate(-2px,0);
-  }
-  4%,60%{
-    transform: translate(-2px,0);
-  }
-  62%{
-    transform: translate(-22px,5px) skew(21deg); 
-  }
+@keyframes glitchBotom {
+  2%, 64%{ transform: translate(-2px, 0); }
+  4%, 60%{ transform: translate(-2px, 0); }
+  62% { transform: translate(-22px, 5px) skew(21deg); }
 }
 </style>

@@ -2,22 +2,18 @@
   <div class="phone_app">
     <PhoneTitle :title="channelName" :backgroundColor="'rgb(122, 122, 122)'" :textColor="'white'" @back="onQuit"/>
     
-    <div style="padding-top: 20px;" class="slice"></div>
-    
-    <div style="background-color: rgb(26, 26, 26);" class="phone_content">
-      <div style="padding-top: 50px;" class="elementi" ref="elementsDiv">
-        <div class="sms" :class="{ select: key === currentSelect }" v-for='(mess, key) in tchatMessages' :key="key">
-          <span class='sms_message sms_me'>
-            <span>{{ formatEmoji(mess.message) }}</span>
-          </span>
-        </div>
+    <div class="messages-container" ref="elementsDiv">
+      <div class="message-container" :class="{ select: key === currentSelect }" v-for='(mess, key) in tchatMessages' :key="key">
+        <span class='sms_message'>
+          <span>{{ formatEmoji(mess.message) }}</span>
+        </span>
       </div>
+    </div>
 
-      <div class="write-input-container">
-        <div class='write-input'>
-          <input type="text" :placeholder="LangString('APP_DARKTCHAT_PLACEHOLDER_ENTER_MESSAGE')">
-          <i class="fas fa-paper-plane"></i>
-        </div>
+    <div class="write-input-container">
+      <div class='write-input'>
+        <input type="text" :placeholder="LangString('APP_DARKTCHAT_PLACEHOLDER_ENTER_MESSAGE')">
+        <i class="fas fa-paper-plane"></i>
       </div>
     </div>
   </div>
@@ -66,15 +62,11 @@ export default {
       })
     },
     onUp () {
-      // const c = this.$refs.elementsDiv
-      // c.scrollTop = c.scrollTop - 120
       if (this.currentSelect === 0) return
       this.currentSelect = this.currentSelect - 1
       this.scrollIntoView()
     },
     onDown () {
-      // const c = this.$refs.elementsDiv
-      // c.scrollTop = c.scrollTop + 120
       if (this.currentSelect === this.tchatMessages.length - 1) return
       this.currentSelect = this.currentSelect + 1
       this.scrollIntoView()
@@ -108,11 +100,12 @@ export default {
     }
   },
   created () {
-    this.currentSelect = this.tchatMessages.length - 1
     this.$bus.$on('keyUpArrowDown', this.onDown)
     this.$bus.$on('keyUpArrowUp', this.onUp)
     this.$bus.$on('keyUpEnter', this.onEnter)
     this.$bus.$on('keyUpBackspace', this.onBack)
+    this.currentSelect = this.tchatMessages.length - 1
+    this.scrollIntoView()
     this.setChannel(this.$route.params.channel)
   },
   mounted () {
@@ -130,85 +123,30 @@ export default {
 </script>
 
 <style scoped>
-.elementi {
-  margin-top: 50px;
-  height: 85%;
+.messages-container {
+  height: 100%;
   color: white;
   display: flex;
   flex-direction: column;
-}
-
-.elemento {
-  top: 10px;
-  color: #a6a28c;
-  flex: 0 0 auto;
+  position: relative;
+  overflow: hidden;
   width: 100%;
-  display: flex;
+  background-color: rgb(26, 26, 26);
 }
 
-.time {
-  padding-right: 10px;
-  font-size: 10px;
-  margin-left: 15px;
-
-}
-
-.message {
-  width: 100%;
-  color: black;
-  padding-left: 5px;
-  padding-bottom: 3px;
-}
-
-.elementi::-webkit-scrollbar-track {
-  box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
-  background-color: #a6a28c;
-}
-
-.elementi::-webkit-scrollbar {
-  width: 3px;
-  background-color: transparent;
-}
-
-.elementi::-webkit-scrollbar-thumb {
-  background-color: #FFC629;
-}
-
-.slice {
-  position: absolute;
-  padding: 2rem 20%;
-}
-
-.slice:nth-child(2) {
-  top: 24px;
-  background: rgb(122, 122, 122);
-  color: white;
-  clip-path: polygon(0 58%, 400% 50%, 100% 50%, 0 100%);
-  padding: 3rem 70% 25%;
-}
-
-.sms {
+.message-container {
   zoom: 1;
   bottom: 50px;
 }
 
-.sms.select .sms_message {
+.message-container.select .sms_message {
   background-color:  #373B3C !important;
-  color: #ffffff  !important;
-}
-
-.sms.select .sms_message {
-  background-color: #373B3C !important;
   color: #ffffff !important;
 }
 
 .sms_message {
   word-wrap: break-word;
-  max-width: 80%;
   font-size: 24px;
-}
-
-.sms_me{
   float: right;
   background-color: #8f8f8f;
   border-radius: 17px;
@@ -222,6 +160,7 @@ export default {
   width: 330px;
   height: 50px;
   position: relative;
+  background-color: rgb(26, 26, 26);
 }
 
 .write-input {
