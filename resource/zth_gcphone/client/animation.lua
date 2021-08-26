@@ -60,7 +60,6 @@ end
 
 function onCoverChange()
     if #CACHED_PROPS > 2 then doCleanup() end
-
     newPhoneProp()
 end
 
