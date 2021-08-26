@@ -13,7 +13,7 @@ Citizen.CreateThread(function()
     ESX.PlayerData = ESX.GetPlayerData()
     playerCaricato = true
 
-    if Config.EnableRadioTwoers then
+    if Config.EnableRadioTowers then
         Reti:InitScript()
     else
         Citizen.Wait(5000)

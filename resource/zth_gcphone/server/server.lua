@@ -79,7 +79,7 @@ MySQL.ready(function()
     end)
 end)
 
-if Config.EnableRadioTwoers then
+if Config.EnableRadioTowers then
     Citizen.CreateThreadNow(function()
         while true do
             Citizen.Wait(Config.TimeToSaveTariffs * 1000)
@@ -180,7 +180,7 @@ gcPhoneT.getPlayerSegnaleIndex = function(tb, identifier)
 end
 
 gcPhoneT.useInternetData = function(identifier, value)
-    if Config.EnableRadioTwoers then
+    if Config.EnableRadioTowers then
         local phone_number = gcPhoneT.getPhoneNumber(identifier)
         local dati = GetPianoTariffarioParam(phone_number, "dati")
 
@@ -195,7 +195,7 @@ gcPhoneT.isAbleToSurfInternet = function(identifier, neededMB)
     local iWifiConnectedPlayer = gcPhoneT.getPlayerSegnaleIndex(PLAYERS_PHONE_WIFI, identifier)
     local hasAirplane = gcPhoneT.getAirplaneForUser(identifier)
     
-    if Config.EnableRadioTwoers then
+    if Config.EnableRadioTowers then
         if iWifiConnectedPlayer ~= nil and PLAYERS_PHONE_WIFI[iWifiConnectedPlayer].connected then
             return true, 0
         else

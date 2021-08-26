@@ -17,7 +17,7 @@ MySQL.ready(function()
     end)
 end)
 
-if Config.EnableRadioTwoers then
+if Config.EnableRadioTowers then
     Citizen.CreateThread(function()
         while not TARIFFS_LOADED do Citizen.Wait(500) end
         Reti.CheckDueDate()
@@ -37,7 +37,7 @@ if Config.EnableRadioTwoers then
     if Config.EnableBreakWifiTowers then
         Citizen.CreateThreadNow(function()
             while true do
-                for _, v in pairs(radioTowers) do
+                for _, v in pairs(CACHED_TOWERS) do
                     if not v.broken then
                         math.randomseed(os.time()); math.randomseed(os.time()); math.randomseed(os.time());
                         if Config.BreakChance > math.random(0, 100) then
