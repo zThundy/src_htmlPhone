@@ -120,17 +120,18 @@ export default {
                 this.ignoredControls = true
                 let scelte = []
                 var cancel = { id: -1, title: this.LangString('CANCEL'), icons: 'fa-undo', color: 'red' }
-                var closestPlayers = await this.$phoneAPI.getClosestPlayers()
-                // console.log(JSON.stringify(closestPlayers))
-                for (var i in closestPlayers) { scelte.push({ id: closestPlayers[i].id, label: closestPlayers[i].name, title: closestPlayers[i].name, icons: 'fa-share-square' }) }
-                scelte.push(cancel)
-                const data = await Modal.CreateModal({ scelte })
-                if (data.id === -1) {
-                  this.ignoredControls = false
-                } else {
-                  this.ignoredControls = false
-                  this.$phoneAPI.sendPicToUser({ id: data.id, message: foto.link })
-                }
+                this.$phoneAPI.getClosestPlayers().then(async closestPlayers => {
+                  console.log(JSON.stringify(closestPlayers))
+                  for (var i in closestPlayers) { scelte.push({ id: closestPlayers[i].id, label: closestPlayers[i].name, title: closestPlayers[i].name, icons: 'fa-share-square' }) }
+                  scelte.push(cancel)
+                  const data = await Modal.CreateModal({ scelte })
+                  if (data.id === -1) {
+                    this.ignoredControls = false
+                  } else {
+                    this.ignoredControls = false
+                    this.$phoneAPI.sendPicToUser({ id: data.id, message: foto.link })
+                  }
+                })
               } catch (e) { } finally { this.ignoredControls = false }
             } else {
               this.$phoneAPI.sendErrorMessage('Il bluetooth è disattivo')

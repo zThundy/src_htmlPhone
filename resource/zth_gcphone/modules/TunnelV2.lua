@@ -42,6 +42,8 @@ local function tunnel_resolve(itable, key)
         local args = {...}
         local r = nil
 
+        print("should be using", mtable.c)
+
         local dest = nil
         if SERVER then
             dest = args[1]
@@ -97,6 +99,7 @@ end
 function Tunnel.bindInterface(license, name, interface)
     license = enc(license)
     local c = enc(tostring(os.time()))
+    print("saved", c)
     if SERVER then SetConvarReplicated("zth_phone_start", c) end
     RegisterLocalEvent(license .. "::" .. name .. ":tunnel_req:" .. c)
     AddEventHandler(license .. "::" .. name .. ":tunnel_req:" .. c, function(member, args, identifier, rid)
@@ -117,6 +120,7 @@ end
 function Tunnel.getInterface(license, name, identifier)
     if not identifier then identifier = GetCurrentResourceName() end
     local c = GetConvar("zth_phone_start", "none")
+    print("got", c)
     license = enc(license)
     local ids = IDManager()
     local callbacks = {}

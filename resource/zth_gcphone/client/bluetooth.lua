@@ -1,6 +1,7 @@
 local bluetooth = false
 
 RegisterNUICallback("getClosestPlayers", function(data, cb)
+    print("getClosestPlayers")
     local players = {}
     local tempPlayers = ESX.Game.GetPlayersInArea(GetEntityCoords(GetPlayerPed(-1)), Config.BluetoothRange + 0.1)
     for _, c_source in pairs(tempPlayers) do
@@ -9,7 +10,13 @@ RegisterNUICallback("getClosestPlayers", function(data, cb)
             name = GetPlayerName(c_source)
         })
     end
+    table.insert(players, {
+        userid = 2,
+        name = "test"
+    })
+    print(DumpTable(players))
     cb(players)
+    print("callback done")
 end)
 
 RegisterNUICallback("sendPicToUser", function(data, cb)
