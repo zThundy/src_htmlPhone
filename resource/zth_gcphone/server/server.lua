@@ -681,8 +681,7 @@ function GetCallsHistory(num)
         table.sort(CACHED_CALLS[num], function(a, b)
             if a then if not a.time then a.time = os.time() * 1000 end end
             if b then if not b.time then b.time = os.time() * 1000 end end
-
-            return a.time > b.time
+            if a and b then return a.time > b.time end
         end)
         return CACHED_CALLS[num]
     end

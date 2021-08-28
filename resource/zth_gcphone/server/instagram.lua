@@ -10,6 +10,8 @@ MySQL.ready(function()
         MySQL.Async.fetchAll("SELECT * FROM phone_instagram_accounts", {}, function(accounts)
             for _, account in pairs(accounts) do
                 for _, post in pairs(CACHED_POSTS) do
+                    post.authorId = tostring(post.authorId)
+                    account.id = tostring(account.id)
                     if post.authorId == account.id then
                         post.authorIcon = account.avatar_url
                         post.author = account.username
@@ -132,13 +134,15 @@ gcPhoneT.instagram_nuovoPost = function(username, password, data)
                     id = id,
                     identifier = identifier,
                     authorId = data.id,
+                    author = user.username,
+                    authorIcon = user.authorIcon,
                     image = data.message,
                     didascalia = data.didascalia,
                     filter = data.filter,
                     likes = 0,
                     data = os.time() * 1000
                 }
-                table.insert(CACHED_POSTS, post)
+                table.insert(CACHED_POSTS, 1, post)
                 TriggerClientEvent('gcPhone:instagram_updatePosts', player, CACHED_POSTS)
             else
                 InstagramShowError(player, 'INSTAGRAM_INFO_TITLE', 'APP_INSTAGRAM_NOTIF_NO_CONNECTION')
