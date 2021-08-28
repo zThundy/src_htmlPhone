@@ -1,4 +1,3 @@
--- Configuration
 local tunnel = module("modules/TunnelV2")
 gcPhoneServerT = tunnel.getInterface(Config.AuthKey, "gcphone_server_t", "gcphone_server_t")
 
@@ -319,12 +318,12 @@ function AggiornaRetiWifi(r)
     -- aggiorna la lista del wifi
     SendNUIMessage({ event = "updateRetiWifi", data = CAHES_WIFI_MODEMS })
     -- aggiorna l'icona del wifi
-    SendNUIMessage({ event = "updateWifi", data = { hasWifi = isConnected } })
+    SendNUIMessage({ event = "updateWifi", data = isConnected })
 end
 
 function UpdateWifiInfo(connected, rete)
     isConnected = connected
-    SendNUIMessage({ event = "updateWifi", data = {hasWifi = isConnected} })
+    SendNUIMessage({ event = "updateWifi", data = isConnected })
     gcPhoneServerT.updateReteWifi(isConnected, rete)
 end
 

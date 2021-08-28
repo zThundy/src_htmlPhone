@@ -25,6 +25,7 @@ const actions = {
       commit('UPDATE_WIFI_STRING', 'Non connesso')
     } else {
       commit('UPDATE_WIFI_STRING', 'Wifi spento')
+      commit('UPDATE_WIFI', bool)
     }
     commit('TOGGLE_WIFI', bool)
   }
