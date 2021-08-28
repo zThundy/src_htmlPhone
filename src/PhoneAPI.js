@@ -628,7 +628,8 @@ class PhoneAPI {
   // a questo messaggio va mandato
   // data.hasWifi come booleano
   onupdateWifi ({ data }) {
-    store.dispatch('updateWifiString', data.hasWifi)
+    store.dispatch('updateWifiString', data)
+    store.commit('UPDATE_WIFI', data)
   }
 
   async instagram_setAvatar (username, password, avatarUrl) {

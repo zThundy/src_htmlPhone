@@ -28,7 +28,7 @@ import CurrentTime from './CurrentTime'
 
 export default {
   computed: {
-    ...mapGetters(['config', 'segnale', 'hasWifi'])
+    ...mapGetters(['config', 'segnale', 'hasWifi', 'isWifiOn'])
   },
   components: { CurrentTime },
   data () {
