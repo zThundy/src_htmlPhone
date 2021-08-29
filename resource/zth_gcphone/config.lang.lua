@@ -30,6 +30,7 @@ Config.Language = {
         ["CHECK_JOB_NAME_EMERGENCY_CALLS"] = "Controlla che il job nel config.json nella cartella html sia definito correttamente",
         ["DEBUG_NO_SIM_FOUND"] = "Giocatore con indeitifier %s non ha un numero di telefono installato",
         ["NO_XPLAYER_NOTIFICATION"] = "La funzione showNotification nella classe xPlayer non è presente, aggiungila prima di continuare",
+        ["DEBUG_PHONENUMBER_NIL"] = "Il numero di telefono è nil, controlla il database e la cache (handler getPhoneNumber)",
 
         -- CLIENT FILES
         ["APP_AZIENDA_NEW_EMERGENCY_CALL"] = "Nuova chiamata di emergenza",
@@ -191,6 +192,7 @@ Config.Language = {
         ["CHECK_JOB_NAME_EMERGENCY_CALLS"] = "Please check that the job inside the config.json in the html folder is defined correctly",
         ["DEBUG_NO_SIM_FOUND"] = "Player with identifier %s does not have a sim installed",
         ["NO_XPLAYER_NOTIFICATION"] = "The showNotification function in the xPlayer class is not present, add it before continuing",
+        ["DEBUG_PHONENUMBER_NIL"] = "Phone number is nil, please check database and cache (handler getPhoneNumber)",
 
         -- CLIENT FILES
         ["APP_AZIENDA_NEW_EMERGENCY_CALL"] = "New emergency call",

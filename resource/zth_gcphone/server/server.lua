@@ -575,6 +575,7 @@ gcPhoneT.setReadMessageNumber = function(transmitter_number)
     local player = source
     local identifier = gcPhoneT.getPlayerID(player)
     local receiver_number = gcPhoneT.getPhoneNumber(identifier)
+    if not receiver_number then return gcPhone.debug(Config.Language["DEBUG_PHONENUMBER_NIL"]) end
 
     for _, message in pairs(CACHED_MESSAGES[receiver_number]) do
         if message.transmitter == transmitter_number and message.receiver == receiver_number then
@@ -619,6 +620,7 @@ gcPhoneT.deleteMessage = function(id)
     local player = source
     local identifier = gcPhoneT.getPlayerID(player)
     local phone_number = gcPhoneT.getPhoneNumber(identifier)
+    if not phone_number then return gcPhone.debug(Config.Language["DEBUG_PHONENUMBER_NIL"]) end
 
     for table_index, message in pairs(CACHED_MESSAGES[phone_number]) do
         if message.id == id then
@@ -634,6 +636,7 @@ gcPhoneT.deleteMessageNumber = function(transmitter_number)
     local player = source
     local identifier = gcPhoneT.getPlayerID(player)
     local receiver_number = gcPhoneT.getPhoneNumber(identifier)
+    if not receiver_number then return gcPhone.debug(Config.Language["DEBUG_PHONENUMBER_NIL"]) end
 
     for table_index, message in pairs(CACHED_MESSAGES[receiver_number]) do
         if message.transmitter == transmitter_number and message.receiver == receiver_number then
@@ -650,6 +653,7 @@ end
 
 gcPhoneT.deleteReceivedMessages = function(identifier)
     local receiver_number = gcPhoneT.getPhoneNumber(identifier)
+    if not receiver_number then return gcPhone.debug(Config.Language["DEBUG_PHONENUMBER_NIL"]) end
     CACHED_MESSAGES[receiver_number] = {}
     -- need to choose the clean table or the complete delete of table
     -- maybe i'll leave the empty table
@@ -748,6 +752,7 @@ gcPhoneT.deletePhoneHistory = function(number)
     local player = source
     local identifier = gcPhoneT.getPlayerID(player)
     local phone_number = gcPhoneT.getPhoneNumber(identifier)
+    if not phone_number then return gcPhone.debug(Config.Language["DEBUG_PHONENUMBER_NIL"]) end
 
     MySQL.Async.execute("DELETE FROM phone_calls WHERE `owner` = @owner AND `num` = @num", {
         ['@owner'] = phone_number,
@@ -764,10 +769,11 @@ end
 gcPhoneT.deleteAllPhoneHistory = function()
     local player = source
     local identifier = gcPhoneT.getPlayerID(player)
-    local num = gcPhoneT.getPhoneNumber(identifier)
+    local phone_number = gcPhoneT.getPhoneNumber(identifier)
+    if not phone_number then return gcPhone.debug(Config.Language["DEBUG_PHONENUMBER_NIL"]) end
 
-    MySQL.Async.execute("DELETE FROM phone_calls WHERE `owner` = @owner", { ['@owner'] = num }, function()
-        CACHED_CALLS[num] = {}
+    MySQL.Async.execute("DELETE FROM phone_calls WHERE `owner` = @owner", { ['@owner'] = phone_number }, function()
+        CACHED_CALLS[phone_number] = {}
     end)
 end
 
@@ -775,6 +781,7 @@ gcPhoneT.requestOfferFromCache = function()
     local player = source
     local identifier = gcPhoneT.getPlayerID(player)
     local phone_number = gcPhoneT.getPhoneNumber(identifier)
+    if not phone_number then return gcPhone.debug(Config.Language["DEBUG_PHONENUMBER_NIL"]) end
     
     if CACHED_TARIFFS[phone_number] then
         local sim = CACHED_TARIFFS[phone_number]

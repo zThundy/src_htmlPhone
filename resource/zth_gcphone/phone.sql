@@ -459,13 +459,13 @@ INSERT INTO `phone_wifi_nets` (`steam_id`, `label`, `password`, `x`, `y`, `z`, `
 -- Dump della struttura di tabella esfx.sim
 CREATE TABLE IF NOT EXISTS `phone_sim` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
-  `identifier` varchar(50) NOT NULL,
-  `phone_number` varchar(10) DEFAULT NULL,
-  `piano_tariffario` varchar(16) DEFAULT 'nessuno',
+  `identifier` varchar(255) NOT NULL,
+  `phone_number` varchar(50) DEFAULT NULL,
+  `piano_tariffario` varchar(50) DEFAULT 'nessuno',
   `minuti` int(11) DEFAULT '0',
   `messaggi` int(11) DEFAULT '0',
   `dati` int(11) DEFAULT '0',
-  `nome_sim` varchar(10) DEFAULT '',
+  `nome_sim` varchar(255) DEFAULT '',
   PRIMARY KEY (`id`),
   UNIQUE KEY `phone_number` (`phone_number`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
