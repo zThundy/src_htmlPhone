@@ -766,9 +766,7 @@ gcPhoneT.deletePhoneHistory = function(number)
     end)
 end
 
-gcPhoneT.deleteAllPhoneHistory = function()
-    local player = source
-    local identifier = gcPhoneT.getPlayerID(player)
+gcPhoneT.deleteAllPhoneHistory = function(identifier)
     local phone_number = gcPhoneT.getPhoneNumber(identifier)
     if not phone_number then return gcPhone.debug(Config.Language["DEBUG_PHONENUMBER_NIL"]) end
 
