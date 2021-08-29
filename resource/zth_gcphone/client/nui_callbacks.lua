@@ -229,6 +229,6 @@ RegisterNUICallback('deletePhoneHistory', function(data, cb)
 end)
 
 RegisterNUICallback('deleteAllPhoneHistory', function(data, cb)
-    gcPhoneServerT.deleteAllPhoneHistory(data.infoCall)
+    gcPhoneServerT.deleteAllPhoneHistory()
     cb("ok")
 end)
