@@ -8,7 +8,7 @@
       <div class="phone_wrapper" :style="classObject()">
         <div v-if="currentCover" class="phone_coque" :style="{ backgroundImage: 'url(/html/static/img/cover/' + currentCover.value + ')' }"></div>
         
-        <div v-if="loaded" id="app" class="phone_screen noselect">
+        <div v-if="checkIfLoaded" id="app" class="phone_screen noselect">
           <!-- <transition-page :isChanging="isChanging"/> :class="{ 'transition': isChanging }" :style="getStyle(brightness)" -->
           <!-- <video id="target-stream" class="content-area" style="display: none;" autoplay muted></video> -->
           <notification />
@@ -20,7 +20,7 @@
           -->
         </div>
 
-        <div v-if="!loaded" id="app" class="blocked-screen noselect">
+        <div v-else id="app" class="blocked-screen noselect">
           <div class="blocked-screen-flex">
             <span>You can't access to this resource</span>
             <span>Please contact zThundy__#2456 on discord to buy this resource or request access in case of ip change</span>
@@ -67,7 +67,10 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['loaded', 'show', 'zoom', 'currentCover', 'suoneria', 'appelsInfo', 'myPhoneNumber', 'volume', 'tempoHide', 'brightness', 'brightnessActive'])
+    ...mapGetters(['loaded', 'show', 'zoom', 'currentCover', 'suoneria', 'appelsInfo', 'myPhoneNumber', 'volume', 'tempoHide', 'brightness', 'brightnessActive']),
+    checkIfLoaded () {
+      return this.loaded === 'STATUS_OK'
+    }
   },
   watch: {
     appelsInfo (newValue, oldValue) {

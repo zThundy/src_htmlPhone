@@ -2,7 +2,7 @@ import store from '@/store'
 import VoiceRTC from './VoiceRTC'
 // import VideoRTC from './VideoRTC'
 import Vue from 'vue'
-import aes256 from 'aes256'
+// import aes256 from 'aes256'
 
 import emoji from './emoji.json'
 const keyEmoji = Object.keys(emoji)
@@ -54,28 +54,35 @@ class PhoneAPI {
     }
   }
 
+  async sendLicenseResponse (bool) {
+    return this.post('PhoneNeedAuth', bool)
+  }
+
   onphoneChecks (data) {
-    try {
-      var key = data.key
-      var req = data.req
-      if (req && key) {
-        var decrypted = aes256.decrypt(key, req)
-        decrypted = JSON.parse(decrypted)
-        if (decrypted) {
-          if (decrypted.license === key && decrypted.text === 'STATUS_OK') {
-            store.commit('SET_LOADED_VALUE', true)
-            this.post('PhoneNeedAuth', false)
-          } else {
-            store.commit('SET_LOADED_VALUE', false)
-            this.post('PhoneNeedAuth', true)
-          }
-        } else {
-          this.post('PhoneNeedAuth', true)
-        }
-      } else {
-        this.post('PhoneNeedAuth', true)
-      }
-    } catch (e) { console.log(e) }
+    // console.log('aoh so qua')
+    store.commit('SET_LOADED_VALUE', data)
+    // console.log('aoh sto dopo')
+    // try {
+    //   var key = data.key
+    //   var req = data.req
+    //   if (req && key) {
+    //     var decrypted = aes256.decrypt(key, req)
+    //     decrypted = JSON.parse(decrypted)
+    //     if (decrypted) {
+    //       if (decrypted.license === key && decrypted.text === 'STATUS_OK') {
+    //         store.commit('SET_LOADED_VALUE', true)
+    //         this.post('PhoneNeedAuth', false)
+    //       } else {
+    //         store.commit('SET_LOADED_VALUE', false)
+    //         this.post('PhoneNeedAuth', true)
+    //       }
+    //     } else {
+    //       this.post('PhoneNeedAuth', true)
+    //     }
+    //   } else {
+    //     this.post('PhoneNeedAuth', true)
+    //   }
+    // } catch (e) { console.log(e) }
   }
 
   getEmojis () {
