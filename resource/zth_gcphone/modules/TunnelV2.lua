@@ -42,7 +42,7 @@ local function tunnel_resolve(itable, key)
         local args = {...}
         local r = nil
 
-        print("should be using", mtable.c)
+        -- print("should be using", mtable.c)
 
         local dest = nil
         if SERVER then
@@ -71,9 +71,11 @@ local function tunnel_resolve(itable, key)
                     mtable.tunnel_callbacks[rid] = r
                 end
                 if SERVER then
-                    TriggerRemoteEvent(mtable.license .. "::" .. mtable.name .. ":tunnel_req:" .. mtable.c, dest, fname, args, mtable.identifier, rid)
+                    -- TriggerRemoteEvent(mtable.license .. "::" .. mtable.name .. ":tunnel_req:" .. mtable.c, dest, fname, args, mtable.identifier, rid)
+                    TriggerRemoteEvent(mtable.license .. "::" .. mtable.name .. ":tunnel_req", dest, fname, args, mtable.identifier, rid)
                 else
-                    TriggerRemoteEvent(mtable.license .. "::" .. mtable.name .. ":tunnel_req:" .. mtable.c, fname, args, mtable.identifier, rid)
+                    -- TriggerRemoteEvent(mtable.license .. "::" .. mtable.name .. ":tunnel_req:" .. mtable.c, fname, args, mtable.identifier, rid)
+                    TriggerRemoteEvent(mtable.license .. "::" .. mtable.name .. ":tunnel_req", fname, args, mtable.identifier, rid)
                 end
             end)
         else
@@ -83,9 +85,9 @@ local function tunnel_resolve(itable, key)
                 mtable.tunnel_callbacks[rid] = r
             end
             if SERVER then
-                TriggerRemoteEvent(mtable.license .. "::" .. mtable.name .. ":tunnel_req:" .. mtable.c, dest, fname, args, mtable.identifier, rid)
+                TriggerRemoteEvent(mtable.license .. "::" .. mtable.name .. ":tunnel_req", dest, fname, args, mtable.identifier, rid)
             else
-                TriggerRemoteEvent(mtable.license .. "::" .. mtable.name .. ":tunnel_req:" .. mtable.c, fname, args, mtable.identifier, rid)
+                TriggerRemoteEvent(mtable.license .. "::" .. mtable.name .. ":tunnel_req", fname, args, mtable.identifier, rid)
             end
         end
         if r then
@@ -98,20 +100,24 @@ end
 
 function Tunnel.bindInterface(license, name, interface)
     license = enc(license)
-    local c = enc(tostring(os.time()))
-    print("saved", c)
-    if SERVER then SetConvarReplicated("zth_phone_start", c) end
-    RegisterLocalEvent(license .. "::" .. name .. ":tunnel_req:" .. c)
-    AddEventHandler(license .. "::" .. name .. ":tunnel_req:" .. c, function(member, args, identifier, rid)
+    -- local c = enc(tostring(os.time()))
+    print("^1[ZTH_Phone] ^0[^2STARTUP^0] Set encoded time from server for secure startup")
+    -- if SERVER then SetConvarReplicated("zth_phone_start", c) end
+    -- RegisterLocalEvent(license .. "::" .. name .. ":tunnel_req:" .. c)
+    -- AddEventHandler(license .. "::" .. name .. ":tunnel_req:" .. c, function(member, args, identifier, rid)
+    RegisterLocalEvent(license .. "::" .. name .. ":tunnel_req")
+    AddEventHandler(license .. "::" .. name .. ":tunnel_req", function(member, args, identifier, rid)
         local source = source
         local f = interface[member]
         local rets = {}
         if type(f) == "function" then rets = {f(table.unpack(args, 1, table_maxn(args)))} end
         if rid >= 0 then
             if SERVER then
-                TriggerRemoteEvent(license .. "::" .. name .. ":" .. identifier .. ":tunnel_res:" .. c, source, rid, rets)
+                -- TriggerRemoteEvent(license .. "::" .. name .. ":" .. identifier .. ":tunnel_res:" .. c, source, rid, rets)
+                TriggerRemoteEvent(license .. "::" .. name .. ":" .. identifier .. ":tunnel_res", source, rid, rets)
             else
-                TriggerRemoteEvent(license .. "::" .. name .. ":" .. identifier .. ":tunnel_res:" .. c, rid, rets)
+                -- TriggerRemoteEvent(license .. "::" .. name .. ":" .. identifier .. ":tunnel_res:" .. c, rid, rets)
+                TriggerRemoteEvent(license .. "::" .. name .. ":" .. identifier .. ":tunnel_res", rid, rets)
             end
         end
     end)
@@ -119,8 +125,8 @@ end
 
 function Tunnel.getInterface(license, name, identifier)
     if not identifier then identifier = GetCurrentResourceName() end
-    local c = GetConvar("zth_phone_start", "none")
-    print("got", c)
+    -- local c = GetConvar("zth_phone_start", "none")
+    print("^1[ZTH_Phone] ^0[^2STARTUP^0] Got encoded time from server for secure startup")
     license = enc(license)
     local ids = IDManager()
     local callbacks = {}
@@ -131,10 +137,12 @@ function Tunnel.getInterface(license, name, identifier)
         tunnel_callbacks = callbacks,
         identifier = identifier,
         license = license,
-        c = c
+        -- c = c
     })
-    RegisterLocalEvent(license .. "::" .. name .. ":" .. identifier .. ":tunnel_res:" .. c)
-    AddEventHandler(license .. "::" .. name .. ":" .. identifier .. ":tunnel_res:" .. c, function(rid, args)
+    -- RegisterLocalEvent(license .. "::" .. name .. ":" .. identifier .. ":tunnel_res:" .. c)
+    -- AddEventHandler(license .. "::" .. name .. ":" .. identifier .. ":tunnel_res:" .. c, function(rid, args)
+    RegisterLocalEvent(license .. "::" .. name .. ":" .. identifier .. ":tunnel_res")
+    AddEventHandler(license .. "::" .. name .. ":" .. identifier .. ":tunnel_res", function(rid, args)
         local callback = callbacks[rid]
         if callback then
             -- free request id
