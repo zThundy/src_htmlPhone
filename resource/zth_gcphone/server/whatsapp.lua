@@ -244,7 +244,7 @@ gcPhoneT.whatsapp_creaNuovoGruppo = function(data)
     if isAble then
         gcPhoneT.useInternetData(identifier, mbToRemove)
         for _, val in pairs(data.contacts) do
-            if data.selected[tonumber(val.id) + 1] then
+            if val.id and data.selected[tonumber(val.id) + 1] then
                 partecipanti[tonumber(val.id)] = {
                     display = val.display,
                     icon = val.icon or '/html/static/img/app_whatsapp/defaultgroup.png',

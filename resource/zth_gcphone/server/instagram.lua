@@ -236,12 +236,8 @@ gcPhoneT.instagram_loginAccount = function(username, password)
             InstagramShowError(player, 'INSTAGRAM_INFO_TITLE', 'APP_INSTAGRAM_NO_ACCOUNT')
             return
         end
-        -- if user == nil then
-        --     InstagramShowError(player, 'INSTAGRAM_INFO_TITLE', 'APP_INSTAGRAM_NOTIF_LOGIN_ERROR')
-        -- else
         InstagramShowSuccess(player, 'INSTAGRAM_INFO_TITLE', 'APP_INSTAGRAM_NOTIF_LOGIN_SUCCESS')
         TriggerClientEvent('gcPhone:instagram_setAccount', player, username, password, user.avatar_url)
-        -- end
     else
         InstagramShowError(player, 'INSTAGRAM_INFO_TITLE', 'APP_INSTAGRAM_NOTIF_NO_CONNECTION')
     end
@@ -258,9 +254,6 @@ gcPhoneT.instagram_changePassword = function(username, password, newPassword)
             InstagramShowError(player, 'INSTAGRAM_INFO_TITLE', 'APP_INSTAGRAM_NO_ACCOUNT')
             return
         end
-        -- if user == nil then
-        --     InstagramShowError(player, 'INSTAGRAM_INFO_TITLE', 'APP_INSTAGRAM_NOTIF_LOGIN_ERROR')
-        -- else
         MySQL.Async.execute("UPDATE phone_instagram_accounts SET password = @newpassword WHERE username = @username AND password = @password", {
             ['@username'] = username,
             ['@password'] = password, 
@@ -274,7 +267,6 @@ gcPhoneT.instagram_changePassword = function(username, password, newPassword)
             end
             InstagramShowSuccess(player, 'INSTAGRAM_INFO_TITLE', 'APP_INSTAGRAM_NOTIF_PASSCHANGE_SUCCESS')
         end)
-        -- end
     else
         InstagramShowError(player, 'INSTAGRAM_INFO_TITLE', 'APP_INSTAGRAM_NOTIF_NO_CONNECTION')
     end
@@ -291,11 +283,6 @@ gcPhoneT.instagram_toggleLikePost = function(username, password, postId)
             InstagramShowError(player, 'INSTAGRAM_INFO_TITLE', 'APP_INSTAGRAM_NOTIF_LOGIN_ERROR')
             return
         end
-        -- if user == false then
-        --     InstagramShowError(player, 'INSTAGRAM_INFO_TITLE', 'APP_INSTAGRAM_NO_ACCOUNT')
-        --     return
-        -- end
-        ---------------------------------------------
         for _, info in pairs(CACHED_POSTS) do
             if tonumber(info.id) == tonumber(postId) then
                 if HasLikedPost(user.id, postId) then
@@ -337,10 +324,6 @@ gcPhoneT.instagram_toggleLikePost = function(username, password, postId)
                 end
             end
         end
-        -- if post == nil then
-        --     InstagramShowError(player, 'INSTAGRAM_INFO_TITLE', 'APP_INSTAGRAM_NOTIF_POST_NOT_FOUND')
-        --     return
-        -- end
     else
         InstagramShowError(player, 'INSTAGRAM_INFO_TITLE', 'APP_INSTAGRAM_NOTIF_NO_CONNECTION')
     end
@@ -352,7 +335,6 @@ gcPhoneT.instagram_setAvatarurl = function(username, password, avatarUrl)
     local isAble, mbToRemove = gcPhoneT.isAbleToSurfInternet(identifier, 0.5)
     if isAble then
         gcPhoneT.useInternetData(identifier, mbToRemove)
-        -- local user = GetInstagramUser(username, password)
         MySQL.Async.execute("UPDATE phone_instagram_accounts SET avatar_url = @avatarUrl WHERE username = @username AND password = @password", {
             ['@username'] = username,
             ['@password'] = password,
