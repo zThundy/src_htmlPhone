@@ -1,16 +1,17 @@
 <template>
   <div style="width: 100%; height: 100%;" class="phone_app">
+    <!--
     <PhoneTitle class="decor-border" :backgroundColor="'white'" :title="LangString('APP_PHOTO_TITLE')" />
 
-    <!--<canvas id="canvas1" width="200" height="200"></canvas>
-    <video muted controls id="canvas2" src="https://upload.wikimedia.org/wikipedia/commons/7/79/Big_Buck_Bunny_small.ogv"></video>
-    -->
     <div class="general-container">
       <div class="picture-snap-cyrcle-contaniner">
         <div class="picture-snap-cyrcle-ext"></div>
         <div class="picture-snap-cyrcle-int"></div>
       </div>
     </div>
+    -->
+
+    <video id="video-view-element" controls="true" crossorigin="anonymous"></video>
   </div>
 </template>
 
@@ -98,12 +99,54 @@ export default {
     //   //   stream.stop()
     //   // }, 5000)
     // },
+    startVideoRecording () {
+      const canvas = document.getElementById('canvas-recorder')
+      console.log(canvas)
+      const ctx = canvas.getContext('2d')
+      const video = document.querySelector('video')
+      console.log(canvas.width, canvas.height)
+      console.log(video.width, video.height)
+      const read = new Uint8Array(canvas.width * canvas.height * 4)
+      console.log(read)
+      const d = new Uint8ClampedArray(read.buffer)
+      console.log(d)
+      ctx.putImageData(new ImageData(d, canvas.width, canvas.height), 0, 0)
+
+      // On play event - draw the video in the canvas
+      // function step () {
+      //   ctx.drawImage(canvas, 0, 0, canvas.width, canvas.height)
+      //   requestAnimationFrame(step)
+      // }
+      // requestAnimationFrame(step)
+      // Init stream and recorder
+      const stream = canvas.captureStream()
+      const recorder = new MediaRecorder(stream, { mimeType: 'video/webm' })
+      // Get the blob data when is available
+      let allChunks = []
+      recorder.ondataavailable = function (e) {
+        allChunks.push(e.data)
+      }
+      recorder.onstop = (e) => {
+        const fullBlob = new Blob(allChunks, { 'type': 'video/webm' })
+        const downloadUrl = window.URL.createObjectURL(fullBlob)
+        console.log({fullBlob})
+        console.log({downloadUrl})
+        video.src = downloadUrl
+        video.play()
+      }
+      // Start to record
+      recorder.start()
+      // Stop the recorder after 5s and check the result
+      setTimeout(() => {
+        recorder.stop()
+      }, 5000)
+    },
     async onEnter () {
       if (this.ignoreControl) return
       this.ignoreControl = true
       var options = [
         { id: 1, title: this.LangString('APP_PHOTO_TAKE_PICTURE'), icons: 'fa-camera' },
-        // { id: 2, title: this.LangString('APP_PHOTO_RECORD_VIDEO'), icons: 'fa-video-camera' },
+        { id: 2, title: this.LangString('APP_PHOTO_RECORD_VIDEO'), icons: 'fa-video-camera' },
         { id: -1, title: this.LangString('CANCEL'), icons: 'fa-undo', color: 'red' }
       ]
       Modal.CreateModal({ scelte: options }).then(resp => {
@@ -113,9 +156,9 @@ export default {
               if (photo) { this.$router.push({ name: 'galleria.splash', params: photo }) }
             })
             break
-          // case 2:
-          //   this.startVideoRecording()
-          //   break
+          case 2:
+            this.startVideoRecording()
+            break
           case -1:
             this.ignoreControl = false
             break
@@ -143,8 +186,8 @@ export default {
 
 <style scoped>
 #video-view-element {
-  width: 100%;
-  height: 100%;
+  width: 300px;
+  height: 300px;
 }
 
 .general-container {
