@@ -97,9 +97,9 @@ local function InstagramCreateAccount(username, password, avatarUrl, cb)
     }, cb)
 end
 
-local function HasLikedPost(authorId, tweetId)
-    if CACHED_LIKES[tweetId] then
-        for _, like in pairs(CACHED_LIKES[tweetId]) do
+local function HasLikedPost(authorId, postId)
+    if CACHED_LIKES[postId] then
+        for _, like in pairs(CACHED_LIKES[postId]) do
             if like.authorId == authorId then
                 return true
             end
@@ -307,7 +307,7 @@ gcPhoneT.instagram_toggleLikePost = function(username, password, postId)
                                 info.likes = info.likes - 1
                                 MySQL.Async.execute('UPDATE `phone_instagram_posts` SET `likes` = likes - 1 WHERE id = @id', { ['@id'] = info.id }, function()
                                     -- questo evento aggiorna i like per tutti i giocatori
-                                    TriggerClientEvent('gcPhone:instagram_updatePostLikes', -1, info.id, info.likes - 1)
+                                    TriggerClientEvent('gcPhone:instagram_updatePostLikes', -1, info.id, info.likes)
                                     -- questo evento aggiorna il colore del cuore per chi lo mette
                                     TriggerClientEvent('gcPhone:instagram_updateLikeForUser', player, info.id, false)
                                 end)
@@ -318,8 +318,8 @@ gcPhoneT.instagram_toggleLikePost = function(username, password, postId)
                 else
                     if CACHED_LIKES[postId] == nil then CACHED_LIKES[postId] = {} end
                     MySQL.Async.insert('INSERT INTO phone_instagram_likes(`authorId`, `postId`) VALUES(@authorId, @postId)', {
-                        ['authorId'] = user.id,
-                        ['tweetId'] = postId
+                        ['@authorId'] = user.id,
+                        ['@postId'] = postId
                     }, function(id)
                         table.insert(CACHED_LIKES[postId], {
                             id = id,
@@ -327,9 +327,9 @@ gcPhoneT.instagram_toggleLikePost = function(username, password, postId)
                             postId = postId
                         })
                         info.likes = info.likes + 1
-                        MySQL.Async.execute('UPDATE `phone_twitter_tweets` SET `likes` = likes + 1 WHERE id = @id', { ['@id'] = info.id }, function()
+                        MySQL.Async.execute('UPDATE `phone_instagram_posts` SET `likes` = likes + 1 WHERE id = @id', { ['@id'] = info.id }, function()
                             -- questo evento aggiorna i like per tutti i giocatori
-                            TriggerClientEvent('gcPhone:instagram_updatePostLikes', -1, info.id, info.likes + 1)
+                            TriggerClientEvent('gcPhone:instagram_updatePostLikes', -1, info.id, info.likes)
                             -- questo evento aggiorna il colore del cuore per chi lo mette
                             TriggerClientEvent('gcPhone:instagram_updateLikeForUser', player, info.id, true)
                         end)    
