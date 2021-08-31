@@ -683,8 +683,13 @@ end
 function GetCallsHistory(num)
     if CACHED_CALLS[num] then
         table.sort(CACHED_CALLS[num], function(a, b)
-            if a then if not a.time then a.time = os.time() * 1000 end end
-            if b then if not b.time then b.time = os.time() * 1000 end end
+            -- this is really bad, but table sort is worse
+            if not a then a = {} end
+            if not b then b = {} end
+            -- ok...
+            if not a.time then a.time = os.time() * 1000 end
+            if not b.time then b.time = os.time() * 1000 end
+            -- ok x2...
             if a and b then return a.time > b.time end
         end)
         return CACHED_CALLS[num]
