@@ -10,7 +10,7 @@ MySQL.ready(function()
         Reti.Debug(Config.Language["WIFI_LOAD_DEBUG_1"])
         MySQL.Async.fetchAll("SELECT * FROM phone_wifi_nets", {}, function(r)
             CACHED_WIFIS = r
-            CACHED_WIFIS = Reti.loadRetiWifi()
+            CACHED_WIFIS = Reti.LoadAndSendWifi()
             Reti.Debug(Config.Language["WIFI_LOAD_DEBUG_2"])
             TARIFFS_LOADED = true
         end)
@@ -32,7 +32,7 @@ if Config.EnableRadioTowers then
     end)
 
     RegisterServerEvent('esx_wifi:repairRadioTower')
-    AddEventHandler('esx_wifi:repairRadioTower', function(tower) Reti.updateCellTower(tower) end)
+    AddEventHandler('esx_wifi:repairRadioTower', function(tower) Reti.UpdateCellTower(tower) end)
     
     if Config.EnableBreakWifiTowers then
         Citizen.CreateThreadNow(function()
@@ -43,7 +43,7 @@ if Config.EnableRadioTowers then
                         if Config.BreakChance > math.random(0, 100) then
                             v.broken = true
                             TriggerClientEvent('esx_wifi:riceviTorriRadio', -1, v)
-                            Reti.updateCellTower(v)
+                            Reti.UpdateCellTower(v)
                         end
                     end
                     -- 10 minutes for each tower
