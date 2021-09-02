@@ -11,12 +11,9 @@
     "aes256": "^1.1.0",
     "babel-preset-es2017": "^6.24.1",
     "bigeval": "^3.1.0",
-    "canvas-context": "^3.0.2",
-    "canvas-record": "^3.0.0",
     "fs": "0.0.1-security",
     "javascript-obfuscator": "^2.14.0",
     "mand-mobile": "^2.5.19",
-    "node-sass": "^4.14.1",
     "sass-loader": "^6.0.7",
     "vue": "^2.6.13",
     "vue-router": "^2.8.1",
@@ -67,12 +64,7 @@
     "webpack-merge": "^4.1.2"
   },
   "engines": {
-    "node": ">= 4.0.0",
+    "node": ">= 12.0.0",
     "npm": ">= 3.0.0"
-  },
-  "browserslist": [
-    "> 1%",
-    "last 2 versions",
-    "not ie <= 8"
-  ]
+  }
 }
