@@ -75,8 +75,9 @@ AddEventHandler('esx_addons_gcphone:call', function(data)
     if not data.coords then data.coords = GetEntityCoords(GetPlayerPed(-1)) end
     if not data.job then return gcPhone.debug(Config.Language["CHECK_JOB_NAME_EMERGENCY_CALLS"]) end
     if not data.display then data.display = data.job end
+    data.coords = vector3(data.coords.x or 1.0, data.coords.y or 1.0, data.coords.z or 1.0)
 
-    if data.message == nil then
+    if not data.message then
         DisplayOnscreenKeyboard(1, "FMMC_MPM_NA", "", "", "", "", "", 200)
         while UpdateOnscreenKeyboard() == 0 do
             DisableAllControlActions(0)
@@ -90,7 +91,7 @@ AddEventHandler('esx_addons_gcphone:call', function(data)
 
     CheckForDispatchScript()
 
-    if data.message ~= nil and data.message ~= "" then
+    if data.message and string.length(tostring(data.message)) > 0 then
         gcPhoneServerT.servicesStartCall(data, false)
     end
 end)

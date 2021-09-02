@@ -11,11 +11,6 @@
 /*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
 /*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
 
-
--- Dump della struttura del database esfx
-CREATE DATABASE IF NOT EXISTS `esfx` /*!40100 DEFAULT CHARACTER SET utf8 */;
-USE `esfx`;
-
 SELECT COUNT(*)
   INTO @exist
   FROM information_schema.columns

@@ -106,10 +106,10 @@ export default {
       const video = document.querySelector('video')
       console.log(canvas.width, canvas.height)
       console.log(video.width, video.height)
-      const read = new Uint8Array(canvas.width * canvas.height * 4)
-      console.log(read)
-      const d = new Uint8ClampedArray(read.buffer)
-      console.log(d)
+      // const read = new Uint8Array(canvas.width * canvas.height * 4)
+      // console.log(read)
+      // const d = new Uint8ClampedArray(read.buffer)
+      // console.log(d)
       ctx.putImageData(new ImageData(d, canvas.width, canvas.height), 0, 0)
 
       // On play event - draw the video in the canvas
