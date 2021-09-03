@@ -91,7 +91,8 @@ export default {
       if (this.hasPressed) return
       this.hasPressed = true
       setTimeout(() => {
-        this.$router.push({ name: 'home' })
+        // this.$router.push({ name: 'home' })
+        this.$router.push({ name: 'photo' })
         this.$phoneAPI.onplaySound({ sound: 'phoneUnlock.ogg', volume: this.volume || 0.5, loop: false })
       }, 450)
     },

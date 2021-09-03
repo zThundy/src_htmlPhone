@@ -29,7 +29,7 @@
       </div>
     </div>
 
-    <div class="test-elem"></div>
+    <!-- <div class="test-elem"></div> -->
     <canvas id="canvas-recorder"></canvas>
   </div>
 </template>
@@ -197,12 +197,14 @@ export default {
 }
 
 #canvas-recorder {
+  display: none;
   overflow: hidden;
   width: 100%;
   height: 100%;
   background-color: rgba(0, 0, 0, 0.3);
 }
 
+/*
 .test-elem {
   position: absolute;
   bottom: 550px;
@@ -218,4 +220,5 @@ export default {
     transform: rotate(180deg)
   }
 }
+*/
 </style>
