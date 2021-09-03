@@ -2,7 +2,7 @@
   <div style="overflow: hidden;" class="phone_app">
     <PhoneTitle :title="currentScreen.title" :color="'white'" backgroundColor="rgb(55, 161, 242)" v-on:back="quit"/>
     
-    <div class="phone_content">
+    <div class="phone_content" style="overflow: hidden;">
       <component v-bind:is="currentScreen.component"/>
     </div>
 

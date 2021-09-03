@@ -239,7 +239,7 @@ export default {
   color: black;
   display: flex;
   flex-direction: column;
-  overflow-y: auto;
+  overflow: hidden;
 
   background-color: rgb(255, 255, 255);
 }
