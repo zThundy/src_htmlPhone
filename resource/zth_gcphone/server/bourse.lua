@@ -237,14 +237,6 @@ gcPhoneT.sellCrypto = function(data)
                     CACHED_USER_CRYPTO = FetchPersonalCrypto()
                     TriggerClientEvent("gcPhone:bourse_receivePersonalCrypto", player, CACHED_USER_CRYPTO[xPlayer.identifier])
                 end)
-
-                -- for id, v in pairs(CACHED_USER_CRYPTO[xPlayer.identifier]) do
-                --     if v.id == crypto.id then
-                --         CACHED_USER_CRYPTO[xPlayer.identifier][id] = nil
-                --         break
-                --     end
-                -- end
-                -- CACHED_USER_CRYPTO[xPlayer.identifier][crypto.id] = nil
             else
                 MySQL.Async.execute("UPDATE phone_user_crypto SET amount = @amount, price = @price WHERE id = @id", {
                     ['@amount'] = crypto.amount,
@@ -254,16 +246,6 @@ gcPhoneT.sellCrypto = function(data)
                     CACHED_USER_CRYPTO = FetchPersonalCrypto()
                     TriggerClientEvent("gcPhone:bourse_receivePersonalCrypto", player, CACHED_USER_CRYPTO[xPlayer.identifier])
                 end)
-
-                -- for id, v in pairs(CACHED_USER_CRYPTO[xPlayer.identifier]) do
-                --     if v.id == crypto.id then
-                --         CACHED_USER_CRYPTO[xPlayer.identifier][id].price = data.price
-                --         CACHED_USER_CRYPTO[xPlayer.identifier][id].amount = crypto.amount
-                --         break
-                --     end
-                -- end
-                -- CACHED_USER_CRYPTO[xPlayer.identifier][crypto.id].price = data.price
-                -- CACHED_USER_CRYPTO[xPlayer.identifier][crypto.id].amount = crypto.amount
             end
 
             return true

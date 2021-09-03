@@ -28,6 +28,7 @@ local function SendEmergencyCall(data, listSrc)
             end
         else
             data.newMessage = _message
+            data.coords = { x = data.coords.x, y = data.coords.y, z = data.coords.z }
             data.coords.x = tonumber(string.format("%.3f", data.coords.x))
             data.coords.y = tonumber(string.format("%.3f", data.coords.y))
             data = gcPhoneT.azienda_sendAziendaCallNotification(data)
