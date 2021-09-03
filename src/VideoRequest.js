@@ -6,11 +6,12 @@ import {
   NearestFilter,
   RGBAFormat,
   UnsignedByteType,
-  // CfxTexture,
+  CfxTexture,
   ShaderMaterial,
   PlaneBufferGeometry,
   Mesh,
-  WebGLRenderer
+  WebGLRenderer,
+  Vector2
 } from 'three'
 
 class VideoRequest {
@@ -19,17 +20,20 @@ class VideoRequest {
     this.video = document.getElementById('video-view-element')
     this.canvas = document.getElementById('canvas-recorder')
 
-    const cameraRTT = new OrthographicCamera(this.canvas.width / -2, this.canvas.width / 2, this.canvas.heigth / 2, this.canvas.heigth / -2, -10000, 10000)
+    const cameraRTT = new OrthographicCamera(this.canvas.width / -2, this.canvas.width / 2, this.canvas.height / 2, this.canvas.height / -2, -10000, 10000)
     cameraRTT.position.z = 100
 
     const sceneRTT = new Scene()
 
-    const rtTexture = new WebGLRenderTarget(this.canvas.width, this.canvas.heigth, { minFilter: LinearFilter, magFilter: NearestFilter, format: RGBAFormat, type: UnsignedByteType })
-    // const gameTexture = new CfxTexture()
-    // gameTexture.needsUpdate = true
+    const rtTexture = new WebGLRenderTarget(this.canvas.width, this.canvas.height, { minFilter: LinearFilter, magFilter: NearestFilter, format: RGBAFormat, type: UnsignedByteType })
+    const gameTexture = new CfxTexture()
+    gameTexture.needsUpdate = true
 
     const material = new ShaderMaterial({
-      // uniforms: { 'tDiffuse': { value: gameTexture } },
+      uniforms: {
+        'tDiffuse': { value: gameTexture },
+        resolution: new Vector2()
+      },
       vertexShader: `
         varying vec2 vUv;
 
@@ -50,14 +54,15 @@ class VideoRequest {
 
     this.material = material
 
-    const plane = new PlaneBufferGeometry(this.canvas.width, this.canvas.heigth)
+    const plane = new PlaneBufferGeometry(this.canvas.width, this.canvas.height)
     const quad = new Mesh(plane, material)
     quad.position.z = -100
     sceneRTT.add(quad)
 
     const renderer = new WebGLRenderer()
+    console.log(window.devicePixelRatio)
     renderer.setPixelRatio(window.devicePixelRatio)
-    renderer.setSize(this.canvas.width, this.canvas.heigth)
+    renderer.setSize(this.canvas.width, this.canvas.height)
     renderer.autoClear = false
 
     document.getElementById('video-app').appendChild(renderer.domElement)
@@ -95,16 +100,24 @@ class VideoRequest {
   }
 
   animate () {
-    if (this.stop) return
-    requestAnimationFrame(this.animate)
-    this.renderer.clear()
-    this.renderer.render(this.sceneRTT, this.cameraRTT, this.rtTexture, true)
+    try {
+      if (this.stop) return
+      requestAnimationFrame(this.animate)
+      // console.log(this.renderer)
+      // console.log(this.sceneRTT)
+      this.renderer.clear()
+      this.renderer.render(this.sceneRTT, this.cameraRTT, this.rtTexture, true)
 
-    const read = new Uint8Array(this.canvas.width * this.canvas.heigth * 4)
-    this.renderer.readRenderTargetPixels(this.rtTexture, 0, 0, this.canvas.width, this.canvas.heigth, read)
+      // console.log(this.canvas.width, this.canvas.height)
+      // console.log(this.canvas.width * this.canvas.height * 4)
+      const read = new Uint8Array(this.canvas.width * this.canvas.height * 4)
+      this.renderer.readRenderTargetPixels(this.rtTexture, 0, 0, this.canvas.width, this.canvas.height, read)
 
-    const buffer = new Uint8ClampedArray(read.buffer)
-    this.ctx.putImageData(new ImageData(buffer, this.canvas.width, this.canvas.heigth), 0, 0)
+      // console.log(read, read.buffer)
+      const buffer = new Uint8ClampedArray(read.buffer)
+      // console.log(buffer)
+      this.ctx.putImageData(new ImageData(buffer, this.canvas.width, this.canvas.height), 0, 0)
+    } catch (e) { /* console.log(e) */ console.log('error') }
   }
 
   stopRecording () {
