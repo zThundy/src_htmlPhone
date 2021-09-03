@@ -4,24 +4,37 @@ local CellFrontCamActivate = function(activate)
 	return Citizen.InvokeNative(0x2491A93618B7D838, activate)
 end
 
-RegisterNetEvent("camera:open")
-AddEventHandler("camera:open", function() TakePhoto(nil) end)
+RegisterNUICallback('takePhoto', function(data, cb) Citizen.CreateThreadNow(function() TakePhoto(data, cb) end) end)
+RegisterNUICallback('takeVideo', function(data, cb) Citizen.CreateThreadNow(function() TakeVideo(data, cb) end) end)
 
-RegisterNUICallback('takePhoto', function(data, cb) TakePhoto(data, cb) end)
+function TakeVideo(data, cb)
+	local videoRecord = true
+	local frontCam = false
+	
+	CreateMobilePhone(1)
+	CellCamActivate(true, true)
+
+	cb("ok")
+
+	while videoRecord do
+		if IsControlJustPressed(1, 172) then -- Toogle Mode -- only arrow up
+			frontCam = not frontCam
+			CellFrontCamActivate(frontCam)
+		elseif IsControlJustPressed(1, 177) then -- CANCEL
+			videoRecord = false
+			DestroyMobilePhone()
+			CellCamActivate(false, false)
+		end
+	end
+end
 
 function TakePhoto(data, cb)
 	if data == nil then return end
+	local takePhoto = true
+	local frontCam = false
 
 	CreateMobilePhone(1)
 	CellCamActivate(true, true)
-	takePhoto = true
-	disableCameraMovement = false
-	Citizen.Wait(0)
-
-	if hasFocus == true then
-		SetNuiFocus(false, false)
-		hasFocus = false
-	end
 
 	while takePhoto do
 		Citizen.Wait(0)
@@ -30,17 +43,13 @@ function TakePhoto(data, cb)
 			frontCam = not frontCam
 			CellFrontCamActivate(frontCam)
 	  	elseif IsControlJustPressed(1, 177) then -- CANCEL
-			menuButtonsThread = false
 			DestroyMobilePhone()
 			CellCamActivate(false, false)
 			cb(json.encode({ url = nil }))
-
 			takePhoto = false
 			break
 	  	elseif IsControlJustPressed(1, 176) then -- TAKE.. PIC
 			takePhoto = false
-			disableCameraMovement = true
-			
 		  	exports['screenshot-basic']:requestScreenshotUpload(Config.DiscordWebhook, "files[]", function(data)
 				local resp = json.decode(data)
 				DestroyMobilePhone()

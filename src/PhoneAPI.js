@@ -162,6 +162,10 @@ class PhoneAPI {
     return this.post('savePicGalleryOnDb', data)
   }
 
+  async takeVideo () {
+    return this.post('takeVideo')
+  }
+
   async takePhoto () {
     store.commit('SET_TEMPO_HIDE', true)
     const data = await this.post('takePhoto', { url: this.config.fileUploadService_Url, field: this.config.fileUploadService_Field })
