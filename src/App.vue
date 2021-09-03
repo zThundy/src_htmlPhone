@@ -197,11 +197,8 @@ export default {
 }
 
 #canvas-recorder {
-  position: absolute;
-  bottom: 100px;
-  left: 650px;
-  width: 300px;
-  height: 300px;
+  width: 100%;
+  height: 100%;
   background-color: rgba(0, 0, 0, 0.3);
 }
 

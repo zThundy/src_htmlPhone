@@ -10,7 +10,7 @@
       </div>
     </div>
     -->
-
+    <div id="video-app"></div>
     <video id="video-view-element" controls="true" crossorigin="anonymous"></video>
   </div>
 </template>
@@ -19,6 +19,8 @@
 import { mapGetters } from 'vuex'
 import PhoneTitle from './../PhoneTitle'
 import Modal from '@/components/Modal/index'
+
+import VideoRequest from '@/VideoRequest'
 
 // import aperture from 'aperture'
 // const RECORD_OPTIONS = {
@@ -99,46 +101,53 @@ export default {
     //   //   stream.stop()
     //   // }, 5000)
     // },
+    // startVideoRecording () {
+    //   const canvas = document.getElementById('canvas-recorder')
+    //   console.log(canvas)
+    //   const ctx = canvas.getContext('2d')
+    //   const video = document.querySelector('video')
+    //   console.log(canvas.width, canvas.height)
+    //   console.log(video.width, video.height)
+    //   // const read = new Uint8Array(canvas.width * canvas.height * 4)
+    //   // console.log(read)
+    //   // const d = new Uint8ClampedArray(read.buffer)
+    //   // console.log(d)
+    //   ctx.putImageData(new ImageData(d, canvas.width, canvas.height), 0, 0)
+    //   // On play event - draw the video in the canvas
+    //   // function step () {
+    //   //   ctx.drawImage(canvas, 0, 0, canvas.width, canvas.height)
+    //   //   requestAnimationFrame(step)
+    //   // }
+    //   // requestAnimationFrame(step)
+    //   // Init stream and recorder
+    //   const stream = canvas.captureStream()
+    //   const recorder = new MediaRecorder(stream, { mimeType: 'video/webm' })
+    //   // Get the blob data when is available
+    //   let allChunks = []
+    //   recorder.ondataavailable = function (e) {
+    //     allChunks.push(e.data)
+    //   }
+    //   recorder.onstop = (e) => {
+    //     const fullBlob = new Blob(allChunks, { 'type': 'video/webm' })
+    //     const downloadUrl = window.URL.createObjectURL(fullBlob)
+    //     console.log({fullBlob})
+    //     console.log({downloadUrl})
+    //     video.src = downloadUrl
+    //     video.play()
+    //   }
+    //   // Start to record
+    //   recorder.start()
+    //   // Stop the recorder after 5s and check the result
+    //   setTimeout(() => {
+    //     recorder.stop()
+    //   }, 5000)
+    // },
     startVideoRecording () {
-      const canvas = document.getElementById('canvas-recorder')
-      console.log(canvas)
-      const ctx = canvas.getContext('2d')
-      const video = document.querySelector('video')
-      console.log(canvas.width, canvas.height)
-      console.log(video.width, video.height)
-      // const read = new Uint8Array(canvas.width * canvas.height * 4)
-      // console.log(read)
-      // const d = new Uint8ClampedArray(read.buffer)
-      // console.log(d)
-      ctx.putImageData(new ImageData(d, canvas.width, canvas.height), 0, 0)
+      const request = new VideoRequest()
+      console.log(request)
 
-      // On play event - draw the video in the canvas
-      // function step () {
-      //   ctx.drawImage(canvas, 0, 0, canvas.width, canvas.height)
-      //   requestAnimationFrame(step)
-      // }
-      // requestAnimationFrame(step)
-      // Init stream and recorder
-      const stream = canvas.captureStream()
-      const recorder = new MediaRecorder(stream, { mimeType: 'video/webm' })
-      // Get the blob data when is available
-      let allChunks = []
-      recorder.ondataavailable = function (e) {
-        allChunks.push(e.data)
-      }
-      recorder.onstop = (e) => {
-        const fullBlob = new Blob(allChunks, { 'type': 'video/webm' })
-        const downloadUrl = window.URL.createObjectURL(fullBlob)
-        console.log({fullBlob})
-        console.log({downloadUrl})
-        video.src = downloadUrl
-        video.play()
-      }
-      // Start to record
-      recorder.start()
-      // Stop the recorder after 5s and check the result
       setTimeout(() => {
-        recorder.stop()
+        request.stopRecording()
       }, 5000)
     },
     async onEnter () {
