@@ -23,7 +23,7 @@ class VideoRequest {
 
     const cameraRTT = new OrthographicCamera(this.canvas.width / -2, this.canvas.width / 2, this.canvas.height / 2, this.canvas.height / -2, -10000, 10000)
     console.log(cameraRTT)
-    cameraRTT.position.z = 1000
+    cameraRTT.position.z = 500
 
     const sceneRTT = new Scene()
 

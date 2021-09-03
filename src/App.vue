@@ -1,5 +1,5 @@
 <template>
-  <div style="height: 100vh; width: 100vw;">
+  <div style="height: 100vh; width: 100vw; overflow: hidden;">
     <!-- <canvas id="self-render" class="content-area"></canvas> -->
     <!-- <div style="width: 50%; height: 50%; background-color: rgba(0,0,0,0.5)"></div> -->
     <!-- <canvas class="video-recorder-canvas" id="video-recorder-canvas"></canvas> -->
@@ -197,8 +197,9 @@ export default {
 }
 
 #canvas-recorder {
-  width: 99%;
-  height: 99%;
+  overflow: hidden;
+  width: 100%;
+  height: 100%;
   background-color: rgba(0, 0, 0, 0.3);
 }
 
