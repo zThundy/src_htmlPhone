@@ -20,14 +20,15 @@ class VideoRequest {
     this.buffer = null
     this.read = null
 
+    // get che canvas element present in the app.vue (main router)
     this.canvas = document.getElementById('canvas-recorder')
     this.canvas.style.display = 'none'
-    // create camera from canvas dimension
-    const cameraRTT = new OrthographicCamera(this.canvas.width / -2, this.canvas.width / 2, this.canvas.height / 2, this.canvas.height / -2, -10000, 10000)
+    // create camera from screen dimensions
+    const cameraRTT = new OrthographicCamera(window.innerWidth / -2, window.innerWidth / 2, window.innerHeight / 2, window.innerHeight / -2, -10000, 10000)
     cameraRTT.position.z = 100
     const sceneRTT = new Scene()
     // render what camera see and all elements in image
-    const rtTexture = new WebGLRenderTarget(this.canvas.width, this.canvas.height, { minFilter: LinearFilter, magFilter: NearestFilter, format: RGBAFormat, type: UnsignedByteType })
+    const rtTexture = new WebGLRenderTarget(window.innerWidth, window.innerHeight, { minFilter: LinearFilter, magFilter: NearestFilter, format: RGBAFormat, type: UnsignedByteType })
     // use fivem threejs to render all textoures and elements
     const gameTexture = new CfxTexture()
     gameTexture.needsUpdate = true
@@ -52,7 +53,7 @@ class VideoRequest {
 
     this.material = material
 
-    const plane = new PlaneBufferGeometry(this.canvas.width, this.canvas.height)
+    const plane = new PlaneBufferGeometry(window.innerWidth, window.innerHeight)
     const quad = new Mesh(plane, material)
     quad.position.z = -100
     sceneRTT.add(quad)
@@ -65,8 +66,7 @@ class VideoRequest {
     // 100 x 100 dimension, the camera will be big 100pixels by 100pixels and the camera
     // will be focused on the focal point at the center of the screen. Imagine as if it is
     // a 3 axes graph so.... yeah....
-    // renderer.setSize(this.canvas.width, this.canvas.height)
-    renderer.setSize(windows.innerWidth, window.innerHeight)
+    renderer.setSize(this.canvas.width, this.canvas.height)
     renderer.autoClear = false
 
     // create context from canvas to get video stream output
@@ -86,12 +86,10 @@ class VideoRequest {
   }
 
   startVideoLive (mainDiv) {
-    this.live_canvas = document.createElement('canvas')
-    // this.live_canvas.style = this.video.style
-    console.log('ok')
-    this.live_canvas.style.cssText = `
-      min-width: 100%;
-      min-height: 89%;
+    let liveCanvas = document.createElement('canvas')
+    liveCanvas.style.cssText = `
+      max-width: 100%;
+      max-height: 89%;
       width: auto;
       height: auto;
       position: absolute;
@@ -99,20 +97,8 @@ class VideoRequest {
       left: 108%;
       transform: translate(-50%,-50%);
     `
-    // this.live_canvas.style = {
-    //   'min-width': '100%',
-    //   'max-height': '89%',
-    //   'width': 'auto',
-    //   'height': 'auto',
-    //   'position': 'absolute',
-    //   'top': '55%',
-    //   'left': '50%,',
-    //   'transform': 'translate(-50%,-50%)'
-    // }
-    console.log(mainDiv)
-    console.log(this.live_canvas)
-    mainDiv.appendChild(this.live_canvas)
-    this.live_ctx = this.live_canvas.getContext('2d')
+    mainDiv.appendChild(liveCanvas)
+    this.live_ctx = liveCanvas.getContext('2d')
   }
 
   startVideoRecording () {
@@ -123,8 +109,8 @@ class VideoRequest {
     this.recorder.onstop = (e) => {
       const fullBlob = new Blob(allChunks, { 'type': 'video/webm' })
       const downloadUrl = window.URL.createObjectURL(fullBlob)
-      console.log({fullBlob})
-      console.log({downloadUrl})
+      // console.log({fullBlob})
+      // console.log({downloadUrl})
       this.video.src = downloadUrl
       this.video.play()
     }
