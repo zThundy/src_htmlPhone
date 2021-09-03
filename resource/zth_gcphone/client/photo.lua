@@ -8,6 +8,7 @@ RegisterNUICallback('takePhoto', function(data, cb) Citizen.CreateThreadNow(func
 RegisterNUICallback('takeVideo', function(data, cb) Citizen.CreateThreadNow(function() TakeVideo(data, cb) end) end)
 
 function TakeVideo(data, cb)
+	print("function called")
 	local videoRecord = true
 	local frontCam = false
 	
@@ -25,6 +26,7 @@ function TakeVideo(data, cb)
 			DestroyMobilePhone()
 			CellCamActivate(false, false)
 		end
+		Citizen.Wait(0)
 	end
 end
 

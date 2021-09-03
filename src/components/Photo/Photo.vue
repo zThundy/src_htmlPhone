@@ -62,10 +62,8 @@ export default {
             this.ignoreControl = false
             break
           case 2:
-            this.$phoneAPI.takeVideo().then(() => {
-              this.videoRequest.startVideoRecording()
-              this.recording = true
-            })
+            this.videoRequest.startVideoRecording()
+            this.recording = true
             break
           case -1:
             this.ignoreControl = false
@@ -86,7 +84,9 @@ export default {
     this.$bus.$on('keyUpBackspace', this.onBack)
   },
   mounted () {
-    this.videoRequest = new VideoRequest(document.getElementById('photo-main'), document.getElementById('video-view-element'))
+    this.$phoneAPI.takeVideo().then(() => {
+      this.videoRequest = new VideoRequest(document.getElementById('photo-main'), document.getElementById('video-view-element'))
+    })
   },
   beforeDestroy () {
     this.$bus.$off('keyUpEnter', this.onEnter)
