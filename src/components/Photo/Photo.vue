@@ -10,7 +10,6 @@
       </div>
     </div>
     -->
-    <div id="video-app"></div>
     <video id="video-view-element" controls="true" crossorigin="anonymous"></video>
   </div>
 </template>

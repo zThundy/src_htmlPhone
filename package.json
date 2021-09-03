@@ -8,6 +8,7 @@
     "lint": "eslint --ext .js,.vue src"
   },
   "dependencies": {
+    "@citizenfx/three": "^0.100.0",
     "aes256": "^1.1.0",
     "babel-preset-es2017": "^6.24.1",
     "bigeval": "^3.1.0",
@@ -15,7 +16,6 @@
     "javascript-obfuscator": "^2.14.0",
     "mand-mobile": "^2.5.19",
     "sass-loader": "^6.0.7",
-    "three": "^0.132.2",
     "vue": "^2.6.13",
     "vue-router": "^2.8.1",
     "vue-timeago": "^3.4.4",

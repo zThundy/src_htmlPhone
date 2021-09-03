@@ -204,7 +204,7 @@ export default {
 
 .test-elem {
   position: absolute;
-  bottom: 150px;
+  bottom: 550px;
   left: 500px;
   width: 50px;
   height: 50px;

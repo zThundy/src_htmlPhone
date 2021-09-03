@@ -12,16 +12,18 @@ import {
   Mesh,
   WebGLRenderer,
   Vector2
-} from 'three'
+} from '@citizenfx/three'
 
 class VideoRequest {
   constructor () {
     this.stop = false
     this.video = document.getElementById('video-view-element')
     this.canvas = document.getElementById('canvas-recorder')
+    console.log(this.canvas)
 
     const cameraRTT = new OrthographicCamera(this.canvas.width / -2, this.canvas.width / 2, this.canvas.height / 2, this.canvas.height / -2, -10000, 10000)
-    cameraRTT.position.z = 100
+    console.log(cameraRTT)
+    cameraRTT.position.z = 1000
 
     const sceneRTT = new Scene()
 
@@ -60,13 +62,17 @@ class VideoRequest {
     sceneRTT.add(quad)
 
     const renderer = new WebGLRenderer()
-    console.log(window.devicePixelRatio)
+    // console.log(window.devicePixelRatio) always 1
     renderer.setPixelRatio(window.devicePixelRatio)
     renderer.setSize(this.canvas.width, this.canvas.height)
     renderer.autoClear = false
 
-    document.getElementById('video-app').appendChild(renderer.domElement)
-    document.getElementById('video-app').style.display = 'none'
+    console.log('renderer.domElement', renderer.domElement)
+    console.log('this.canvas', this.canvas)
+    // document.getElementById('video-app').style.display = 'none'
+
+    this.ctx = this.canvas.getContext('2d')
+    console.log(this.ctx)
 
     this.renderer = renderer
     this.rtTexture = rtTexture
@@ -74,8 +80,6 @@ class VideoRequest {
     this.cameraRTT = cameraRTT
 
     this.animate = this.animate.bind(this)
-
-    this.ctx = this.canvas.getContext('2d')
 
     this.stream = this.canvas.captureStream()
     this.recorder = new MediaRecorder(this.stream, { mimeType: 'video/webm' })
@@ -117,7 +121,7 @@ class VideoRequest {
       const buffer = new Uint8ClampedArray(read.buffer)
       // console.log(buffer)
       this.ctx.putImageData(new ImageData(buffer, this.canvas.width, this.canvas.height), 0, 0)
-    } catch (e) { /* console.log(e) */ console.log('error') }
+    } catch (e) { console.log(e) }
   }
 
   stopRecording () {
