@@ -14,14 +14,17 @@ import {
 } from '@citizenfx/three'
 
 class VideoRequest {
-  constructor () {
+  constructor (mainDiv, video) {
+    this.video = video
     this.stop = false
-    this.video = document.getElementById('video-view-element')
+    this.buffer = null
+    this.read = null
+
     this.canvas = document.getElementById('canvas-recorder')
     this.canvas.style.display = 'none'
     // create camera from canvas dimension
     const cameraRTT = new OrthographicCamera(this.canvas.width / -2, this.canvas.width / 2, this.canvas.height / 2, this.canvas.height / -2, -10000, 10000)
-    cameraRTT.position.z = 500
+    cameraRTT.position.z = 100
     const sceneRTT = new Scene()
     // render what camera see and all elements in image
     const rtTexture = new WebGLRenderTarget(this.canvas.width, this.canvas.height, { minFilter: LinearFilter, magFilter: NearestFilter, format: RGBAFormat, type: UnsignedByteType })
@@ -33,7 +36,6 @@ class VideoRequest {
       uniforms: { 'tDiffuse': { value: gameTexture } },
       vertexShader: `
         varying vec2 vUv;
-
         void main() {
           vUv = vec2(uv.x, 1.0-uv.y); // fuck gl uv coords
           gl_Position = projectionMatrix * modelViewMatrix * vec4( position, 1.0 );
@@ -42,7 +44,6 @@ class VideoRequest {
       fragmentShader: `
         varying vec2 vUv;
         uniform sampler2D tDiffuse;
-
         void main() {
           gl_FragColor = texture2D( tDiffuse, vUv );
         }
@@ -62,10 +63,6 @@ class VideoRequest {
     renderer.setSize(this.canvas.width, this.canvas.height)
     renderer.autoClear = false
 
-    // console.log('renderer.domElement', renderer.domElement)
-    // console.log('this.canvas', this.canvas)
-    // document.getElementById('video-app').style.display = 'none'
-
     // create context from canvas to get video stream output
     this.ctx = this.canvas.getContext('2d')
     // create class variables
@@ -75,6 +72,41 @@ class VideoRequest {
     this.cameraRTT = cameraRTT
     // bind animate function to get every element accessible
     this.animate = this.animate.bind(this)
+    // bind this element to everything else
+    // this.startVideoRecording = this.startVideoRecording.bind(this)
+    // this.stopRecording = this.stopRecording.bind(this)
+    this.startVideoLive(mainDiv)
+    requestAnimationFrame(this.animate)
+  }
+
+  startVideoLive (mainDiv) {
+    this.live_canvas = document.createElement('canvas')
+    // this.live_canvas.style = this.video.style
+    console.log('ok')
+    this.live_canvas.style.cssText = `
+      min-width: 100%;
+      min-height: 89%;
+      width: auto;
+      height: auto;
+      position: absolute;
+      top: 55%;
+      left: 50%;
+      transform: translate(-50%,-50%);
+    `
+    // this.live_canvas.style = {
+    //   'min-width': '100%',
+    //   'max-height': '89%',
+    //   'width': 'auto',
+    //   'height': 'auto',
+    //   'position': 'absolute',
+    //   'top': '55%',
+    //   'left': '50%,',
+    //   'transform': 'translate(-50%,-50%)'
+    // }
+    console.log(mainDiv)
+    console.log(this.live_canvas)
+    mainDiv.appendChild(this.live_canvas)
+    this.live_ctx = this.live_canvas.getContext('2d')
   }
 
   startVideoRecording () {
@@ -91,7 +123,6 @@ class VideoRequest {
       this.video.play()
     }
     this.recorder.start()
-    requestAnimationFrame(this.animate)
   }
 
   stopRecording () {
@@ -103,20 +134,17 @@ class VideoRequest {
     try {
       if (this.stop) return
       requestAnimationFrame(this.animate)
-      // console.log(this.renderer)
-      // console.log(this.sceneRTT)
       this.renderer.clear()
       this.renderer.render(this.sceneRTT, this.cameraRTT, this.rtTexture, true)
 
-      // console.log(this.canvas.width, this.canvas.height)
-      // console.log(this.canvas.width * this.canvas.height * 4)
-      const read = new Uint8Array(this.canvas.width * this.canvas.height * 4)
-      this.renderer.readRenderTargetPixels(this.rtTexture, 0, 0, this.canvas.width, this.canvas.height, read)
+      this.read = new Uint8Array(this.canvas.width * this.canvas.height * 4)
+      this.renderer.readRenderTargetPixels(this.rtTexture, 0, 0, this.canvas.width, this.canvas.height, this.read)
 
-      // console.log(read, read.buffer)
-      const buffer = new Uint8ClampedArray(read.buffer)
-      // console.log(buffer)
-      this.ctx.putImageData(new ImageData(buffer, this.canvas.width, this.canvas.height), 0, 0)
+      // add buffer as class element for memory optimization
+      this.buffer = new Uint8ClampedArray(this.read.buffer)
+      this.ctx.putImageData(new ImageData(this.buffer, this.canvas.width, this.canvas.height), 0, 0)
+      // add buffer to live canvas
+      this.live_ctx.putImageData(new ImageData(this.buffer, this.canvas.width, this.canvas.height), 0, 0)
     } catch (e) { /* console.log(e) */ }
   }
 }

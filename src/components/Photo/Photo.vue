@@ -1,5 +1,5 @@
 <template>
-  <div style="width: 100%; height: 100%;" class="phone_app">
+  <div id="photo-main" style="width: 100%; height: 100%;" class="phone_app">
     <PhoneTitle class="decor-border" :backgroundColor="'white'" :title="LangString('APP_PHOTO_TITLE')" />
 
     <!--
@@ -11,12 +11,12 @@
     </div>
     -->
     
-    <video id="video-view-element" crossorigin="anonymous" autoplay="autoplay">
-    </video>
+    <video id="video-view-element" crossorigin="anonymous" autoplay="autoplay"></video>
 
     <div class="picture-snap-cyrcle-contaniner">
       <div class="picture-snap-cyrcle-ext">
-        <div class="picture-snap-cyrcle-int"></div>
+        <div v-if="recording" class="picture-snap-cyrcle-int" style="background-color: rgb(255, 40, 40);"></div>
+        <div v-else class="picture-snap-cyrcle-int" style="background-color: rgb(190, 190, 190);"></div>
       </div>
     </div>
   </div>
@@ -35,7 +35,7 @@ export default {
   data () {
     return {
       ignoreControls: false,
-      recording: null,
+      recording: false,
       chunks: [],
       videoRequest: null
     }
@@ -44,16 +44,8 @@ export default {
     ...mapGetters(['LangString'])
   },
   methods: {
-    startVideoRecording () {
-      if (this.videoRequest) return
-      this.videoRequest.startVideoRecording()
-    },
     async onEnter () {
-      if (this.videoRequest) {
-        this.videoRequest.stopRecording()
-        this.videoRequest = null
-        return
-      }
+      if (this.recording) { return this.videoRequest.stopRecording() }
       if (this.ignoreControl) return
       this.ignoreControl = true
       var options = [
@@ -67,9 +59,13 @@ export default {
             this.$phoneAPI.takePhoto().then(photo => {
               if (photo) { this.$router.push({ name: 'galleria.splash', params: photo }) }
             })
+            this.ignoreControl = false
             break
           case 2:
-            this.startVideoRecording()
+            this.$phoneAPI.takeVideo().then(() => {
+              this.videoRequest.startVideoRecording()
+              this.recording = true
+            })
             break
           case -1:
             this.ignoreControl = false
@@ -85,10 +81,12 @@ export default {
       this.$router.push({ name: 'menu' })
     }
   },
-  async created () {
-    this.videoRequest = new VideoRequest()
+  created () {
     this.$bus.$on('keyUpEnter', this.onEnter)
     this.$bus.$on('keyUpBackspace', this.onBack)
+  },
+  mounted () {
+    this.videoRequest = new VideoRequest(document.getElementById('photo-main'), document.getElementById('video-view-element'))
   },
   beforeDestroy () {
     this.$bus.$off('keyUpEnter', this.onEnter)
@@ -104,7 +102,7 @@ export default {
   /* background-color: black; */
   /* width: 100%; */
   /* height: 100%; */
-  min-width: 10%;
+  min-width: 100%;
   min-height: 89%;
   width: auto;
   height: auto;
@@ -146,8 +144,8 @@ export default {
   left: 2px;
   height: 70px;
   width: 70px;
-  background-color: rgb(255, 40, 40);
   border-radius: 50px;
+  transition: all ease .5s;
   /* border: 3px solid black; */
 }
 </style>
