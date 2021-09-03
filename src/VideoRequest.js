@@ -58,9 +58,15 @@ class VideoRequest {
     sceneRTT.add(quad)
 
     const renderer = new WebGLRenderer()
-    // console.log(window.devicePixelRatio) always 1
     renderer.setPixelRatio(window.devicePixelRatio)
-    renderer.setSize(this.canvas.width, this.canvas.height)
+    // this will change the size of the camera:
+    // smaller the camera lower the resolution
+    // imagine a focal point in the center of the screen: if we create a camera with
+    // 100 x 100 dimension, the camera will be big 100pixels by 100pixels and the camera
+    // will be focused on the focal point at the center of the screen. Imagine as if it is
+    // a 3 axes graph so.... yeah....
+    // renderer.setSize(this.canvas.width, this.canvas.height)
+    renderer.setSize(windows.innerWidth, window.innerHeight)
     renderer.autoClear = false
 
     // create context from canvas to get video stream output
