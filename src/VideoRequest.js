@@ -90,7 +90,7 @@ class VideoRequest {
       height: auto;
       position: absolute;
       top: 55%;
-      left: 50%;
+      left: 108%;
       transform: translate(-50%,-50%);
     `
     // this.live_canvas.style = {
