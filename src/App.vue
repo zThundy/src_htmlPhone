@@ -28,9 +28,6 @@
         </div>
       </div>
     </div>
-
-    <div class="test-elem"></div>
-    <canvas id="canvas-recorder"></canvas>
   </div>
 </template>
 
@@ -194,30 +191,5 @@ export default {
   align-self: center;
   margin: auto;
   text-align: center;
-}
-
-#canvas-recorder {
-  position: absolute;
-  bottom: 100px;
-  left: 650px;
-  width: 300px;
-  height: 300px;
-  background-color: rgba(0, 0, 0, 0.3);
-}
-
-.test-elem {
-  position: absolute;
-  bottom: 150px;
-  left: 500px;
-  width: 50px;
-  height: 50px;
-  background-color: red;
-  animation: test 1.0s linear infinite;
-}
-
-@keyframes test {
-  50% {
-    transform: rotate(180deg)
-  }
 }
 </style>
