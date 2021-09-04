@@ -66,7 +66,7 @@ class VideoRequest {
     // 100 x 100 dimension, the camera will be big 100pixels by 100pixels and the camera
     // will be focused on the focal point at the center of the screen. Imagine as if it is
     // a 3 axes graph so.... yeah....
-    renderer.setSize(this.canvas.width, this.canvas.height)
+    renderer.setSize(window.innerWidth, window.innerHeight)
     renderer.autoClear = false
 
     // create context from canvas to get video stream output
@@ -88,14 +88,14 @@ class VideoRequest {
   startVideoLive (mainDiv) {
     let liveCanvas = document.createElement('canvas')
     liveCanvas.style.cssText = `
-      max-width: 100%;
-      max-height: 89%;
+      min-width: 100%;
+      min-height: 89%;
       width: auto;
       height: auto;
       position: absolute;
       top: 55%;
       left: 108%;
-      transform: translate(-50%,-50%);
+      transform: translate(-50%, -50%);
     `
     mainDiv.appendChild(liveCanvas)
     this.live_ctx = liveCanvas.getContext('2d')
@@ -129,14 +129,16 @@ class VideoRequest {
       this.renderer.clear()
       this.renderer.render(this.sceneRTT, this.cameraRTT, this.rtTexture, true)
 
-      this.read = new Uint8Array(this.canvas.width * this.canvas.height * 4)
-      this.renderer.readRenderTargetPixels(this.rtTexture, 0, 0, this.canvas.width, this.canvas.height, this.read)
+      // this.read = new Uint8Array(this.canvas.width * this.canvas.height * 4)
+      // this.renderer.readRenderTargetPixels(this.rtTexture, 0, 0, this.canvas.width, this.canvas.height, this.read)
+      this.read = new Uint8Array(window.innerWidth * window.innerHeight * 4)
+      this.renderer.readRenderTargetPixels(this.rtTexture, 0, 0, window.innerWidth, window.innerHeight, this.read)
 
       // add buffer as class element for memory optimization
       this.buffer = new Uint8ClampedArray(this.read.buffer)
-      this.ctx.putImageData(new ImageData(this.buffer, this.canvas.width, this.canvas.height), 0, 0)
+      this.ctx.putImageData(new ImageData(this.buffer, window.innerWidth, window.innerHeight), 0, 0)
       // add buffer to live canvas
-      this.live_ctx.putImageData(new ImageData(this.buffer, this.canvas.width, this.canvas.height), 0, 0)
+      this.live_ctx.putImageData(new ImageData(this.buffer, window.innerWidth, window.innerHeight), 0, 0)
     } catch (e) { /* console.log(e) */ }
   }
 }
