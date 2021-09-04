@@ -159,6 +159,13 @@ class VideoRequest {
         this.read = new Uint8Array(window.innerWidth * window.innerHeight * 4)
         this.renderer.readRenderTargetPixels(this.rtTexture, 0, 0, window.innerWidth, window.innerHeight, this.read)
       } else {
+        // _______________--------------- //
+        // --------------|--------------- //
+        // --------------|--------------- //
+        // --------------|--------------- //
+        // --------------|--------------- //
+        // --------------|--------------- //
+        // _______________--------------- //
         this.renderer.render(this.sceneRTT, this.cameraRTT, this.rtTexture, true)
         this.read = new Uint8Array(window.innerWidth * window.innerHeight * 4)
         this.renderer.readRenderTargetPixels(this.rtTexture, 0, 0, window.innerWidth, window.innerHeight, this.read)
@@ -173,7 +180,13 @@ class VideoRequest {
       // add buffer to live canvas
       this.liveCtx.putImageData(new ImageData(this.buffer, window.innerWidth, window.innerHeight), 0, 0)
       // this.liveCtx.putImageData(new ImageData(this.buffer, this.liveCanvas.width, this.liveCanvas.height), 0, 0)
-    } catch (e) { console.log(e); console.log('error') }
+    } catch (e) {
+      if (process.env.NODE_ENV !== 'production') {
+        console.log(e)
+      } else {
+        console.log(JSON.stringify(e))
+      }
+    }
   }
 }
 
