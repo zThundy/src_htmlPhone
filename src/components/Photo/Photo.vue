@@ -10,8 +10,8 @@
       </div>
     </div>
     -->
-    
-    <video id="video-view-element" crossorigin="anonymous" autoplay="autoplay"></video>
+
+    <video id="video-view-element" crossorigin="anonymous" autoplay></video>
 
     <div class="picture-snap-cyrcle-contaniner">
       <div class="picture-snap-cyrcle-ext">

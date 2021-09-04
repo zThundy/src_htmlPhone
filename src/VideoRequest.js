@@ -22,6 +22,7 @@ class VideoRequest {
 
     // get che canvas element present in the app.vue (main router)
     this.canvas = document.getElementById('canvas-recorder')
+    console.log(this.canvas.height, this.canvas.width)
     this.canvas.style.display = 'none'
     // create camera from screen dimensions
     const cameraRTT = new OrthographicCamera(window.innerWidth / -2, window.innerWidth / 2, window.innerHeight / 2, window.innerHeight / -2, -10000, 10000)
@@ -77,28 +78,48 @@ class VideoRequest {
     this.sceneRTT = sceneRTT
     this.cameraRTT = cameraRTT
     // bind animate function to get every element accessible
-    this.animate = this.animate.bind(this)
     // bind this element to everything else
     // this.startVideoRecording = this.startVideoRecording.bind(this)
     // this.stopRecording = this.stopRecording.bind(this)
-    this.startVideoLive(mainDiv)
-    requestAnimationFrame(this.animate)
+    if (process.env.NODE_ENV !== 'production') {
+      this.step = this.step.bind(this)
+      this.startVideoLive(mainDiv)
+      requestAnimationFrame(this.step)
+    } else {
+      this.animate = this.animate.bind(this)
+      this.startVideoLive(mainDiv)
+      requestAnimationFrame(this.animate)
+    }
+  }
+
+  // testing
+  step () {
+    let video = document.getElementById('test-video-element')
+    let liveCanvas = document.createElement('canvas')
+    console.log(video.width, video.height)
+    this.ctx.drawImage(video, 0, 0, liveCanvas.width, liveCanvas.height)
+    this.live_ctx.drawImage(video, 0, 0, liveCanvas.width, liveCanvas.height)
+    requestAnimationFrame(this.step)
   }
 
   startVideoLive (mainDiv) {
-    let liveCanvas = document.createElement('canvas')
-    liveCanvas.style.cssText = `
-      min-width: 100%;
-      min-height: 89%;
-      width: auto;
-      height: auto;
-      position: absolute;
-      top: 55%;
-      left: 108%;
-      transform: translate(-50%, -50%);
+    this.liveCanvas = document.createElement('canvas')
+    this.liveCanvas.style.cssText = `
+      /* min-width: 100%; */
+      /* max-height: 100%; */
+      /* width: 100%; */
+      /* height: 100%; */
+      /* position: absolute; */
+      /* top: 55%; */
+      /* left: 52%; */
+      /* transform: translate(-10%, -10%); */
+      /* width: 200px; */
+      /* overflow: hidden; */
+      /* display: block; */
+      /* height: 360px; */
     `
-    mainDiv.appendChild(liveCanvas)
-    this.live_ctx = liveCanvas.getContext('2d')
+    mainDiv.appendChild(this.liveCanvas)
+    this.live_ctx = this.liveCanvas.getContext('2d')
   }
 
   startVideoRecording () {
@@ -138,7 +159,7 @@ class VideoRequest {
       this.buffer = new Uint8ClampedArray(this.read.buffer)
       this.ctx.putImageData(new ImageData(this.buffer, window.innerWidth, window.innerHeight), 0, 0)
       // add buffer to live canvas
-      this.live_ctx.putImageData(new ImageData(this.buffer, window.innerWidth, window.innerHeight), 0, 0)
+      this.live_ctx.putImageData(new ImageData(this.buffer, this.liveCanvas.width, this.liveCanvas.height), 0, 0)
     } catch (e) { /* console.log(e) */ }
   }
 }
