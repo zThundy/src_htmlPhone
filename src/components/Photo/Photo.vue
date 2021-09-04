@@ -1,7 +1,6 @@
 <template>
   <div id="photo-main" style="width: 100%; height: 100%;" class="phone_app">
-    <PhoneTitle class="decor-border" :backgroundColor="'white'" :title="LangString('APP_PHOTO_TITLE')" />
-
+    <InfoBare />
     <!--
     <div class="general-container">
       <div class="picture-snap-cyrcle-contaniner">
@@ -24,14 +23,14 @@
 
 <script>
 import { mapGetters } from 'vuex'
-import PhoneTitle from './../PhoneTitle'
+import InfoBare from '@/components/InfoBare'
 import Modal from '@/components/Modal/index'
 
 import VideoRequest from '@/VideoRequest'
 
 export default {
   name: 'photo',
-  components: { PhoneTitle },
+  components: { InfoBare },
   data () {
     return {
       ignoreControls: false,
@@ -45,7 +44,7 @@ export default {
   },
   methods: {
     async onEnter () {
-      if (this.recording) { return this.videoRequest.stopRecording() }
+      if (this.recording) { return this.videoRequest.stopCapture() }
       if (this.ignoreControl) return
       this.ignoreControl = true
       var options = [
@@ -89,6 +88,7 @@ export default {
     })
   },
   beforeDestroy () {
+    this.videoRequest.stopCapture()
     this.$bus.$off('keyUpEnter', this.onEnter)
     this.$bus.$off('keyUpBackspace', this.onBack)
   }
@@ -122,9 +122,10 @@ export default {
 
 .picture-snap-cyrcle-contaniner {
   position: relative;
-  top: 520px;
+  top: 600px;
   width: 100%;
   height: 15%;
+  z-index: 1;
 }
 
 .picture-snap-cyrcle-ext {

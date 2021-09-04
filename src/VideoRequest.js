@@ -10,7 +10,9 @@ import {
   ShaderMaterial,
   PlaneBufferGeometry,
   Mesh,
-  WebGLRenderer
+  WebGLRenderer,
+  BoxGeometry,
+  MeshBasicMaterial
 } from '@citizenfx/three'
 
 class VideoRequest {
@@ -22,7 +24,6 @@ class VideoRequest {
 
     // get che canvas element present in the app.vue (main router)
     this.canvas = document.getElementById('canvas-recorder')
-    console.log(this.canvas.height, this.canvas.width)
     this.canvas.style.display = 'none'
     // create camera from screen dimensions
     const cameraRTT = new OrthographicCamera(window.innerWidth / -2, window.innerWidth / 2, window.innerHeight / 2, window.innerHeight / -2, -10000, 10000)
@@ -54,12 +55,23 @@ class VideoRequest {
 
     this.material = material
 
-    const plane = new PlaneBufferGeometry(window.innerWidth, window.innerHeight)
-    const quad = new Mesh(plane, material)
-    quad.position.z = -100
-    sceneRTT.add(quad)
+    if (process.env.NODE_ENV !== 'production') {
+      console.log('creating new geometry')
+      var geometry = new BoxGeometry(200, 200, 200)
+      var material2 = new MeshBasicMaterial({ color: 0x00ff00 })
+      this.mesh = new Mesh(geometry, material2)
+      this.mesh.position.z = -90
+      console.log('adding geometry do scene')
+      sceneRTT.add(this.mesh)
+      console.log('everything ok')
+    } else {
+      const plane = new PlaneBufferGeometry(window.innerWidth, window.innerHeight)
+      const quad = new Mesh(plane, material)
+      quad.position.z = -100
+      sceneRTT.add(quad)
+    }
 
-    const renderer = new WebGLRenderer()
+    const renderer = new WebGLRenderer({ preserveDrawingBuffer: true })
     renderer.setPixelRatio(window.devicePixelRatio)
     // this will change the size of the camera:
     // smaller the camera lower the resolution
@@ -69,6 +81,16 @@ class VideoRequest {
     // a 3 axes graph so.... yeah....
     renderer.setSize(window.innerWidth, window.innerHeight)
     renderer.autoClear = false
+
+    if (process.env.NODE_ENV !== 'production') {
+      let div = mainDiv.appendChild(renderer.domElement)
+      div.style.cssText = `
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        z-index: -1;
+      `
+    }
 
     // create context from canvas to get video stream output
     this.ctx = this.canvas.getContext('2d')
@@ -80,46 +102,26 @@ class VideoRequest {
     // bind animate function to get every element accessible
     // bind this element to everything else
     // this.startVideoRecording = this.startVideoRecording.bind(this)
-    // this.stopRecording = this.stopRecording.bind(this)
-    if (process.env.NODE_ENV !== 'production') {
-      this.step = this.step.bind(this)
-      this.startVideoLive(mainDiv)
-      requestAnimationFrame(this.step)
-    } else {
-      this.animate = this.animate.bind(this)
-      this.startVideoLive(mainDiv)
-      requestAnimationFrame(this.animate)
-    }
-  }
-
-  // testing
-  step () {
-    let video = document.getElementById('test-video-element')
-    let liveCanvas = document.createElement('canvas')
-    console.log(video.width, video.height)
-    this.ctx.drawImage(video, 0, 0, liveCanvas.width, liveCanvas.height)
-    this.live_ctx.drawImage(video, 0, 0, liveCanvas.width, liveCanvas.height)
-    requestAnimationFrame(this.step)
+    // this.stopCapture = this.stopCapture.bind(this)
+    this.animate = this.animate.bind(this)
+    this.startVideoLive(mainDiv)
+    requestAnimationFrame(this.animate)
   }
 
   startVideoLive (mainDiv) {
     this.liveCanvas = document.createElement('canvas')
     this.liveCanvas.style.cssText = `
-      /* min-width: 100%; */
-      /* max-height: 100%; */
-      /* width: 100%; */
-      /* height: 100%; */
-      /* position: absolute; */
-      /* top: 55%; */
-      /* left: 52%; */
-      /* transform: translate(-10%, -10%); */
-      /* width: 200px; */
-      /* overflow: hidden; */
-      /* display: block; */
-      /* height: 360px; */
+      display: block;
+      width: 330px;
+      height: 710px;
+      top: 27px;
+      position: absolute;
+      z-index: 0;
     `
+    this.liveCanvas.width = window.innerWidth / 2
+    this.liveCanvas.height = window.innerHeight
     mainDiv.appendChild(this.liveCanvas)
-    this.live_ctx = this.liveCanvas.getContext('2d')
+    this.liveCtx = this.liveCanvas.getContext('2d')
   }
 
   startVideoRecording () {
@@ -138,9 +140,9 @@ class VideoRequest {
     this.recorder.start()
   }
 
-  stopRecording () {
+  stopCapture () {
     this.stop = true
-    this.recorder.stop()
+    if (this.recorder) this.recorder.stop()
   }
 
   animate () {
@@ -148,19 +150,30 @@ class VideoRequest {
       if (this.stop) return
       requestAnimationFrame(this.animate)
       this.renderer.clear()
-      this.renderer.render(this.sceneRTT, this.cameraRTT, this.rtTexture, true)
 
-      // this.read = new Uint8Array(this.canvas.width * this.canvas.height * 4)
-      // this.renderer.readRenderTargetPixels(this.rtTexture, 0, 0, this.canvas.width, this.canvas.height, this.read)
-      this.read = new Uint8Array(window.innerWidth * window.innerHeight * 4)
-      this.renderer.readRenderTargetPixels(this.rtTexture, 0, 0, window.innerWidth, window.innerHeight, this.read)
+      if (process.env.NODE_ENV !== 'production') {
+        this.mesh.rotation.x += 0.005
+        this.mesh.rotation.y += 0.01
+        // this.renderer.setRenderTarget(this.rtTexture)
+        this.renderer.render(this.sceneRTT, this.cameraRTT)
+        this.read = new Uint8Array(window.innerWidth * window.innerHeight * 4)
+        this.renderer.readRenderTargetPixels(this.rtTexture, 0, 0, window.innerWidth, window.innerHeight, this.read)
+      } else {
+        this.renderer.render(this.sceneRTT, this.cameraRTT, this.rtTexture, true)
+        this.read = new Uint8Array(window.innerWidth * window.innerHeight * 4)
+        this.renderer.readRenderTargetPixels(this.rtTexture, 0, 0, window.innerWidth, window.innerHeight, this.read)
+      }
 
-      // add buffer as class element for memory optimization
+      // create buffer (clumped array) from renderer buffer
+      // and save as class element for memory optimization
       this.buffer = new Uint8ClampedArray(this.read.buffer)
+      // add the clumped array buffer to both recorder context and live context
       this.ctx.putImageData(new ImageData(this.buffer, window.innerWidth, window.innerHeight), 0, 0)
+      // this.ctx.putImageData(new ImageData(this.buffer, this.liveCanvas.width, this.liveCanvas.height), 0, 0)
       // add buffer to live canvas
-      this.live_ctx.putImageData(new ImageData(this.buffer, this.liveCanvas.width, this.liveCanvas.height), 0, 0)
-    } catch (e) { /* console.log(e) */ }
+      this.liveCtx.putImageData(new ImageData(this.buffer, window.innerWidth, window.innerHeight), 0, 0)
+      // this.liveCtx.putImageData(new ImageData(this.buffer, this.liveCanvas.width, this.liveCanvas.height), 0, 0)
+    } catch (e) { console.log(e); console.log('error') }
   }
 }
 

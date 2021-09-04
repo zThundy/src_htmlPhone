@@ -31,7 +31,7 @@
 
     <!-- <div class="test-elem"></div> -->
     <canvas id="canvas-recorder"></canvas>
-    <video style="z-index: 0;" id="test-video-element" src="/html/static/img/Montage_Jojo.mp4" crossorigin="anonymous" autoplay controls loop></video>
+    <!-- <video style="z-index: 0;" id="test-video-element" src="/html/static/img/Montage_Jojo.mp4" crossorigin="anonymous" autoplay controls loop></video> -->
   </div>
 </template>
 
@@ -200,9 +200,8 @@ export default {
 #canvas-recorder {
   display: none;
   overflow: hidden;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(0, 0, 0, 0.3);
+  width: 100vw;
+  height: 100vh;
 }
 
 /*
