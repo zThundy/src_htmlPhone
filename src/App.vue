@@ -30,7 +30,6 @@
     </div>
 
     <!-- <div class="test-elem"></div> -->
-    <canvas id="canvas-recorder"></canvas>
     <!-- <video style="z-index: 0;" id="test-video-element" src="/html/static/img/Montage_Jojo.mp4" crossorigin="anonymous" autoplay controls loop></video> -->
   </div>
 </template>

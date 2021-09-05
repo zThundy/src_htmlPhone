@@ -44,7 +44,11 @@ export default {
   },
   methods: {
     async onEnter () {
-      if (this.recording) { return this.videoRequest.stopCapture() }
+      if (this.recording) {
+        this.videoRequest.stopRecording()
+        this.recording = false
+        return
+      }
       if (this.ignoreControl) return
       this.ignoreControl = true
       var options = [
@@ -58,14 +62,12 @@ export default {
             this.$phoneAPI.takePhoto().then(photo => {
               if (photo) { this.$router.push({ name: 'galleria.splash', params: photo }) }
             })
-            this.ignoreControl = false
             break
           case 2:
             this.videoRequest.startVideoRecording()
             this.recording = true
             break
           case -1:
-            this.ignoreControl = false
             break
         }
       })
