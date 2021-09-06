@@ -66,7 +66,6 @@
 <script>
 import { mapGetters, mapActions, mapMutations } from 'vuex'
 import Modal from '@/components/Modal/index.js'
-// import { replaceEmoji } from './../../Utils'
 
 export default {
   components: {},
