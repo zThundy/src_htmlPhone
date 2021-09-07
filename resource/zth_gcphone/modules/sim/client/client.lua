@@ -1,9 +1,6 @@
-local tunnel = module("zth_gcphone", "modules/TunnelV2")
-cartesimServerT = tunnel.getInterface(Config.AuthKey, "cartesim_server_t", "cartesim_server_t")
-
 local function OpenSimMenu()
     ESX.UI.Menu.CloseAll()
-    local elements = cartesimServerT.getSimList()
+    local elements = gcPhoneServerT.getSimList()
     
     ESX.UI.Menu.Open('default', GetCurrentResourceName(), 'phone_change', {
         title = Config.Language["SIM_MENU_TITLE"],
@@ -21,7 +18,7 @@ local function OpenSimMenu()
         }, function(data2, menu2)
             if data2.current.value == 'sim_use' then
                 ESX.UI.Menu.CloseAll()
-                cartesimServerT.usaSim({ number = phone_number, piano_tariffario = data.current.piano_tariffario })
+                gcPhoneServerT.usaSim({ number = phone_number, piano_tariffario = data.current.piano_tariffario })
                 ESX.ShowNotification(Config.Language["SIM_USED_MESSAGE_OK"]:format(phone_number))
                 Citizen.Wait(2000)
                 gcPhoneServerT.allUpdate()
@@ -33,7 +30,7 @@ local function OpenSimMenu()
                 if closestPlayer == -1 or closestDistance > 3.0 then
                     ESX.ShowNotification(Config.Language["SIM_NO_PLAYER_NEARBY"])
                 else
-                    cartesimServerT.daiSim(phone_number, GetPlayerServerId(closestPlayer))
+                    gcPhoneServerT.daiSim(phone_number, GetPlayerServerId(closestPlayer))
                 end
                 Citizen.Wait(2000)
                 gcPhoneServerT.allUpdate()
@@ -52,7 +49,7 @@ local function OpenSimMenu()
                         return
                     end
 
-                    cartesimServerT.rinominaSim(phone_number, sim_name)
+                    gcPhoneServerT.rinominaSim(phone_number, sim_name)
                     ESX.ShowNotification(Config.Language["SIM_RENAME_OK"])
                     ESX.UI.Menu.CloseAll()
                 end, function(data3, menu3)
@@ -63,7 +60,7 @@ local function OpenSimMenu()
 
             if data2.current.value == 'sim_delete' then
                 ESX.UI.Menu.CloseAll()
-                cartesimServerT.eliminaSim(phone_number)
+                gcPhoneServerT.eliminaSim(phone_number)
                 ESX.ShowNotification(Config.Language["SIM_DESTROY_OK"]:format(phone_number))
                 Citizen.Wait(2000)
                 gcPhoneServerT.allUpdate()
@@ -105,7 +102,7 @@ local function OpenSimInfoMenu(number)
             }
         }, function(data2, menu2)
             if data2.current.value == "acquista" then
-                local ok = cartesimServerT.buyOffer(v.label, number)
+                local ok = gcPhoneServerT.buyOffer(v.label, number)
                 if ok then
                     ESX.ShowNotification(Config.Language["SIM_TARIFFS_BUY_OK"])
                 else
@@ -125,13 +122,13 @@ end
 
 local function OpenShopMenu()
     ESX.UI.Menu.CloseAll()
-    local elements = cartesimServerT.getSimList()
+    local elements = gcPhoneServerT.getSimList()
     ESX.UI.Menu.Open('default', GetCurrentResourceName(), 'sim_listasim_numeri', {
         title = Config.Language["SIM_TARIFFS_SHOP_TITLE"],
         elements = elements
     }, function(data, menu)
         local phone_number = data.current.value.phone_number
-        local offerta = cartesimServerT.getOfferFromNumber(phone_number)
+        local offerta = gcPhoneServerT.getOfferFromNumber(phone_number)
         if offerta.piano_tariffario == "nessuno" then
             elements = {
                 {label = Config.Language["SIM_TARIFFS_SHOP_NO_OFFER"]},
@@ -160,7 +157,7 @@ local function OpenShopMenu()
                 OpenSimInfoMenu(phone_number)
             end
             if data2.current.value == "rinnova_offerta" then
-                local ok = cartesimServerT.renewOffer(offerta.piano_tariffario, phone_number)
+                local ok = gcPhoneServerT.renewOffer(offerta.piano_tariffario, phone_number)
                 if ok then
                     ESX.ShowNotification(Config.Language["SIM_TARIFFS_RENEWED_OK"])
                 else
