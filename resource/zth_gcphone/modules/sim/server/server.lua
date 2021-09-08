@@ -1,7 +1,3 @@
-cartesimT = {}
-local tunnel = module("zth_gcphone", "modules/TunnelV2")
-tunnel.bindInterface(Config.AuthKey, "cartesim_server_t", cartesimT)
-
 if GetResourceState("esx_simcards") == "started" or GetResourceState("esx_sim") == "started" then
     print("^1[ZTH_Phone] ^0[^3WARNING^0] Please remove esx_simcards or esx_sim resource from your server")
     StopResource("esx_simcards")
@@ -105,38 +101,36 @@ AddEventHandler('esx:playerLoaded', function(source, xPlayer)
     end
 end)
 
-cartesimT.daiSim = function(number, c_id)
+gcPhoneT.daiSim = function(number, c_id)
     local player = source
     local xPlayer = ESX.GetPlayerFromId(player)
-    local xPlayer2 = ESX.GetPlayerFromId(c_id)
+    local c_xPlayer = ESX.GetPlayerFromId(c_id)
             
     if number ~= nil then
         showXNotification(xPlayer, Config.Language["SIM_GIVEN_MESSAGE_1"]:format(number))
-        showXNotification(xPlayer2, Config.Language["SIM_GIVEN_MESSAGE_2"]:format(number))
-        gcPhoneT.updateCachedNumber(number, xPlayer2.identifier, false)
-        MySQL.Async.fetchAll("SELECT phone_number FROM users WHERE identifier = @identifier AND phone_number = @number", {
-            ['@identifier'] = xPlayer.identifier,
-            ['@number'] = number
-        }, function(result)
+        showXNotification(c_xPlayer, Config.Language["SIM_GIVEN_MESSAGE_2"]:format(number))
+        if CACHED_NUMBERS[number] and CACHED_NUMBERS[number].identifier == xPlayer.identifier then
+            gcPhoneT.updateCachedNumber(number, false, false)
+            gcPhoneT.updateCachedNumber(number, c_xPlayer.identifier, false)
+            MySQL.Async.execute('UPDATE phone_sim SET identifier = @identifier WHERE phone_number = @phone_number', {
+                ['@identifier'] = c_xPlayer.identifier,
+                ['@phone_number'] = number
+            })
+
             if result and result[1] then
-                MySQL.Async.execute('UPDATE `users` SET phone_number = @phone_number WHERE `identifier` = @identifier', {
-                    ['@identifier']   = xPlayer.identifier,
+                MySQL.Async.execute('UPDATE users SET phone_number = @phone_number WHERE identifier = @identifier', {
+                    ['@identifier'] = xPlayer.identifier,
                     ['@phone_number'] = 0
                 })
-
-                CACHED_TARIFFS[number].phone_number = number
-                CACHED_TARIFFS[number].identifier = xPlayer.identifier
             end
-        end)
 
-        MySQL.Async.execute('UPDATE phone_sim SET identifier = @identifier WHERE phone_number = @phone_number', {
-            ['@identifier'] = xPlayer2.identifier,
-            ['@phone_number'] = number
-        })
+            CACHED_TARIFFS[number].phone_number = number
+            CACHED_TARIFFS[number].identifier = c_xPlayer.identifier
+        end
     end
 end
 
-cartesimT.eliminaSim = function(old_number)
+gcPhoneT.eliminaSim = function(old_number)
     local player = source
     local identifier = gcPhoneT.getPlayerID(player)
     local phone_number = gcPhoneT.getPhoneNumber(identifier)
@@ -153,7 +147,7 @@ cartesimT.eliminaSim = function(old_number)
     CACHED_TARIFFS[old_number] = nil
 end
 
-cartesimT.usaSim = function(sim)
+gcPhoneT.usaSim = function(sim)
     local player = source
     local identifier = gcPhoneT.getPlayerID(player)
     gcPhoneT.updateCachedNumber(sim.number, identifier, true)
@@ -165,7 +159,7 @@ cartesimT.usaSim = function(sim)
     })
 end
 
-cartesimT.rinominaSim = function(number, name)
+gcPhoneT.rinominaSim = function(number, name)
     local player = source
     local identifier = gcPhoneT.getPlayerID(player)
     MySQL.Async.execute('UPDATE phone_sim SET nome_sim = @nome_sim WHERE identifier = @identifier AND phone_number = @phone_number', {
@@ -177,7 +171,7 @@ cartesimT.rinominaSim = function(number, name)
     CACHED_TARIFFS[number].nome_sim = name
 end
 
-cartesimT.getSimList = function()
+gcPhoneT.getSimList = function()
     local player = source
     local identifier = gcPhoneT.getPlayerID(player)
     local cartesim = {}
@@ -193,11 +187,11 @@ cartesimT.getSimList = function()
     return cartesim
 end
 
-cartesimT.getOfferFromNumber = function(number)
+gcPhoneT.getOfferFromNumber = function(number)
     return CACHED_TARIFFS[number]
 end
 
-cartesimT.renewOffer = function(label, number)
+gcPhoneT.renewOffer = function(label, number)
     local player = source
     local xPlayer = ESX.GetPlayerFromId(player)
     local moneys = xPlayer.getAccount("bank").money
@@ -220,7 +214,7 @@ cartesimT.renewOffer = function(label, number)
     end
 end
 
-cartesimT.buyOffer = function(label, number)
+gcPhoneT.buyOffer = function(label, number)
     local player = source
     local xPlayer = ESX.GetPlayerFromId(player)
     local moneys = xPlayer.getAccount("bank").money
