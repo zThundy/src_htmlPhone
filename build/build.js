@@ -73,6 +73,7 @@ rm(path.join(config.build.assetsRoot, config.build.assetsSubDirectory), err => {
     // setTimeout(() => {
     //   ObfuscateFile()
     // }, 3500)
+    console.log("done on " + config.build.assetsRoot)
   })
 })
 

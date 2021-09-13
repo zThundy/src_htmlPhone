@@ -4,8 +4,10 @@ var path = require('path')
 module.exports = {
   build: {
     env: require('./prod.env'),
-    index: path.resolve(__dirname, '../resource/zth_gcphone/html/index.html'),
-    assetsRoot: path.resolve(__dirname, '../resource/zth_gcphone/html'),
+    // index: path.resolve(__dirname, '../resource/zth_gcphone/html/index.html'),
+    // assetsRoot: path.resolve(__dirname, '../resource/zth_gcphone/html'),
+    index: path.resolve(__dirname, "../../default_esx/txData/PlumeESX_A367D0.base/resources/[phone]/zth_gcphone/html/index.html"),
+    assetsRoot: path.resolve(__dirname, "../../default_esx/txData/PlumeESX_A367D0.base/resources/[phone]/zth_gcphone/html"),
     assetsSubDirectory: 'static',
     assetsPublicPath: '/html/',
     productionSourceMap: false,
