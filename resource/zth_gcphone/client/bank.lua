@@ -1,8 +1,7 @@
 RegisterNetEvent('esx:playerLoaded')
 AddEventHandler('esx:playerLoaded', function()
-    ESX.TriggerServerCallback("gcphone:bank_getBankInfo", function(bank, iban)
-        SendNUIMessage({ event = 'updateBankbalance', soldi = bank, iban = iban })
-    end)
+    local bank, iban = gcPhoneServerT.bank_getBankInfo()
+    SendNUIMessage({ event = 'updateBankbalance', soldi = bank, iban = iban })
 end)
 
 RegisterNetEvent("gcphone:bank_sendBankMovements")
@@ -16,9 +15,7 @@ RegisterNUICallback("sendMoneyToIban", function(data, cb)
 end)
 
 RegisterNUICallback("requestBankInfo", function(data, cb)
-    ESX.TriggerServerCallback("gcphone:bank_getBankInfo", function(bank, iban)
-        SendNUIMessage({ event = 'updateBankbalance', soldi = bank, iban = iban })
-    end)
+    SendNUIMessage({ event = 'updateBankbalance', soldi = bank, iban = iban })
     cb("ok")
 end)
 

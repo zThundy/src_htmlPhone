@@ -143,24 +143,16 @@ function updateBankMovements(source, identifier, amount, type, iban, iban_from)
     end)
 end
 
-ESX.RegisterServerCallback("gcphone:bank_getBankInfo", function(source, cb)
-    local xPlayer = ESX.GetPlayerFromId(source)
+gcPhoneT.bank_getBankInfo = function()
+    local player = source
+    local xPlayer = ESX.GetPlayerFromId(player)
     local user_iban = getUsersIban(xPlayer.identifier)
     MySQL.Async.fetchAll("SELECT * FROM phone_bank_movements WHERE `from` = @from ORDER BY id DESC", {
         ['@from'] = user_iban,
         ['@to'] = user_iban
-    }, function(result)
-        TriggerClientEvent("gcphone:bank_sendBankMovements", source, result)
-    end)
-    cb(xPlayer.getAccount("bank").money, user_iban)
-end)
-
-ESX.RegisterServerCallback("gcphone:bank_requestMyFatture", function(source, cb)
-    local xPlayer = ESX.GetPlayerFromId(source)
-    MySQL.Async.fetchAll("SELECT * FROM billing WHERE identifier = @identifier", {['@identifier'] = xPlayer.identifier}, function(result)
-        cb(result)
-    end)
-end)
+    }, function(result) TriggerClientEvent("gcphone:bank_sendBankMovements", source, result) end)
+    return xPlayer.getAccount("bank").money, user_iban
+end
 
 local function GenerateString(length)
     local charset = {}
