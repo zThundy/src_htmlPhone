@@ -24,7 +24,8 @@
 
   "defaultVolume": 0.2,
   "fileUploader": {
-    "ip": "TYPE_YOUR_SERVER_IP_HERE"
+    "ip_old": "TYPE_YOUR_SERVER_IP_HERE",
+    "ip": "127.0.0.1"
   },
 
   "enableWebRTC": false,
