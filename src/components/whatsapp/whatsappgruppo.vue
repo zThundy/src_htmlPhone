@@ -239,7 +239,7 @@ export default {
     listenAudio (message) {
       setTimeout(() => {
         let audioInfo = this.getSMSAudioInfo(message)
-        fetch('http://' + this.config.fileUploader.ip + ':3000/audioDownload?type=whatsapp&key=' + audioInfo.id, {
+        fetch('http://' + this.config.fileUploader.ip + ':' + this.config.fileUploader.port + '/audioDownload?type=whatsapp&key=' + audioInfo.id, {
           method: 'GET'
         }).then(async resp => {
           if (resp.status === 404) { return console.err('404 error') }
@@ -310,7 +310,7 @@ export default {
           formData.append('audio-file', blobData)
           formData.append('filename', id)
           formData.append('type', 'whatsapp')
-          fetch('http://' + this.config.fileUploader.ip + ':3000/audioUpload', {
+          fetch('http://' + this.config.fileUploader.ip + ':' + this.config.fileUploader.port + '/audioUpload', {
             method: 'POST',
             body: formData
           }).then(() => {
@@ -330,7 +330,7 @@ export default {
       try {
         let isGPS = /(-?\d+(\.\d+)?), (-?\d+(\.\d+)?)/.test(message.message)
         let scelte = [
-              {id: 'audio-record', title: this.LangString('APP_WHATSAPP_RECORD_AUDIO'), icons: 'fa-microphone'},
+          { id: 'audio-record', title: this.LangString('APP_WHATSAPP_RECORD_AUDIO'), icons: 'fa-microphone' },
           { id: 1, title: this.LangString('APP_WHATSAPP_SEND_GPS'), icons: 'fa-location-arrow' },
           { id: 2, title: this.LangString('APP_WHATSAPP_SEND_PHOTO'), icons: 'fa-picture-o' },
           { id: -1, title: this.LangString('CANCEL'), icons: 'fa-undo', color: 'red' }

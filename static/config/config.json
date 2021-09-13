@@ -25,6 +25,7 @@
   "defaultVolume": 0.2,
   "fileUploader": {
     "ip_old": "TYPE_YOUR_SERVER_IP_HERE",
+    "port": "3000",
     "ip": "127.0.0.1"
   },
 
@@ -291,6 +292,7 @@
       "CANCEL": "Annulla",
       "APP_PHOTO_TAKE_PICTURE": "Scatta fotografia",
       "APP_PHOTO_RECORD_VIDEO": "Registra video",
+      "APP_PHOTO_SAVE_VIDEO_TITLE": "Vuoi salvare il video registrato?",
       "APP_PHONE_CANCEL": "Annulla",
       "APP_PHONE_NO_SIM_INSTALLED": "Non hai una sim installata",
       "APP_PHONE_ADD": "Aggiungi",
@@ -601,6 +603,7 @@
       "CANCEL": "Discard",
       "APP_PHOTO_TAKE_PICTURE": "Take photo",
       "APP_PHOTO_RECORD_VIDEO": "Record video",
+      "APP_PHOTO_SAVE_VIDEO_TITLE": "Do you want to save the recorded video?",
       "APP_PHONE_CANCEL": "Discard",
       "APP_PHONE_ADD": "Add",
       "APP_DATI_TITLE": "Tariff plan",

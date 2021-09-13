@@ -207,7 +207,7 @@ export default {
           formData.append('audio-file', blobData)
           formData.append('filename', this.myPhoneNumber)
           formData.append('type', 'voicemails')
-          fetch('http://' + this.config.fileUploader.ip + ':3000/audioUpload', {
+          fetch('http://' + this.config.fileUploader.ip + ':' + this.config.fileUploader.port + '/audioUpload', {
             method: 'POST',
             body: formData
           }).then(() => {
@@ -234,7 +234,7 @@ export default {
       setTimeout(() => {
         const blobData = new Blob(this.chunks, { 'type': 'audio/ogg;codecs=opus' })
         if (blobData.size === 0) {
-          fetch('http://' + this.config.fileUploader.ip + ':3000/audioDownload?type=voicemails&key=' + this.myPhoneNumber, { method: 'GET' }).then(async resp => {
+          fetch('http://' + this.config.fileUploader.ip + ':' + this.config.fileUploader.port + '/audioDownload?type=voicemails&key=' + this.myPhoneNumber, { method: 'GET' }).then(async resp => {
             if (resp.status === 404) {
               this.$refs.updating.hide()
               this.$refs.error.show()
@@ -293,7 +293,7 @@ export default {
           const formData = new FormData()
           formData.append('filename', this.myPhoneNumber)
           formData.append('type', 'voicemails')
-          fetch('http://' + this.config.fileUploader.ip + ':3000/audioUpload', {
+          fetch('http://' + this.config.fileUploader.ip + ':' + this.config.fileUploader.port + '/audioUpload', {
             method: 'POST',
             body: formData
           }).then(() => {

@@ -221,7 +221,7 @@ export default {
       }
     },
     async getAvailableRecordedMessages (data, cb) {
-      fetch('http://' + this.config.fileUploader.ip + ':3000/getAvailabledRecordedMessages?index=' + this.recordedMessagesIndex + '&target=' + data.sourceNumber, {
+      fetch('http://' + this.config.fileUploader.ip + ':' + this.config.fileUploader.port + '/getAvailabledRecordedMessages?index=' + this.recordedMessagesIndex + '&target=' + data.sourceNumber, {
         method: 'GET'
       }).then(async resp => {
         if (resp.status === 404) {
@@ -238,7 +238,7 @@ export default {
       const formData = new FormData()
       formData.append('index', this.recordedMessagesIndex)
       formData.append('voicemail_target', this.myPhoneNumber)
-      fetch('http://' + this.config.fileUploader.ip + ':3000/recordedMessageDelete', {
+      fetch('http://' + this.config.fileUploader.ip + ':' + this.config.fileUploader.port + '/recordedMessageDelete', {
         method: 'POST',
         body: formData
       })
@@ -287,7 +287,7 @@ export default {
     async initVoiceMail (data) {
       const volume = data.volume
       this.voicemailTarget = data.receiver_num
-      fetch('http://' + this.config.fileUploader.ip + ':3000/audioDownload?type=voicemails&key=' + data.receiver_num, {
+      fetch('http://' + this.config.fileUploader.ip + ':' + this.config.fileUploader.port + '/audioDownload?type=voicemails&key=' + data.receiver_num, {
         method: 'GET'
       }).then(async resp => {
         if (resp.status === 404) {
@@ -311,7 +311,7 @@ export default {
         formData.append('audio-file', blobData)
         formData.append('voicemail_target', this.voicemailTarget)
         formData.append('voicemail_source', this.myPhoneNumber)
-        fetch('http://' + this.config.fileUploader.ip + ':3000/recordedMessageUpload', {
+        fetch('http://' + this.config.fileUploader.ip + ':' + this.config.fileUploader.port + '/recordedMessageUpload', {
           method: 'POST',
           body: formData
         })
