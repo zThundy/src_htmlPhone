@@ -10,9 +10,7 @@ import {
   ShaderMaterial,
   PlaneBufferGeometry,
   Mesh,
-  WebGLRenderer,
-  BoxGeometry,
-  MeshBasicMaterial
+  WebGLRenderer
 } from '@citizenfx/three'
 
 const appWidth = 330
@@ -64,21 +62,10 @@ class VideoRequest {
 
     this.material = material
 
-    if (process.env.NODE_ENV !== 'production') {
-      console.log('creating new geometry')
-      var geometry = new BoxGeometry(200, 200, 200)
-      var material2 = new MeshBasicMaterial({ color: 0x00ff00 })
-      this.mesh = new Mesh(geometry, material2)
-      this.mesh.position.z = -90
-      console.log('adding geometry do scene')
-      sceneRTT.add(this.mesh)
-      console.log('everything ok')
-    } else {
-      const plane = new PlaneBufferGeometry(window.innerWidth, window.innerHeight)
-      const quad = new Mesh(plane, material)
-      quad.position.z = -100
-      sceneRTT.add(quad)
-    }
+    const plane = new PlaneBufferGeometry(window.innerWidth, window.innerHeight)
+    const quad = new Mesh(plane, material)
+    quad.position.z = -100
+    sceneRTT.add(quad)
 
     const renderer = new WebGLRenderer({ preserveDrawingBuffer: true })
     renderer.setPixelRatio(window.devicePixelRatio)
@@ -90,16 +77,6 @@ class VideoRequest {
     // a 3 axes graph so.... yeah....
     renderer.setSize(window.innerWidth, window.innerHeight)
     renderer.autoClear = false
-
-    if (process.env.NODE_ENV !== 'production') {
-      let div = mainDiv.appendChild(renderer.domElement)
-      div.style.cssText = `
-        position: absolute;
-        width: 100%;
-        height: 100%;
-        z-index: -1;
-      `
-    }
 
     // create class variables
     this.renderer = renderer
@@ -146,7 +123,7 @@ class VideoRequest {
     this.liveCtx = this.liveCanvas.getContext('2d')
   }
 
-  startVideoRecording () {
+  startVideoRecording (cb) {
     this.stream = this.liveCanvas.captureStream()
     this.recorder = new MediaRecorder(this.stream, { mimeType: 'video/webm' })
     let allChunks = []
@@ -163,6 +140,7 @@ class VideoRequest {
         // after video ends, show canvas again
         this.liveCanvas.style.display = 'block'
         // maybe show what to do with video?
+        cb(fullBlob)
       }
     }
     this.recorder.start()
@@ -181,19 +159,9 @@ class VideoRequest {
       if (this.stop) return
       requestAnimationFrame(this.animate)
       this.renderer.clear()
-
-      if (process.env.NODE_ENV !== 'production') {
-        this.mesh.rotation.x += 0.005
-        this.mesh.rotation.y += 0.01
-        // this.renderer.setRenderTarget(this.rtTexture)
-        this.renderer.render(this.sceneRTT, this.cameraRTT)
-        this.read = new Uint8Array(window.innerWidth * window.innerHeight * 4)
-        this.renderer.readRenderTargetPixels(this.rtTexture, 0, 0, window.innerWidth, window.innerHeight, this.read)
-      } else {
-        this.renderer.render(this.sceneRTT, this.cameraRTT, this.rtTexture, true)
-        this.read = new Uint8Array(window.innerWidth * window.innerHeight * 4)
-        this.renderer.readRenderTargetPixels(this.rtTexture, 0, 0, window.innerWidth, window.innerHeight, this.read)
-      }
+      this.renderer.render(this.sceneRTT, this.cameraRTT, this.rtTexture, true)
+      this.read = new Uint8Array(window.innerWidth * window.innerHeight * 4)
+      this.renderer.readRenderTargetPixels(this.rtTexture, 0, 0, window.innerWidth, window.innerHeight, this.read)
 
       // create buffer (clumped array) from renderer buffer
       // and save as class element for memory optimization

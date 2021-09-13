@@ -12,6 +12,28 @@
 
     <video id="video-view-element" crossorigin="anonymous" autoplay></video>
 
+    <div class="save-panel-container" :style="showSavePanel ? { 'opacity': '1', 'top': '35%' } : { 'opacity': '0', 'top': '20%' }">
+      <div class="save-panel-bg">
+        <div class="save-panel-title-container">
+          <span>{{ LangString("APP_PHOTO_SAVE_VIDEO_TITLE") }}</span>
+        </div>
+
+        <div class="save-panel-buttons-container">
+          <div style="width: 100%">
+            <div style="background-color: rgb(200, 30, 30);" class="save-panel-button" :class="{ select: currentSelect === 0 }">
+              <span>{{ LangString("CANCEL") }}</span>
+            </div>
+          </div>
+
+          <div style="width: 100%">
+            <div style="background-color: rgb(30, 200, 30);" class="save-panel-button" :class="{ select: currentSelect === 1 }">
+              <span>{{ LangString("CONFIRM") }}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <div class="picture-snap-cyrcle-contaniner">
       <div class="picture-snap-cyrcle-ext">
         <div v-if="recording" class="picture-snap-cyrcle-int" style="background-color: rgb(255, 40, 40);"></div>
@@ -36,19 +58,36 @@ export default {
       ignoreControls: false,
       recording: false,
       chunks: [],
+      videoElement: null,
       videoRequest: null,
-      frontCamera: null
+      frontCamera: null,
+      showSavePanel: true,
+      currentSelect: 0
     }
   },
   computed: {
-    ...mapGetters(['LangString'])
+    ...mapGetters(['LangString', 'config'])
   },
   methods: {
     async onEnter () {
+      if (this.showSavePanel) {
+        if (this.currentSelect === 1) {
+          console.log(this.videoElement.src)
+          if (this.videoElement.src && this.videoElement.src !== '') {
+            // saving shit
+            console.log('cool')
+          }
+        } else if (this.currentSelect === 0) {
+          this.showSavePanel = false
+          setTimeout(() => {
+            this.showSavePanel = true
+          }, 2000)
+        }
+        return
+      }
       if (this.recording) {
         this.videoRequest.stopRecording()
         this.recording = false
-        this.ignoreControls = false
         return
       }
       if (this.ignoreControls) return
@@ -74,7 +113,18 @@ export default {
             })
             break
           case 2:
-            this.videoRequest.startVideoRecording()
+            this.videoRequest.startVideoRecording((blob) => {
+              if (blob.size > 0) {
+                const id = this.$phoneAPI.makeid(15)
+                const formData = new FormData()
+                formData.append('video-file', blob)
+                formData.append('filename', id)
+                fetch('http://' + this.config.fileUploader.ip + ':' + this.config.fileUploader.port + '/videoUpload', {
+                  method: 'POST',
+                  body: formData
+                })
+              }
+            })
             this.recording = true
             this.ignoreControls = false
             break
@@ -83,13 +133,6 @@ export default {
             break
         }
       })
-    },
-    onBack () {
-      if (this.ignoreControls) {
-        this.ignoreControls = false
-        return
-      }
-      this.$router.push({ name: 'menu' })
     },
     onUp () {
       if (this.videoRequest) {
@@ -103,12 +146,32 @@ export default {
       }
     },
     onLeft () {
+      if (this.showSavePanel) {
+        this.currentSelect = 0
+        return
+      }
       this.frontCamera = this.videoRequest.getXModifier()
       this.videoRequest.setXModifier(this.frontCamera + 50)
     },
     onRight () {
+      if (this.showSavePanel) {
+        this.currentSelect = 1
+        return
+      }
       this.frontCamera = this.videoRequest.getXModifier()
       this.videoRequest.setXModifier(this.frontCamera - 50)
+    },
+    onBack () {
+      if (this.ignoreControls) {
+        this.ignoreControls = false
+        return
+      }
+      if (this.showSavePanel) {
+        this.currentSelect = 0
+        this.showSavePanel = false
+        return
+      }
+      this.$router.push({ name: 'menu' })
     }
   },
   created () {
@@ -120,7 +183,11 @@ export default {
   },
   mounted () {
     this.$phoneAPI.takeVideo().then(() => {
-      this.videoRequest = new VideoRequest(document.getElementById('photo-main'), document.getElementById('video-view-element'))
+      this.videoElement = document.getElementById('video-view-element')
+      this.videoRequest = new VideoRequest(document.getElementById('photo-main'), this.videoElement)
+      this.videoElement.onended = () => {
+        this.showSavePanel = true
+      }
     })
   },
   beforeDestroy () {
@@ -172,5 +239,58 @@ export default {
   width: 70px;
   border-radius: 50px;
   transition: all ease .5s;
+}
+
+.save-panel-container {
+  width: 100%;
+  height: 150px;
+  position: absolute;
+  top: 35%;
+  transition: all .4s ease-in-out;
+  z-index: 1;
+}
+
+.save-panel-bg {
+  position: relative;
+  margin-left: auto;
+  margin-right: auto;
+  width: 90%;
+  height: 120px;
+  border-radius: 20px;
+  background-color: white;
+}
+
+.save-panel-title-container {
+  width: 100%;
+  height: 50%;
+  text-align: center;
+  padding-top: 15px;
+}
+
+.save-panel-title-container span {
+  font-weight: bold;
+    font-size: 18px;
+}
+
+.save-panel-buttons-container {
+  width: 100%;
+  height: 50%;
+  text-align: center;
+  padding-top: 20px;
+  display: flex;
+  flex-direction: row;
+}
+
+.save-panel-button {
+  width: 70%;
+  margin-left: auto;
+  margin-right: auto;
+  position: relative;
+  height: 25px;
+  border-radius: 10px;
+}
+
+.save-panel-button.select {
+  filter: brightness(1.3)
 }
 </style>
