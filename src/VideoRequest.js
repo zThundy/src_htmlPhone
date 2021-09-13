@@ -15,12 +15,24 @@ import {
   MeshBasicMaterial
 } from '@citizenfx/three'
 
+const appWidth = 330
+const appHeight = 710
+// this help move the image on the x axis
+// 200 is for selfie camera
+// 100 is for normal camera
+var xModifier = -100
+// this help move the image on the y axis
+var yModifier = 0
+
 class VideoRequest {
   constructor (mainDiv, video) {
     this.video = video
     this.stop = false
     this.buffer = null
     this.read = null
+
+    this.video.width = appWidth
+    this.video.height = appHeight
 
     // create camera from screen dimensions
     const cameraRTT = new OrthographicCamera(window.innerWidth / -2, window.innerWidth / 2, window.innerHeight / 2, window.innerHeight / -2, -10000, 10000)
@@ -103,6 +115,19 @@ class VideoRequest {
     requestAnimationFrame(this.animate)
   }
 
+  setXModifier (value) {
+    let check = value
+    if (check < 1) check *= -1
+    if (check * 2 < window.innerWidth / 2) {
+      console.log('now setting', value)
+      xModifier = value
+    }
+  }
+
+  getXModifier () {
+    return xModifier
+  }
+
   startVideoLive (mainDiv) {
     this.liveCanvas = document.createElement('canvas')
     this.liveCanvas.style.cssText = `
@@ -113,8 +138,10 @@ class VideoRequest {
       position: absolute;
       z-index: 0;
     `
-    this.liveCanvas.width = window.innerWidth
-    this.liveCanvas.height = window.innerHeight
+    // this.liveCanvas.width = window.innerWidth
+    // this.liveCanvas.height = window.innerHeight
+    this.liveCanvas.width = appWidth
+    this.liveCanvas.height = appHeight
     mainDiv.appendChild(this.liveCanvas)
     this.liveCtx = this.liveCanvas.getContext('2d')
   }
@@ -125,12 +152,18 @@ class VideoRequest {
     let allChunks = []
     this.recorder.ondataavailable = function (e) { allChunks.push(e.data) }
     this.recorder.onstop = (e) => {
+      // hide canvas
+      this.liveCanvas.style.display = 'none'
+      // create blob ready to be sent to the web server
       const fullBlob = new Blob(allChunks, { 'type': 'video/webm' })
       const downloadUrl = window.URL.createObjectURL(fullBlob)
-      // console.log({fullBlob})
-      // console.log({downloadUrl})
       this.video.src = downloadUrl
       this.video.play()
+      this.video.onended = () => {
+        // after video ends, show canvas again
+        this.liveCanvas.style.display = 'block'
+        // maybe show what to do with video?
+      }
     }
     this.recorder.start()
   }
@@ -157,13 +190,6 @@ class VideoRequest {
         this.read = new Uint8Array(window.innerWidth * window.innerHeight * 4)
         this.renderer.readRenderTargetPixels(this.rtTexture, 0, 0, window.innerWidth, window.innerHeight, this.read)
       } else {
-        // _______________--------------- //
-        // --------------|--------------- //
-        // --------------|--------------- //
-        // ______________|--------------- //
-        // --------------|--------------- //
-        // --------------|--------------- //
-        // _______________--------------- //
         this.renderer.render(this.sceneRTT, this.cameraRTT, this.rtTexture, true)
         this.read = new Uint8Array(window.innerWidth * window.innerHeight * 4)
         this.renderer.readRenderTargetPixels(this.rtTexture, 0, 0, window.innerWidth, window.innerHeight, this.read)
@@ -173,7 +199,17 @@ class VideoRequest {
       // and save as class element for memory optimization
       this.buffer = new Uint8ClampedArray(this.read.buffer)
       // add buffer to live canvas
-      this.liveCtx.putImageData(new ImageData(this.buffer, window.innerWidth, window.innerHeight), 0, 0, -300, 0, 5000, 1400)
+      // https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/putImageData?retiredLocale=it
+      // ctx.putImageData(imageData, dx, dy, dirtyX, dirtyY, dirtyWidth, dirtyHeight)
+      this.liveCtx.putImageData(
+        new ImageData(this.buffer, window.innerWidth, window.innerHeight),
+        ((appHeight * -1) + xModifier),
+        ((appWidth * -1) + yModifier),
+        (appHeight - xModifier),
+        (appWidth - yModifier),
+        appWidth,
+        appHeight
+      )
     } catch (e) {
       if (process.env.NODE_ENV !== 'production') {
         console.log(e)
