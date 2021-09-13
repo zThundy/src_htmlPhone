@@ -1,17 +1,17 @@
-torriRadio = {}
-retiWifi = {}
+RadioTowers = {}
+WifiNets = {}
 blips = {}
 blips_radius = {}
 
-local playerCaricato = false
-local blipCaricati = false
+local PlayerLoaded = false
+local BlipsLoaded = false
 
 Citizen.CreateThread(function()
     while ESX == nil do Citizen.Wait(100) end
     while ESX.GetPlayerData().job == nil do Citizen.Wait(500) end
 
     ESX.PlayerData = ESX.GetPlayerData()
-    playerCaricato = true
+    PlayerLoaded = true
 
     if Config.EnableRadioTowers then
         Reti:InitScript()
@@ -24,16 +24,16 @@ end)
 -- used only on startup
 RegisterNetEvent('esx_wifi:riceviTorriRadio')
 AddEventHandler('esx_wifi:riceviTorriRadio', function(torriRadioServer)
-    torriRadio = torriRadioServer
+    RadioTowers = torriRadioServer
     Reti.RefreshBlips()
 end)
 
 -- used only on startup
 RegisterNetEvent('esx_wifi:riceviRetiWifi')
-AddEventHandler('esx_wifi:riceviRetiWifi', function(retiWifiServer) retiWifi = retiWifiServer end)
+AddEventHandler('esx_wifi:riceviRetiWifi', function(retiWifiServer) WifiNets = retiWifiServer end)
 
 RegisterNetEvent('esx:playerLoaded')
-AddEventHandler('esx:playerLoaded', function(source) playerCaricato = true end)
+AddEventHandler('esx:playerLoaded', function(source) PlayerLoaded = true end)
 
 function Reti:InitScript()
     -- init variabili generali
@@ -41,9 +41,8 @@ function Reti:InitScript()
     self.p_coords = nil
     self.idPlayer = GetPlayerServerId(PlayerId())
 
-    torriRadio, retiWifi = gcPhoneServerT.requestServerInfo()
-    -- print(DumpTable(torriRadio))
-    while #torriRadio == 0 do Citizen.Wait(100) end
+    RadioTowers, WifiNets = gcPhoneServerT.getServerData()
+    while #RadioTowers == 0 do Citizen.Wait(100) end
 
     -- thread per salvataggio coordinate
     Citizen.CreateThread(function()
@@ -68,16 +67,16 @@ function Reti:InitScript()
         self.agganciato = false
         self.vecchiaPotenzaSegnale = 0
 
-        blipCaricati = self.RefreshBlips()
+        BlipsLoaded = self.RefreshBlips()
 
-        while not playerCaricato do Citizen.Wait(500) end
-        while not blipCaricati do Citizen.Wait(500) end
+        while not PlayerLoaded do Citizen.Wait(500) end
+        while not BlipsLoaded do Citizen.Wait(500) end
 
         while true do
             self.torrePiuVicina, distanza = Reti.getLowestDistanceTIndex(self.p_coords)
 
             if self.torrePiuVicina ~= 0 then
-                self.torre = torriRadio[self.torrePiuVicina]
+                self.torre = RadioTowers[self.torrePiuVicina]
                 self.potenzaSegnale = self.getPotenzaSegnale(distanza)
 
                 if self.connectedTorreIndex == nil then
@@ -85,15 +84,12 @@ function Reti:InitScript()
                     self.vecchiaPotenzaSegnale = self.potenzaSegnale
                     self.connectedTorreIndex = self.torrePiuVicina
                     gcPhoneServerT.updateSegnaleTelefono(self.potenzaSegnale)
-                    -- TriggerServerEvent("esx_wifi:connettiAllaTorre", self.idPlayer, self.torre.tower_label, self.potenzaSegnale)
                 else
                     if self.torrePiuVicina ~= self.connectedTorreIndex then
                         self.vecchiaPotenzaSegnale = self.potenzaSegnale
-                        -- TriggerServerEvent("esx_wifi:cambiaTorreRadio", self.idPlayer, self.torre.tower_label, self.potenzaSegnale)
                     else
                         if self.potenzaSegnale ~= self.vecchiaPotenzaSegnale then
                             self.vecchiaPotenzaSegnale = self.potenzaSegnale
-                            -- TriggerServerEvent("esx_wifi:cambiaTorreRadio", self.idPlayer, self.torre.tower_label, self.potenzaSegnale)
                         end
                     end
                 end
@@ -104,7 +100,6 @@ function Reti:InitScript()
                     self.vecchiaPotenzaSegnale = 0
                     self.potenzaSegnale = 0
                     gcPhoneServerT.updateSegnaleTelefono(self.potenzaSegnale)
-                    -- TriggerServerEvent("esx_wifi:disconnettiDallaTorre", self.idPlayer)
                 end
             end
             
@@ -123,29 +118,26 @@ function Reti:InitScript()
         while true do
             self.retiWifiVicine = {}
 
-            for i = 1, #retiWifi do
-                distanza = #(self.p_coords - retiWifi[i].pos)
-                -- print("retiWifi[i].x, retiWifi[i].y, retiWifi[i].z", retiWifi[i].x, retiWifi[i].y, retiWifi[i].z)
-                -- print("distanza", distanza)
-
+            for i = 1, #WifiNets do
+                distanza = #(self.p_coords - WifiNets[i].pos)
                 if distanza < Config.RaggioWifi then
                     if #self.retiWifiVicine > 0 then
                         for reverseI = #self.retiWifiVicine, 1, -1 do
                             if distanza > self.retiWifiVicine[reverseI].distanza then
-                                retiWifi[i].distanza = distanza
-                                table.insert(self.retiWifiVicine, retiWifi[i])
+                                WifiNets[i].distanza = distanza
+                                table.insert(self.retiWifiVicine, WifiNets[i])
                                 break
                             else
                                 if reverseI == #self.retiWifiVicine - 1 then
-                                    retiWifi[i].distanza = distanza
-                                    table.insert(self.retiWifiVicine, reverseI, retiWifi[i])
+                                    WifiNets[i].distanza = distanza
+                                    table.insert(self.retiWifiVicine, reverseI, WifiNets[i])
                                     break
                                 end
                             end
                         end
                     else
-                        retiWifi[i].distanza = distanza
-                        table.insert(self.retiWifiVicine, retiWifi[i])
+                        WifiNets[i].distanza = distanza
+                        table.insert(self.retiWifiVicine, WifiNets[i])
                     end
                 end
             end
@@ -156,14 +148,16 @@ function Reti:InitScript()
     end)
 end
 
+-- BETA FEATURE! No animation or shit like that is played while repairing the radio tower
+-- TODO: maybe add gridsystem to this marker check
 if Config.EnableBreakWifiTowers then
     Citizen.CreateThreadNow(function()
-        while not playerCaricato do Citizen.Wait(500) end
-        while not blipCaricati do Citizen.Wait(500) end
+        while not PlayerLoaded do Citizen.Wait(500) end
+        while not BlipsLoaded do Citizen.Wait(500) end
 
         while true do
             if ESX.PlayerData.job.name == Config.BreakRadioTowersJob then
-                for _, v in pairs(retiWifi) do
+                for index, v in pairs(RadioTowers) do
                     if v.broken then
                         if GetDistanceBetweenCoords(GetEntityCoords(GetPlayerPed(-1)), v.x, v.y, 1.0, false) <= 5.0 then
                             ESX.ShowHelpNotification(Config.Language["HELPNOTIFICATION_WIFI_RADIO_REPAIR"])
@@ -177,10 +171,10 @@ if Config.EnableBreakWifiTowers then
                     end
                 end
             else
-                Citizen.Wait(1000)
+                Citizen.Wait(5000)
             end
 
-            Citizen.Wait(0)
+            Citizen.Wait(50)
         end
     end)
 end

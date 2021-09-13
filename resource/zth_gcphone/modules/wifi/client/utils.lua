@@ -2,8 +2,8 @@ function Reti.getLowestDistanceTIndex(coords)
     local indice, lowestDistance = 0, 0
     local torre, tempDistanza = nil, nil
 
-    for i = 1, #torriRadio do
-        torre = torriRadio[i]
+    for i = 1, #RadioTowers do
+        torre = RadioTowers[i]
         tempDistanza = Vdist(tonumber(torre.x) * 1.0, tonumber(torre.y) * 1.0, coords.z, coords.x, coords.y, coords.z)
 
         if tempDistanza < Config.RaggioTorri then
@@ -42,7 +42,7 @@ function Reti.RefreshBlips()
     for _, v in pairs(blips_radius) do RemoveBlip(v) end
     for _, v in pairs(blips) do RemoveBlip(v) end
 
-    for player, info in pairs(torriRadio) do
+    for player, info in pairs(RadioTowers) do
         local blip = AddBlipForCoord(info.x, info.y, 1.0)
         SetBlipHighDetail(blip, true)
         SetBlipSprite(blip, 459)

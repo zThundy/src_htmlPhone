@@ -1,9 +1,6 @@
 function Reti.LoadAndSendWifi()
-    for _, v in pairs(CACHED_WIFIS) do
-        v.pos = vector3(v.x, v.y, v.z)
-    end
+    for _, v in pairs(CACHED_WIFIS) do v.pos = vector3(v.x, v.y, v.z) end
     TriggerClientEvent('esx_wifi:riceviRetiWifi', -1, CACHED_WIFIS)
-    return CACHED_WIFIS
 end
 
 function Reti.UpdateCellTower(tower)
@@ -49,7 +46,7 @@ function Reti.AddReteWifi(source, rete, cb)
                 z = tonumber(string.format("%." .. 3 .. "f", rete.coords.z)),
                 due_date = os.time() * 1000
             })
-            CACHED_WIFIS = Reti.LoadAndSendWifi()
+            Reti.LoadAndSendWifi()
             Reti.Debug(Config.Language["WIFI_LOAD_DEBUG_4"])
             if cb ~= nil then cb(true) end
         else
@@ -72,7 +69,7 @@ function Reti.RemoveReteWifi(source, rete)
                     break
                 end
             end
-            CACHED_WIFIS = Reti.LoadAndSendWifi()
+            Reti.LoadAndSendWifi()
             Reti.Debug(Config.Language["WIFI_LOAD_DEBUG_4"])
         else
             showXNotification(xPlayer, Config.Language["WIFI_MODEM_DELETE_ERROR"])
@@ -94,7 +91,7 @@ function Reti.UpdateReteWifi(source, rete, param)
                     break
                 end
             end
-            CACHED_WIFIS = Reti.LoadAndSendWifi()
+            Reti.LoadAndSendWifi()
             Reti.Debug(Config.Language["WIFI_LOAD_DEBUG_4"])
         else
             showXNotification(xPlayer, Config.Language["WIFI_MODEM_UPDATE_ERROR"])

@@ -10,7 +10,7 @@ MySQL.ready(function()
         Reti.Debug(Config.Language["WIFI_LOAD_DEBUG_1"])
         MySQL.Async.fetchAll("SELECT * FROM phone_wifi_nets", {}, function(r)
             CACHED_WIFIS = r
-            CACHED_WIFIS = Reti.LoadAndSendWifi()
+            Reti.LoadAndSendWifi()
             Reti.Debug(Config.Language["WIFI_LOAD_DEBUG_2"])
             TARIFFS_LOADED = true
         end)
@@ -55,7 +55,7 @@ if Config.EnableRadioTowers then
     end
 end
 
-gcPhoneT.requestServerInfo = function()
+gcPhoneT.getServerData = function()
     while not TARIFFS_LOADED do Citizen.Wait(500) end
     return CACHED_TOWERS, CACHED_WIFIS
 end
