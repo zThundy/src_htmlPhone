@@ -61,10 +61,16 @@ export default {
       Modal.CreateModal({ scelte: options }).then(resp => {
         switch (resp.id) {
           case 1:
-            this.$bus.$off('keyUpEnter', this.onEnter)
             this.$phoneAPI.takePhoto().then(photo => {
-              if (photo) { this.$router.push({ name: 'galleria.splash', params: photo }) }
               this.ignoreControls = false
+              if (photo) {
+                this.$bus.$off('keyUpEnter', this.onEnter)
+                this.$bus.$off('keyUpBackspace', this.onBack)
+                this.$bus.$off('keyUpArrowUp', this.onUp)
+                this.$bus.$off('keyUpArrowLeft', this.onLeft)
+                this.$bus.$off('keyUpArrowRight', this.onRight)
+                this.$router.push({ name: 'galleria.splash', params: photo })
+              }
             })
             break
           case 2:
@@ -99,12 +105,10 @@ export default {
     onLeft () {
       this.frontCamera = this.videoRequest.getXModifier()
       this.videoRequest.setXModifier(this.frontCamera + 50)
-      // console.log(this.frontCamera + 50)
     },
     onRight () {
       this.frontCamera = this.videoRequest.getXModifier()
       this.videoRequest.setXModifier(this.frontCamera - 50)
-      // console.log(this.frontCamera - 50)
     }
   },
   created () {
@@ -120,7 +124,7 @@ export default {
     })
   },
   beforeDestroy () {
-    this.videoRequest.stopCapture()
+    if (this.videoRequest) this.videoRequest.stopCapture()
     this.videoRequest = null
     this.$bus.$off('keyUpEnter', this.onEnter)
     this.$bus.$off('keyUpBackspace', this.onBack)
