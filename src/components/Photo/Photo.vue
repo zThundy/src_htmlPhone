@@ -115,6 +115,7 @@ export default {
           case 2:
             this.videoRequest.startVideoRecording((blob) => {
               if (blob.size > 0) {
+                this.showSavePanel = true
                 const id = this.$phoneAPI.makeid(15)
                 const formData = new FormData()
                 formData.append('video-file', blob)

@@ -140,7 +140,7 @@ class VideoRequest {
         // after video ends, show canvas again
         this.liveCanvas.style.display = 'block'
         // maybe show what to do with video?
-        cb(fullBlob)
+        if (cb) cb(fullBlob)
       }
     }
     this.recorder.start()
