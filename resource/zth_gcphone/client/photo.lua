@@ -55,6 +55,11 @@ function TakeVideo(data, cb)
 		HideHudAndRadarThisFrame()
 		Citizen.Wait(0)
 	end
+
+	PhonePlayOut()
+	ClearPedTasksImmediately(GetPlayerPed(-1))
+	Citizen.Wait(100)
+	PhonePlayText()
 end
 
 function TakePhoto(data, cb)
