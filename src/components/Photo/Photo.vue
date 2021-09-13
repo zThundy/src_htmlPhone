@@ -36,7 +36,8 @@ export default {
       ignoreControls: false,
       recording: false,
       chunks: [],
-      videoRequest: null
+      videoRequest: null,
+      frontCamera: null
     }
   },
   computed: {
@@ -47,10 +48,11 @@ export default {
       if (this.recording) {
         this.videoRequest.stopRecording()
         this.recording = false
+        this.ignoreControls = false
         return
       }
-      if (this.ignoreControl) return
-      this.ignoreControl = true
+      if (this.ignoreControls) return
+      this.ignoreControls = true
       var options = [
         { id: 1, title: this.LangString('APP_PHOTO_TAKE_PICTURE'), icons: 'fa-camera' },
         { id: 2, title: this.LangString('APP_PHOTO_RECORD_VIDEO'), icons: 'fa-video-camera' },
@@ -59,15 +61,19 @@ export default {
       Modal.CreateModal({ scelte: options }).then(resp => {
         switch (resp.id) {
           case 1:
+            this.$bus.$off('keyUpEnter', this.onEnter)
             this.$phoneAPI.takePhoto().then(photo => {
               if (photo) { this.$router.push({ name: 'galleria.splash', params: photo }) }
+              this.ignoreControls = false
             })
             break
           case 2:
             this.videoRequest.startVideoRecording()
             this.recording = true
+            this.ignoreControls = false
             break
           case -1:
+            this.ignoreControls = false
             break
         }
       })
@@ -78,11 +84,35 @@ export default {
         return
       }
       this.$router.push({ name: 'menu' })
+    },
+    onUp () {
+      if (this.videoRequest) {
+        if (this.frontCamera) {
+          this.videoRequest.setXModifier(this.frontCamera)
+          this.frontCamera = null
+        } else {
+          this.frontCamera = this.videoRequest.getXModifier()
+          this.videoRequest.setXModifier(this.frontCamera + 100)
+        }
+      }
+    },
+    onLeft () {
+      this.frontCamera = this.videoRequest.getXModifier()
+      this.videoRequest.setXModifier(this.frontCamera + 50)
+      // console.log(this.frontCamera + 50)
+    },
+    onRight () {
+      this.frontCamera = this.videoRequest.getXModifier()
+      this.videoRequest.setXModifier(this.frontCamera - 50)
+      // console.log(this.frontCamera - 50)
     }
   },
   created () {
     this.$bus.$on('keyUpEnter', this.onEnter)
     this.$bus.$on('keyUpBackspace', this.onBack)
+    this.$bus.$on('keyUpArrowUp', this.onUp)
+    this.$bus.$on('keyUpArrowLeft', this.onLeft)
+    this.$bus.$on('keyUpArrowRight', this.onRight)
   },
   mounted () {
     this.$phoneAPI.takeVideo().then(() => {
@@ -91,36 +121,25 @@ export default {
   },
   beforeDestroy () {
     this.videoRequest.stopCapture()
+    this.videoRequest = null
     this.$bus.$off('keyUpEnter', this.onEnter)
     this.$bus.$off('keyUpBackspace', this.onBack)
+    this.$bus.$off('keyUpArrowUp', this.onUp)
+    this.$bus.$off('keyUpArrowLeft', this.onLeft)
+    this.$bus.$off('keyUpArrowRight', this.onRight)
   }
 }
 </script>
 
 <style scoped>
 #video-view-element {
-  /* width: 300px; */
-  /* height: 300px; */
-  /* background-color: black; */
-  /* width: 100%; */
-  /* height: 100%; */
-  min-width: 100%;
-  min-height: 89%;
-  width: auto;
-  height: auto;
+  display: block;
+  width: 330px;
+  height: 710px;
+  top: 27px;
   position: absolute;
-  top: 55%;
-  left: 50%;
-  transform: translate(-50%,-50%);
+  z-index: 0;
 }
-
-/*
-.general-container {
-  background-color: black;
-  width: 100%;
-  height: 100%;
-}
-*/
 
 .picture-snap-cyrcle-contaniner {
   position: relative;
@@ -149,6 +168,5 @@ export default {
   width: 70px;
   border-radius: 50px;
   transition: all ease .5s;
-  /* border: 3px solid black; */
 }
 </style>
