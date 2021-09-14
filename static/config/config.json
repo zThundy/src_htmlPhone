@@ -24,9 +24,8 @@
 
   "defaultVolume": 0.2,
   "fileUploader": {
-    "ip_old": "TYPE_YOUR_SERVER_IP_HERE",
-    "port": "3000",
-    "ip": "localhost"
+    "ip": "TYPE_YOUR_SERVER_IP_HERE",
+    "port": "3000"
   },
 
   "enableWebRTC": false,
@@ -507,6 +506,7 @@
       "APP_GALLERIA_INOLTRA_WHATSAPP": "Inoltra su whatsapp",
       "APP_GALLERIA_ELIMINA_TUTTO": "Pulisci la galleria",
       "APP_GALLERIA_ELIMINA": "Elimina fotografia",
+      "APP_GALLERIA_ELIMINA_VIDEO": "Elimina video",
       "APP_GALLERIA_ZOOM": "Ingrandisci l'immagine",
       "APP_GALLERIA_ZOOM_VIDEO": "Riproduci il video",
       "APP_GALLERIA_SEND_BLUETOOTH": "Invia con bluetooth",
@@ -604,6 +604,8 @@
       "PHONE_RTC_NOT_ENABLED": "RTC calls are not enabled",
       "CONFIRM": "Accept",
       "CANCEL": "Discard",
+      "VIDEO_NOT_FOUND": "Video not found",
+      "VIDEO_ERROR_TITLE": "Error on playing video",
       "APP_PHOTO_TAKE_PICTURE": "Take photo",
       "APP_PHOTO_RECORD_VIDEO": "Record video",
       "APP_PHOTO_SAVE_VIDEO_TITLE": "Do you want to save the recorded video?",
@@ -818,6 +820,7 @@
       "APP_GALLERIA_INOLTRA_WHATSAPP": "Forward on whatsapp",
       "APP_GALLERIA_ELIMINA_TUTTO": "Clear gallery",
       "APP_GALLERIA_ELIMINA": "Delete picture",
+      "APP_GALLERIA_ELIMINA_VIDEO": "Delete video",
       "APP_GALLERIA_ZOOM": "Zoom",
       "APP_GALLERIA_ZOOM_VIDEO": "Play video",
       "APP_GALLERIA_SEND_BLUETOOTH": "Send with bluetooth",
