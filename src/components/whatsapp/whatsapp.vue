@@ -83,7 +83,13 @@ export default {
       // qui controllo se il numero che ha salvato il telefono in memoria
       // è valido oppure no
       if (this.myPhoneNumber.includes('#') || this.myPhoneNumber === 0 || this.myPhoneNumber === '0') {
-        this.$phoneAPI.onwhatsapp_showError({ title: 'Errore', message: 'Impossibile ottenere il numero di telefono' })
+        this.$phoneAPI.ongenericNotification({
+          title: 'GENERIC_ERROR',
+          message: 'APP_WHATSAPP_CANNOT_GET_PHONE_NUMBER',
+          icon: 'whatsapp',
+          backgroundColor: 'rgb(108, 250, 108)',
+          appName: 'Whatsapp'
+        })
         return
       }
       let scelte = []
