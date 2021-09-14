@@ -5,8 +5,7 @@
     <div class="phone_fullscreen_img" v-if="imgZoom !== undefined">
       <img v-if="imgZoom.type === 'photo'" :src="imgZoom.link" />
       <video v-else-if="imgZoom.type === 'video'" width="330" height="710" id="video-playback-element" autoplay>
-        <!-- <source :src="imgZoom.link" type="video/webm" /> -->
-        <source type="video/webm" src="https://upload.wikimedia.org/wikipedia/commons/transcoded/1/1d/Alexander_Glazunov_1.webm/Alexander_Glazunov_1.webm.480p.vp9.webm" />
+        <source :src="imgZoom.link" type="video/webm" />
       </video>
     </div>
 
