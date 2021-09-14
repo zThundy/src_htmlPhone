@@ -18,20 +18,26 @@ const appHeight = 710
 // this help move the image on the x axis
 // 200 is for selfie camera
 // 100 is for normal camera
-var xModifier = -100
+var xModifier = 0
 // this help move the image on the y axis
 var yModifier = 0
 
 class VideoRequest {
   constructor (mainDiv, video) {
+    // check if arguments in class are passed correctly
+    if (!mainDiv || !video) {
+      return console.err('[FATAL ERROR] Video request class cannot be initialized correctly')
+    } else {
+      console.log('[MODULE] Video request class created successfully')
+    }
+    // create class variables
     this.video = video
     this.stop = false
     this.buffer = null
     this.read = null
-
-    this.video.width = appWidth
-    this.video.height = appHeight
-
+    // set video width and height propriety to match the canvas
+    if (this.video) this.video.width = appWidth
+    if (this.video) this.video.height = appHeight
     // create camera from screen dimensions
     const cameraRTT = new OrthographicCamera(window.innerWidth / -2, window.innerWidth / 2, window.innerHeight / 2, window.innerHeight / -2, -10000, 10000)
     cameraRTT.position.z = 100
@@ -61,7 +67,6 @@ class VideoRequest {
     })
 
     this.material = material
-
     const plane = new PlaneBufferGeometry(window.innerWidth, window.innerHeight)
     const quad = new Mesh(plane, material)
     quad.position.z = -100
@@ -96,7 +101,7 @@ class VideoRequest {
     let check = value
     if (check < 1) check *= -1
     if (check * 2 < window.innerWidth / 2) {
-      console.log('now setting', value)
+      // console.log('now setting', value)
       xModifier = value
     }
   }
@@ -117,9 +122,9 @@ class VideoRequest {
     `
     // this.liveCanvas.width = window.innerWidth
     // this.liveCanvas.height = window.innerHeight
-    this.liveCanvas.width = appWidth
-    this.liveCanvas.height = appHeight
-    mainDiv.appendChild(this.liveCanvas)
+    if (this.liveCanvas) this.liveCanvas.width = appWidth
+    if (this.liveCanvas) this.liveCanvas.height = appHeight
+    if (mainDiv) mainDiv.appendChild(this.liveCanvas)
     this.liveCtx = this.liveCanvas.getContext('2d')
   }
 
@@ -167,7 +172,6 @@ class VideoRequest {
       this.renderer.render(this.sceneRTT, this.cameraRTT, this.rtTexture, true)
       this.read = new Uint8Array(window.innerWidth * window.innerHeight * 4)
       this.renderer.readRenderTargetPixels(this.rtTexture, 0, 0, window.innerWidth, window.innerHeight, this.read)
-
       // create buffer (clumped array) from renderer buffer
       // and save as class element for memory optimization
       this.buffer = new Uint8ClampedArray(this.read.buffer)
