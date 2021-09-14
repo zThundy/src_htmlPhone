@@ -155,11 +155,7 @@ class PhoneAPI {
   }
 
   onaddPhotoToGallery (data) {
-    store.dispatch('addPhoto', { link: data.link })
-  }
-
-  async savePictureObDb (data) {
-    return this.post('savePicGalleryOnDb', data)
+    store.dispatch('addPhoto', { link: data.link, type: 'photo' })
   }
 
   async takeVideo () {
@@ -789,10 +785,6 @@ class PhoneAPI {
 
   async getClosestPlayers () {
     return this.post('getClosestPlayers')
-  }
-
-  onaddPicToGallery (data) {
-    store.dispatch('addPhoto', data)
   }
 
   onclearGallery () {
