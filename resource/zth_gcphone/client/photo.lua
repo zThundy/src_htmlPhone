@@ -90,15 +90,13 @@ function TakePhoto(data, cb)
 				CellCamActivate(false, false)
 
 				if resp.attachments and resp.attachments[1] then
-					cb(json.encode({ url = resp.attachments[1].proxy_url }))
 					SendNUIMessage({ event = "addPhotoToGallery", link = resp.attachments[1].proxy_url })
-					
 					DestroyMobilePhone()
 					CellCamActivate(false, false)
-
 					PhonePlayOut()
 					Citizen.Wait(1000)
 					PhonePlayText()
+					cb(json.encode({ url = resp.attachments[1].proxy_url }))
 				else
 					cb(nil)
 				end
