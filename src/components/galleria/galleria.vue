@@ -3,17 +3,19 @@
     <PhoneTitle :title="LangString('APP_GALLERIA_TITLE')" backgroundColor="rgb(217, 122, 81)" :titleColor="'black'" />
 
     <div class="phone_fullscreen_img" v-if="imgZoom !== undefined">
-      <img :src="imgZoom" />
+      <img v-if="imgZoom.type === 'photo'" :src="imgZoom.link" />
+      <video v-else-if="imgZoom.type === 'video'" width="330" height="710" id="video-playback-element" autoplay>
+        <!-- <source :src="imgZoom.link" type="video/webm" /> -->
+        <source type="video/webm" src="https://upload.wikimedia.org/wikipedia/commons/transcoded/1/1d/Alexander_Glazunov_1.webm/Alexander_Glazunov_1.webm.480p.vp9.webm" />
+      </video>
     </div>
 
     <div class="div_immagini">
-      
-      <div class='immagini'
-        v-for="(val, key) of fotografie" 
-        :key="key + 1" 
-        :style="{ src: 'url(' + val.link +')' }"
-      >
-        <img class="immagine" :src="val.link" :class="{ select: key + 1 === currentSelect }" />
+      <div class='immagini' v-for="(val, key) of fotografie" :key="key + 1" :style="{ src: 'url(' + val.link +')' }">
+        <img v-if="val.type === 'photo'" class="immagine" :src="val.link" :class="{ select: key + 1 === currentSelect }" />
+        <div v-else-if="val.type === 'video'" class="video-container" :class="{ select: key + 1 === currentSelect }">
+          <i class="fas fa-play"></i>
+        </div>
       </div>
     </div>
 
@@ -36,7 +38,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['LangString', 'fotografie', 'bluetooth'])
+    ...mapGetters(['LangString', 'fotografie', 'bluetooth', 'config'])
   },
   methods: {
     ...mapActions(['setBackground', 'clearGallery', 'deleteSinglePicture']),
@@ -81,15 +83,39 @@ export default {
       if (this.ignoredControls) return
       this.$router.push({ name: 'menu' })
     },
+    getSMSVideoInfo (mess) {
+      var obj = mess.split('%')
+      return {
+        id: obj[2],
+        number: obj[1]
+      }
+    },
     async onEnter () {
+      if (this.imgZoom) {
+        if (this.imgZoom.type === 'video' && this.videoElement) {
+          this.videoElement.currentTime = 0
+          this.videoElement.play()
+        }
+        return
+      }
       if (this.fotografie.length === 0) return
       if (this.ignoredControls) return
-      var foto = this.fotografie[this.currentSelect - 1]
+      var element = this.fotografie[this.currentSelect - 1]
       this.ignoredControls = true
       try {
-        let scelte = [
-          { id: 0, title: this.LangString('APP_GALLERIA_ZOOM'), icons: 'fa-search' },
-          { id: 1, title: this.LangString('APP_GALLERIA_SET_WALLPAPER'), icons: 'fa-mobile' },
+        let scelte = []
+        if (element.type === 'photo') {
+          scelte = [
+            { id: 0, title: this.LangString('APP_GALLERIA_ZOOM'), icons: 'fa-search' },
+            { id: 1, title: this.LangString('APP_GALLERIA_SET_WALLPAPER'), icons: 'fa-mobile' }
+          ]
+        } else if (element.type === 'video') {
+          scelte = [
+            { id: 0, title: this.LangString('APP_GALLERIA_ZOOM_VIDEO'), icons: 'fa-search' }
+          ]
+        }
+        scelte = [
+          ...scelte,
           { id: 2, title: this.LangString('APP_GALLERIA_INOLTRA'), icons: 'fa-paper-plane' },
           { id: 4, title: this.LangString('APP_GALLERIA_SEND_BLUETOOTH'), icons: 'fa-share-square' },
           { id: 5, title: this.LangString('APP_GALLERIA_ELIMINA'), icons: 'fa-trash', color: 'orange' },
@@ -99,15 +125,37 @@ export default {
         const data = await Modal.CreateModal({ scelte })
         switch (data.id) {
           case 0:
-            this.imgZoom = foto.link
+            if (element.type === 'video') {
+              const videoData = this.getSMSVideoInfo(element.link)
+              fetch('http://' + this.config.fileUploader.ip + ':' + this.config.fileUploader.port + '/videoDownload?type=camera&key=' + videoData.id, {
+                method: 'GET'
+              }).then(async resp => {
+                if (resp.status === 404) {
+                  this.$phoneAPI.ongenericNotification({
+                    message: 'VIDEO_NOT_FOUND',
+                    title: 'VIDEO_ERROR_TITLE',
+                    icon: 'camera',
+                    backgroundColor: 'rgb(205, 116, 76)',
+                    appName: 'Galleria'
+                  })
+                  return console.err('404 error')
+                }
+                this.imgZoom = Object.assign({}, element)
+                var jsonResponse = await resp.json()
+                this.imgZoom.link = window.URL.createObjectURL(new Blob([Buffer.from(jsonResponse.blobDataBuffer, 'base64')]))
+                this.videoElement = document.getElementById('video-playback-element')
+              }).catch(() => {})
+            } else if (element.type === 'photo') {
+              this.imgZoom = element
+            }
             this.CHANGE_BRIGHTNESS_STATE(false)
             break
           case 1:
-            this.setBackground({ label: 'Personalizzato', value: foto.link })
+            this.setBackground({ label: 'Personalizzato', value: element.link })
             this.ignoredControls = false
             break
           case 2:
-            this.$router.push({ name: 'messages.chooseinoltra', params: { message: foto.link } })
+            this.$router.push({ name: 'messages.chooseinoltra', params: { message: element.link } })
             this.ignoredControls = false
             break
           case 3:
@@ -129,7 +177,7 @@ export default {
                     this.ignoredControls = false
                   } else {
                     this.ignoredControls = false
-                    this.$phoneAPI.sendPicToUser({ id: data.id, message: foto.link })
+                    this.$phoneAPI.sendPicToUser({ id: data.id, message: element.link })
                   }
                 })
               } catch (e) { } finally { this.ignoredControls = false }
@@ -193,6 +241,23 @@ export default {
 }
 
 .immagine.select {
+  border: 3px solid rgb(205, 116, 76);
+  filter: brightness(90%)
+}
+
+.video-container {
+  background-color: black;
+  width: inherit;
+  height: inherit;
+  text-align: center;
+  padding-top: 20%;
+}
+
+.video-container i {
+  color: white;
+}
+
+.video-container.select {
   border: 3px solid rgb(205, 116, 76);
   filter: brightness(90%)
 }

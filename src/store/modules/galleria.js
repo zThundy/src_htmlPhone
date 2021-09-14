@@ -50,23 +50,27 @@ if (process.env.NODE_ENV !== 'production') {
   state.fotografie = [
     {
       link: 'https://u.trs.tn/tohqw.jpg',
-      data: 'bo forse'
+      type: 'photo'
     },
     {
       link: 'https://i.imgur.com/rNXepFS.jpeg',
-      data: 'bo forse'
+      type: 'photo'
     },
     {
       link: 'https://i.imgur.com/InUodqS.jpeg',
-      data: 'bo forse'
+      type: 'photo'
     },
     {
       link: 'https://i.imgur.com/LQukntX.jpeg',
-      data: 'bo forse'
+      type: 'photo'
     },
     {
       link: 'https://i.imgur.com/KIpi534.jpeg',
-      data: 'bo forse'
+      type: 'photo'
+    },
+    {
+      link: '[VIDEO]%646467%8deQpNthxKbWA7m7S0OK',
+      type: 'video'
     }
   ]
 }
