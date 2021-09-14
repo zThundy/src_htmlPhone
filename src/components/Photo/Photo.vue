@@ -44,7 +44,7 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex'
+import { mapActions, mapGetters } from 'vuex'
 import InfoBare from '@/components/InfoBare'
 import Modal from '@/components/Modal/index'
 
@@ -66,9 +66,10 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['LangString', 'config'])
+    ...mapGetters(['LangString', 'config', 'myPhoneNumber'])
   },
   methods: {
+    ...mapActions(['addPhoto']),
     async onEnter () {
       if (this.showSavePanel) {
         if (this.currentSelect === 1) {
@@ -84,6 +85,10 @@ export default {
             fetch('http://' + this.config.fileUploader.ip + ':' + this.config.fileUploader.port + '/videoUpload', {
               method: 'POST',
               body: formData
+            }).then(() => {
+              const videoFormat = '[VIDEO]%' + this.myPhoneNumber + '%' + id
+              this.$router.push({ name: 'galleria.splash' })
+              this.addPhoto({ link: videoFormat, type: 'video' })
             })
             this.showSavePanel = false
           }
@@ -118,7 +123,7 @@ export default {
                 this.$bus.$off('keyUpArrowUp', this.onUp)
                 this.$bus.$off('keyUpArrowLeft', this.onLeft)
                 this.$bus.$off('keyUpArrowRight', this.onRight)
-                this.$router.push({ name: 'galleria.splash', params: photo })
+                this.$router.push({ name: 'galleria.splash' })
               }
             })
             break
