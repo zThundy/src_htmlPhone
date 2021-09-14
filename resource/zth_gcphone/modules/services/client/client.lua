@@ -91,7 +91,7 @@ AddEventHandler('esx_addons_gcphone:call', function(data)
 
     CheckForDispatchScript()
 
-    if data.message and string.length(tostring(data.message)) > 0 then
+    if data.message and string.len(tostring(data.message)) > 0 then
         gcPhoneServerT.servicesStartCall(data, false)
     end
 end)
