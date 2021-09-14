@@ -4,7 +4,7 @@
     <!-- <div style="width: 50%; height: 50%; background-color: rgba(0,0,0,0.5)"></div> -->
     <!-- <canvas class="video-recorder-canvas" id="video-recorder-canvas"></canvas> -->
 
-    <div v-if="show === true && tempoHide === false" :style="getStyle()">
+    <div v-if="show === true" :style="getStyle()">
       <div class="phone_wrapper" :style="classObject()">
         <div v-if="currentCover" class="phone_coque" :style="{ backgroundImage: 'url(/html/static/img/cover/' + currentCover.value + ')' }"></div>
         
@@ -69,7 +69,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['loaded', 'show', 'zoom', 'currentCover', 'suoneria', 'appelsInfo', 'myPhoneNumber', 'volume', 'tempoHide', 'brightness', 'brightnessActive']),
+    ...mapGetters(['loaded', 'show', 'zoom', 'currentCover', 'suoneria', 'appelsInfo', 'myPhoneNumber', 'volume', 'brightness', 'brightnessActive']),
     checkIfLoaded () {
       if (process.env.NODE_ENV !== 'production') return true
       return this.loaded === 'STATUS_OK'
