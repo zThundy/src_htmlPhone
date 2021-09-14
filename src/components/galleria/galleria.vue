@@ -4,15 +4,15 @@
 
     <div class="phone_fullscreen_img" v-if="imgZoom !== undefined">
       <img v-if="imgZoom.type === 'photo'" :src="imgZoom.link" />
-      <video v-else-if="imgZoom.type === 'video'" width="330" height="710" id="video-playback-element" autoplay>
-        <source :src="imgZoom.link" type="video/webm" />
-      </video>
+      <video v-else-if="imgZoom.type === 'video'" width="330" height="710" id="video-playback-element" :src="imgZoom.link" autoplay />
     </div>
 
     <div class="div_immagini">
-      <div class='immagini' v-for="(val, key) of fotografie" :key="key + 1" :style="{ src: 'url(' + val.link +')' }">
+      <div class='immagini' v-for="(val, key) of fotografie" :key="key + 1">
         <img v-if="val.type === 'photo'" class="immagine" :src="val.link" :class="{ select: key + 1 === currentSelect }" />
         <div v-else-if="val.type === 'video'" class="video-container" :class="{ select: key + 1 === currentSelect }">
+        <!-- <div v-else-if="val.type === 'video'" class="video-container" :class="{ select: key + 1 === currentSelect }" :id="'container-video-' + getSMSVideoInfo(val.link).id"> -->
+          <!-- <i :id="generateThumbnail(getSMSVideoInfo(val.link))" class="fas fa-play"></i> -->
           <i class="fas fa-play"></i>
         </div>
       </div>
@@ -33,7 +33,8 @@ export default {
     return {
       currentSelect: 1,
       ignoredControls: false,
-      imgZoom: undefined
+      imgZoom: undefined,
+      createWait: {}
     }
   },
   computed: {
@@ -89,6 +90,10 @@ export default {
         number: obj[1]
       }
     },
+    // generateThumbnail (value) {
+    //   this.createWait[value.id] = value
+    //   return String(value.id)
+    // },
     async onEnter () {
       if (this.imgZoom) {
         if (this.imgZoom.type === 'video' && this.videoElement) {
@@ -106,18 +111,21 @@ export default {
         if (element.type === 'photo') {
           scelte = [
             { id: 0, title: this.LangString('APP_GALLERIA_ZOOM'), icons: 'fa-search' },
-            { id: 1, title: this.LangString('APP_GALLERIA_SET_WALLPAPER'), icons: 'fa-mobile' }
+            { id: 1, title: this.LangString('APP_GALLERIA_SET_WALLPAPER'), icons: 'fa-mobile' },
+            { id: 2, title: this.LangString('APP_GALLERIA_INOLTRA'), icons: 'fa-paper-plane' },
+            { id: 4, title: this.LangString('APP_GALLERIA_SEND_BLUETOOTH'), icons: 'fa-share-square' },
+          { id: 5, title: this.LangString('APP_GALLERIA_ELIMINA'), icons: 'fa-trash', color: 'orange' }
           ]
         } else if (element.type === 'video') {
           scelte = [
-            { id: 0, title: this.LangString('APP_GALLERIA_ZOOM_VIDEO'), icons: 'fa-search' }
+            { id: 0, title: this.LangString('APP_GALLERIA_ZOOM_VIDEO'), icons: 'fa-search' },
+            { id: 2, title: this.LangString('APP_GALLERIA_INOLTRA'), icons: 'fa-paper-plane' },
+            { id: 4, title: this.LangString('APP_GALLERIA_SEND_BLUETOOTH'), icons: 'fa-share-square' },
+            { id: 5, title: this.LangString('APP_GALLERIA_ELIMINA_VIDEO'), icons: 'fa-trash', color: 'orange' }
           ]
         }
         scelte = [
           ...scelte,
-          { id: 2, title: this.LangString('APP_GALLERIA_INOLTRA'), icons: 'fa-paper-plane' },
-          { id: 4, title: this.LangString('APP_GALLERIA_SEND_BLUETOOTH'), icons: 'fa-share-square' },
-          { id: 5, title: this.LangString('APP_GALLERIA_ELIMINA'), icons: 'fa-trash', color: 'orange' },
           { id: 3, title: this.LangString('APP_GALLERIA_ELIMINA_TUTTO'), icons: 'fa-trash', color: 'red' },
           { id: -1, title: this.LangString('CANCEL'), icons: 'fa-undo', color: 'red' }
         ]
@@ -200,6 +208,31 @@ export default {
     this.$bus.$on('keyUpArrowRight', this.onRight)
     this.$bus.$on('keyUpBackspace', this.onBackspace)
     this.$bus.$on('keyUpEnter', this.onEnter)
+
+    // setTimeout(() => {
+    //   Object.entries(this.createWait).forEach(([id, _]) => {
+    //     let currentVideoElem = document.getElementById('video-playback-element')
+    //     fetch('http://' + this.config.fileUploader.ip + ':' + this.config.fileUploader.port + '/videoDownload?type=camera&key=' + id, {
+    //       method: 'GET'
+    //     }).then(async resp => {
+    //       if (resp.status === 404) { return console.err('404 error') }
+    //       var jsonResponse = await resp.json()
+    //       let canvas = document.createElement('canvas')
+    //       let divElement = document.getElementById('container-video-' + id)
+    //       console.log(divElement)
+    //       divElement.appendChild(canvas)
+    //       canvas.style.cssText = `
+    //         display: block;
+    //         width: 100%;
+    //         height: 100%;
+    //         position: absolute;
+    //         z-index: 1;
+    //       `
+    //       currentVideoElem.src = window.URL.createObjectURL(new Blob([Buffer.from(jsonResponse.blobDataBuffer, 'base64')]))
+    //       canvas.getContext('2d').drawImage(currentVideoElem, 0, 0, currentVideoElem.videoWidth, currentVideoElem.videoHeight)
+    //     }).catch(() => {})
+    //   })
+    // }, 1500)
   },
 
   beforeDestroy () {
@@ -254,6 +287,7 @@ export default {
 
 .video-container i {
   color: white;
+  z-index: 2;
 }
 
 .video-container.select {

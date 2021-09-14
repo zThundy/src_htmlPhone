@@ -12,6 +12,8 @@ const getters = {
 
 const actions = {
   addPhoto ({ commit, state }, data) {
+    // console.log('received addPhoto data')
+    // console.log(JSON.stringify(data))
     commit('APP_PHOTO', data)
     window.localStorage['gc_fotografie'] = JSON.stringify(state.fotografie)
     // console.log(JSON.stringify(window.localStorage['gc_fotografie']))
@@ -27,8 +29,7 @@ const actions = {
 
 const mutations = {
   APP_PHOTO (state, data) {
-    var foto = { link: data.link }
-    state.fotografie.push(foto)
+    state.fotografie.push(data)
   },
   CLEAR_GALLERY (state) {
     state.fotografie = []

@@ -36,7 +36,7 @@ export default {
     events.$on('add', this.addItem)
   },
   computed: {
-    ...mapGetters(['show', 'tempoHide', 'volume', 'LangString'])
+    ...mapGetters(['show', 'volume', 'LangString'])
   },
   methods: {
     formatEmoji (message) {
