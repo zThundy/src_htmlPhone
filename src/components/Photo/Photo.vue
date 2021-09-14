@@ -57,11 +57,11 @@ export default {
     return {
       ignoreControls: false,
       recording: false,
-      chunks: [],
+      currentBlob: [],
       videoElement: null,
       videoRequest: null,
       frontCamera: null,
-      showSavePanel: true,
+      showSavePanel: false,
       currentSelect: 0
     }
   },
@@ -72,10 +72,20 @@ export default {
     async onEnter () {
       if (this.showSavePanel) {
         if (this.currentSelect === 1) {
-          console.log(this.videoElement.src)
           if (this.videoElement.src && this.videoElement.src !== '') {
             // saving shit
-            console.log('cool')
+            console.log(this.currentBlob.size)
+            console.log(this.currentBlob)
+            const id = this.$phoneAPI.makeid(20)
+            const formData = new FormData()
+            formData.append('video-file', this.currentBlob)
+            formData.append('filename', id)
+            formData.append('type', 'camera')
+            fetch('http://' + this.config.fileUploader.ip + ':' + this.config.fileUploader.port + '/videoUpload', {
+              method: 'POST',
+              body: formData
+            })
+            this.showSavePanel = false
           }
         } else if (this.currentSelect === 0) {
           this.showSavePanel = false
@@ -116,14 +126,7 @@ export default {
             this.videoRequest.startVideoRecording((blob) => {
               if (blob.size > 0) {
                 this.showSavePanel = true
-                const id = this.$phoneAPI.makeid(15)
-                const formData = new FormData()
-                formData.append('video-file', blob)
-                formData.append('filename', id)
-                fetch('http://' + this.config.fileUploader.ip + ':' + this.config.fileUploader.port + '/videoUpload', {
-                  method: 'POST',
-                  body: formData
-                })
+                this.currentBlob = blob
               }
             })
             this.recording = true

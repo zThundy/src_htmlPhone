@@ -26,7 +26,7 @@
   "fileUploader": {
     "ip_old": "TYPE_YOUR_SERVER_IP_HERE",
     "port": "3000",
-    "ip": "127.0.0.1"
+    "ip": "localhost"
   },
 
   "enableWebRTC": false,

@@ -123,6 +123,11 @@ class VideoRequest {
     this.liveCtx = this.liveCanvas.getContext('2d')
   }
 
+  getVideoStream () {
+    if (!this.stream) this.stream = this.liveCanvas.captureStream()
+    return this.stream
+  }
+
   startVideoRecording (cb) {
     this.stream = this.liveCanvas.captureStream()
     this.recorder = new MediaRecorder(this.stream, { mimeType: 'video/webm' })
