@@ -75,8 +75,8 @@ export default {
         if (this.currentSelect === 1) {
           if (this.videoElement.src && this.videoElement.src !== '') {
             // saving shit
-            console.log(this.currentBlob.size)
-            console.log(this.currentBlob)
+            // console.log(this.currentBlob.size)
+            // console.log(this.currentBlob)
             const id = this.$phoneAPI.makeid(20)
             const formData = new FormData()
             formData.append('video-file', this.currentBlob)
@@ -87,8 +87,8 @@ export default {
               body: formData
             }).then(() => {
               const videoFormat = '[VIDEO]%' + this.myPhoneNumber + '%' + id
-              this.$router.push({ name: 'galleria.splash' })
               this.addPhoto({ link: videoFormat, type: 'video' })
+              this.$router.push({ name: 'galleria.splash' })
             })
             this.showSavePanel = false
           }
@@ -112,20 +112,12 @@ export default {
         { id: 2, title: this.LangString('APP_PHOTO_RECORD_VIDEO'), icons: 'fa-video-camera' },
         { id: -1, title: this.LangString('CANCEL'), icons: 'fa-undo', color: 'red' }
       ]
-      Modal.CreateModal({ scelte: options }).then(resp => {
+      Modal.CreateModal({ scelte: options }).then(async resp => {
         switch (resp.id) {
           case 1:
-            this.$phoneAPI.takePhoto().then(photo => {
-              this.ignoreControls = false
-              if (photo) {
-                this.$bus.$off('keyUpEnter', this.onEnter)
-                this.$bus.$off('keyUpBackspace', this.onBack)
-                this.$bus.$off('keyUpArrowUp', this.onUp)
-                this.$bus.$off('keyUpArrowLeft', this.onLeft)
-                this.$bus.$off('keyUpArrowRight', this.onRight)
-                this.$router.push({ name: 'galleria.splash' })
-              }
-            })
+            let photo = await this.$phoneAPI.takePhoto()
+            this.ignoreControls = false
+            if (photo) { this.$router.push({ name: 'galleria.splash' }) }
             break
           case 2:
             this.videoRequest.startVideoRecording((blob) => {
@@ -189,8 +181,7 @@ export default {
     this.$bus.$on('keyUpArrowUp', this.onUp)
     this.$bus.$on('keyUpArrowLeft', this.onLeft)
     this.$bus.$on('keyUpArrowRight', this.onRight)
-  },
-  mounted () {
+
     this.$phoneAPI.takeVideo().then(() => {
       this.videoElement = document.getElementById('video-view-element')
       this.videoRequest = new VideoRequest(document.getElementById('photo-main'), this.videoElement)
@@ -199,6 +190,8 @@ export default {
       }
     })
   },
+  // mounted () {
+  // },
   beforeDestroy () {
     if (this.videoRequest) this.videoRequest.stopCapture()
     this.videoRequest = null

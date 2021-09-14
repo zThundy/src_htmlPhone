@@ -4,7 +4,6 @@ import PhoneAPI from './../../PhoneAPI'
 const state = {
   show: process.env.NODE_ENV !== 'production',
   // show: false,
-  tempoHide: false,
   myPhoneNumber: '555#####',
   background: JSON.parse(window.localStorage['gc_background'] || null),
   currentCover: JSON.parse(window.localStorage['gc_cover'] || null),
@@ -32,7 +31,6 @@ const state = {
 
 const getters = {
   show: ({ show }) => show,
-  tempoHide: ({ tempoHide }) => tempoHide,
   myPhoneNumber: ({ myPhoneNumber }) => myPhoneNumber,
   volume: ({ volume }) => volume,
   notification: ({ notification }) => notification,
@@ -200,10 +198,6 @@ const mutations = {
   // },
   SET_PHONE_VISIBILITY (state, show) {
     state.show = show
-    state.tempoHide = false
-  },
-  SET_TEMPO_HIDE (state, hide) {
-    state.tempoHide = hide
   },
   SET_MY_PHONE_NUMBER (state, myPhoneNumber) {
     state.myPhoneNumber = myPhoneNumber
