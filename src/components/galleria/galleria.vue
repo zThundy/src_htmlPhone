@@ -38,7 +38,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['LangString', 'fotografie', 'bluetooth', 'config'])
+    ...mapGetters(['LangString', 'fotografie', 'bluetooth', 'config', 'myPhoneNumber'])
   },
   methods: {
     ...mapActions(['setBackground', 'clearGallery', 'deleteSinglePicture']),
@@ -114,12 +114,12 @@ export default {
             { id: 1, title: this.LangString('APP_GALLERIA_SET_WALLPAPER'), icons: 'fa-mobile' },
             { id: 2, title: this.LangString('APP_GALLERIA_INOLTRA'), icons: 'fa-paper-plane' },
             { id: 4, title: this.LangString('APP_GALLERIA_SEND_BLUETOOTH'), icons: 'fa-share-square' },
-          { id: 5, title: this.LangString('APP_GALLERIA_ELIMINA'), icons: 'fa-trash', color: 'orange' }
+            { id: 5, title: this.LangString('APP_GALLERIA_ELIMINA'), icons: 'fa-trash', color: 'orange' }
           ]
         } else if (element.type === 'video') {
           scelte = [
             { id: 0, title: this.LangString('APP_GALLERIA_ZOOM_VIDEO'), icons: 'fa-search' },
-            { id: 2, title: this.LangString('APP_GALLERIA_INOLTRA'), icons: 'fa-paper-plane' },
+            { id: 6, title: this.LangString('APP_GALLERIA_INOLTRA_VIDEO'), icons: 'fa-paper-plane' },
             { id: 4, title: this.LangString('APP_GALLERIA_SEND_BLUETOOTH'), icons: 'fa-share-square' },
             { id: 5, title: this.LangString('APP_GALLERIA_ELIMINA_VIDEO'), icons: 'fa-trash', color: 'orange' }
           ]
@@ -195,6 +195,11 @@ export default {
             break
           case 5:
             this.deleteSinglePicture(this.currentSelect)
+            break
+          case 6:
+            const videoData = this.getSMSVideoInfo(element.link)
+            let message = '[VIDEO]%' + this.myPhoneNumber + '%' + videoData.id
+            this.$router.push({ name: 'messages.chooseinoltra', params: { message: message } })
             break
         }
       } catch (e) { } finally { this.ignoredControls = false }
