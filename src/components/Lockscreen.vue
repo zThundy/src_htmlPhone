@@ -105,6 +105,9 @@ export default {
       if (message.indexOf('[AUDIO]') === 0) {
         return this.LangString('PHONE_AUDIO_MESSAGE_TITLE')
       }
+      if (message.indexOf('[VIDEO]') === 0) {
+        return this.LangString('PHONE_VIDEO_MESSAGE_TITLE')
+      }
       if (message.indexOf('[CONTACT]') === 0) {
         return this.LangString('PHONE_CONTACT_MESSAGE_TITILE')
       }
