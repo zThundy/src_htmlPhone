@@ -85,10 +85,6 @@ class PhoneAPI {
     // } catch (e) { console.log(e) }
   }
 
-  getEmojis () {
-    return emoji
-  }
-
   convertEmoji (text) {
     if (text) {
       for (const e of keyEmoji) {
@@ -366,12 +362,16 @@ class PhoneAPI {
     return tempArray
   }
 
-  makeid (length) {
+  makeid (length, addTime) {
     var result = ''
     var characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'
     var charactersLength = characters.length
     for (var i = 0; i < length; i++) {
       result += characters.charAt(Math.floor(Math.random() * charactersLength))
+    }
+    if (addTime) {
+      const date = new Date()
+      result = date.getTime() + result
     }
     return result
   }
