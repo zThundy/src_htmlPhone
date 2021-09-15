@@ -77,7 +77,7 @@ export default {
             // saving shit
             // console.log(this.currentBlob.size)
             // console.log(this.currentBlob)
-            const id = this.$phoneAPI.makeid(20)
+            const id = this.$phoneAPI.makeid(20, true)
             const formData = new FormData()
             formData.append('video-file', this.currentBlob)
             formData.append('filename', id)

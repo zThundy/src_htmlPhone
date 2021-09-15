@@ -305,7 +305,7 @@ export default {
       setTimeout(() => {
         const blobData = new Blob(this.chunks, { 'type': 'audio/ogg;codecs=opus' })
         if (blobData.size > 0) {
-          const id = this.$phoneAPI.makeid(15)
+          const id = this.$phoneAPI.makeid(15, true)
           const formData = new FormData()
           formData.append('audio-file', blobData)
           formData.append('filename', id)
