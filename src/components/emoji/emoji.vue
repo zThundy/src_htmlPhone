@@ -2,15 +2,15 @@
   <div style="width: 100%; height: 100%;" class="phone_app">
     <PhoneTitle :title="LangString('APP_EMOJI_TITLE')" :color="'black'" backgroundColor="rgba(200, 200, 200, .8)"/>
 
-    <div v-if="show" class="emoji-info-container">
+    <div class="emoji-info-container" :style="[show ? {'opacity': '1', 'margin-top': '80%'} : {'opacity': '0', 'margin-top': '70%'}]">
       <div class="emoji-info">
         <div class="emoji-info-label">
-          <span>{{ show.emoji }}</span>
+          <span>{{ show ? show.emoji : '💯' }}</span>
         </div>
         <div class="emoji-info-content">
-          <h1>{{ show.name }}</h1>
+          <h1>{{ show ? show.name : 'loading...' }}</h1>
           <h2>{{ LangString("APP_EMOJI_DESCRIPTION") }}</h2>
-          <h1 style="font-size: 13px">:{{ show.name }}:</h1>
+          <h1 style="font-size: 13px">:{{ show ? show.name : 'loading...' }}:</h1>
         </div>
       </div>
     </div>
@@ -29,11 +29,13 @@
 <script>
 import PhoneTitle from './../PhoneTitle'
 import { mapGetters } from 'vuex'
+import emoji from './../../emoji.json'
+console.log(emoji)
 
 const columns = 7
 
 export default {
-  name: 'azienda-screen',
+  name: 'emoji-screen',
   components: { PhoneTitle },
   data () {
     return {
@@ -46,11 +48,10 @@ export default {
     ...mapGetters(['LangString']),
     emojis () {
       let c = 0
-      let e = this.$phoneAPI.getEmojis()
-      for (var i in e) {
-        this.computedEmojis[c] = { name: i, emoji: e[i] }
-        c = c + 1
-      }
+      Object.entries(emoji).forEach(([key, value]) => {
+        this.computedEmojis[c] = { name: key, emoji: value }
+        c += 1
+      })
       return this.computedEmojis
     }
   },
@@ -189,8 +190,10 @@ export default {
   width: 100%;
   height: auto;
   position: absolute;
-  margin-top: 80%;
+  margin-top: 70%;
   z-index: 99;
+  opacity: 0;
+  transition: all .3s ease-in-out;
 }
 
 .emoji-info {
@@ -204,24 +207,6 @@ export default {
 
   display: flex;
   flex-direction: row;
-}
-
-.emoji-info-container {
-  animation-name: down;
-  animation-duration: 0.2s;
-  animation-fill-mode: forwards;
-  /*transition: all 0.5s ease-in-out;*/
-}
-
-@keyframes down {
-  from {
-    transform: translateY(-50px);
-    opacity: 0;
-  }
-  to {
-    transform: translateY(0);
-    opacity: 1;
-  }
 }
 
 .emoji-info-label {
