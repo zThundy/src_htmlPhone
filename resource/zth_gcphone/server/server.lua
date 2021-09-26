@@ -382,7 +382,7 @@ end
 gcPhoneT.getPlayerID = function(source)
     local xPlayer = ESX.GetPlayerFromId(source)
     if xPlayer == nil then return nil end
-    return xPlayer.identifier
+    return tostring(xPlayer.identifier)
 end
 
 function getContacts(identifier)

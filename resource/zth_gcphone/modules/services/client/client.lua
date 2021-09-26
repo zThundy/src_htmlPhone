@@ -57,7 +57,7 @@ end
         TriggerEvent("esx_addons_gcphone:call", {
             coords = GetEntityCoords(GetPlayerPed(-1)),
             job = "police",
-            text = "Help i'm beeing robbed",
+            message = "Help i'm beeing robbed",
             display = "Police"
         })
     
@@ -65,7 +65,7 @@ end
         TriggerClientEvent("esx_addons_gcphone:call", source, {
             coords = GetEntityCoords(GetPlayerPed(-1)),
             job = "police",
-            text = "Help i'm beeing robbed",
+            message = "Help i'm beeing robbed",
             display = "Police"
         })
 ]]
@@ -91,7 +91,7 @@ AddEventHandler('esx_addons_gcphone:call', function(data)
 
     CheckForDispatchScript()
 
-    if data.message and string.length(tostring(data.message)) > 0 then
+    if data.message and string.len(tostring(data.message)) > 0 then
         gcPhoneServerT.servicesStartCall(data, false)
     end
 end)

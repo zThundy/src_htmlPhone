@@ -182,7 +182,7 @@ cartesimT.getSimList = function()
     local identifier = gcPhoneT.getPlayerID(player)
     local cartesim = {}
     for number, v in pairs(CACHED_TARIFFS) do
-        if identifier == v.identifier then
+        if identifier == tostring(v.identifier) then
             if v.nome_sim ~= '' then
                 table.insert(cartesim, { label = tostring(v.nome_sim), value = v, piano_tariffario = v.piano_tariffario })
             else
