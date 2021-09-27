@@ -58,7 +58,7 @@
       </div>
     </div>
     
-    <div class="journal-footer" v-if="config.weazelJob[job]">
+    <div class="journal-footer" v-if="enabledJobs[job]">
       <div class="journal-footer-item" :class="{ selected: 0 === currentModule }">
         <i class="fa fa-newspaper-o"></i>
       </div>
@@ -95,7 +95,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['LangString', 'news', 'job', 'tempNews', 'config'])
+    ...mapGetters(['LangString', 'news', 'job', 'tempNews', 'config', 'enabledJobs'])
   },
   methods: {
     ...mapMutations(['UPDATE_TEMP_INFO', 'CHANGE_BRIGHTNESS_STATE']),
@@ -192,7 +192,7 @@ export default {
     },
     async onRight () {
       if (this.ignoreControl) return
-      if (!this.config.weazelJob[this.job]) return
+      if (!this.enabledJobs[this.job]) return
       if (this.currentModule === 1) return
       this.currentModule = this.currentModule + 1
       this.currentSelect = -1

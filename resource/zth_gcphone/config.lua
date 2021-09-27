@@ -186,6 +186,8 @@ Config.ChangePasswordPoints = 50
 -- before allowing the user to create a new modem
 Config.WaitBeforeCreatingAgaing = 600
 
+-- these will be the jobs that will be enabled to view the company 
+-- application and to which buttons they will have access
 Config.MinAziendaGrade = {
     ["police"] = {
         [15] = {"salary", "employes", "chat", "calls"},
@@ -211,4 +213,11 @@ Config.MinAziendaGrade = {
         [1] = {"chat", "calls"},
         [0] = {"chat", "calls"}
     }
+}
+
+-- these will be the jobs that will have access
+-- to the announcements or news application
+Config.AnnouncesAppJobs = {
+    police = true,
+    ambulance = true
 }
