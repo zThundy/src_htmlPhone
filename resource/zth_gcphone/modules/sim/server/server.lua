@@ -24,26 +24,27 @@ end
 local function NewSim(source)
     local player = source
     local xPlayer = ESX.GetPlayerFromId(player)
+    local identifier = tostring(xPlayer.identifier)
     
-    MySQL.Async.fetchAll('SELECT * FROM users WHERE identifier = @identifier', {['@identifier'] = xPlayer.identifier}, function(result)
+    MySQL.Async.fetchAll('SELECT * FROM users WHERE identifier = @identifier', {['@identifier'] = identifier}, function(result)
         local result = MySQL.Sync.fetchAll("SELECT * FROM phone_sim", {})
         local phone_number = GenerateUniquePhoneNumber(result)
         
         if phone_number ~= nil then
             MySQL.Async.insert('INSERT INTO phone_sim(phone_number, identifier, piano_tariffario, minuti, messaggi, dati) VALUES(@phone_number, @identifier, @piano_tariffario, @minuti, @messaggi, @dati)', {
                 ['@phone_number'] = phone_number,
-                ['@identifier'] = xPlayer.identifier,
+                ['@identifier'] = identifier,
                 ['@piano_tariffario'] = "nessuno",
                 ['@minuti'] = 0,
                 ['@messaggi'] = 0,
                 ['@dati'] = 0
             }, function(id)
                 showXNotification(xPlayer, Config.Language["SIM_CREATED_MESSAGE_OK"])
-                gcPhoneT.updateCachedNumber(phone_number, xPlayer.identifier, false)
+                gcPhoneT.updateCachedNumber(phone_number, identifier, false)
 
                 CACHED_TARIFFS[phone_number] = {
                     phone_number = phone_number,
-                    identifier = xPlayer.identifier,
+                    identifier = identifier,
                     piano_tariffario = "nessuno",
                     minuti = 0,
                     messaggi = 0,
@@ -66,7 +67,7 @@ end)
 
 RegisterServerEvent("esx:playerLoaded")
 AddEventHandler('esx:playerLoaded', function(source, xPlayer)
-    local identifier = xPlayer.identifier
+    local identifier = tostring(xPlayer.identifier)
     if not identifier then identifier = gcPhoneT.getPlayerID(source) end
     local phone_number = gcPhoneT.getPhoneNumber(identifier)
 
@@ -108,29 +109,31 @@ end)
 cartesimT.daiSim = function(number, c_id)
     local player = source
     local xPlayer = ESX.GetPlayerFromId(player)
-    local xPlayer2 = ESX.GetPlayerFromId(c_id)
+    local c_xPlayer = ESX.GetPlayerFromId(c_id)
+    local identifier = tostring(xPlayer.identifier)
+    local c_identifier = tostring(c_xPlayer.identifier)
             
     if number ~= nil then
         showXNotification(xPlayer, Config.Language["SIM_GIVEN_MESSAGE_1"]:format(number))
-        showXNotification(xPlayer2, Config.Language["SIM_GIVEN_MESSAGE_2"]:format(number))
-        gcPhoneT.updateCachedNumber(number, xPlayer2.identifier, false)
+        showXNotification(c_xPlayer, Config.Language["SIM_GIVEN_MESSAGE_2"]:format(number))
+        gcPhoneT.updateCachedNumber(number, c_identifier, false)
         MySQL.Async.fetchAll("SELECT phone_number FROM users WHERE identifier = @identifier AND phone_number = @number", {
-            ['@identifier'] = xPlayer.identifier,
+            ['@identifier'] = identifier,
             ['@number'] = number
         }, function(result)
             if result and result[1] then
                 MySQL.Async.execute('UPDATE `users` SET phone_number = @phone_number WHERE `identifier` = @identifier', {
-                    ['@identifier']   = xPlayer.identifier,
+                    ['@identifier'] = identifier,
                     ['@phone_number'] = 0
                 })
 
                 CACHED_TARIFFS[number].phone_number = number
-                CACHED_TARIFFS[number].identifier = xPlayer.identifier
+                CACHED_TARIFFS[number].identifier = identifier
             end
         end)
 
         MySQL.Async.execute('UPDATE phone_sim SET identifier = @identifier WHERE phone_number = @phone_number', {
-            ['@identifier'] = xPlayer2.identifier,
+            ['@identifier'] = c_identifier,
             ['@phone_number'] = number
         })
     end
