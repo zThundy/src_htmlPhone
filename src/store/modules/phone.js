@@ -39,7 +39,6 @@ const getters = {
   brightness: ({ brightness }) => brightness,
   myImage: ({ myImage, config }) => myImage,
   myData: ({ myData, config }) => myData,
-  enableTakePhoto: ({ config }) => config.enableTakePhoto === true,
   background: ({ background, config }) => {
     if (background === null) {
       if (config.background_default !== undefined) {

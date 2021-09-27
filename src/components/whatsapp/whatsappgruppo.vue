@@ -101,7 +101,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['LangString', 'messaggi', 'myPhoneNumber', 'enableTakePhoto', 'contacts', 'config'])
+    ...mapGetters(['LangString', 'messaggi', 'myPhoneNumber', 'contacts', 'config'])
   },
   methods: {
     ...mapActions(['requestWhatsappInfo', 'sendMessageInGroup']),
@@ -159,7 +159,7 @@ export default {
             {id: 1, title: this.LangString('APP_WHATSAPP_SEND_GPS'), icons: 'fa-location-arrow'},
             {id: -1, title: this.LangString('CANCEL'), icons: 'fa-undo', color: 'red'}
           ]
-          if (this.enableTakePhoto) {
+          if (this.config.picturesConfig.enable) {
             scelte = [
               {id: 'audio-record', title: this.LangString('APP_WHATSAPP_RECORD_AUDIO'), icons: 'fa-microphone'},
               {id: 1, title: this.LangString('APP_WHATSAPP_SEND_GPS'), icons: 'fa-location-arrow'},

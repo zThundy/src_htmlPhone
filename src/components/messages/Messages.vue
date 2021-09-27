@@ -81,7 +81,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['LangString', 'messages', 'contacts', 'enableTakePhoto', 'config']),
+    ...mapGetters(['LangString', 'messages', 'contacts', 'config']),
     messagesListApp () {
       return this.messages.filter(e => e.transmitter === this.phoneNumber).sort((a, b) => a.time - b.time)
     },
@@ -345,7 +345,7 @@ export default {
           {id: 1, title: this.LangString('APP_MESSAGE_SEND_GPS'), icons: 'fa-location-arrow'},
           {id: -1, title: this.LangString('CANCEL'), icons: 'fa-undo', color: 'red'}
         ]
-        if (this.enableTakePhoto) {
+        if (this.config.picturesConfig.enable) {
           scelte = [
             {id: 1, title: this.LangString('APP_MESSAGE_SEND_GPS'), icons: 'fa-location-arrow'},
             {id: 2, title: this.LangString('APP_MESSAGE_SEND_PHOTO'), icons: 'fa-picture-o'},

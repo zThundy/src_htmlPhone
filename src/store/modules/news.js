@@ -7,7 +7,8 @@ const state = {
     pics: [],
     description: ''
   },
-  job: null
+  job: null,
+  enabledJobs: null
 }
 
 const getters = {
@@ -25,6 +26,9 @@ const mutations = {
   },
   UPDATE_JOB (state, job) {
     state.job = String(job)
+  },
+  UPDATE_ACCESS (state, access) {
+    state.enabledJobs = access
   },
   UPDATE_TEMP_INFO (state, data) {
     if (data.type === 'description') {
