@@ -1,8 +1,9 @@
 import store from '@/store'
 import VoiceRTC from './VoiceRTC'
-// import VideoRTC from './VideoRTC'
 import Vue from 'vue'
-// import aes256 from 'aes256'
+import config from './../static/config/config.json'
+
+import PictureRequest from './PictureRequest'
 
 import emoji from './emoji.json'
 const keyEmoji = Object.keys(emoji)
@@ -13,17 +14,17 @@ const BASE_URL = 'http://zth_gcphone/'
 /* eslint-disable camelcase */
 class PhoneAPI {
   constructor () {
-    // evento che controlla l'apertura e la chiusura del telefono:
-    // aggiungere che ad event.data.show si apre il lockscreen
+    console.log('[MODULE] PhoneAPI initialized')
+    // evento che controlla tutti i messaggi che vengono mandati dal lua
+    // per poi chiamare le funzioni che iniziano con "on"
     window.addEventListener('message', (event) => {
-      const eventType = event.data.event
-      if (eventType !== undefined && typeof this['on' + eventType] === 'function') {
-        this['on' + eventType](event.data)
+      if (event.data.event !== undefined && typeof this['on' + event.data.event] === 'function') {
+        this['on' + event.data.event](event.data)
       } else if (event.data.show !== undefined) {
         store.commit('SET_PHONE_VISIBILITY', event.data.show)
       }
     })
-    this.config = null
+    this.config = config
     this.voiceRTC = null
     this.videoRTC = null
     this.soundList = []
@@ -31,31 +32,47 @@ class PhoneAPI {
     this.keyAudioElement = new Audio()
   }
 
-  onsendParametersValues (data) {
-    store.commit('SEND_INIT_VALUES', data)
-  }
-
   // attenzione: per evitare l'Uncaught (in promise) error sulla console, è
   // necessario inserire il cb("ok") sul lua, visto che si aspetta qualcosa in ritorno
   async post (method, data) {
     try {
       const ndata = data === undefined ? '{}' : JSON.stringify(data)
-      const response = await window.jQuery.post(BASE_URL + method, ndata)
-      if (response === undefined || response === 'ok') return 'ok'
+      // const response = await window.jQuery.post(BASE_URL + method, ndata)
+      const response = await fetch(BASE_URL + method, {
+        method: 'POST',
+        mode: 'cors',
+        body: ndata
+      })
+      .then(response => response.text())
+      .then(text => {
+        console.log('response text inside async post function')
+        console.log(text)
+        return text
+      })
+      console.log('response text outside async post function')
+      console.log(response)
+      if (response === 'ok' || !response) return 'ok'
+      console.log('trasforming response to jsObj')
+      console.log(JSON.parse(response))
       return JSON.parse(response)
     } catch (e) { console.log(BASE_URL + method) }
   }
 
-  async log (...data) {
-    if (process.env.NODE_ENV === 'production') {
-      return this.post('log', data)
+  async sendLicenseResponse (bool) {
+    return await this.post('PhoneNeedAuth', bool)
+  }
+
+  async takePhoto (pic) {
+    if (!pic) {
+      const p = new PictureRequest(this.config.picturesConfig)
+      console.log(p)
     } else {
-      return console.log(...data)
+      return pic
     }
   }
 
-  async sendLicenseResponse (bool) {
-    return this.post('PhoneNeedAuth', bool)
+  ongetPicture (e) {
+    console.log(e)
   }
 
   onphoneChecks (data) {
@@ -86,97 +103,92 @@ class PhoneAPI {
   }
 
   convertEmoji (text) {
-    if (text) {
-      for (const e of keyEmoji) {
-        text = text.replace(new RegExp(`:${e}:`, 'g'), emoji[e])
-      }
-    }
+    if (text) for (const e of keyEmoji) text = text.replace(new RegExp(`:${e}:`, 'g'), emoji[e])
     return text
   }
 
+  onsendParametersValues (data) {
+    store.commit('SEND_INIT_VALUES', data)
+  }
+
   async sendMessage (phoneNumber, message) {
-    return this.post('sendMessage', {phoneNumber, message})
+    return await this.post('sendMessage', {phoneNumber, message})
   }
 
   async deleteMessage (id) {
-    return this.post('deleteMessage', {id})
+    return await this.post('deleteMessage', {id})
   }
 
   async deleteMessagesNumber (number) {
-    return this.post('deleteMessageNumber', {number})
+    return await this.post('deleteMessageNumber', {number})
   }
 
   async deleteAllMessages () {
-    return this.post('deleteAllMessage')
+    return await this.post('deleteAllMessage')
   }
 
   async setMessageRead (number) {
-    return this.post('setReadMessageNumber', {number})
+    return await this.post('setReadMessageNumber', {number})
   }
 
   async updateContactAvatar (id, display, number, icon) {
-    return this.post('aggiornaAvatarContatto', { id, display, number, icon })
+    return await this.post('aggiornaAvatarContatto', { id, display, number, icon })
   }
 
   async updateContact (id, display, phoneNumber, email, icon) {
-    return this.post('updateContact', { id, display, phoneNumber, email, icon })
+    return await this.post('updateContact', { id, display, phoneNumber, email, icon })
   }
 
   async addContact (display, phoneNumber, email, icon) {
-    return this.post('addContact', { display, phoneNumber, email, icon })
+    return await this.post('addContact', { display, phoneNumber, email, icon })
   }
 
   async deleteContact (id) {
-    return this.post('deleteContact', { id })
+    return await this.post('deleteContact', { id })
   }
 
   async shareContact (contact) {
-    return this.post('shareContact', contact)
+    return await this.post('shareContact', contact)
   }
 
   async deletePhoneHistory (numero) {
-    return this.post('deletePhoneHistory', { numero })
+    return await this.post('deletePhoneHistory', { numero })
   }
 
   async deleteAllPhoneHistory () {
-    return this.post('deleteAllPhoneHistory')
+    return await this.post('deleteAllPhoneHistory')
   }
 
   async closePhone () {
-    return this.post('closePhone')
+    return await this.post('closePhone')
   }
 
   async setGPS (x, y) {
-    return this.post('setGPS', {x, y})
+    return await this.post('setGPS', {x, y})
   }
 
   onaddPhotoToGallery (data) {
     store.dispatch('addPhoto', { link: data.link, type: 'photo' })
   }
 
-  async takeVideo () {
-    return this.post('takeVideo')
-  }
-
-  async takePhoto () {
-    const data = await this.post('takePhoto', { url: this.config.fileUploadService_Url, field: this.config.fileUploadService_Field })
-    if (data) { return data }
+  async openFakeCamera () {
+    await this.post('openFakeCamera')
   }
 
   async sendErrorMessage (message) {
-    return this.post('sendErrorMessage', { message: message })
+    return await this.post('sendErrorMessage', { message: message })
   }
 
   async getReponseText (data) {
     if (process.env.NODE_ENV === 'production') {
       return this.post('reponseText', data || {})
     } else {
-      return {text: window.prompt()}
+      return { text: window.prompt() }
     }
   }
 
   async callEvent (eventName, data) {
-    return this.post('callEvent', {eventName, data})
+    return await this.post('callEvent', {eventName, data})
   }
 
   async deleteALL () {
@@ -187,24 +199,15 @@ class PhoneAPI {
     store.dispatch('resetContact')
     store.dispatch('resetAppels')
     store.dispatch('resetDati')
-    return this.post('deleteALL')
+    return await this.post('deleteALL')
   }
 
   async getConfig () {
-    if (this.config === null) {
-      const response = await window.jQuery.get('/html/static/config/config.json')
-      if (process.env.NODE_ENV === 'production') {
-        this.config = JSON.parse(response)
-      } else {
-        this.config = response
-      }
-      if (this.config.enableWebRTC === true) {
-        this.voiceRTC = new VoiceRTC(this.config.RTCConfig, this.config.RTCFilters)
-        // this.videoRTC = new VideoRTC(this.config.RTCConfig)
-        USE_VOICE_RTC = true
-      }
-      this.notififyUseRTC(this.config.enableWebRTC)
+    if (this.config.enableWebRTC === true) {
+      this.voiceRTC = new VoiceRTC(this.config.RTCConfig, this.config.RTCFilters)
+      USE_VOICE_RTC = true
     }
+    this.notififyUseRTC(this.config.enableWebRTC)
     return this.config
   }
 
@@ -276,11 +279,11 @@ class PhoneAPI {
   }
 
   async requestBankInfo () {
-    return this.post('requestBankInfo')
+    return await this.post('requestBankInfo')
   }
 
   async requestFatture () {
-    return this.post('requestFatture')
+    return await this.post('requestFatture')
   }
 
   onreceivePlayerFatture (data) {
@@ -288,67 +291,28 @@ class PhoneAPI {
   }
 
   async pagaFattura (fattura) {
-    return this.post('pagaFattura', fattura)
+    return await this.post('pagaFattura', fattura)
   }
 
   async postUpdateMoney (money, iban) {
-    return this.post('sendMoneyToIban', { money, iban })
+    return await this.post('sendMoneyToIban', { money, iban })
   }
-
-  // Video Calls
-  // async startVideoCall (numero, extraData = undefined) {
-  //   if (USE_VOICE_RTC === true) {
-  //     const rtcOffer = await this.videoRTC.prepareCall()
-  //     return this.post('startVideoCall', { numero, rtcOffer, extraData })
-  //   } else {
-  //     return this.sendErrorMessage(store.getters.LangString('PHONE_RTC_NOT_ENABLED'))
-  //   }
-  // }
-
-  // async acceptVideoCall (infoCall) {
-  //   if (USE_VOICE_RTC === true) {
-  //     const rtcAnswer = await this.videoRTC.acceptCall(infoCall)
-  //     return this.post('acceptVideoCall', { infoCall, rtcAnswer })
-  //   } else {
-  //     return this.sendErrorMessage(store.getters.LangString('PHONE_RTC_NOT_ENABLED'))
-  //   }
-  // }
-
-  // async rejectVideoCall (infoCall) {
-  //   return this.post('rejectVideoCall', { infoCall })
-  // }
-
-  // onwaitingVideoCall (data) {
-  //   store.commit('SET_APPELS_INFO_IF_EMPTY', { ...data.infoCall, initiator: data.initiator })
-  // }
-
-  // onacceptVideoCall (data) {
-  //   if (USE_VOICE_RTC === true) {
-  //     if (data.initiator === true) {
-  //       this.voiceRTC.onReceiveAnswer(data.infoCall.rtcAnswer)
-  //     }
-  //     this.voiceRTC.addEventListener('onCandidate', (candidates) => {
-  //       this.post('onVideoCandidates', { id: data.infoCall.id, candidates })
-  //     })
-  //   }
-  //   store.commit('SET_APPELS_INFO_IS_ACCEPTS', true)
-  // }
 
   async startCall ({ numero }, extraData = undefined) {
     if (USE_VOICE_RTC === true) {
       const rtcOffer = await this.voiceRTC.prepareCall()
-      return this.post('startCall', { numero, rtcOffer, extraData })
+      return await this.post('startCall', { numero, rtcOffer, extraData })
     } else {
-      return this.post('startCall', { numero, extraData })
+      return await this.post('startCall', { numero, extraData })
     }
   }
 
   async acceptCall (infoCall) {
     if (USE_VOICE_RTC === true) {
       const rtcAnswer = await this.voiceRTC.acceptCall(infoCall)
-      return this.post('acceptCall', { infoCall, rtcAnswer })
+      return await this.post('acceptCall', { infoCall, rtcAnswer })
     } else {
-      return this.post('acceptCall', { infoCall })
+      return await this.post('acceptCall', { infoCall })
     }
   }
 
@@ -382,21 +346,21 @@ class PhoneAPI {
   }
 
   async rejectCall (infoCall) {
-    return this.post('rejectCall', { infoCall })
+    this.post('rejectCall', { infoCall })
   }
 
   async notififyUseRTC (use) {
-    return this.post('notififyUseRTC', use)
+    return await this.post('notififyUseRTC', use)
   }
 
   async ignoreCall (infoCall) {
-    return this.post('ignoreCall', { infoCall })
+    return await this.post('ignoreCall', { infoCall })
   }
 
   oninitVoiceMail (data) {
     Vue.prototype.$bus.$emit('initVoiceMail', data.infoCall)
     store.commit('SET_APPELS_INFO_IS_ACCEPTS', true)
-    return this.post('acceptCall', data)
+    this.post('acceptCall', data)
   }
 
   onnoSignal (data) {
@@ -404,7 +368,7 @@ class PhoneAPI {
       this.audioElement.src = '/html/static/sound/phonenosignal.ogg'
       this.audioElement.volume = 0.2
       this.audioElement.onended = () => {
-        return this.post('rejectCall', data)
+        this.post('rejectCall', data)
       }
       this.audioElement.play()
     }, 250)
@@ -416,7 +380,7 @@ class PhoneAPI {
       setTimeout(() => {
         Vue.prototype.$bus.$emit('initVoiceMailListener', data)
         store.commit('SET_APPELS_INFO_IS_ACCEPTS', true)
-        return this.post('acceptCall', data)
+        this.post('acceptCall', data)
       }, 3000)
     }
   }
@@ -441,7 +405,7 @@ class PhoneAPI {
 
   async updateVolume (data) {
     data.volume = decimalAdjust('floor', data.volume, -2)
-    return this.post('updateVolume', data)
+    return await this.post('updateVolume', data)
   }
 
   onplaySound (data) {
@@ -498,7 +462,7 @@ class PhoneAPI {
   }
 
   async sendStartupValues (data) {
-    return this.post('sendStartupValues', data)
+    return await this.post('sendStartupValues', data)
   }
 
   ontchat_receive (data) {
@@ -584,15 +548,15 @@ class PhoneAPI {
 
   async sendEmergencyMessage (data) {
     data.services = this.config.serviceCall
-    return this.post('chiamataEmergenza', data)
+    return await this.post('chiamataEmergenza', data)
   }
 
   async requestOfferta () {
-    return this.post('requestOfferta')
+    return await this.post('requestOfferta')
   }
 
   async connettiAllaRete (table) {
-    return this.post('connettiAllaRete', table)
+    return await this.post('connettiAllaRete', table)
   }
 
   onupdateRetiWifi ({ data }) {
@@ -615,6 +579,7 @@ class PhoneAPI {
   onupdateSegnale (data) {
     store.commit('SET_SEGNALE', data.potenza)
   }
+
   // data contiene
   // {
   //   current: 299,
@@ -638,41 +603,41 @@ class PhoneAPI {
   }
 
   async instagram_setAvatar (username, password, avatarUrl) {
-    return this.post('instagram_changeAvatar', { username, password, avatarUrl })
+    return await this.post('instagram_changeAvatar', { username, password, avatarUrl })
   }
 
   // questo è la funzione generale
   // che ti permette di postare una nuova immagine
   // su instagram
   async instagram_postImage (username, password, imgTable) {
-    return this.post('nuovoPost', { username, password, imgTable })
+    return await this.post('nuovoPost', { username, password, imgTable })
   }
 
   // funzione asincrona con post per controllo
   // username e password inseriti
   async instagram_login (username, password) {
-    return this.post('loginInstagram', { username, password })
+    return await this.post('loginInstagram', { username, password })
   }
 
   // questa funzione fa richiesta al database per prendere
   // tutti i post dal database per poi rimandarglieli al db
   async instagram_getPosts (username, password) {
-    return this.post('requestPosts', { username, password })
+    return await this.post('requestPosts', { username, password })
   }
 
   // funzione asincrona per la creazione dell'account di instagram
   async instagram_createAccount (username, password, avatarUrl) {
-    return this.post('createNewAccount', { username, password, avatarUrl })
+    return await this.post('createNewAccount', { username, password, avatarUrl })
   }
 
   // funzione del cambio password
   async instagram_changePassword (username, password, newPassword) {
-    return this.post('changePassword', { username, password, newPassword })
+    return await this.post('changePassword', { username, password, newPassword })
   }
 
   async instagram_toggleLikePost (username, password, postId) {
     Vue.notify({ sound: 'Instagram_Like_Sound.ogg', hidden: true, volume: 0.2 })
-    return this.post('togglePostLike', { username, password, postId })
+    return await this.post('togglePostLike', { username, password, postId })
   }
 
   oninstagramRecivePosts (posts) {
@@ -722,47 +687,47 @@ class PhoneAPI {
   }
 
   async abbandonaGruppo (gruppo) {
-    return this.post('abbandonaGruppo', { gruppo })
+    return await this.post('abbandonaGruppo', { gruppo })
   }
 
   async requestWhatsappMessaggi (groupId) {
-    return this.post('requestWhatsappeMessages', { id: groupId })
+    return await this.post('requestWhatsappeMessages', { id: groupId })
   }
 
   async sendMessageOnGroup (messaggio, id, phoneNumber) {
-    return this.post('sendMessageInGroup', { messaggio, id, phoneNumber })
+    return await this.post('sendMessageInGroup', { messaggio, id, phoneNumber })
   }
 
   async requestInfoOfGroups () {
-    return this.post('requestAllGroupsInfo')
+    return await this.post('requestAllGroupsInfo')
   }
 
   async postCreazioneGruppo (data) {
-    return this.post('inviaValoriPost', data)
+    return await this.post('inviaValoriPost', data)
   }
 
   async updateNotifications (data) {
-    return this.post('updateNotifications', data)
+    return await this.post('updateNotifications', data)
   }
 
   async updateAirplane (data) {
-    return this.post('updateAirplane', data)
+    return await this.post('updateAirplane', data)
   }
 
   async updateGroupInfo (data) {
-    return this.post('updateGroup', data)
+    return await this.post('updateGroup', data)
   }
 
   async addGroupMembers (data) {
-    return this.post('addGroupMembers', data)
+    return await this.post('addGroupMembers', data)
   }
 
   async requestMyCovers () {
-    return this.post('requestMyCovers')
+    return await this.post('requestMyCovers')
   }
 
   async changingCover (cover) {
-    return this.post('changingCover', { cover: cover })
+    return await this.post('changingCover', { cover: cover })
   }
 
   onchangePhoneCover (data) {
@@ -774,15 +739,15 @@ class PhoneAPI {
   }
 
   async sendPicToUser (data) {
-    return this.post('sendPicToUser', data)
+    return await this.post('sendPicToUser', data)
   }
 
   async updateBluetooth (data) {
-    return this.post('updateBluetooth', data)
+    return await this.post('updateBluetooth', data)
   }
 
   async getClosestPlayers () {
-    return this.post('getClosestPlayers')
+    return await this.post('getClosestPlayers')
   }
 
   onclearGallery () {
@@ -790,11 +755,11 @@ class PhoneAPI {
   }
 
   async fetchDarkmessages () {
-    return this.post('fetchDarkmessages')
+    return await this.post('fetchDarkmessages')
   }
 
   async sendDarkMessage (message) {
-    return this.post('sendDarkMessage', { message: message })
+    return await this.post('sendDarkMessage', { message: message })
   }
 
   onsendDarkwebMessages (data) {
@@ -802,7 +767,7 @@ class PhoneAPI {
   }
 
   async requestMyEmail () {
-    return this.post('requestMyEmail')
+    return await this.post('requestMyEmail')
   }
 
   onreceiveMyEmail (data) {
@@ -810,7 +775,7 @@ class PhoneAPI {
   }
 
   async requestSentEmails (myEmail) {
-    return this.post('requestSentEmails', myEmail)
+    return await this.post('requestSentEmails', myEmail)
   }
 
   onreceiveSentEmails (data) {
@@ -819,11 +784,11 @@ class PhoneAPI {
 
   async sendEmail (email) {
     Vue.notify({ sound: 'Email_Sound_Notification.ogg', hidden: true })
-    return this.post('sendEmail', email)
+    return await this.post('sendEmail', email)
   }
 
   async requestEmails () {
-    return this.post('requestEmails')
+    return await this.post('requestEmails')
   }
 
   onreceiveEmails (data) {
@@ -831,15 +796,15 @@ class PhoneAPI {
   }
 
   async deleteEmail (emailID) {
-    return this.post('deleteEmail', { emailID })
+    return await this.post('deleteEmail', { emailID })
   }
 
   async registerEmail (email) {
-    return this.post('registerEmail', email)
+    return await this.post('registerEmail', email)
   }
 
   async fetchNews () {
-    return this.post('fetchNews')
+    return await this.post('fetchNews')
   }
 
   onsendRequestedNews (data) {
@@ -847,33 +812,34 @@ class PhoneAPI {
   }
 
   async postNews (pics, desc) {
-    return this.post('postNews', { pics: pics, message: desc })
+    return await this.post('postNews', { pics: pics, message: desc })
   }
 
   async requestJob () {
-    return this.post('requestJob')
+    return await this.post('requestJob')
   }
 
   onreceiveNewsJob (data) {
     store.commit('UPDATE_JOB', data.job)
+    store.commit('UPDATE_ACCESS', data.access)
   }
 
   async requestJobInfo () {
-    return this.post('requestJobInfo')
+    return await this.post('requestJobInfo')
   }
 
   async requestAziendaMessages () {
-    return this.post('requestAziendaMessages')
+    return await this.post('requestAziendaMessages')
   }
 
   async sendAziendaMessage (data) {
     // data.azienda, data.number, data.message
-    return this.post('sendAziendaMessage', data)
+    return await this.post('sendAziendaMessage', data)
   }
 
   async aziendaEmployesAction (data) {
     // data.action, data.employe
-    return this.post('aziendaEmployesAction', data)
+    return await this.post('aziendaEmployesAction', data)
   }
 
   onreceiveAziendaCall (data) {
@@ -894,11 +860,11 @@ class PhoneAPI {
   }
 
   async requestBourseProfile () {
-    return this.post('requestBourseProfile')
+    return await this.post('requestBourseProfile')
   }
 
   async requestBourseCrypto () {
-    return this.post('requestBourseCrypto')
+    return await this.post('requestBourseCrypto')
   }
 
   onreceiveBourseProfile (data) {
@@ -910,7 +876,7 @@ class PhoneAPI {
   }
 
   async buyCrypto (data) {
-    return this.post('buyCrypto', data)
+    return await this.post('buyCrypto', data)
   }
 
   onreceiveMyCrypto (data) {
@@ -918,7 +884,7 @@ class PhoneAPI {
   }
 
   async sellCrypto (data) {
-    return this.post('sellCrypto', data)
+    return await this.post('sellCrypto', data)
   }
 }
 
