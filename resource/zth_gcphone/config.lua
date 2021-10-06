@@ -40,9 +40,6 @@ Config.ModemItemName = "modem"
 Config.BluetoothRange = 5.0
 Config.MaxSunoeriaDistance = 10.0
 
--- Discord webhook for photo uploading
-Config.DiscordWebhook = "YOUR_WEBHOOK_HERE"
-
 -- ATTENCTION: IF YOU DON'T KNOW WHAT YOU'RE DOING, DO NOT CHANGE THIS VALUE
 -- if enabled and if second jobs are present in the server (as array in jobs named
 -- job2.<varius info>) then this will show the second job in the settings app
