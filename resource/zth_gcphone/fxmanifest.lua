@@ -97,8 +97,7 @@ server_script {
 
 dependencies {
     'es_extended',
-    'gridsystem',
-    'screenshot-basic'
+    'gridsystem'
 }
 
 data_file 'DLC_ITYP_REQUEST' 'stream/bk_phone.ytyp'

@@ -13,6 +13,11 @@ end
 local ids = 0
 
 local function CheckForDispatchScript()
+    -- check if the resource is actually started
+    if not GetResourceState("esx_dispatch") == "started" then
+        Config.HasDispatchScript = false
+    end
+
     if Config.HasDispatchScript then
         ids = ids + 1
 

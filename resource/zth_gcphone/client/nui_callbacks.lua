@@ -104,10 +104,6 @@ RegisterNUICallback('reponseText', function(data, cb)
     cb(json.encode({ text = resp }))
 end)
 
-RegisterNUICallback('getMessages', function(data, cb)
-    cb(json.encode(messages))
-end)
-
 RegisterNUICallback('sendMessage', function(data, cb)
     if not GLOBAL_AIRPLANE then
         if data.message == '%pos%' then
