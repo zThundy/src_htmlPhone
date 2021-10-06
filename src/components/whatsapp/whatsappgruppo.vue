@@ -179,8 +179,8 @@ export default {
               break
             case 2:
               this.ignoreControls = false
-              const { url } = await this.$phoneAPI.takePhoto()
-              if (url !== null && url !== undefined) { this.sendMessageInGroup({ gruppo: this.gruppo, message: url, phoneNumber: this.myPhoneNumber }) }
+              const pic = await this.$phoneAPI.takePhoto()
+              if (pic && pic !== '') { this.sendMessageInGroup({ gruppo: this.gruppo, message: pic, phoneNumber: this.myPhoneNumber }) }
               break
             case -1:
               this.ignoreControls = false
@@ -361,7 +361,7 @@ export default {
           }
         } else if (data.id === 2) {
           const pic = await this.$phoneAPI.takePhoto()
-          if (pic !== null && pic !== undefined) { this.sendMessageInGroup({ gruppo: this.gruppo, message: pic.url, phoneNumber: this.myPhoneNumber }) }
+          if (pic && pic !== '') { this.sendMessageInGroup({ gruppo: this.gruppo, message: pic, phoneNumber: this.myPhoneNumber }) }
         }
       } catch (e) { }
     },

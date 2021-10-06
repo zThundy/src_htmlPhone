@@ -44,11 +44,6 @@ export default {
         this.postTextTweet()
         this.modalopened = false
       } else if (resp.id === 2) {
-        // const newAvatar = await PhoneAPI.takePhoto()
-        // if (newAvatar.url !== undefined || newAvatar.url !== null) {
-        //   this.modalopened = false
-        //   this.twitterPostTweet({ message: newAvatar.url })
-        // }
         this.choosePicType()
       }
     },
@@ -67,9 +62,9 @@ export default {
           }
         })
       } else if (resp.id === 2) {
-        const newAvatar = await this.$phoneAPI.takePhoto()
-        if (newAvatar.url !== null) {
-          this.twitterPostTweet({ message: newAvatar.url })
+        const pic = await this.$phoneAPI.takePhoto()
+        if (pic && pic !== '') {
+          this.twitterPostTweet({ message: pic })
           this.modalopened = false
         }
       } else {

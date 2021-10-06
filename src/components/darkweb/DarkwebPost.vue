@@ -50,10 +50,10 @@ export default {
         this.postTextTweet()
         this.modalopened = false
       } else if (resp.id === 2) {
-        const resp = await this.$phoneAPI.takePhoto()
-        if (resp.url !== undefined || resp.url !== null) {
+        const pic = await this.$phoneAPI.takePhoto()
+        if (pic && pic !== '') {
           this.modalopened = false
-          this.darkwebPostMessage({ message: resp.url, mine: 1 })
+          this.darkwebPostMessage({ message: pic, mine: 1 })
         }
       }
     },

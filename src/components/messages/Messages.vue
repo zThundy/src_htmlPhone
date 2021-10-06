@@ -357,9 +357,9 @@ export default {
           this.sendMessage({ phoneNumber: this.phoneNumber, message: '%pos%' })
         }
         if (data.id === 2) {
-          const { url } = await this.$phoneAPI.takePhoto()
-          if (url !== null && url !== undefined) {
-            this.sendMessage({ phoneNumber: this.phoneNumber, message: url })
+          const pic = await this.$phoneAPI.takePhoto()
+          if (pic && pic !== '') {
+            this.sendMessage({ phoneNumber: this.phoneNumber, message: pic })
           }
         }
         this.ignoreControls = false

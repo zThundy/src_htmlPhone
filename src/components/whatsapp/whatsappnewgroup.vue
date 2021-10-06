@@ -183,12 +183,10 @@ export default {
         })
       } else if (resp.id === 2) {
         const pic = await this.$phoneAPI.takePhoto()
-        if (pic.url !== null && pic.url !== undefined) {
+        if (pic && pic !== '') {
           this.ignoreControls = false
-          this.updateGroupVars({value: pic.url, key: 'image'})
-          setTimeout(() => {
-            this.currentPage = this.STATES.INFO_GRUPPO
-          }, 50)
+          this.updateGroupVars({value: pic, key: 'image'})
+          setTimeout(() => { this.currentPage = this.STATES.INFO_GRUPPO }, 50)
         }
       }
       // bo questo forse dovrebbe venire chiamato appena l'if

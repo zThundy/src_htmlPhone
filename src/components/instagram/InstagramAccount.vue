@@ -269,13 +269,13 @@ export default {
           this.instagramSetAvatar({ avatarUrl: data.text })
           this.ignoreControls = false
         } else if (resp.id === 2) {
-          const newAvatar = await this.$phoneAPI.takePhoto()
-          if (newAvatar.url !== null) {
+          const pic = await this.$phoneAPI.takePhoto()
+          if (pic && pic !== '') {
             if (this.accountLocale.avatarUrl === null) {
-              this.accountLocale.avatarUrl = newAvatar.url
-              this.instagramAvatarUrl = newAvatar.url
+              this.accountLocale.avatarUrl = pic
+              this.instagramAvatarUrl = pic
             }
-            this.instagramSetAvatar({ avatarUrl: newAvatar.url })
+            this.instagramSetAvatar({ avatarUrl: pic })
             this.ignoreControls = false
           }
         }

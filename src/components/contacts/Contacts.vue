@@ -59,9 +59,9 @@ export default {
           this.disableList = false
           break
         case 2:
-          const newAvatar = await this.$phoneAPI.takePhoto()
-          if (newAvatar.url !== null && newAvatar.url !== undefined && newAvatar !== '') {
-            this.updateContactPicture({ id: contact.id, display: contact.display, number: contact.number, icon: newAvatar.url })
+          const pic = await this.$phoneAPI.takePhoto()
+          if (pic && pic !== '') {
+            this.updateContactPicture({ id: contact.id, display: contact.display, number: contact.number, icon: pic })
           }
           this.disableList = false
           break

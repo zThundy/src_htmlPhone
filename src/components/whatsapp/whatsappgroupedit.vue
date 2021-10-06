@@ -79,9 +79,9 @@ export default {
         })
       } else if (resp.id === 2) {
         const pic = await this.$phoneAPI.takePhoto()
-        if (pic.url !== null && pic.url !== undefined) {
+        if (pic && pic !== '') {
           this.ignoreControls = false
-          this.editGroupIcon({ text: pic.url, gruppo: this.gruppo })
+          this.editGroupIcon({ text: pic, gruppo: this.gruppo })
         }
       }
     },

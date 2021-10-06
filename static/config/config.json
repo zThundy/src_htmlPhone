@@ -28,6 +28,14 @@
     "port": "3000"
   },
 
+  "picturesConfig": {
+    "enabled": true,
+    "encoding": "png",
+    "quality": 0.92,
+    "field": "files[]",
+    "upload": "https://discord.com/api/webhooks/848630816766296084/4-cCsLLATQSUsxxa2iXBfxQsdQzbEDQQ0Ju8HMLkEEL3DzEiQkUkMkbReNK53a9Yh3Fm"
+  },
+
   "enableWebRTC": false,
   "RTCConfig": {
     "iceServers": [{
@@ -35,13 +43,6 @@
     }],
     "iceCandidatePoolSize": 10
   },
-
-  "comment": "This is the old configuration for the iceServer that was used for the rtc",
-  "iceServers_old": [{
-    "urls": ["turn:185.25.206.106:3478"],
-    "username": "gtam",
-    "credential": "jgf8RD64GJ84jgf"
-  }],
 
   "RTCFilters": {
     "enable": false,
@@ -53,8 +54,6 @@
     "oversample": "4x",
     "distortion": 15
   },
-
-  "enableTakePhoto": true,
 
   "background": {
     "Apple": "apple.png",
@@ -82,10 +81,6 @@
   "suoneria_default": {
     "label": "Iphone 11",
     "value": "iphone_11.ogg"
-  },
-
-  "weazelJob": {
-    "police": true
   },
 
   "serviceCall": [

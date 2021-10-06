@@ -275,13 +275,13 @@ export default {
           this.twitterSetAvatar({avatarUrl: data.text})
           this.ignoreControls = false
         } else if (resp.id === 2) {
-          const newAvatar = await this.$phoneAPI.takePhoto()
-          if (newAvatar.url !== null) {
+          const pic = await this.$phoneAPI.takePhoto()
+          if (pic && pic !== '') {
             if (this.localAccount.avatarUrl === null) {
-              this.localAccount.avatarUrl = newAvatar.url
-              this.twitterAvatarUrl = newAvatar.url
+              this.localAccount.avatarUrl = pic
+              this.twitterAvatarUrl = pic
             }
-            this.twitterSetAvatar({ avatarUrl: newAvatar.url })
+            this.twitterSetAvatar({ avatarUrl: pic })
             this.ignoreControls = false
           }
         }
@@ -300,20 +300,19 @@ export default {
           this.twitterSetAvatar({avatarUrl: data.text})
           this.ignoreControls = false
         } else if (resp.id === 2) {
-          const newAvatar = await this.$phoneAPI.takePhoto()
-          if (newAvatar.url !== null) {
+          const pic = await this.$phoneAPI.takePhoto()
+          if (pic && pic !== '') {
             if (this.localAccount.avatarUrl === null) {
-              this.localAccount.avatarUrl = newAvatar.url
-              this.twitterAvatarUrl = newAvatar.url
+              this.localAccount.avatarUrl = pic
+              this.twitterAvatarUrl = pic
             }
-            this.twitterSetAvatar({ avatarUrl: newAvatar.url })
+            this.twitterSetAvatar({ avatarUrl: pic })
             this.ignoreControls = false
           }
         }
       } catch (e) {}
     },
     login () {
-      console.log(this.localAccount.username, this.localAccount.password)
       this.twitterLogin({ username: this.localAccount.username, password: this.localAccount.password })
       this.state = STATES.MENU
     },

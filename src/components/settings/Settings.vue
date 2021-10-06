@@ -356,9 +356,9 @@ export default {
             }
           })
         } else if (resp.id === 2) {
-          const newAvatar = await this.$phoneAPI.takePhoto()
-          if (newAvatar.url !== null) {
-            this.setBackground({ label: 'Personalizzato', value: newAvatar.url })
+          const pic = await this.$phoneAPI.takePhoto()
+          if (pic && pic !== '') {
+            this.setBackground({ label: 'Personalizzato', value: pic })
             this.ignoreControls = false
           }
         } else {

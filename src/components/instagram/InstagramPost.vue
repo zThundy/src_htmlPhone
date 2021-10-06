@@ -29,13 +29,6 @@ export default {
     async onEnter () {
       if (this.ignoreControls) return
       this.ignoreControls = true
-      // this.$bus.$emit('instagramScegliFiltri')
-      // const post = await PhoneAPI.takePhoto()
-      // if (post.url !== null) {
-      //   this.instagramSaveTempPost(post.url)
-      //   this.ignoreControls = false
-      //   this.$bus.$emit('instagramScegliFiltri')
-      // }
       this.choosePicType()
     },
     async choosePicType () {
@@ -54,9 +47,9 @@ export default {
           }
         })
       } else if (resp.id === 2) {
-        const newAvatar = await this.$phoneAPI.takePhoto()
-        if (newAvatar.url !== null) {
-          this.instagramSaveTempPost(newAvatar.url)
+        const pic = await this.$phoneAPI.takePhoto()
+        if (pic && pic !== '') {
+          this.instagramSaveTempPost(pic)
           this.$bus.$emit('instagramScegliFiltri')
           this.ignoreControls = false
         }
