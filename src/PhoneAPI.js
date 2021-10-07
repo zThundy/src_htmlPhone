@@ -56,6 +56,7 @@ class PhoneAPI {
 
   async takePhoto () {
     const pic = await this.picture.getPicture()
+    this.post('setEnabledFakeCamera', false)
     this.onaddPhotoToGallery({ link: pic })
     return pic
   }

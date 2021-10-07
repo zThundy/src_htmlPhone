@@ -1,3 +1,4 @@
+local enabled = true
 local HUD_ELEMENTS = {
     HUD = 0,
     HUD_WANTED_STARS = 1,
@@ -30,31 +31,28 @@ local CellFrontCamActivate = function(activate)
 end
 
 RegisterNUICallback('openFakeCamera', function(data, cb) Citizen.CreateThreadNow(function() OpenFakeCamera(data, cb) end) end)
+RegisterNUICallback('setEnabledFakeCamera', function(data, cb) enabled = data end)
 
 function OpenFakeCamera(data, cb)
-	local enabled = true
 	local frontCam = false
-	
 	CreateMobilePhone(1)
 	CellCamActivate(true, true)
-
 	cb("ok")
-
 	while enabled do
 		if IsControlJustPressed(1, 172) then -- Toogle Mode -- only arrow up
 			frontCam = not frontCam
 			CellFrontCamActivate(frontCam)
 		elseif IsControlJustPressed(1, 177) then -- CANCEL
 			enabled = false
-			DestroyMobilePhone()
-			CellCamActivate(false, false)
 		end
-
 		for _, id in pairs(HUD_ELEMENTS) do HideHudComponentThisFrame(id) end
 		HideHudAndRadarThisFrame()
 		Citizen.Wait(0)
 	end
-
+    -- destroy and delete fake camera effect
+    DestroyMobilePhone()
+    CellCamActivate(false, false)
+    -- play animation to player :)
 	PhonePlayOut()
 	ClearPedTasksImmediately(GetPlayerPed(-1))
 	Citizen.Wait(100)
