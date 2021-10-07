@@ -213,31 +213,6 @@ export default {
     this.$bus.$on('keyUpArrowRight', this.onRight)
     this.$bus.$on('keyUpBackspace', this.onBackspace)
     this.$bus.$on('keyUpEnter', this.onEnter)
-
-    // setTimeout(() => {
-    //   Object.entries(this.createWait).forEach(([id, _]) => {
-    //     let currentVideoElem = document.getElementById('video-playback-element')
-    //     fetch('http://' + this.config.fileUploader.ip + ':' + this.config.fileUploader.port + '/videoDownload?type=camera&key=' + id, {
-    //       method: 'GET'
-    //     }).then(async resp => {
-    //       if (resp.status === 404) { return console.err('404 error') }
-    //       var jsonResponse = await resp.json()
-    //       let canvas = document.createElement('canvas')
-    //       let divElement = document.getElementById('container-video-' + id)
-    //       console.log(divElement)
-    //       divElement.appendChild(canvas)
-    //       canvas.style.cssText = `
-    //         display: block;
-    //         width: 100%;
-    //         height: 100%;
-    //         position: absolute;
-    //         z-index: 1;
-    //       `
-    //       currentVideoElem.src = window.URL.createObjectURL(new Blob([Buffer.from(jsonResponse.blobDataBuffer, 'base64')]))
-    //       canvas.getContext('2d').drawImage(currentVideoElem, 0, 0, currentVideoElem.videoWidth, currentVideoElem.videoHeight)
-    //     }).catch(() => {})
-    //   })
-    // }, 1500)
   },
 
   beforeDestroy () {

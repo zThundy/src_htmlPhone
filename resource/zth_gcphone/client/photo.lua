@@ -34,6 +34,7 @@ RegisterNUICallback('openFakeCamera', function(data, cb) Citizen.CreateThreadNow
 RegisterNUICallback('setEnabledFakeCamera', function(data, cb) enabled = data end)
 
 function OpenFakeCamera(data, cb)
+    enabled = true
 	local frontCam = false
 	CreateMobilePhone(1)
 	CellCamActivate(true, true)

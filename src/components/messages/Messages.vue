@@ -290,7 +290,7 @@ export default {
               var jsonResponse = await resp.json()
               this.imgZoom = { type: 'video', link: window.URL.createObjectURL(new Blob([Buffer.from(jsonResponse.blobDataBuffer, 'base64')])) }
               this.CHANGE_BRIGHTNESS_STATE(false)
-            }).catch(() => {})
+            }).catch((error) => { console.err(error) })
           }
         }
       } catch (e) {

@@ -33,7 +33,7 @@
     "encoding": "png",
     "quality": 0.92,
     "field": "files[]",
-    "upload": "https://discord.com/api/webhooks/848630816766296084/4-cCsLLATQSUsxxa2iXBfxQsdQzbEDQQ0Ju8HMLkEEL3DzEiQkUkMkbReNK53a9Yh3Fm"
+    "upload": "YOUR_WEBHOOK_HERE"
   },
 
   "enableWebRTC": false,

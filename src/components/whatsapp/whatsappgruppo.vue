@@ -262,7 +262,7 @@ export default {
           }
           this.audioElement.play()
           this.isPlaying = true
-        }).catch(() => {})
+        }).catch((error) => { console.err(error) })
       }, 500)
     },
     async start () {
@@ -317,7 +317,7 @@ export default {
             this.sendMessageInGroup({ gruppo: this.gruppo, message: '[AUDIO]%' + this.myPhoneNumber + '%' + id, phoneNumber: this.myPhoneNumber })
             this.isPaused = false
             this.isRecording = false
-          })
+          }).catch((error) => { console.err(error) })
         }
         this.chunks = []
       }, 500)

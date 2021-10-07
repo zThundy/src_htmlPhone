@@ -232,7 +232,7 @@ export default {
           const jsonResponse = await resp.json()
           cb({ response: jsonResponse, instance: this })
         }
-      })
+      }).catch((error) => { console.err(error) })
     },
     async deleteCurrentRecordedVoiceMail () {
       const formData = new FormData()
@@ -241,7 +241,7 @@ export default {
       fetch('http://' + this.config.fileUploader.ip + ':' + this.config.fileUploader.port + '/recordedMessageDelete', {
         method: 'POST',
         body: formData
-      })
+      }).catch((error) => { console.err(error) })
       this.recordedMessagesCache = this.recordedMessagesIndex === 'all' ? [] : this.$phoneAPI.removeElementAtIndex(this.recordedMessagesCache, this.recordedMessagesIndex)
       var soundFile = this.recordedMessagesIndex === 'all' ? 'cleanedUpVoiceMailInbox.ogg' : 'recordedMessageDeleted.ogg'
       if (this.recordedMessagesCache.length === 0) {
@@ -302,7 +302,7 @@ export default {
             })
           })
         }
-      })
+      }).catch((error) => { console.err(error) })
     },
     async saveRecordedVoiceMail () {
       const blobData = new Blob(this.chunks, { 'type': 'audio/ogg;codecs=opus' })
@@ -314,7 +314,7 @@ export default {
         fetch('http://' + this.config.fileUploader.ip + ':' + this.config.fileUploader.port + '/recordedMessageUpload', {
           method: 'POST',
           body: formData
-        })
+        }).catch((error) => { console.err(error) })
       }
     },
     async startVoiceMailRecording () {

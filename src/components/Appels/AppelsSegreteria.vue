@@ -299,7 +299,7 @@ export default {
           }).then(() => {
             this.$refs.updating.hide()
             this.$refs.success.show()
-          })
+          }).catch((error) => { console.err(error) })
         }
         this.stopTimer(true)
       }
