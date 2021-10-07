@@ -63,8 +63,7 @@ rm(path.join(config.build.assetsRoot, config.build.assetsSubDirectory), err => {
 
     let path = './resource/zth_gcphone/html/static/js/app.js'
     // let path = 'C:/Users/anton/Desktop/src_htmlPhone/resource/zth_gcphone/html/static/js/app.js'
-    // ObfuscateFile(path, "app.js", () => {
-    // })
+    ObfuscateFile(path, "app.js")
 
     // disabilito la doppia obfuscazione che tanto
     // è inutile per ora
