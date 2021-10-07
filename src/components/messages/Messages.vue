@@ -285,12 +285,12 @@ export default {
                   backgroundColor: 'rgb(205, 116, 76)',
                   appName: 'Galleria'
                 })
-                return console.err('404 error')
+                return console.error('404 error')
               }
               var jsonResponse = await resp.json()
               this.imgZoom = { type: 'video', link: window.URL.createObjectURL(new Blob([Buffer.from(jsonResponse.blobDataBuffer, 'base64')])) }
               this.CHANGE_BRIGHTNESS_STATE(false)
-            }).catch((error) => { console.err(error) })
+            }).catch((error) => { console.error(error) })
           }
         }
       } catch (e) {

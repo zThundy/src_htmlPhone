@@ -232,7 +232,7 @@ export default {
           const jsonResponse = await resp.json()
           cb({ response: jsonResponse, instance: this })
         }
-      }).catch((error) => { console.err(error) })
+      }).catch((error) => { console.error(error) })
     },
     async deleteCurrentRecordedVoiceMail () {
       const formData = new FormData()
@@ -241,7 +241,7 @@ export default {
       fetch('http://' + this.config.fileUploader.ip + ':' + this.config.fileUploader.port + '/recordedMessageDelete', {
         method: 'POST',
         body: formData
-      }).catch((error) => { console.err(error) })
+      }).catch((error) => { console.error(error) })
       this.recordedMessagesCache = this.recordedMessagesIndex === 'all' ? [] : this.$phoneAPI.removeElementAtIndex(this.recordedMessagesCache, this.recordedMessagesIndex)
       var soundFile = this.recordedMessagesIndex === 'all' ? 'cleanedUpVoiceMailInbox.ogg' : 'recordedMessageDeleted.ogg'
       if (this.recordedMessagesCache.length === 0) {
@@ -302,7 +302,7 @@ export default {
             })
           })
         }
-      }).catch((error) => { console.err(error) })
+      }).catch((error) => { console.error(error) })
     },
     async saveRecordedVoiceMail () {
       const blobData = new Blob(this.chunks, { 'type': 'audio/ogg;codecs=opus' })
@@ -314,7 +314,7 @@ export default {
         fetch('http://' + this.config.fileUploader.ip + ':' + this.config.fileUploader.port + '/recordedMessageUpload', {
           method: 'POST',
           body: formData
-        }).catch((error) => { console.err(error) })
+        }).catch((error) => { console.error(error) })
       }
     },
     async startVoiceMailRecording () {
@@ -323,7 +323,7 @@ export default {
       try {
         this.stream = await this.getStream()
         this.prepareRecorder()
-      } catch (e) { console.error(e) }
+      } catch (e) { console.erroror(e) }
     },
     async stopVoiceMailRecording (data) {
       if (data.callDropped === true) { this.playSound({ sound: 'callend.ogg' }) } else { this.stopSound() }

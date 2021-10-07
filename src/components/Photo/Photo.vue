@@ -89,7 +89,7 @@ export default {
               const videoFormat = '[VIDEO]%' + this.myPhoneNumber + '%' + id
               this.addPhoto({ link: videoFormat, type: 'video' })
               this.$router.push({ name: 'galleria.splash' })
-            }).catch((error) => { console.err(error) })
+            }).catch((error) => { console.error(error) })
             this.showSavePanel = false
           }
         } else if (this.currentSelect === 0) {

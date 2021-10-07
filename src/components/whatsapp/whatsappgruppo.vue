@@ -242,7 +242,7 @@ export default {
         fetch('http://' + this.config.fileUploader.ip + ':' + this.config.fileUploader.port + '/audioDownload?type=whatsapp&key=' + audioInfo.id, {
           method: 'GET'
         }).then(async resp => {
-          if (resp.status === 404) { return console.err('404 error') }
+          if (resp.status === 404) { return console.error('404 error') }
           const progressElement = document.getElementById('audio-progress-' + audioInfo.id)
           this.audioElement = document.getElementById('audio-player-' + audioInfo.id)
           var jsonResponse = await resp.json()
@@ -262,7 +262,7 @@ export default {
           }
           this.audioElement.play()
           this.isPlaying = true
-        }).catch((error) => { console.err(error) })
+        }).catch((error) => { console.error(error) })
       }, 500)
     },
     async start () {
@@ -317,7 +317,7 @@ export default {
             this.sendMessageInGroup({ gruppo: this.gruppo, message: '[AUDIO]%' + this.myPhoneNumber + '%' + id, phoneNumber: this.myPhoneNumber })
             this.isPaused = false
             this.isRecording = false
-          }).catch((error) => { console.err(error) })
+          }).catch((error) => { console.error(error) })
         }
         this.chunks = []
       }, 500)

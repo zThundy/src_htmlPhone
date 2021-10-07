@@ -26,7 +26,7 @@ class VideoRequest {
   constructor (mainDiv, video) {
     // check if arguments in class are passed correctly
     if (!mainDiv || !video) {
-      return console.err('[FATAL ERROR] Video request class cannot be initialized correctly')
+      return console.error('[FATAL ERROR] Video request class cannot be initialized correctly')
     } else {
       console.log('[MODULE] Video request class created successfully')
     }

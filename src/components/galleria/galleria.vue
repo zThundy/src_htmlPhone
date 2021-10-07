@@ -145,7 +145,7 @@ export default {
                     backgroundColor: 'rgb(205, 116, 76)',
                     appName: 'Galleria'
                   })
-                  return console.err('404 error')
+                  return console.error('404 error')
                 }
                 this.imgZoom = Object.assign({}, element)
                 var jsonResponse = await resp.json()

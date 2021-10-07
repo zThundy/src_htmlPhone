@@ -365,7 +365,7 @@ export default {
         }
         this.twitterChangePassword(password2.text)
       } catch (e) {
-        console.error(e)
+        console.erroror(e)
       }
     }
   },
