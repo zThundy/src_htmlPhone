@@ -30,6 +30,7 @@ class PhoneAPI {
     this.soundList = []
     this.audioElement = new Audio()
     this.keyAudioElement = new Audio()
+    this.picture = new PictureRequest(this.config.picturesConfig)
   }
 
   // attenzione: per evitare l'Uncaught (in promise) error sulla console, è
@@ -37,23 +38,14 @@ class PhoneAPI {
   async post (method, data) {
     try {
       const ndata = data === undefined ? '{}' : JSON.stringify(data)
-      // const response = await window.jQuery.post(BASE_URL + method, ndata)
       const response = await fetch(BASE_URL + method, {
         method: 'POST',
         mode: 'cors',
         body: ndata
       })
       .then(response => response.text())
-      .then(text => {
-        console.log('response text inside async post function')
-        console.log(text)
-        return text
-      })
-      console.log('response text outside async post function')
-      console.log(response)
+      .then(text => { return JSON.parse(text) })
       if (response === 'ok' || !response) return 'ok'
-      console.log('trasforming response to jsObj')
-      console.log(JSON.parse(response))
       return JSON.parse(response)
     } catch (e) { console.log(BASE_URL + method) }
   }
@@ -62,44 +54,14 @@ class PhoneAPI {
     return await this.post('PhoneNeedAuth', bool)
   }
 
-  async takePhoto (pic) {
-    if (!pic) {
-      const p = new PictureRequest(this.config.picturesConfig)
-      console.log(p)
-    } else {
-      return pic
-    }
-  }
-
-  ongetPicture (e) {
-    console.log(e)
+  async takePhoto () {
+    const pic = await this.picture.getPicture()
+    this.onaddPhotoToGallery({ link: pic })
+    return pic
   }
 
   onphoneChecks (data) {
-    // console.log('aoh so qua')
     store.commit('SET_LOADED_VALUE', data)
-    // console.log('aoh sto dopo')
-    // try {
-    //   var key = data.key
-    //   var req = data.req
-    //   if (req && key) {
-    //     var decrypted = aes256.decrypt(key, req)
-    //     decrypted = JSON.parse(decrypted)
-    //     if (decrypted) {
-    //       if (decrypted.license === key && decrypted.text === 'STATUS_OK') {
-    //         store.commit('SET_LOADED_VALUE', true)
-    //         this.post('PhoneNeedAuth', false)
-    //       } else {
-    //         store.commit('SET_LOADED_VALUE', false)
-    //         this.post('PhoneNeedAuth', true)
-    //       }
-    //     } else {
-    //       this.post('PhoneNeedAuth', true)
-    //     }
-    //   } else {
-    //     this.post('PhoneNeedAuth', true)
-    //   }
-    // } catch (e) { console.log(e) }
   }
 
   convertEmoji (text) {
@@ -172,7 +134,7 @@ class PhoneAPI {
   }
 
   async openFakeCamera () {
-    await this.post('openFakeCamera')
+    return await this.post('openFakeCamera')
   }
 
   async sendErrorMessage (message) {

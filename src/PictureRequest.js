@@ -13,13 +13,8 @@ import {
   WebGLRenderer
 } from '@citizenfx/three'
 
-import PhoneAPI from './PhoneAPI'
-
-const created = Date.now()
-
 class PictureRequest {
   constructor (config) {
-    this.shot = false
     this.request = {
       encoding: config.encoding,
       quality: config.quality,
@@ -93,41 +88,29 @@ class PictureRequest {
   }
 
   animate () {
-    console.log('animate', Date.now() - created)
     if (this.request === null) return
-    console.log('animate')
     // tried on removing the recursive cause he just need 1 frame
-    // requestAnimationFrame(this.animate)
     this.renderer.clear()
     this.renderer.render(this.sceneRTT, this.cameraRTT, this.rtTexture, true)
-    if (!this.shot) {
-      this.shot = true
-      this.getPicture()
-    }
   }
 
-  getPicture () {
-    console.log('getPicture', Date.now() - created)
+  async getPicture () {
     if (this.request === null) return
+    // request animation frame first
+    requestAnimationFrame(this.animate)
     // create canvas
     this.canvas = document.createElement('canvas')
     this.canvas.style.display = 'inline'
     this.canvas.width = window.innerWidth
     this.canvas.height = window.innerHeight
-    console.log('canvas ok')
     // read the screenshot
     const read = new Uint8Array(window.innerWidth * window.innerHeight * 4)
-    console.log('pixel rendering')
     this.renderer.readRenderTargetPixels(this.rtTexture, 0, 0, window.innerWidth, window.innerHeight, read)
-    console.log('pixel rendered')
     // create a temporary this.canvas to compress the image
     // draw the image on the this.canvas
-    console.log('read.buffer', read.buffer)
     const d = new Uint8ClampedArray(read.buffer)
     const ctx = this.canvas.getContext('2d')
     ctx.putImageData(new ImageData(d, window.innerWidth, window.innerHeight), 0, 0)
-    console.log('got context :)')
-    console.log(ctx)
     // encode the image
     let type = 'image/png'
     switch (this.request.encoding) {
@@ -144,7 +127,7 @@ class PictureRequest {
     // actual encoding
     this.imageURL = this.canvas.toDataURL(type, this.request.quality)
     // upload the image somewhere
-    fetch(this.request.targetURL, {
+    return await fetch(this.request.targetURL, {
       method: 'POST',
       mode: 'cors',
       body: (this.request.targetField) ? this.getFormData() : JSON.stringify({ data: this.imageURL })
@@ -153,10 +136,8 @@ class PictureRequest {
     .then(text => {
       var resp = ''
       if (text.length > 0) resp = JSON.parse(text)
-      console.log('got response from ds deleting request')
       this.request = null
-      console.log('returning response')
-      PhoneAPI.ongetPicture(resp.attachments[0].url)
+      return resp.attachments[0].url
     })
   }
 
