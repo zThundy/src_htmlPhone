@@ -147,7 +147,7 @@ export default {
 }
 </script>
 
-<style type="scss">
+<style scoped>
 .darkchat-channels {
   height: 100%;
   width: 100%;

@@ -54,7 +54,7 @@ export default {
     }
   },
   methods: {
-    ...mapActions(['loadConfig', 'rejectCall']),
+    ...mapActions(['rejectCall']),
     closePhone () {
       this.$phoneAPI.closePhone()
     },
@@ -110,7 +110,6 @@ export default {
     }
   },
   mounted () {
-    this.loadConfig()
     window.addEventListener('message', (event) => {
       if (event.data.keyUp !== undefined) { this.$bus.$emit('keyUp' + event.data.keyUp) }
     })

@@ -1,5 +1,3 @@
-import PhoneAPI from './../../PhoneAPI'
-
 const state = {
   contacts: [],
   defaultContacts: []
@@ -10,18 +8,6 @@ const getters = {
 }
 
 const actions = {
-  updateContactPicture ({ commit }, { id, display, number, icon }) {
-    PhoneAPI.updateContactAvatar(id, display, number, icon)
-  },
-  updateContact (context, { id, display, number, email, icon }) {
-    PhoneAPI.updateContact(id, display, number, email, icon)
-  },
-  addContact (context, { display, number, email, icon }) {
-    PhoneAPI.addContact(display, number, email, icon)
-  },
-  deleteContact (context, {id}) {
-    PhoneAPI.deleteContact(id)
-  },
   resetContact ({ commit }) {
     commit('SET_CONTACTS', [])
   }
