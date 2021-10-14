@@ -274,6 +274,14 @@
       "icons": "/html/static/img/icons_app/calculator.png",
       "routeName": "calculator.splash",
       "enabled": true
+    },
+    {
+      "name": "Video chiamate",
+      "it_IT__name": "Video chiamate",
+      "en_EN__name": "Video calls",
+      "icons": "/html/static/img/icons_app/videocalls.png",
+      "routeName": "videocalls.splash",
+      "enabled": true
     }
   ],
   "defaultLanguage": "it_IT",
@@ -316,9 +324,10 @@
       "APP_CONFIG_DISABLED_1": "Disattiva",
       "APP_CONFIG_DISABLED_2": "Disattivo",
       "APP_CONFIG_DISABLED_3": "Disattive",
-      "PHONE_AUDIO_MESSAGE_TITLE": "Messaggio audio",
-      "PHONE_CONTACT_MESSAGE_TITILE": "Contatto",
-      "PHONE_IMAGE_MESSAGE_TITLE": "Immagine",
+      "PHONE_AUDIO_MESSAGE_TITLE": "🔊 Messaggio audio",
+      "PHONE_CONTACT_MESSAGE_TITILE": "📱 Contatto",
+      "PHONE_IMAGE_MESSAGE_TITLE": "📷 Immagine",
+      "PHONE_VIDEO_MESSAGE_TITLE": "🎥 Video",
       "APP_PHONE_FAVOURITES_MODAL_TITLE": "Digita un messaggio",
       "APP_PHONE_KEYPAD_PLACEHOLDER": "Digita un numero",
       "APP_PHONE_DIALING_MESSAGE": ". . .",
@@ -581,6 +590,7 @@
       "APP_BOURSE_SELL_TITLE": "Quanti ne vuoi vendere?",
       "APP_BOURSE_ERROR_INTERNET": "Non hai abbastanza giga per eseguire questa azione",
       "APP_CALCULATOR_TITLE": "Calcolatrice",
+      "APP_VIDEOCALLS_TITLE": "Video Chiamate",
 
       "TIMEAGO": [
         "Proprio adesso",
@@ -630,9 +640,10 @@
       "APP_CONFIG_DISABLED_1": "Disabled",
       "APP_CONFIG_DISABLED_2": "Disabled",
       "APP_CONFIG_DISABLED_3": "Disabled",
-      "PHONE_AUDIO_MESSAGE_TITLE": "Audio message",
-      "PHONE_CONTACT_MESSAGE_TITILE": "Contact",
-      "PHONE_IMAGE_MESSAGE_TITLE": "Photo",
+      "PHONE_AUDIO_MESSAGE_TITLE": "🔊 Audio message",
+      "PHONE_CONTACT_MESSAGE_TITILE": "📱 Contact",
+      "PHONE_IMAGE_MESSAGE_TITLE": "📷 Photo",
+      "PHONE_VIDEO_MESSAGE_TITLE": "🔊 Video",
       "APP_PHONE_FAVOURITES_MODAL_TITLE": "Type a message",
       "APP_PHONE_KEYPAD_PLACEHOLDER": "Type a number",
       "APP_PHONE_DIALING_MESSAGE": ". . .",
@@ -895,6 +906,7 @@
       "APP_BOURSE_SELL_TITLE": "How many do you want to sell?",
       "APP_BOURSE_ERROR_INTERNET": "You do not have enough internet to do this!",
       "APP_CALCULATOR_TITLE": "Calculator",
+      "APP_VIDEOCALLS_TITLE": "Video Calls",
 
       "TIMEAGO": [
         "Now",

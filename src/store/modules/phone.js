@@ -112,19 +112,14 @@ const getters = {
 }
 
 const actions = {
-  async loadConfig ({ commit, state }) {
-    const config = await PhoneAPI.getConfig()
+  loadConfig ({ commit, state }, config) {
     const keyLang = Object.keys(config.language)
     for (const key of keyLang) {
       const timeAgoConf = config.language[key].TIMEAGO
-      if (timeAgoConf !== undefined) {
-        Vue.prototype.$timeago.addLocale(key, timeAgoConf)
-      }
+      if (timeAgoConf !== undefined) Vue.prototype.$timeago.addLocale(key, timeAgoConf)
     }
     Vue.prototype.$timeago.setCurrentLocale(state.lang)
-    if (config.defaultContacts !== undefined) {
-      commit('SET_DEFAULT_CONTACTS', config.defaultContacts)
-    }
+    if (config.defaultContacts !== undefined) commit('SET_DEFAULT_CONTACTS', config.defaultContacts)
     commit('SET_CONFIG', config)
   },
   setVisibility ({ commit }, show) {
