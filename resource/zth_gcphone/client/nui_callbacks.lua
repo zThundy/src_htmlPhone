@@ -68,9 +68,9 @@ RegisterNUICallback('ignoreCall', function(data, cb)
 end)
 
 RegisterNUICallback('notififyUseRTC', function(use, cb)
-    if use and inCall then
-        inCall = false
-        Citizen.InvokeNative(0xE036A705F989E049)
+    if use then
+        -- Citizen.InvokeNative(0xE036A705F989E049)
+        NetworkClearVoiceChannel()
         NetworkSetTalkerProximity(2.5)
     end
     cb("ok")
@@ -163,11 +163,7 @@ RegisterNUICallback('deleteContact', function(data, cb)
     cb("ok")
 end)
 
-RegisterNUICallback('aggiornaAvatarContatto', function(data, cb)
-    -- data.id
-    -- data.number
-    -- data.display
-    -- data.icon
+RegisterNUICallback('updateContactAvatar', function(data, cb)
     gcPhoneServerT.updateAvatarContatto(data)
     cb("ok")
 end)
