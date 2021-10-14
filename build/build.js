@@ -13,7 +13,9 @@ var spinner = ora('HEY STO BUILDANDO...')
 spinner.start()
 
 var JavaScriptObfuscator = require('javascript-obfuscator');
+var UglifyJS = require("uglify-js");
 
+/*
 var options = {
   compact: true,
   controlFlowFlattening: false,
@@ -41,6 +43,7 @@ var options = {
   target: 'browser',
   unicodeEscapeSequence: false
 }
+*/
 
 rm(path.join(config.build.assetsRoot, config.build.assetsSubDirectory), err => {
   if (err) throw err
@@ -56,21 +59,11 @@ rm(path.join(config.build.assetsRoot, config.build.assetsSubDirectory), err => {
     }) + '\n\n')
 
     console.log(chalk.cyan('  HEY HO FINITO UPPAMI!!11!!111!.\n'))
-    // console.log(chalk.yellow(
-    //   '  Tip: built files are meant to be served over an HTTP server.\n' +
-    //   '  Opening index.html over file:// won\'t work.\n'
-    // ))
 
-    let path = './resource/zth_gcphone/html/static/js/app.js'
-    // let path = 'C:/Users/anton/Desktop/src_htmlPhone/resource/zth_gcphone/html/static/js/app.js'
-    ObfuscateFile(path, "app.js")
-
-    // disabilito la doppia obfuscazione che tanto
-    // è inutile per ora
-    // setTimeout(() => {
-    //   ObfuscateFile()
-    // }, 3500)
-    console.log("done on " + config.build.assetsRoot)
+    // let path = './resource/zth_gcphone/html/static/js/app.js'
+    // MinifyFile(path, "app.js", () => {
+    //   ObfuscateFile(path, "app.js")
+    // })
   })
 })
 
@@ -82,6 +75,27 @@ function makeid(length) {
     result.push(characters.charAt(Math.floor(Math.random() * charactersLength)));
   }
   return result.join('');
+}
+
+function MinifyFile(path, file, cb) {
+  var min = ora('MINIFYING DEL FILE IN CORSO (' + file + ') ...')
+  min.start()
+
+  fs.readFile(path, "utf8", function(err, data) {
+    if (err) { return console.log(err) }
+
+    var code = UglifyJS.minify(data, { mangle: { toplevel: true } }).code
+    
+    // Write the obfuscated code into a new file
+    fs.writeFile(path, code, function(err) {
+      if (err) { return console.log(err) }
+      
+      min.stop()
+      console.log(chalk.cyan('  FILE MINIFY COMPLETATO (' + file + ').'))
+      // console.log(chalk.cyan('  FILE OFFUSCATO (' + file + '). FANCULO DUMPERS.\n  SEED GENERATO: ****'))
+      if (cb) cb();
+    });
+  });
 }
 
 function ObfuscateFile(path, file, cb) {
