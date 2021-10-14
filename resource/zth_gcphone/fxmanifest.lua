@@ -1,6 +1,6 @@
 fx_version "bodacious"
 game "gta5"
-version "3.7.0"
+version "4.0.0"
 author "zThundy__"
 
 ui_page 'html/index.html'
@@ -61,6 +61,7 @@ client_script {
 
     -- modules
     "modules/tokovoip.lua",
+    "modules/pmavoice.lua",
     "modules/wifi/client/*.lua",
     "modules/sim/client/*.lua",
     "modules/services/client/*.lua",

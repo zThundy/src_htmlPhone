@@ -174,17 +174,14 @@ RegisterNetEvent("gcPhone:acceptCall")
 AddEventHandler("gcPhone:acceptCall", function(infoCall, initiator)
     if not inCall then
         inCall = true
-
         Citizen.CreateThread(function()
             local coords, distance = nil, nil
-
             while inCall do
                 Citizen.Wait(1000)
                 if initiator then
                     infoCall.secondiRimanenti = infoCall.secondiRimanenti - 1
                     if infoCall.secondiRimanenti == 0 then gcPhoneServerT.rejectCall(infoCall) end
                 end
-
                 if Config.PhoneBoxes[infoCall.receiver_num] then
                     if not initiator then
                         coords = GetEntityCoords(GetPlayerPed(-1))
@@ -196,7 +193,6 @@ AddEventHandler("gcPhone:acceptCall", function(infoCall, initiator)
                 end
             end
         end)
-        
         if Config.EnableTokoVoip then
             TokovoipEnstablishCall(infoCall.id)
         elseif Config.EnableSaltyChat then
@@ -204,11 +200,12 @@ AddEventHandler("gcPhone:acceptCall", function(infoCall, initiator)
                 gcPhoneServerT.setEndpointSource(infoCall.receiver_src)
                 gcPhoneServerT.EstablishCall(infoCall.receiver_src)
             end
+        elseif Config.EnablePMAVoice then
+            PMAVoiceEnstablishCall(infoCall.id)
         elseif Config.EnableVoiceRTC then
             -- noting for now :P
         end
     end
-
     if not menuIsOpen then  TogglePhone() end
     PhonePlayCall()
     SendNUIMessage({ event = 'acceptCall', infoCall = infoCall, initiator = initiator })
@@ -233,6 +230,7 @@ AddEventHandler("gcPhone:rejectCall", function(infoCall, callDropped)
                 gcPhoneServerT.EndCall(endPoint)
                 gcPhoneServerT.removeEndpointSource()
             end
+        elseif Config.EnablePMAVoice then
         elseif Config.EnableVoiceRTC then
             -- nothing for now :P
         end

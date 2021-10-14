@@ -12,6 +12,7 @@ Config.AmbulanceJobEventName = "esx_ambulancejob:setDeathStatus"
 Config.EnableTokoVoip = false
 Config.EnableSaltyChat = false
 Config.EnableVoiceRTC = true
+Config.EnablePMAVoice = false
 
 -- this is the key used to open the phone
 Config.KeyToOpenPhone = "k"
