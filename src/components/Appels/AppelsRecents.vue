@@ -56,7 +56,7 @@ export default {
     }
   },
   methods: {
-    ...mapActions(['deletePhoneHistory', 'deleteAllPhoneHistory', 'addContact', 'updateIgnoredControls']),
+    ...mapActions(['deletePhoneHistory', 'deleteAllPhoneHistory', 'updateIgnoredControls']),
     getContact (num) {
       const find = this.contacts.find(e => e.number === num)
       return find

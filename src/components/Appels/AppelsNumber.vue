@@ -74,9 +74,7 @@ export default {
     },
     onEnter () {
       if (this.keySelect === 12) {
-        if (this.numero.length > 0) {
-          this.$phoneAPI.startCall({ numero: this.numeroFormat })
-        }
+        if (this.numero.length > 0) this.$phoneAPI.startCall({ numero: this.numeroFormat })
       } else {
         if (this.numero.length >= 15) return
         this.$phoneAPI.playKeySound({ file: this.keyInfo[this.keySelect].ascii })

@@ -41,12 +41,9 @@ export default {
         return c
       })]
     }
-  },
-  created () {
-
-  },
-  beforeDestroy () {
   }
+  // created () {},
+  // beforeDestroy () {}
 }
 </script>
 
