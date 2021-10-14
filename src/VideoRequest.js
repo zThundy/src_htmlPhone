@@ -101,7 +101,6 @@ class VideoRequest {
     let check = value
     if (check < 1) check *= -1
     if (check * 2 < window.innerWidth / 2) {
-      // console.log('now setting', value)
       xModifier = value
     }
   }

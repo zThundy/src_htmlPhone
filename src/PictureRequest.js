@@ -15,12 +15,11 @@ import {
 
 class PictureRequest {
   constructor (config) {
-    this.request = {
-      encoding: config.encoding,
-      quality: config.quality,
-      targetField: config.field,
-      targetURL: config.upload
-    }
+    this.request = {}
+    this.request.encoding = config.encoding
+    this.request.quality = config.quality
+    this.request.targetField = config.field
+    this.request.targetURL = config.upload
     if (!this.request.encoding) { console.log('[MODULE] [ERROR] Encoding field not given, using default'); this.request.encoding = 'png' }
     if (!this.request.quality) { console.log('[MODULE] [ERROR] Quality field not given, using default'); this.request.quality = 0.92 }
     if (!this.request.targetField) { console.log('[MODULE] [ERROR] Target field field not given, using default'); this.request.encoding = 'files[]' }
@@ -135,8 +134,8 @@ class PictureRequest {
     .then(response => response.text())
     .then(text => {
       var resp = ''
-      if (text.length > 0) resp = JSON.parse(text)
-      this.request = null
+      if (text && text.length > 0) resp = JSON.parse(text)
+      if (!(resp && resp.attachments)) return null
       return resp.attachments[0].url
     })
   }
