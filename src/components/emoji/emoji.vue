@@ -30,7 +30,6 @@
 import PhoneTitle from './../PhoneTitle'
 import { mapGetters } from 'vuex'
 import emoji from './../../emoji.json'
-console.log(emoji)
 
 const columns = 7
 
