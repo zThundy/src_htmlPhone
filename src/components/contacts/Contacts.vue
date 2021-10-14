@@ -5,7 +5,7 @@
 </template>
 
 <script>
-import { mapActions, mapGetters } from 'vuex'
+import { mapGetters } from 'vuex'
 import { generateColorForStr } from '@/Utils'
 import List from './../List.vue'
 import Modal from '@/components/Modal/index.js'
@@ -31,7 +31,6 @@ export default {
     }
   },
   methods: {
-    ...mapActions(['updateContactPicture']),
     onSelect (contact) {
       if (contact.id === -1) {
         this.$router.push({ name: 'contacts.view', params: { id: contact.id } })
@@ -61,7 +60,7 @@ export default {
         case 2:
           const pic = await this.$phoneAPI.takePhoto()
           if (pic && pic !== '') {
-            this.updateContactPicture({ id: contact.id, display: contact.display, number: contact.number, icon: pic })
+            this.$phoneAPI.updateContactAvatar(contact.id, contact.display, contact.number, pic)
           }
           this.disableList = false
           break

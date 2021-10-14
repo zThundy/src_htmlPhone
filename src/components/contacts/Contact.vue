@@ -41,7 +41,7 @@
 </template>
 
 <script>
-import { mapGetters, mapActions } from 'vuex'
+import { mapGetters } from 'vuex'
 import PhoneTitle from './../PhoneTitle'
 import Modal from '@/components/Modal/index.js'
 
@@ -66,7 +66,6 @@ export default {
     ...mapGetters(['config', 'LangString', 'contacts'])
   },
   methods: {
-    ...mapActions(['updateContact', 'addContact']),
     onUp () {
       if (this.ignoreControls === true) return
       let select = document.querySelector('.group.select')
@@ -119,9 +118,9 @@ export default {
     },
     save () {
       if (this.id === -1 || this.id === 0) {
-        this.addContact({ display: this.contact.display, number: this.contact.number, email: this.contact.email, icon: this.contact.icon })
+        this.$phoneAPI.addContact(this.contact.display, this.contact.number, this.contact.email, this.contact.icon)
       } else {
-        this.updateContact({ id: this.id, display: this.contact.display, number: this.contact.number, email: this.contact.email, icon: this.contact.icon })
+        this.$phoneAPI.updateContact(this.id, this.contact.display, this.contact.number, this.contact.email, this.contact.icon)
       }
       history.back()
     },
