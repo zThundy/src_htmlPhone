@@ -142,7 +142,7 @@ export default {
                     message: 'VIDEO_NOT_FOUND',
                     title: 'VIDEO_ERROR_TITLE',
                     icon: 'camera',
-                    backgroundColor: 'rgb(205, 116, 76)',
+                    color: 'rgb(205, 116, 76)',
                     appName: 'Galleria'
                   })
                   return console.error('404 error')

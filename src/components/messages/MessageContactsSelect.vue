@@ -12,8 +12,7 @@ import Modal from '@/components/Modal/index.js'
 export default {
   components: { List },
   data () {
-    return {
-    }
+    return {}
   },
   computed: {
     ...mapGetters(['LangString', 'contacts']),
@@ -32,30 +31,21 @@ export default {
       if (contact.num === -1) {
         Modal.CreateTextModal({ title: this.LangString('APP_PHONE_ENTER_NUMBER'), limit: 10 }).then(data => {
           let message = data.text.trim()
-          if (message !== '') {
-            this.$router.push({
-              name: 'messages.view',
-              params: {
-                number: message,
-                display: message
-              }
-            })
-          }
+          if (message !== '') this.$router.push({ name: 'messages.view', params: { number: message, display: message } })
         })
       } else {
         this.$router.push({name: 'messages.view', params: contact})
       }
     },
-    back () {
-      history.back()
+    onBack () {
+      this.$router.push({ name: 'menu' })
     }
   },
   created () {
-    this.$bus.$on('keyUpBackspace', this.back)
+    this.$bus.$on('keyUpBackspace', this.onBack)
   },
-
   beforeDestroy () {
-    this.$bus.$off('keyUpBackspace', this.back)
+    this.$bus.$off('keyUpBackspace', this.onBack)
   }
 }
 </script>
