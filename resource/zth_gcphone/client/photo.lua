@@ -1,29 +1,27 @@
 local enabled = true
 local HUD_ELEMENTS = {
-    HUD = 0,
-    HUD_WANTED_STARS = 1,
-    HUD_WEAPON_ICON = 2,
-    HUD_CASH = 3,
-    HUD_MP_CASH = 4,
-    HUD_MP_MESSAGE = 5,
-    HUD_VEHICLE_NAME = 6,
-    HUD_AREA_NAME = 7,
-    HUD_VEHICLE_CLASS = 8,
-    HUD_STREET_NAME = 9,
-    HUD_HELP_TEXT = 10,
-    HUD_FLOATING_HELP_TEXT_1 = 11,
-    HUD_FLOATING_HELP_TEXT_2 = 12,
-    HUD_CASH_CHANGE = 13,
-    HUD_RETICLE = 14,
-    HUD_SUBTITLE_TEXT = 15,
-    HUD_RADIO_STATIONS = 16,
-    HUD_SAVING_GAME = 17,
-    HUD_GAME_STREAM = 18,
-    HUD_WEAPON_WHEEL = 19,
-    HUD_WEAPON_WHEEL_STATS = 20,
-    MAX_HUD_COMPONENTS = 21,
-    MAX_HUD_WEAPONS = 22,
-    MAX_SCRIPTED_HUD_COMPONENTS = 141
+    WANTED_STARS = 1,
+    WEAPON_ICON = 2,
+    CASH = 3,
+    MP_CASH = 4,
+    MP_MESSAGE = 5,
+    VEHICLE_NAME = 6,
+    AREA_NAME = 7,
+    VEHICLE_CLASS = 8,
+    STREET_NAME = 9,
+    HELP_TEXT = 10,
+    FLOATING_HELP_TEXT_1 = 11,
+    FLOATING_HELP_TEXT_2 = 12,
+    CASH_CHANGE = 13,
+    RETICLE = 14,
+    SUBTITLE_TEXT = 15,
+    RADIO_STATIONS = 16,
+    SAVING_GAME = 17,
+    GAME_STREAM = 18,
+    WEAPON_WHEEL = 19,
+    WEAPON_WHEEL_STATS = 20,
+    HUD_COMPONENTS = 21,
+    HUD_WEAPONS = 22
 }
 
 local CellFrontCamActivate = function(activate)
@@ -33,8 +31,11 @@ end
 local function HideHudLoop()
     Citizen.CreateThreadNow(function()
         while enabled do
+            -- this for loop will hide all hud components
             for _, id in pairs(HUD_ELEMENTS) do HideHudComponentThisFrame(id) end
+            -- these two elements will hide minimap and help texts
             HideHudAndRadarThisFrame()
+            HideHelpTextThisFrame()
             Citizen.Wait(0)
         end
     end)
@@ -71,4 +72,4 @@ local function OpenFakeCamera(data, cb)
 end
 
 RegisterNUICallback('openFakeCamera', function(data, cb) Citizen.CreateThreadNow(function() OpenFakeCamera(data, cb) end) end)
-RegisterNUICallback('setEnabledFakeCamera', function(data, cb) enabled = data end)
+RegisterNUICallback('setEnabledFakeCamera', function(data, cb) enabled = data cb("ok") end)

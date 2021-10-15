@@ -159,7 +159,7 @@ export default {
             {id: 1, title: this.LangString('APP_WHATSAPP_SEND_GPS'), icons: 'fa-location-arrow'},
             {id: -1, title: this.LangString('CANCEL'), icons: 'fa-undo', color: 'red'}
           ]
-          if (this.config.picturesConfig.enable) {
+          if (this.config.picturesConfig.enabled) {
             scelte = [
               {id: 'audio-record', title: this.LangString('APP_WHATSAPP_RECORD_AUDIO'), icons: 'fa-microphone'},
               {id: 1, title: this.LangString('APP_WHATSAPP_SEND_GPS'), icons: 'fa-location-arrow'},
@@ -176,7 +176,7 @@ export default {
                   title: 'WHATSAPP_INFO_TITLE',
                   message: 'WHATSAPP_CANNOT_GET_PHONE_NUMBER',
                   icon: 'whatsapp',
-                  backgroundColor: 'rgb(108, 250, 108)',
+                  color: 'rgb(108, 250, 108)',
                   appName: 'Whatsapp'
                 })
               } else {
@@ -235,7 +235,7 @@ export default {
               title: 'WHATSAPP_INFO_TITLE',
               message: 'WHATSAPP_CANNOT_GET_PHONE_NUMBER',
               icon: 'whatsapp',
-              backgroundColor: 'rgb(108, 250, 108)',
+              color: 'rgb(108, 250, 108)',
               appName: 'Whatsapp'
             })
           } else {
@@ -371,7 +371,7 @@ export default {
               title: 'WHATSAPP_INFO_TITLE',
               message: 'WHATSAPP_CANNOT_GET_PHONE_NUMBER',
               icon: 'whatsapp',
-              backgroundColor: 'rgb(108, 250, 108)',
+              color: 'rgb(108, 250, 108)',
               appName: 'Whatsapp'
             })
           } else {

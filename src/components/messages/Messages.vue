@@ -1,6 +1,6 @@
 <template>
   <div style="backgroundColor: white" class="phone_app messages">
-    <PhoneTitle :backgroundColor="'rgb(194, 108, 7)'" :title="formatEmoji(displayContact)" style="color: black" @back="quit"/> <!--:title="displayContact" :backgroundColor="color" -->
+    <PhoneTitle :backgroundColor="'rgb(194, 108, 7)'" :title="formatEmoji(displayContact)" style="color: black" /> <!--:title="displayContact" :backgroundColor="color" -->
     
     <div class="phone_fullscreen_img" v-if="imgZoom !== undefined">
       <img v-if="imgZoom.type === 'photo'" :src="imgZoom.link" />
@@ -128,10 +128,6 @@ export default {
         }
       })
     },
-    quit () {
-      // this.$router.push({path: '/messages'})
-      this.$router.go(-1)
-    },
     onUp () {
       if (this.ignoreControls === true) return
       if (this.selectMessage === -1) {
@@ -152,6 +148,14 @@ export default {
     },
     onEnter () {
       if (this.ignoreControls === true) return
+      if (this.imgZoom && this.imgZoom.type) {
+        if (this.imgZoom.type === 'video') {
+          const videoElement = document.getElementById('video-playback-element')
+          videoElement.currentTime = 0
+          videoElement.play()
+          return
+        }
+      }
       if (this.selectMessage !== -1) {
         this.onActionMessage(this.messagesListApp[this.selectMessage])
       } else {
@@ -232,22 +236,14 @@ export default {
           { id: 'delete', title: this.LangString('APP_MESSAGE_DELETE'), icons: 'fa-trash' },
           { id: -1, title: this.LangString('CANCEL'), icons: 'fa-undo', color: 'red' }
         ]
-        if (isGPS === true) {
-          scelte = [{ id: 'gps', title: this.LangString('APP_MESSAGE_SET_GPS'), icons: 'fa-location-arrow' }, ...scelte]
-        }
-        if (this.isSMSContact(elem.message)) {
-          scelte = [{ id: 'add_contact', title: this.LangString('APP_MESSAGE_ADD_CONTACT'), icons: 'fa-plus' }, ...scelte]
-        }
+        if (isGPS) scelte = [{ id: 'gps', title: this.LangString('APP_MESSAGE_SET_GPS'), icons: 'fa-location-arrow' }, ...scelte]
+        if (this.isSMSContact(elem.message)) scelte = [{ id: 'add_contact', title: this.LangString('APP_MESSAGE_ADD_CONTACT'), icons: 'fa-plus' }, ...scelte]
         if (hasNumber) {
           const num = elem.message.match(/#([0-9-]*)/)[1]
           scelte = [{ id: 'num', title: `${this.LangString('APP_MESSAGE_MESS_NUMBER')} ${num}`, number: num, icons: 'fa-phone' }, ...scelte]
         }
-        if (this.isSMSImage(elem.message)) {
-          scelte = [{ id: 'zoom', title: this.LangString('APP_MESSAGE_ZOOM_IMG'), icons: 'fa-search' }, ...scelte]
-        }
-        if (this.isSMSVideo(elem.message)) {
-          scelte = [{ id: 'video', title: this.LangString('APP_MESSAGE_PLAY_VIDEO'), icons: 'fa-play' }, ...scelte]
-        }
+        if (this.isSMSImage(elem.message)) scelte = [{ id: 'zoom', title: this.LangString('APP_MESSAGE_ZOOM_IMG'), icons: 'fa-search' }, ...scelte]
+        if (this.isSMSVideo(elem.message)) scelte = [{ id: 'video', title: this.LangString('APP_MESSAGE_PLAY_VIDEO'), icons: 'fa-play' }, ...scelte]
         this.ignoreControls = true
         const data = await Modal.CreateModal({scelte})
         if (data.id === 'delete') {
@@ -270,19 +266,14 @@ export default {
           this.$router.push({ name: 'messages.view', params: { number: c.number, display: c.name } })
         } else if (data.id === 'video') {
           let id = elem.message.split('%')
-          console.log(id)
           if (id[2]) {
-            console.log(id[2])
-            console.log('http://' + this.config.fileUploader.ip + ':' + this.config.fileUploader.port + '/videoDownload?type=camera&key=' + id[2])
-            fetch('http://' + this.config.fileUploader.ip + ':' + this.config.fileUploader.port + '/videoDownload?type=camera&key=' + id[2], {
-              method: 'GET'
-            }).then(async resp => {
+            fetch('http://' + this.config.fileUploader.ip + ':' + this.config.fileUploader.port + '/videoDownload?type=camera&key=' + id[2], { method: 'GET' }).then(async resp => {
               if (resp.status === 404) {
                 this.$phoneAPI.ongenericNotification({
                   message: 'VIDEO_NOT_FOUND',
                   title: 'VIDEO_ERROR_TITLE',
                   icon: 'camera',
-                  backgroundColor: 'rgb(205, 116, 76)',
+                  color: 'rgb(205, 116, 76)',
                   appName: 'Galleria'
                 })
                 return console.error('404 error')
@@ -329,7 +320,7 @@ export default {
       if (this.selectMessage !== -1) {
         this.selectMessage = -1
       } else {
-        this.quit()
+        this.$router.go(-1)
       }
     },
     onRight: function () {
@@ -342,20 +333,12 @@ export default {
       try {
         this.ignoreControls = true
         let scelte = [
-          {id: 1, title: this.LangString('APP_MESSAGE_SEND_GPS'), icons: 'fa-location-arrow'},
-          {id: -1, title: this.LangString('CANCEL'), icons: 'fa-undo', color: 'red'}
+          { id: 1, title: this.LangString('APP_MESSAGE_SEND_GPS'), icons: 'fa-location-arrow' },
+          { id: -1, title: this.LangString('CANCEL'), icons: 'fa-undo', color: 'red' }
         ]
-        if (this.config.picturesConfig.enable) {
-          scelte = [
-            {id: 1, title: this.LangString('APP_MESSAGE_SEND_GPS'), icons: 'fa-location-arrow'},
-            {id: 2, title: this.LangString('APP_MESSAGE_SEND_PHOTO'), icons: 'fa-picture-o'},
-            {id: -1, title: this.LangString('CANCEL'), icons: 'fa-undo', color: 'red'}
-          ]
-        }
+        if (this.config.picturesConfig.enabled) scelte = [{ id: 2, title: this.LangString('APP_MESSAGE_SEND_PHOTO'), icons: 'fa-picture-o' }, ...scelte]
         const data = await Modal.CreateModal({ scelte })
-        if (data.id === 1) {
-          this.sendMessage({ phoneNumber: this.phoneNumber, message: '%pos%' })
-        }
+        if (data.id === 1) this.sendMessage({ phoneNumber: this.phoneNumber, message: '%pos%' })
         if (data.id === 2) {
           const pic = await this.$phoneAPI.takePhoto()
           if (pic && pic !== '') {
@@ -363,10 +346,7 @@ export default {
           }
         }
         this.ignoreControls = false
-      } catch (e) {
-      } finally {
-        this.ignoreControls = false
-      }
+      } catch (e) {}
     }
   },
   watch: {

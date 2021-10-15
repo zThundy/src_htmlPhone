@@ -74,9 +74,6 @@ export default {
       if (this.showSavePanel) {
         if (this.currentSelect === 1) {
           if (this.videoElement.src && this.videoElement.src !== '') {
-            // saving shit
-            // console.log(this.currentBlob.size)
-            // console.log(this.currentBlob)
             const id = this.$phoneAPI.makeid(20, true)
             const formData = new FormData()
             formData.append('video-file', this.currentBlob)
@@ -88,6 +85,7 @@ export default {
             }).then(() => {
               const videoFormat = '[VIDEO]%' + this.myPhoneNumber + '%' + id
               this.addPhoto({ link: videoFormat, type: 'video' })
+              this.$phoneAPI.post('setEnabledFakeCamera', false)
               this.$router.push({ name: 'galleria.splash' })
             }).catch((error) => { console.error(error) })
             this.showSavePanel = false
@@ -190,6 +188,7 @@ export default {
   },
   // mounted () {},
   beforeDestroy () {
+    this.$phoneAPI.post('setEnabledFakeCamera', false)
     if (this.videoRequest) this.videoRequest.stopCapture()
     this.videoRequest = null
     this.$bus.$off('keyUpEnter', this.onEnter)
