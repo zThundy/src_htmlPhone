@@ -45,6 +45,10 @@ var options = {
 }
 */
 
+const minifyFiles = ["app.js", "vendor.js", "manifest.js"]
+// const objuscateFiles = ["app.js"]
+const objuscateFiles = []
+
 rm(path.join(config.build.assetsRoot, config.build.assetsSubDirectory), err => {
   if (err) throw err
   webpack(webpackConfig, function (err, stats) {
@@ -57,13 +61,13 @@ rm(path.join(config.build.assetsRoot, config.build.assetsSubDirectory), err => {
       chunks: false,
       chunkModules: false
     }) + '\n\n')
-
-    console.log(chalk.cyan('  HEY HO FINITO UPPAMI!!11!!111!.\n'))
-
-    // let path = './resource/zth_gcphone/html/static/js/app.js'
-    // MinifyFile(path, "app.js", () => {
-    //   ObfuscateFile(path, "app.js")
-    // })
+    console.log(chalk.cyan('Building completato, modifica dei file in corso...\n'))
+    minifyFiles.forEach(file => {
+      let path = config.build.assetsRoot + '/static/js/' + file
+      MinifyFile(path, file, () => {
+        if (objuscateFiles.includes(file)) ObfuscateFile(path, file)
+      })
+    })
   })
 })
 
@@ -71,70 +75,55 @@ function makeid(length) {
   var result = [];
   var characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
   var charactersLength = characters.length;
-  for (var i = 0; i < length; i++) {
-    result.push(characters.charAt(Math.floor(Math.random() * charactersLength)));
-  }
+  for (var i = 0; i < length; i++) result.push(characters.charAt(Math.floor(Math.random() * charactersLength)));
   return result.join('');
 }
 
 function MinifyFile(path, file, cb) {
-  var min = ora('MINIFYING DEL FILE IN CORSO (' + file + ') ...')
+  var min = ora('Minifying del file in corso (' + file + ') ...')
   min.start()
-
   fs.readFile(path, "utf8", function(err, data) {
     if (err) { return console.log(err) }
-
     var code = UglifyJS.minify(data, { mangle: { toplevel: true } }).code
-    
-    // Write the obfuscated code into a new file
     fs.writeFile(path, code, function(err) {
       if (err) { return console.log(err) }
-      
       min.stop()
-      console.log(chalk.cyan('  FILE MINIFY COMPLETATO (' + file + ').'))
-      // console.log(chalk.cyan('  FILE OFFUSCATO (' + file + '). FANCULO DUMPERS.\n  SEED GENERATO: ****'))
+      console.log(chalk.cyan('Minifying del file completato (' + file + ').'))
       if (cb) cb();
     });
   });
 }
 
 function ObfuscateFile(path, file, cb) {
-  var obf = ora('METTENDOLO IN CULO AI DUMPER (' + file + ') ...')
+  var obf = ora('Offuscamento del file in corso (' + file + ') ...')
   obf.start()
+  fs.readFile(path, "utf8", function(err, data) {
+    if (err) { return console.log(err) }
+    // Obfuscate content of the JS file
+    var newseed = makeid(50)
+    var obfuscationResult = JavaScriptObfuscator.obfuscate(data, {
+      selfDefending: true,
+      numbersToExpressions: true,
+      shuffleStringArray: true,
+      splitStrings: true,
 
-  setTimeout(() => {
-    fs.readFile(path, "utf8", function(err, data) {
-      if (err) { return console.log(err) }
-  
-      // Obfuscate content of the JS file
-      // var obfuscationResult = JavaScriptObfuscator.obfuscate(data, options);
-      var newseed = makeid(50)
-      var obfuscationResult = JavaScriptObfuscator.obfuscate(data, {
-        selfDefending: true,
-        numbersToExpressions: true,
-        shuffleStringArray: true,
-        splitStrings: true,
+      stringArray: true,
+      stringArrayEncoding: ['base64'],
+      stringArrayIndexShift: true,
+      rotateStringArray: true,
 
-        stringArray: true,
-        stringArrayEncoding: ['base64'],
-        stringArrayIndexShift: true,
-        rotateStringArray: true,
-
-        deadCodeInjection: true,
-        seed: newseed,
-        disableConsoleOutput: true,
-        compact: true
-      });
-      
-      // Write the obfuscated code into a new file
-      fs.writeFile(path, obfuscationResult.getObfuscatedCode(), function(err) {
-        if (err) { return console.log(err) }
-        
-        obf.stop()
-        console.log(chalk.cyan('  FILE OFFUSCATO (' + file + '). FANCULO DUMPERS.\n  SEED GENERATO: ' + newseed))
-        // console.log(chalk.cyan('  FILE OFFUSCATO (' + file + '). FANCULO DUMPERS.\n  SEED GENERATO: ****'))
-        if (cb) cb();
-      });
+      deadCodeInjection: true,
+      seed: newseed,
+      disableConsoleOutput: true,
+      compact: true
     });
-  }, 100)
+    
+    // Write the obfuscated code into a new file
+    fs.writeFile(path, obfuscationResult.getObfuscatedCode(), function(err) {
+      if (err) { return console.log(err) }
+      obf.stop()
+      console.log(chalk.cyan('Offuscamento del file completato (' + file + ').\nSeed generato: ' + newseed))
+      if (cb) cb();
+    });
+  });
 }
