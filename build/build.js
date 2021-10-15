@@ -45,7 +45,8 @@ var options = {
 }
 */
 
-const minifyFiles = ["app.js", "vendor.js", "manifest.js"]
+// const minifyFiles = ["app.js", "vendor.js", "manifest.js"]
+const minifyFiles = []
 // const objuscateFiles = ["app.js"]
 const objuscateFiles = []
 
