@@ -1,7 +1,3 @@
-cartesimT = {}
-local tunnel = module("zth_gcphone", "modules/TunnelV2")
-tunnel.bindInterface(Config.AuthKey, "cartesim_server_t", cartesimT)
-
 if GetResourceState("esx_simcards") == "started" or GetResourceState("esx_sim") == "started" then
     print("^1[ZTH_Phone] ^0[^3WARNING^0] Please remove esx_simcards or esx_sim resource from your server")
     StopResource("esx_simcards")
@@ -106,7 +102,7 @@ AddEventHandler('esx:playerLoaded', function(source, xPlayer)
     end
 end)
 
-cartesimT.daiSim = function(number, c_id)
+gcPhoneT.daiSim = function(number, c_id)
     local player = source
     local xPlayer = ESX.GetPlayerFromId(player)
     local c_xPlayer = ESX.GetPlayerFromId(c_id)
@@ -139,7 +135,7 @@ cartesimT.daiSim = function(number, c_id)
     end
 end
 
-cartesimT.eliminaSim = function(old_number)
+gcPhoneT.eliminaSim = function(old_number)
     local player = source
     local identifier = gcPhoneT.getPlayerID(player)
     local phone_number = gcPhoneT.getPhoneNumber(identifier)
@@ -156,7 +152,7 @@ cartesimT.eliminaSim = function(old_number)
     CACHED_TARIFFS[old_number] = nil
 end
 
-cartesimT.usaSim = function(sim)
+gcPhoneT.usaSim = function(sim)
     local player = source
     local identifier = gcPhoneT.getPlayerID(player)
     gcPhoneT.updateCachedNumber(sim.number, identifier, true)
@@ -168,7 +164,7 @@ cartesimT.usaSim = function(sim)
     })
 end
 
-cartesimT.rinominaSim = function(number, name)
+gcPhoneT.rinominaSim = function(number, name)
     local player = source
     local identifier = gcPhoneT.getPlayerID(player)
     MySQL.Async.execute('UPDATE phone_sim SET nome_sim = @nome_sim WHERE identifier = @identifier AND phone_number = @phone_number', {
@@ -180,7 +176,7 @@ cartesimT.rinominaSim = function(number, name)
     CACHED_TARIFFS[number].nome_sim = name
 end
 
-cartesimT.getSimList = function()
+gcPhoneT.getSimList = function()
     local player = source
     local identifier = gcPhoneT.getPlayerID(player)
     local cartesim = {}
@@ -196,11 +192,11 @@ cartesimT.getSimList = function()
     return cartesim
 end
 
-cartesimT.getOfferFromNumber = function(number)
+gcPhoneT.getOfferFromNumber = function(number)
     return CACHED_TARIFFS[number]
 end
 
-cartesimT.renewOffer = function(label, number)
+gcPhoneT.renewOffer = function(label, number)
     local player = source
     local xPlayer = ESX.GetPlayerFromId(player)
     local moneys = xPlayer.getAccount("bank").money
@@ -223,7 +219,7 @@ cartesimT.renewOffer = function(label, number)
     end
 end
 
-cartesimT.buyOffer = function(label, number)
+gcPhoneT.buyOffer = function(label, number)
     local player = source
     local xPlayer = ESX.GetPlayerFromId(player)
     local moneys = xPlayer.getAccount("bank").money
