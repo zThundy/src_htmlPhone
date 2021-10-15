@@ -172,7 +172,13 @@ export default {
             case 1:
               this.ignoreControls = false
               if (this.myPhoneNumber.includes('#') || this.myPhoneNumber === 0 || this.myPhoneNumber === '0') {
-                this.$phoneAPI.onwhatsapp_showError({ title: 'Errore', message: 'Impossibile ottenere il numero di telefono' })
+                this.$phoneAPI.ongenericNotification({
+                  title: 'WHATSAPP_INFO_TITLE',
+                  message: 'WHATSAPP_CANNOT_GET_PHONE_NUMBER',
+                  icon: 'whatsapp',
+                  backgroundColor: 'rgb(108, 250, 108)',
+                  appName: 'Whatsapp'
+                })
               } else {
                 this.sendMessageInGroup({ gruppo: this.gruppo, message: '%pos%', phoneNumber: this.myPhoneNumber })
               }
@@ -225,7 +231,13 @@ export default {
         let message = data.text.trim()
         if (message !== '') {
           if (this.myPhoneNumber.includes('#') || this.myPhoneNumber === 0 || this.myPhoneNumber === '0') {
-            this.$phoneAPI.onwhatsapp_showError({ title: 'Errore', message: 'Impossibile ottenere il numero di telefono' })
+            this.$phoneAPI.ongenericNotification({
+              title: 'WHATSAPP_INFO_TITLE',
+              message: 'WHATSAPP_CANNOT_GET_PHONE_NUMBER',
+              icon: 'whatsapp',
+              backgroundColor: 'rgb(108, 250, 108)',
+              appName: 'Whatsapp'
+            })
           } else {
             this.sendMessageInGroup({ gruppo: this.gruppo, message: message, phoneNumber: this.myPhoneNumber })
           }
@@ -355,7 +367,13 @@ export default {
           this.start()
         } else if (data.id === 1) {
           if (this.myPhoneNumber.includes('#') || this.myPhoneNumber === 0 || this.myPhoneNumber === '0') {
-            this.$phoneAPI.onwhatsapp_showError({ title: 'Errore', message: 'Impossibile ottenere il numero di telefono' })
+            this.$phoneAPI.ongenericNotification({
+              title: 'WHATSAPP_INFO_TITLE',
+              message: 'WHATSAPP_CANNOT_GET_PHONE_NUMBER',
+              icon: 'whatsapp',
+              backgroundColor: 'rgb(108, 250, 108)',
+              appName: 'Whatsapp'
+            })
           } else {
             this.sendMessageInGroup({ gruppo: this.gruppo, message: '%pos%', phoneNumber: this.myPhoneNumber })
           }

@@ -83,7 +83,13 @@ export default {
       // qui controllo se il numero che ha salvato il telefono in memoria
       // è valido oppure no
       if (this.myPhoneNumber.includes('#') || this.myPhoneNumber === 0 || this.myPhoneNumber === '0') {
-        this.$phoneAPI.onwhatsapp_showError({ title: 'Errore', message: 'Impossibile ottenere il numero di telefono' })
+        this.$phoneAPI.ongenericNotification({
+          title: 'WHATSAPP_INFO_TITLE',
+          message: 'WHATSAPP_CANNOT_GET_PHONE_NUMBER',
+          icon: 'whatsapp',
+          backgroundColor: 'rgb(108, 250, 108)',
+          appName: 'Whatsapp'
+        })
         return
       }
       let scelte = []
@@ -130,7 +136,6 @@ export default {
       if (this.currentSelected === -1) return
       if (this.ignoreControls === true) return
       // qui invio il gruppo al router
-      // console.log(this.gruppi[this.currentSelected])
       // DECOMMENTARE SE SI VUOLE SOLO SOTTO WIFI if (!this.hasWifi) {
       // DECOMMENTARE SE SI VUOLE SOLO SOTTO WIFI   this.$phoneAPI.sendErrorMessage('Non sei connesso al wifi')
       // DECOMMENTARE SE SI VUOLE SOLO SOTTO WIFI   return
