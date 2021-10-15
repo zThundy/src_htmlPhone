@@ -30,14 +30,22 @@ local CellFrontCamActivate = function(activate)
 	return Citizen.InvokeNative(0x2491A93618B7D838, activate)
 end
 
-RegisterNUICallback('openFakeCamera', function(data, cb) Citizen.CreateThreadNow(function() OpenFakeCamera(data, cb) end) end)
-RegisterNUICallback('setEnabledFakeCamera', function(data, cb) enabled = data end)
+local function HideHudLoop()
+    Citizen.CreateThreadNow(function()
+        while enabled do
+            for _, id in pairs(HUD_ELEMENTS) do HideHudComponentThisFrame(id) end
+            HideHudAndRadarThisFrame()
+            Citizen.Wait(0)
+        end
+    end)
+end
 
-function OpenFakeCamera(data, cb)
+local function OpenFakeCamera(data, cb)
     enabled = true
 	local frontCam = false
 	CreateMobilePhone(1)
 	CellCamActivate(true, true)
+    HideHudLoop()
     -- if ignore controls is true, then send a callback to js
     -- to let the code continue with its things
     if data.ignoreControls then cb("ok") end
@@ -46,15 +54,11 @@ function OpenFakeCamera(data, cb)
 			frontCam = not frontCam
 			CellFrontCamActivate(frontCam)
 		elseif IsControlJustPressed(1, 177) and not data.ignoreControls then -- CANCEL
-			enabled = false
             cb(false)
         elseif IsControlJustPressed(1, 176) and not data.ignoreControls then -- ENTER
-            enabled = false
             cb(true)
 		end
-		for _, id in pairs(HUD_ELEMENTS) do HideHudComponentThisFrame(id) end
-		HideHudAndRadarThisFrame()
-		Citizen.Wait(0)
+        Citizen.Wait(0)
 	end
     -- destroy and delete fake camera effect
     DestroyMobilePhone()
@@ -65,3 +69,6 @@ function OpenFakeCamera(data, cb)
 	Citizen.Wait(100)
 	PhonePlayText()
 end
+
+RegisterNUICallback('openFakeCamera', function(data, cb) Citizen.CreateThreadNow(function() OpenFakeCamera(data, cb) end) end)
+RegisterNUICallback('setEnabledFakeCamera', function(data, cb) enabled = data end)
