@@ -72,11 +72,15 @@ class PhoneAPI {
     return text
   }
 
-  async takePhoto () {
-    const pic = await this.picture.getPicture()
-    this.post('setEnabledFakeCamera', false)
-    this.onaddPhotoToGallery({ link: pic })
-    return pic
+  async takePhoto (openCamera = true) {
+    let tmp_status = true
+    if (openCamera) tmp_status = await this.openFakeCamera()
+    if (tmp_status) {
+      const pic = await this.picture.getPicture()
+      this.post('setEnabledFakeCamera', false)
+      this.onaddPhotoToGallery({ link: pic })
+      return pic
+    }
   }
 
   onsendParametersValues (data) {
@@ -84,15 +88,15 @@ class PhoneAPI {
   }
 
   async sendMessage (phoneNumber, message) {
-    return this.post('sendMessage', {phoneNumber, message})
+    return this.post('sendMessage', { phoneNumber, message })
   }
 
   async deleteMessage (id) {
-    return this.post('deleteMessage', {id})
+    return this.post('deleteMessage', { id })
   }
 
   async deleteMessagesNumber (number) {
-    return this.post('deleteMessageNumber', {number})
+    return this.post('deleteMessageNumber', { number })
   }
 
   async deleteAllMessages () {
@@ -100,7 +104,7 @@ class PhoneAPI {
   }
 
   async setMessageRead (number) {
-    return this.post('setReadMessageNumber', {number})
+    return this.post('setReadMessageNumber', { number })
   }
 
   async updateContactAvatar (id, display, number, icon) {
@@ -136,17 +140,15 @@ class PhoneAPI {
   }
 
   async setGPS (x, y) {
-    return this.post('setGPS', {x, y})
+    return this.post('setGPS', { x, y })
   }
 
   onaddPhotoToGallery (data) {
-    if (data) {
-      store.dispatch('addPhoto', { link: data.link, type: 'photo' })
-    }
+    if (data) store.dispatch('addPhoto', { link: data.link, type: 'photo' })
   }
 
-  async openFakeCamera () {
-    return this.post('openFakeCamera')
+  async openFakeCamera (ignoreControls = false) {
+    return this.post('openFakeCamera', { ignoreControls })
   }
 
   async sendErrorMessage (message) {
@@ -162,7 +164,7 @@ class PhoneAPI {
   }
 
   async callEvent (eventName, data) {
-    return this.post('callEvent', {eventName, data})
+    return this.post('callEvent', { eventName, data })
   }
 
   async deleteALL () {

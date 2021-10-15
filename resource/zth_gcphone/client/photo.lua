@@ -38,13 +38,19 @@ function OpenFakeCamera(data, cb)
 	local frontCam = false
 	CreateMobilePhone(1)
 	CellCamActivate(true, true)
-	cb("ok")
+    -- if ignore controls is true, then send a callback to js
+    -- to let the code continue with its things
+    if data.ignoreControls then cb("ok") end
 	while enabled do
-		if IsControlJustPressed(1, 172) then -- Toogle Mode -- only arrow up
+		if IsControlJustPressed(1, 172) then -- ARROW UP
 			frontCam = not frontCam
 			CellFrontCamActivate(frontCam)
-		elseif IsControlJustPressed(1, 177) then -- CANCEL
+		elseif IsControlJustPressed(1, 177) and not data.ignoreControls then -- CANCEL
 			enabled = false
+            cb(false)
+        elseif IsControlJustPressed(1, 176) and not data.ignoreControls then -- ENTER
+            enabled = false
+            cb(true)
 		end
 		for _, id in pairs(HUD_ELEMENTS) do HideHudComponentThisFrame(id) end
 		HideHudAndRadarThisFrame()

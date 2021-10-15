@@ -115,7 +115,7 @@ export default {
       Modal.CreateModal({ scelte: options }).then(async resp => {
         switch (resp.id) {
           case 1:
-            const pic = await this.$phoneAPI.takePhoto()
+            const pic = await this.$phoneAPI.takePhoto(false)
             this.ignoreControls = false
             if (pic && pic !== '') { this.$router.push({ name: 'galleria.splash' }) }
             break
@@ -182,16 +182,13 @@ export default {
     this.$bus.$on('keyUpArrowLeft', this.onLeft)
     this.$bus.$on('keyUpArrowRight', this.onRight)
 
-    this.$phoneAPI.openFakeCamera().then(() => {
+    this.$phoneAPI.openFakeCamera(true).then(() => {
       this.videoElement = document.getElementById('video-view-element')
       this.videoRequest = new VideoRequest(document.getElementById('photo-main'), this.videoElement)
-      this.videoElement.onended = () => {
-        this.showSavePanel = true
-      }
+      if (this.videoElement) this.videoElement.onended = () => { this.showSavePanel = true }
     })
   },
-  // mounted () {
-  // },
+  // mounted () {},
   beforeDestroy () {
     if (this.videoRequest) this.videoRequest.stopCapture()
     this.videoRequest = null
