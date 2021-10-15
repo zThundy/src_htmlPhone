@@ -87,7 +87,7 @@ export default {
           title: 'WHATSAPP_INFO_TITLE',
           message: 'WHATSAPP_CANNOT_GET_PHONE_NUMBER',
           icon: 'whatsapp',
-          backgroundColor: 'rgb(108, 250, 108)',
+          color: 'rgb(108, 250, 108)',
           appName: 'Whatsapp'
         })
         return

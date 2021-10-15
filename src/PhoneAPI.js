@@ -196,13 +196,14 @@ class PhoneAPI {
   }
 
   ongenericNotification (data) {
+    if (data.notify) data = data.notif
     Vue.notify({
-      message: store.getters.LangString(data.notif.message),
-      title: store.getters.LangString(data.notif.title) + ':',
-      icon: data.notif.icon,
-      backgroundColor: data.notif.color,
-      appName: data.notif.appName,
-      sound: data.notif.sound
+      message: store.getters.LangString(data.message),
+      title: store.getters.LangString(data.title) + ':',
+      icon: data.icon,
+      backgroundColor: data.color,
+      appName: data.appName,
+      sound: data.sound
     })
   }
 

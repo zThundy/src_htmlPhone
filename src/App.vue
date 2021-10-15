@@ -85,9 +85,6 @@ export default {
         } else {
           path = '/html/static/sound/' + this.suoneria.value
         }
-        // if (this.$phoneAPI.isLink(this.suoneria.value)) {
-        //   path = this.suoneria.value
-        // }
         this.audioElement.src = path
         this.audioElement.loop = true
         this.soundCall = this.audioElement
@@ -116,51 +113,18 @@ export default {
     if (process.env.NODE_ENV !== 'production') {
       const keyValid = ['ArrowRight', 'ArrowLeft', 'ArrowUp', 'ArrowDown', 'Backspace', 'Enter']
       window.addEventListener('keyup', (event) => {
-        if (keyValid.indexOf(event.key) !== -1) {
-          this.$bus.$emit('keyUp' + event.key)
-          if (event.key === 'Backspace') { }
-        }
-        if (event.key === 'Escape') { this.$phoneAPI.closePhone() }
+        if (keyValid.includes(event.key) !== -1) this.$bus.$emit('keyUp' + event.key)
+        if (event.key === 'Escape') this.$phoneAPI.closePhone()
       })
     }
   },
   created () {
     this.$router.push({ name: 'lockscreen' })
-    // this.$router.beforeEach((to, from, next) => {
-    //   if ((to.meta !== undefined && to.meta !== null) && (from.meta !== undefined && from.meta !== null)) {
-    //     // se stai arrivando da un router che si trova più in alto
-    //     // (indice maggiore) di quello a cui stai andando, fai l'animazione
-    //     if (to.meta.depth > from.meta.depth) {
-    //       this.isChanging = true
-    //     }
-    //     // if (from.meta.depth > to.meta.depth) {
-    //     //   this.index = from.meta.depth
-    //     // }
-    //   }
-    //   setTimeout(() => {
-    //     this.isChanging = false
-    //   }, 500)
-    //   next()
-    // })
-
-    // function dev () {
-    //   Vue.notify({
-    //     message: 'Messaggio superfiko inviato da qualcuno',
-    //     title: '55537282' + ':',
-    //     icon: 'envelope',
-    //     backgroundColor: 'rgb(255, 140, 30)',
-    //     appName: 'Messaggi'
-    //   })
-    //   setTimeout(() => {
-    //     dev()
-    //   }, 1000)
-    // }
-    // dev()
   }
 }
 </script>
 
-<style lang="css">
+<style scoped>
 .noselect {
   user-select: none;
 }
