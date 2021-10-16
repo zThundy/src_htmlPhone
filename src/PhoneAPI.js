@@ -74,8 +74,7 @@ class PhoneAPI {
   }
 
   convertEmoji (text) {
-    for (const e in this.emoji) console.log(e, this.emoji[e])
-    // if (text) for (const e in this.emoji) text = text.replace(new RegExp(`:${e}:`, 'g'), this.emoji[e])
+    if (text) for (const e in this.emoji) text = text.replace(new RegExp(`:${e}:`, 'g'), this.emoji[e])
     return text
   }
 
