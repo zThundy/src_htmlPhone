@@ -102,11 +102,6 @@ Config.CoverShopBlip = {
 	scale = 0.8
 }
 
--- this will be the default cover that your phone will have
--- on firstlogin of a user. Keep in mind that the prop need to exists in
--- the stream folder of this resource
-Config.BaseCover = {prop = "prop_amb_phone", label = "Nessuna cover"}
-
 --[[
     EDIT THE LINES WITH THE * AT THE END ONLY IF YOU KNOW
     WHAT YOU'RE DOING
@@ -120,6 +115,9 @@ Config.BaseCover = {prop = "prop_amb_phone", label = "Nessuna cover"}
     }
 ]]
 Config.Covers = {
+    -- this is the base cover that the phone will have by default
+    -- (DO NOT CHANGE ANYTHING UNLESS YOU KNOW WHAT YOU ARE DOING)
+    ["base"] = {price = 0, prop = "prop_amb_phone", label = "Nessuna cover"},
     ["aquagreen"] = {price = 101, prop = "prop_acquagreen_phone", label = "Verde acqua"},
     ["aquagreen_dark"] = {price = 101, prop = "prop_acquagreen_dark_phone", label = "Verde acqua scuro"},
     ["aquagreen_pastel"] = {price = 101, prop = "prop_acquagreen_pastel_phone", label = "Verde acqua pastello"},

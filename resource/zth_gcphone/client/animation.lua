@@ -47,8 +47,6 @@ function newPhoneProp()
     deletePhone()
     if Config.Covers[myCover] ~= nil then
         phoneModel = GetHashKey(Config.Covers[myCover].prop)
-    else
-        phoneModel = GetHashKey(Config.BaseCover.prop)
     end
     RequestModel(phoneModel)
     while not HasModelLoaded(phoneModel) do Citizen.Wait(1) end
