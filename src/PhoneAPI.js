@@ -87,10 +87,6 @@ class PhoneAPI {
     store.commit('SEND_INIT_VALUES', data)
   }
 
-  async deleteMessage (id) {
-    return this.post('deleteMessage', { id })
-  }
-
   async deleteMessagesNumber (number) {
     return this.post('deleteMessageNumber', { number })
   }

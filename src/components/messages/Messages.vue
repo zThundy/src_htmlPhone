@@ -108,7 +108,7 @@ export default {
     }
   },
   methods: {
-    ...mapActions(['setMessageRead', 'deleteMessage']),
+    ...mapActions(['setMessageRead']),
     ...mapMutations(['CHANGE_BRIGHTNESS_STATE']),
     formatEmoji (message) {
       return this.$phoneAPI.convertEmoji(message)
@@ -245,7 +245,7 @@ export default {
         this.ignoreControls = true
         const data = await Modal.CreateModal({scelte})
         if (data.id === 'delete') {
-          this.deleteMessage({ id: elem.id })
+          this.$phoneAPI.post('deleteMessage', { id: elem.id })
         } else if (data.id === 'gps') {
           let val = elem.message.match(/(-?\d+(\.\d+)?), (-?\d+(\.\d+)?)/)
           this.$phoneAPI.setGPS(val[1], val[3])
