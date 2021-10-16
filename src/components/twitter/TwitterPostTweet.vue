@@ -3,7 +3,7 @@
     <div class='tweet_write'>
         <!-- <textarea class="textarea-input" v-model.trim="message" v-autofocus :placeholder="LangString('APP_TWITTER_PLACEHOLDER_MESSAGE')"></textarea> -->
         <textarea class="textarea-input" v-model.trim="message" :placeholder="LangString('APP_TWITTER_PLACEHOLDER_MESSAGE')"></textarea>
-        <i class="fa fa-pencil-square-o" aria-hidden="true"></i>
+        <i class="fa fa-pencil-alt" aria-hidden="true"></i>
 
         <div class="buttons">
           <span class='tweet_send'>{{ LangString('APP_TWITTER_BUTTON_ACTION_TWEETER') }}</span> 

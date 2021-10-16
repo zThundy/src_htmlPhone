@@ -29,7 +29,6 @@
 <script>
 import PhoneTitle from './../PhoneTitle'
 import { mapGetters } from 'vuex'
-import emoji from './../../emoji.json'
 
 const columns = 7
 
@@ -47,6 +46,7 @@ export default {
     ...mapGetters(['LangString']),
     emojis () {
       let c = 0
+      const emoji = this.$phoneAPI.getEmojis()
       Object.entries(emoji).forEach(([key, value]) => {
         this.computedEmojis[c] = { name: key, emoji: value }
         c += 1

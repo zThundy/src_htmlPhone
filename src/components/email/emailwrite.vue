@@ -118,7 +118,7 @@ export default {
       this.ignoreControls = true
       var info = [
         { id: 1, title: this.LangString('APP_EMAIL_SENDING_TITLE_CHOICE_ONE'), icons: 'fa-user' },
-        { id: 2, title: this.LangString('APP_EMAIL_SENDING_TITLE_CHOICE_TWO'), icons: 'fa-pencil-square-o' }
+        { id: 2, title: this.LangString('APP_EMAIL_SENDING_TITLE_CHOICE_TWO'), icons: 'fa-pencil-alt' }
       ]
       Modal.CreateModal({ scelte: info }).then(resp => {
         switch (resp.id) {

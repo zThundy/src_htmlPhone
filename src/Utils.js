@@ -1,5 +1,4 @@
 import store from '@/store'
-import emoji from '@/emoji'
 
 function getRGB (colorStr) {
   let match = colorStr.match(/rgba?\((\d{1,3}), ?(\d{1,3}), ?(\d{1,3})\)?(?:, ?(\d(?:\.\d?))\))?/)
@@ -19,16 +18,6 @@ function getRGB (colorStr) {
     }
   }
   return undefined
-}
-
-export function replaceEmoji (message) {
-  const emojiRegex = /:(.*?):/gm
-  if (emojiRegex.exec(message)) {
-    for (var match of message.matchAll(emojiRegex)) {
-      message = message.replaceAll(match[0], emoji[match[1]])
-    }
-  }
-  return message
 }
 
 export function groupBy (xs, key) {

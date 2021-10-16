@@ -116,7 +116,7 @@ export default {
       if (this.ignoreControls) return
       this.ignoreControls = true
       let scelte = [
-        {id: 1, title: this.LangString('APP_INSTAGRAM_WRITE_CAPTION'), icons: 'fa-pencil-square-o'},
+        {id: 1, title: this.LangString('APP_INSTAGRAM_WRITE_CAPTION'), icons: 'fa-pencil-alt'},
         {id: 2, title: this.LangString('APP_INSTAGRAM_POST_IMAGE'), icons: 'fa-camera'}
       ]
       const resp = await Modal.CreateModal({ scelte: scelte })

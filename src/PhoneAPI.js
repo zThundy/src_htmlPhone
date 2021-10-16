@@ -1,14 +1,10 @@
 import store from '@/store'
 import Vue from 'vue'
 
-// import of random jsons
-import emoji from './emoji.json'
-
 // import of custom classes
 import VoiceRTC from './VoiceRTC'
 import PictureRequest from './PictureRequest'
 
-const keyEmoji = Object.keys(emoji)
 const BASE_URL = 'http://zth_gcphone/'
 
 /* eslint-disable camelcase */
@@ -40,6 +36,10 @@ class PhoneAPI {
       this.post('notififyUseRTC', this.voiceRTC)
       store.dispatch('loadConfig', this.config)
     })
+
+    fetch('/html/static/config/emoji.json', { method: 'GET', mode: 'cors' })
+    .then(response => response.text())
+    .then(emoji => { this.emoji = JSON.parse(emoji) })
   }
 
   // attenzione: per evitare l'Uncaught (in promise) error sulla console, è
@@ -67,8 +67,13 @@ class PhoneAPI {
     store.commit('SET_LOADED_VALUE', data)
   }
 
+  getEmojis () {
+    return this.emoji
+  }
+
   convertEmoji (text) {
-    if (text) for (const e of keyEmoji) text = text.replace(new RegExp(`:${e}:`, 'g'), emoji[e])
+    if (!this.emoji) return text
+    if (text) for (const e of Object.keys(this.emoji)) text = text.replace(new RegExp(`:${e}:`, 'g'), this.emoji[e])
     return text
   }
 
