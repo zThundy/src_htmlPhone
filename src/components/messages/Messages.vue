@@ -108,7 +108,7 @@ export default {
     }
   },
   methods: {
-    ...mapActions(['setMessageRead', 'sendMessage', 'deleteMessage']),
+    ...mapActions(['setMessageRead', 'deleteMessage']),
     ...mapMutations(['CHANGE_BRIGHTNESS_STATE']),
     formatEmoji (message) {
       return this.$phoneAPI.convertEmoji(message)
@@ -161,9 +161,7 @@ export default {
       } else {
         this.$phoneAPI.getReponseText({ title: 'Digita il messaggio' }).then(data => {
           let message = data.text.trim()
-          if (message !== '') {
-            this.sendMessage({ phoneNumber: this.phoneNumber, message })
-          }
+          if (message && message !== '') this.$phoneAPI.post('sendMessage', { phoneNumber: this.phoneNumber, message: message })
         })
       }
     },
@@ -171,7 +169,7 @@ export default {
       const message = this.message.trim()
       if (message === '') return
       this.message = ''
-      this.sendMessage({ phoneNumber: this.phoneNumber, message })
+      this.$phoneAPI.post('sendMessage', { phoneNumber: this.phoneNumber, message: message })
     },
     isSMSImage (mess) {
       return this.$phoneAPI.isLink(mess)
@@ -338,12 +336,10 @@ export default {
         ]
         if (this.config.picturesConfig.enabled) scelte = [{ id: 2, title: this.LangString('APP_MESSAGE_SEND_PHOTO'), icons: 'fa-picture-o' }, ...scelte]
         const data = await Modal.CreateModal({ scelte })
-        if (data.id === 1) this.sendMessage({ phoneNumber: this.phoneNumber, message: '%pos%' })
+        if (data.id === 1) this.$phoneAPI.post('sendMessage', { phoneNumber: this.phoneNumber, message: '%pos%' })
         if (data.id === 2) {
           const pic = await this.$phoneAPI.takePhoto()
-          if (pic && pic !== '') {
-            this.sendMessage({ phoneNumber: this.phoneNumber, message: pic })
-          }
+          if (pic && pic !== '') this.$phoneAPI.post('sendMessage', { phoneNumber: this.phoneNumber, message: pic })
         }
         this.ignoreControls = false
       } catch (e) {}

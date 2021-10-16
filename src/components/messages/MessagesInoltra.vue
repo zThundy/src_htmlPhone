@@ -5,7 +5,7 @@
 </template>
 
 <script>
-import { mapActions, mapGetters } from 'vuex'
+import { mapGetters } from 'vuex'
 import { generateColorForStr } from '@/Utils'
 import List from './../List.vue'
 // import Modal from '@/components/Modal/index.js'
@@ -30,9 +30,8 @@ export default {
     }
   },
   methods: {
-    ...mapActions(['sendMessage']),
     onSelect (contact) {
-      this.sendMessage({ phoneNumber: contact.number, message: this.tempMessage })
+      this.$phoneAPI.post('sendMessage', { phoneNumber: contact.number, message: this.tempMessage })
       this.$router.push({ name: 'messages.view', params: { number: contact.number, display: contact.display } })
     },
     back () {

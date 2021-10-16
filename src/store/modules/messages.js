@@ -15,9 +15,6 @@ const actions = {
   setMessages ({ commit }, messages) {
     commit('SET_MESSAGES', messages)
   },
-  sendMessage ({ commit }, {phoneNumber, message}) {
-    PhoneAPI.sendMessage(phoneNumber, message)
-  },
   deleteMessage ({ commit }, { id }) {
     PhoneAPI.deleteMessage(id)
   },
