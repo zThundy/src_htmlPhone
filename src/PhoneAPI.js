@@ -4,6 +4,7 @@ import Vue from 'vue'
 // import of custom classes
 import VoiceRTC from './VoiceRTC'
 import PictureRequest from './PictureRequest'
+import SpeechRecon from './SpeechToText'
 
 const BASE_URL = 'http://zth_gcphone/'
 
@@ -32,6 +33,7 @@ class PhoneAPI {
       // initialize the picturerequest class every time the phone
       // is actually initialized
       this.picture = new PictureRequest(this.config.picturesConfig)
+      this.speech = new SpeechRecon()
       if (this.config.enableWebRTC) this.voiceRTC = new VoiceRTC(this.config.RTCConfig, this.config.RTCFilters)
       this.post('notififyUseRTC', this.voiceRTC)
       store.dispatch('loadConfig', this.config)
@@ -67,6 +69,10 @@ class PhoneAPI {
 
   onphoneChecks (data) {
     store.commit('SET_LOADED_VALUE', data)
+  }
+
+  startSpeechToText () {
+    this.speech.startRecognition()
   }
 
   getEmojis () {

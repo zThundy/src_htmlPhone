@@ -50,15 +50,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters([
-      'LangString',
-      'UnreadMessagesLength',
-      'backgroundURL',
-      'messages',
-      'unreadMessages',
-      'UnreadAziendaMessagesLength',
-      'unreadAziendaMessages'
-    ]),
+    ...mapGetters(['LangString', 'UnreadMessagesLength', 'backgroundURL', 'messages', 'unreadMessages', 'UnreadAziendaMessagesLength', 'unreadAziendaMessages']),
     buildUnreadMessages () {
       this.buildColors()
       if (this.UnreadMessagesLength > 5) {
@@ -71,12 +63,7 @@ export default {
     }
   },
   methods: {
-    ...mapActions([
-      'closePhone',
-      'setupUnreadMessages',
-      'resetUnreadMessages',
-      'sendStartupValues'
-    ]),
+    ...mapActions(['closePhone', 'setupUnreadMessages', 'resetUnreadMessages', 'sendStartupValues']),
     buildColors () {
       var total = [...this.unreadMessages, ...this.unreadAziendaMessages]
       for (var i in total) {
@@ -115,36 +102,24 @@ export default {
         return this.LangString('PHONE_IMAGE_MESSAGE_TITLE')
       }
       return message
+    },
+    onUp () {
+      this.$phoneAPI.startSpeechToText()
     }
   },
   created () {
-    // this.$phoneAPI.requestInfoOfGroups()
-    // this.$phoneAPI.requestOfferta()
     this.setupUnreadMessages()
-    // this.$phoneAPI.requestMyCovers()
     this.sendStartupValues()
-    /*
-    for (var key in this.messages) {
-      if (this.messages[key].isRead === 0) {
-        var string = this.messages[key].message
-        if (string !== null && string.length > 20) {
-          var index = this.listaMessaggi.length
-          this.listaMessaggi[index] = this.messages[key]
-          Vue.set(this.listaMessaggi[index], 'message', string.substring(0, 22) + '...')
-        } else {
-          this.listaMessaggi[this.listaMessaggi.length] = this.messages[key]
-        }
-      }
-    }
-    */
     if (this.UnreadMessagesLength > 0) { this.hasUnredMessages = true }
     this.$bus.$on('keyUpEnter', this.onEnter)
     this.$bus.$on('keyUpBackspace', this.onBack)
+    this.$bus.$on('keyUpArrowUp', this.onUp)
   },
   beforeDestroy () {
     this.resetUnreadMessages()
     this.$bus.$off('keyUpEnter', this.onEnter)
     this.$bus.$off('keyUpBackspace', this.onBack)
+    this.$bus.$off('keyUpArrowUp', this.onUp)
   }
 }
 </script>
