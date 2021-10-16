@@ -281,7 +281,7 @@
       "en_EN__name": "Video calls",
       "icons": "/html/static/img/icons_app/videocalls.png",
       "routeName": "videocalls.splash",
-      "enabled": true
+      "enabled": false
     }
   ],
   "defaultLanguage": "it_IT",
