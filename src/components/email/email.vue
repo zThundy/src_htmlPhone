@@ -168,7 +168,7 @@ export default {
     openModal () {
       this.ignoreControl = true
       var info = [
-        { id: 1, title: this.LangString('APP_EMAIL_WRITE_EMAIL'), icons: 'fa-pencil-square-o' }
+        { id: 1, title: this.LangString('APP_EMAIL_WRITE_EMAIL'), icons: 'fa-pencil-alt' }
       ]
       if (this.currentSelect !== -1) {
         info = [

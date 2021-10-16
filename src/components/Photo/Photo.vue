@@ -107,7 +107,7 @@ export default {
       this.ignoreControls = true
       var options = [
         { id: 1, title: this.LangString('APP_PHOTO_TAKE_PICTURE'), icons: 'fa-camera' },
-        { id: 2, title: this.LangString('APP_PHOTO_RECORD_VIDEO'), icons: 'fa-video-camera' },
+        { id: 2, title: this.LangString('APP_PHOTO_RECORD_VIDEO'), icons: 'fa-video' },
         { id: -1, title: this.LangString('CANCEL'), icons: 'fa-undo', color: 'red' }
       ]
       Modal.CreateModal({ scelte: options }).then(async resp => {

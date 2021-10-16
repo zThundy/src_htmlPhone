@@ -101,7 +101,7 @@ export default {
       this.ignoreControls = true
       try {
         var scelte = []
-        for (var key in this.fatture) { scelte.push({ id: this.fatture[key].id, title: this.fatture[key].label + ' - ' + this.fatture[key].amount, icons: 'fa-money', fattura: this.fatture[key] }) }
+        for (var key in this.fatture) { scelte.push({ id: this.fatture[key].id, title: this.fatture[key].label + ' - ' + this.fatture[key].amount, icons: 'fa-dollar-sign', fattura: this.fatture[key] }) }
         scelte.push({ id: -1, title: this.LangString('CANCEL'), icons: 'fa-undo', color: 'red' })
         // dopo essermi creato la lista delle fatture, mi buildo il menù
         Modal.CreateModal({ scelte }).then(resp => {

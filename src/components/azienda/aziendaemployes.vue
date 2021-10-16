@@ -5,7 +5,7 @@
       <div class="employe-container" v-for="(elem, key) in myAziendaInfo.employes" :key="key" :class="{ selected: key === currentSelected }">
         <div class="employe-header">
           <div class="employe-status" :class="[ elem.isOnline ? 'online' : 'offline']">
-            <div class="fa fa-user-o" aria-hidden="true"></div>
+            <div class="employe-icon fa fa-user-o" aria-hidden="true"></div>
           </div>
           
           <div class="employe-title">
@@ -174,6 +174,12 @@ export default {
 
 .employe-status.offline {
   background-color: rgb(255, 50, 50);
+}
+
+.employe-status .employe-icon {
+  font-size: 13px;
+  padding-left: 1px;
+  padding-top: 1px;
 }
 
 /* NAME AND NUMBER TITLE */

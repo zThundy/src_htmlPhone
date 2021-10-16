@@ -100,9 +100,7 @@ export default {
           {id: 1, title: this.LangString('APP_WHATSAPP_QUIT_GROUP'), icons: 'fa-trash', color: 'firebrick', gruppo: gruppo}
         ]
         if (!gruppo.partecipanti) gruppo.partecipanti = {}
-        if (gruppo.partecipanti.creator.number === this.myPhoneNumber) {
-          scelte = [{id: 4, title: this.LangString('APP_WHATSAPP_DELETE_GROUP'), icons: 'fa-trash', color: 'red', gruppo: gruppo}, ...scelte]
-        }
+        if (gruppo.partecipanti && gruppo.partecipanti.creator && gruppo.partecipanti.creator.number === this.myPhoneNumber) scelte = [{id: 4, title: this.LangString('APP_WHATSAPP_DELETE_GROUP'), icons: 'fa-trash', color: 'red', gruppo: gruppo}, ...scelte]
       } else {
         scelte = [{id: 2, title: this.LangString('APP_WHATSAPP_NEW_GROUP'), icons: 'fa-plus', color: 'green'}]
       }

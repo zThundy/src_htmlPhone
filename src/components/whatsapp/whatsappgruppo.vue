@@ -163,7 +163,7 @@ export default {
             scelte = [
               {id: 'audio-record', title: this.LangString('APP_WHATSAPP_RECORD_AUDIO'), icons: 'fa-microphone'},
               {id: 1, title: this.LangString('APP_WHATSAPP_SEND_GPS'), icons: 'fa-location-arrow'},
-              {id: 2, title: this.LangString('APP_WHATSAPP_SEND_PHOTO'), icons: 'fa-picture-o'},
+              {id: 2, title: this.LangString('APP_WHATSAPP_SEND_PHOTO'), icons: 'fa-image'},
               {id: -1, title: this.LangString('CANCEL'), icons: 'fa-undo', color: 'red'}
             ]
           }
@@ -344,7 +344,7 @@ export default {
         let scelte = [
           { id: 'audio-record', title: this.LangString('APP_WHATSAPP_RECORD_AUDIO'), icons: 'fa-microphone' },
           { id: 1, title: this.LangString('APP_WHATSAPP_SEND_GPS'), icons: 'fa-location-arrow' },
-          { id: 2, title: this.LangString('APP_WHATSAPP_SEND_PHOTO'), icons: 'fa-picture-o' },
+          { id: 2, title: this.LangString('APP_WHATSAPP_SEND_PHOTO'), icons: 'fa-image' },
           { id: -1, title: this.LangString('CANCEL'), icons: 'fa-undo', color: 'red' }
         ]
         if (isGPS === true) { scelte = [{ id: 'gps', title: this.LangString('APP_WHATSAPP_SET_GPS'), icons: 'fa-location-arrow' }, ...scelte] }

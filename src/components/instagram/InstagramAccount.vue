@@ -631,17 +631,6 @@ input:focus {
   animation-fill-mode: forwards;
 }
 
-.mytextwithicon {
-  position: relative;
-}    
-.mytextwithicon:before {
-  content: "\25AE";  /* this is your text. You can also use UTF-8 character codes as I do here */
-  font-family: FontAwesome;
-  left:-5px;
-  position:absolute;
-  top:0;
-}
-
 .checkbox input {
   width: 24px;
   height: 0px;
@@ -678,18 +667,11 @@ input:focus {
   left: 25px;
   margin-top: -10px;
 
-  font-family: FontAwesome;
-  content: "\f00d";
-
   animation: pallinoRotazioneOff 0.5s ease;
   animation-fill-mode: forwards;
 }
 
 .checkbox input:checked::after {
-  
-  font-family: FontAwesome;
-  content: "\f00c";
-
   animation: pallinoRotazione 0.5s ease;
   animation-fill-mode: forwards;
 }

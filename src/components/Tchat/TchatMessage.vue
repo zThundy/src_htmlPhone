@@ -155,6 +155,7 @@ export default {
 .write-input-container {
   width: 330px;
   height: 50px;
+  bottom: 3px;
   position: relative;
   background-color: rgb(26, 26, 26);
 }

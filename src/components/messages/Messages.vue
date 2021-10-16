@@ -48,15 +48,13 @@
       </div>
     </div>
 
-    <div style="width: 306px;" id='sms_write'>
-      <input type="text" v-model="message" :placeholder="LangString('APP_MESSAGE_PLACEHOLDER_ENTER_MESSAGE')">
-      <div class="sms_send">
-        <svg height="24" viewBox="0 0 24 24" width="24">
-          <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/>
-          <path d="M0 0h24v24H0z" fill="none"/>
-        </svg>
+    <div class="write-input-container">
+      <div class='write-input'>
+        <input type="text" :placeholder="LangString('APP_DARKTCHAT_PLACEHOLDER_ENTER_MESSAGE')">
+        <i class="fas fa-paper-plane"></i>
       </div>
     </div>
+
   </div>
 </template>
 
@@ -334,7 +332,7 @@ export default {
           { id: 1, title: this.LangString('APP_MESSAGE_SEND_GPS'), icons: 'fa-location-arrow' },
           { id: -1, title: this.LangString('CANCEL'), icons: 'fa-undo', color: 'red' }
         ]
-        if (this.config.picturesConfig.enabled) scelte = [{ id: 2, title: this.LangString('APP_MESSAGE_SEND_PHOTO'), icons: 'fa-picture-o' }, ...scelte]
+        if (this.config.picturesConfig.enabled) scelte = [{ id: 2, title: this.LangString('APP_MESSAGE_SEND_PHOTO'), icons: 'fa-image' }, ...scelte]
         const data = await Modal.CreateModal({ scelte })
         if (data.id === 1) this.$phoneAPI.post('sendMessage', { phoneNumber: this.phoneNumber, message: '%pos%' })
         if (data.id === 2) {
@@ -513,19 +511,6 @@ export default {
   background-color: rgba(236, 236, 241, 0)
 }
 
-.sms_send {
-  float: right;
-  margin-right: 10px;
-  font-size: 10px;
-}
-
-.sms_send svg {
-  margin: 8px; 
-  width: 36px;
-  height: 36px;
-  fill: #C0C0C0;
-}
-
 .copyTextarea {
   height: 0;
   border: 0;
@@ -652,5 +637,50 @@ export default {
   color: white;
   font-size: 20px;
   margin-top: 20%;
+}
+
+.write-input-container {
+  width: 330px;
+  height: 55px;
+  bottom: 5px;
+  position: relative;
+  background-color: white;
+}
+
+.write-input {
+  position: relative;
+  height: 40px;
+  width: 90%;
+  background-color: #e9e9eb;
+  border-radius: 56px;
+  margin-left: auto;
+  margin-right: auto;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.6);
+}
+
+.write-input input {
+  height: 100%;
+  border: none;
+  outline: none;
+  font-size: 15px;
+  margin-left: 14px;
+  padding: 12px 5px;
+  background-color: rgba(236, 236, 241, 0)
+}
+
+.write-input i {
+  height: 50px;
+  width: 50px;
+  font-size: 15px;
+  bottom: 5px;
+  color: #e2e2e2;
+  float: right;
+  position: relative;
+  padding-top: 16px;
+  border-radius: 50px;
+  text-align-last: center;
+  background-color: rgb(194, 108, 7);
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.6);
+  transition: all .5s ease;
 }
 </style>

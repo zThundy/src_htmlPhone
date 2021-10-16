@@ -12,7 +12,7 @@
       </div>
     </div>
 
-    <div class='phone_content elements'>
+    <div class='phone_content' style="overflow: hidden;">
       <div class='element' v-for='(elem, key) in paramList' v-bind:class="{ select: key === currentSelect }" v-bind:key="key">
         <i class="fa" v-bind:class="elem.icons" v-bind:style="{ color: elem.color }"></i>
 
@@ -28,13 +28,6 @@
 
       </div>
     </div>
-
-    <!-- 
-    <div class="switch md-example-child md-example-child-switch md-example-child-switch-0">
-      <md-switch v-model="isActive" @change="handler('switch0', isActive, $event)"></md-switch>
-      <md-switch v-model="isActive"></md-switch>
-    </div>
-     -->
     
   </div>
 </template>
@@ -46,7 +39,6 @@ import Modal from '@/components/Modal/index.js'
 
 import CustomSwitch from '@/components/CustomSwitch'
 
-// import { Icon, Switch } from 'mand-mobile'
 import { Icon } from 'mand-mobile'
 import 'mand-mobile/lib/mand-mobile.css'
 
@@ -55,7 +47,6 @@ export default {
     PhoneTitle,
     CustomSwitch,
     [Icon.name]: Icon
-    // [Switch.name]: Switch
   },
   data () {
     return {
@@ -67,26 +58,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters([
-      'LangString',
-      'myPhoneNumber',
-      'backgroundLabel',
-      'suoneriaLabel',
-      'zoom',
-      'config',
-      'volume',
-      'availableLanguages',
-      'wifiString',
-      'retiWifi',
-      'notification',
-      'airplane',
-      'bluetooth',
-      'currentCover',
-      'myCovers',
-      'myImage',
-      'myData',
-      'isWifiOn'
-    ]),
+    ...mapGetters(['LangString', 'myPhoneNumber', 'backgroundLabel', 'suoneriaLabel', 'zoom', 'config', 'volume', 'availableLanguages', 'wifiString', 'retiWifi', 'notification', 'airplane', 'bluetooth', 'currentCover', 'myCovers', 'myImage', 'myData', 'isWifiOn']),
     paramList () {
       // stringa di conferma reset
       const confirmResetStr = this.LangString('APP_CONFIG_RESET_CONFIRM')
@@ -139,7 +111,7 @@ export default {
         },
         {
           meta: 'background',
-          icons: 'fa-picture-o',
+          icons: 'fa-image',
           title: this.LangString('APP_CONFIG_WALLPAPER'),
           value: this.backgroundLabel,
           onValid: 'onChangeBackground',
@@ -310,7 +282,7 @@ export default {
               }
             }
             if (param.meta === 'background') {
-              return {title: key, value: param.values[key], picto: param.values[key], icons: 'fa-picture-o'}
+              return {title: key, value: param.values[key], picto: param.values[key], icons: 'fa-image'}
             }
             if (param.meta === 'suoneria') {
               return {title: key, value: param.values[key], picto: param.values[key], icons: 'fa-bell'}

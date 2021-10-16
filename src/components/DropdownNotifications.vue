@@ -6,7 +6,7 @@
       <i v-else style="margin-top: 2px;" class="timeDivElements right fa fa-bell-slash" />
       <i v-if="isWifiOn" style="margin-top: 2px;" class="timeDivElements right fa fa-wifi" />
       <i v-if="airplane" style="margin-top: 2px;" class="timeDivElements right fa fa-plane" />
-      <i v-if="bluetooth" style="margin-top: 2px;" class="timeDivElements right fa fa-bluetooth" />
+      <i v-if="bluetooth" style="margin-top: 2px;" class="timeDivElements right fa fa-bluetooth-b" />
     </div>
 
     <div class="line"></div>
@@ -40,10 +40,7 @@ import { mapGetters, mapActions } from 'vuex'
 
 export default {
   name: 'dropdown-notifications',
-  components: {
-    CurrentTime,
-    CustomSlider
-  },
+  components: { CurrentTime, CustomSlider },
   props: {
     show: {
       type: Boolean,
@@ -61,16 +58,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters([
-      'notification',
-      'airplane',
-      'isWifiOn',
-      'bluetooth',
-      'brightness',
-      'unreadMessages',
-      'UnreadMessagesLength',
-      'LangString'
-    ]),
+    ...mapGetters(['notification', 'airplane', 'isWifiOn', 'bluetooth', 'brightness', 'unreadMessages', 'UnreadMessagesLength', 'LangString']),
     checkState () {
       if (this.show) {
         this.changingRouter = false
@@ -80,15 +68,7 @@ export default {
     }
   },
   methods: {
-    ...mapActions([
-      'toggleNotifications',
-      'toggleAirplane',
-      'toggleWifi',
-      'toggleBluetooth',
-      'changeBrightness',
-      'setupUnreadMessages',
-      'resetUnreadMessages'
-    ]),
+    ...mapActions(['toggleNotifications', 'toggleAirplane', 'toggleWifi', 'toggleBluetooth', 'changeBrightness', 'setupUnreadMessages', 'resetUnreadMessages']),
     onLeftNotif () {
       if (this.show) {
         if (this.currentSelectY === 0) {
@@ -177,7 +157,7 @@ export default {
     this.changingRouter = true
     this.quickPics = [
       {meta: 'wifi', img: 'fa-wifi', state: this.isWifiOn},
-      {meta: 'bluetooth', img: 'fa-bluetooth-b', state: this.bluetooth},
+      {meta: 'bluetooth', img: 'fa-bluetooth', state: this.bluetooth},
       {meta: 'notifications', img: 'fa-bell', state: this.notification},
       {meta: 'airplane', img: 'fa-plane', state: this.airplane},
       {meta: 'refresh', img: 'fa-refresh', state: false}
