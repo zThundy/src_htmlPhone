@@ -106,32 +106,28 @@ gcPhoneT.daiSim = function(number, c_id)
     local player = source
     local xPlayer = ESX.GetPlayerFromId(player)
     local c_xPlayer = ESX.GetPlayerFromId(c_id)
-    local identifier = tostring(xPlayer.identifier)
-    local c_identifier = tostring(c_xPlayer.identifier)
             
     if number ~= nil then
         showXNotification(xPlayer, Config.Language["SIM_GIVEN_MESSAGE_1"]:format(number))
         showXNotification(c_xPlayer, Config.Language["SIM_GIVEN_MESSAGE_2"]:format(number))
-        gcPhoneT.updateCachedNumber(number, c_identifier, false)
-        MySQL.Async.fetchAll("SELECT phone_number FROM users WHERE identifier = @identifier AND phone_number = @number", {
-            ['@identifier'] = identifier,
-            ['@number'] = number
-        }, function(result)
+        if CACHED_NUMBERS[number] and CACHED_NUMBERS[number].identifier == xPlayer.identifier then
+            gcPhoneT.updateCachedNumber(number, false, false)
+            gcPhoneT.updateCachedNumber(number, c_xPlayer.identifier, false)
+            MySQL.Async.execute('UPDATE phone_sim SET identifier = @identifier WHERE phone_number = @phone_number', {
+                ['@identifier'] = c_xPlayer.identifier,
+                ['@phone_number'] = number
+            })
+
             if result and result[1] then
-                MySQL.Async.execute('UPDATE `users` SET phone_number = @phone_number WHERE `identifier` = @identifier', {
-                    ['@identifier'] = identifier,
+                MySQL.Async.execute('UPDATE users SET phone_number = @phone_number WHERE identifier = @identifier', {
+                    ['@identifier'] = xPlayer.identifier,
                     ['@phone_number'] = 0
                 })
-
-                CACHED_TARIFFS[number].phone_number = number
-                CACHED_TARIFFS[number].identifier = identifier
             end
-        end)
 
-        MySQL.Async.execute('UPDATE phone_sim SET identifier = @identifier WHERE phone_number = @phone_number', {
-            ['@identifier'] = c_identifier,
-            ['@phone_number'] = number
-        })
+            CACHED_TARIFFS[number].phone_number = number
+            CACHED_TARIFFS[number].identifier = c_xPlayer.identifier
+        end
     end
 end
 
