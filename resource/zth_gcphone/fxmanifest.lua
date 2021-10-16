@@ -7,10 +7,10 @@ ui_page 'html/index.html'
 
 files {
     'html/index.html',
-    'html/static/css/app.css',
+    'html/static/css/*.css',
     'html/static/js/*.js',
 
-    'html/static/config/config.json',
+    'html/static/config/*.json',
     'html/static/img/**/*',
     'html/static/img/*.png',
     'html/static/fonts/*',

@@ -23,8 +23,8 @@ class PhoneAPI {
 
     fetch('/html/static/config/config.json', { method: 'GET', mode: 'cors' })
     .then(response => response.text())
-    .then(config => {
-      this.config = JSON.parse(config)
+    .then(rawConfig => {
+      this.config = JSON.parse(rawConfig)
       this.voiceRTC = null
       this.soundList = []
       this.audioElement = new Audio()
@@ -39,7 +39,9 @@ class PhoneAPI {
 
     fetch('/html/static/config/emoji.json', { method: 'GET', mode: 'cors' })
     .then(response => response.text())
-    .then(emoji => { this.emoji = JSON.parse(emoji) })
+    .then(rawEmoji => {
+      this.emoji = JSON.parse(rawEmoji)
+    })
   }
 
   // attenzione: per evitare l'Uncaught (in promise) error sulla console, è
@@ -72,8 +74,8 @@ class PhoneAPI {
   }
 
   convertEmoji (text) {
-    if (!this.emoji) return text
-    if (text) for (const e of Object.keys(this.emoji)) text = text.replace(new RegExp(`:${e}:`, 'g'), this.emoji[e])
+    for (const e in this.emoji) console.log(e, this.emoji[e])
+    // if (text) for (const e in this.emoji) text = text.replace(new RegExp(`:${e}:`, 'g'), this.emoji[e])
     return text
   }
 

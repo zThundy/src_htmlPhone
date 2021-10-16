@@ -286,7 +286,7 @@
   ],
   "defaultLanguage": "it_IT",
   "language": {
-     "it_IT": {
+    "it_IT": {
       "icons": "fa-flag",
       "NAME": "Italiano",
       "PHONE_RTC_NOT_ENABLED": "Chiamate RTC non abilitate",
