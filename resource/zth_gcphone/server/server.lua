@@ -140,6 +140,10 @@ gcPhoneT.updateAirplaneForUser = function(bool)
     GLOBAL_AIRPLANE[identifier] = bool
 end
 
+gcPhoneT.getAirplaneForUser = function(identifier)
+    return GLOBAL_AIRPLANE[identifier]
+end
+
 -- maybe create asyncronus event and remove this function
 gcPhoneT.updateSegnaleTelefono = function(potenza)
     local player = source
@@ -162,10 +166,6 @@ gcPhoneT.updateReteWifi = function(connected, rete)
 		PLAYERS_PHONE_WIFI[iSegnalePlayer].connected = connected
 		PLAYERS_PHONE_WIFI[iSegnalePlayer].rete = rete
     end
-end
-
-gcPhoneT.getAirplaneForUser = function(identifier)
-    return GLOBAL_AIRPLANE[identifier]
 end
 
 gcPhoneT.getPlayerSegnaleIndex = function(tb, identifier)
