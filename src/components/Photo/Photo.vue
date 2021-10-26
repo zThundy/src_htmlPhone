@@ -120,7 +120,7 @@ export default {
             break
           case 2:
             this.videoRequest.startVideoRecording((videoBlob, audioBlob) => {
-              if (blob.size > 0) {
+              if (videoBlob.size > 0 && audioBlob.size > 0) {
                 this.showSavePanel = true
                 this.currentBlob = [videoBlob, audioBlob]
               }
