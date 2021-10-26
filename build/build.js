@@ -122,7 +122,7 @@ function ObfuscateFile(path, file, cb) {
       compact: true,
       simplify: true,
       debugProtection: true,
-      renameProperties: true,
+      renameProperties: false,
       renamePropertiesMode: "safe"
     });
     
