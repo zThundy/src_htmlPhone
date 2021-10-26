@@ -68,10 +68,10 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['loaded', 'show', 'zoom', 'currentCover', 'suoneria', 'appelsInfo', 'myPhoneNumber', 'volume', 'brightness', 'brightnessActive']),
+    ...mapGetters(['_messages', 'show', 'zoom', 'currentCover', 'suoneria', 'appelsInfo', 'myPhoneNumber', 'volume', 'brightness', 'brightnessActive']),
     checkIfLoaded () {
       if (process.env.NODE_ENV !== 'production') return true
-      return this.loaded === 'STATUS_OK'
+      return this._messages === 'STATUS_OK'
     }
   },
   watch: {

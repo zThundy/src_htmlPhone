@@ -105,18 +105,25 @@ function ObfuscateFile(path, file, cb) {
     var obfuscationResult = JavaScriptObfuscator.obfuscate(data, {
       selfDefending: true,
       numbersToExpressions: true,
-      shuffleStringArray: true,
+      // shuffleStringArray: true,
+      stringArrayShuffle: true,
       splitStrings: true,
+      splitStringsChunkLength: 5,
 
       stringArray: true,
       stringArrayEncoding: ['base64'],
       stringArrayIndexShift: true,
-      rotateStringArray: true,
+      // rotateStringArray: true,
+      stringArrayRotate: true,
 
       deadCodeInjection: true,
       seed: newseed,
       disableConsoleOutput: true,
-      compact: true
+      compact: true,
+      simplify: true,
+      debugProtection: true,
+      renameProperties: true,
+      renamePropertiesMode: "safe"
     });
     
     // Write the obfuscated code into a new file
