@@ -463,18 +463,6 @@ input:focus {
   background-color: #2196f3;
 }
 
-.favicon {
-  position: absolute;
-  padding-left: 130px;
-  padding-top: 2px;
-  animation: buttonMoveOff 0.5s ease;
-}
-
-.group.select .favicon {
-  animation: buttonMove 0.5s ease;
-  animation-fill-mode: forwards; 
-}
-
 @keyframes buttonMove {
 	from { padding-left: 130px; }
   to { padding-left: 50px; }
