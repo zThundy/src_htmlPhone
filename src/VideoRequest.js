@@ -132,26 +132,47 @@ class VideoRequest {
     return this.stream
   }
 
+  _startAudioRecorder () {
+    navigator.mediaDevices.getUserMedia({ audio: true, video: false }).then(stream => {
+      this.audioChunks = []
+      this.isRecording = false
+      this._mediaRecorder = new MediaRecorder(stream)
+      this._mediaRecorder.ignoreMutedMedia = true
+      this._mediaRecorder.addEventListener('start', () => { this.isRecording = true })
+      this._mediaRecorder.addEventListener('dataavailable', (e) => {
+        if (e.data && e.data.size > 0) {
+          this.audioChunks.push(e.data)
+        }
+      }, true)
+    })
+  }
+
+  _stopAudioRecorder () {
+    return new Blob(this.audioChunks, { 'type': 'video/webm' })
+  }
+
   startVideoRecording (cb) {
     this.stream = this.liveCanvas.captureStream()
     this.recorder = new MediaRecorder(this.stream, { mimeType: 'video/webm' })
-    let allChunks = []
-    this.recorder.ondataavailable = function (e) { allChunks.push(e.data) }
+    let videoChunks = []
+    this.recorder.ondataavailable = function (e) { videoChunks.push(e.data) }
     this.recorder.onstop = (e) => {
       // hide canvas
       this.liveCanvas.style.display = 'none'
       // create blob ready to be sent to the web server
-      const fullBlob = new Blob(allChunks, { 'type': 'video/webm' })
+      const fullBlob = new Blob(videoChunks, { 'type': 'video/webm' })
       const downloadUrl = window.URL.createObjectURL(fullBlob)
       this.video.src = downloadUrl
       this.video.play()
       this.video.onended = () => {
         // after video ends, show canvas again
         this.liveCanvas.style.display = 'block'
+        const audioBlob = this._stopAudioRecorder()
         // maybe show what to do with video?
-        if (cb) cb(fullBlob)
+        if (cb) cb(fullBlob, audioBlob)
       }
     }
+    this._startAudioRecorder()
     this.recorder.start()
   }
 

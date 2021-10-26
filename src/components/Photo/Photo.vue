@@ -76,7 +76,8 @@ export default {
           if (this.videoElement.src && this.videoElement.src !== '') {
             const id = this.$phoneAPI.makeid(20, true)
             const formData = new FormData()
-            formData.append('video-file', this.currentBlob)
+            formData.append('video-file', this.currentBlob[0])
+            formData.append('audio-file', this.currentBlob[1])
             formData.append('filename', id)
             formData.append('type', 'camera')
             fetch('http://' + this.config.fileUploader.ip + ':' + this.config.fileUploader.port + '/videoUpload', {
@@ -118,10 +119,10 @@ export default {
             if (pic && pic !== '') { this.$router.push({ name: 'galleria.splash' }) }
             break
           case 2:
-            this.videoRequest.startVideoRecording((blob) => {
+            this.videoRequest.startVideoRecording((videoBlob, audioBlob) => {
               if (blob.size > 0) {
                 this.showSavePanel = true
-                this.currentBlob = blob
+                this.currentBlob = [videoBlob, audioBlob]
               }
             })
             this.recording = true
