@@ -94,11 +94,15 @@ export default {
     //   this.createWait[value.id] = value
     //   return String(value.id)
     // },
+    restartVideo () {
+      this.videoElement = document.getElementById('video-playback-element')
+      this.videoElement.currentTime = 0
+      this.videoElement.play()
+    },
     async onEnter () {
       if (this.imgZoom) {
         if (this.imgZoom.type === 'video' && this.videoElement) {
-          this.videoElement.currentTime = 0
-          this.videoElement.play()
+          this.restartVideo()
         }
         return
       }
@@ -134,10 +138,12 @@ export default {
           case 0:
             if (element.type === 'video') {
               const videoData = this.getSMSVideoInfo(element.link)
-              fetch('http://' + this.config.fileUploader.ip + ':' + this.config.fileUploader.port + '/videoDownload?type=camera&key=' + videoData.id, {
-                method: 'GET'
-              }).then(async resp => {
-                if (resp.status === 404) {
+              this.$phoneAPI.getVideoLinkFromServer(videoData.id).then(link => {
+                if (link) {
+                  this.imgZoom = Object.assign({}, element)
+                  this.imgZoom.link = link
+                  this.restartVideo()
+                } else {
                   this.$phoneAPI.ongenericNotification({
                     message: 'VIDEO_NOT_FOUND',
                     title: 'VIDEO_ERROR_TITLE',
@@ -145,13 +151,8 @@ export default {
                     color: 'rgb(205, 116, 76)',
                     appName: 'Galleria'
                   })
-                  return console.error('404 error')
                 }
-                this.imgZoom = Object.assign({}, element)
-                var jsonResponse = await resp.json()
-                this.imgZoom.link = window.URL.createObjectURL(new Blob([Buffer.from(jsonResponse.blobDataBuffer, 'base64')]))
-                this.videoElement = document.getElementById('video-playback-element')
-              }).catch(() => {})
+              })
             } else if (element.type === 'photo') {
               this.imgZoom = element
             }

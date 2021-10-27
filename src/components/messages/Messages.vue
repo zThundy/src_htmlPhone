@@ -73,7 +73,8 @@ export default {
       selectMessage: -1,
       display: '',
       phoneNumber: '',
-      imgZoom: undefined,
+      imgZoom: null,
+      videoElement: null,
       message: '',
       letter: ''
     }
@@ -148,9 +149,7 @@ export default {
       if (this.ignoreControls === true) return
       if (this.imgZoom && this.imgZoom.type) {
         if (this.imgZoom.type === 'video') {
-          const videoElement = document.getElementById('video-playback-element')
-          videoElement.currentTime = 0
-          videoElement.play()
+          this.restartVideo()
           return
         }
       }
@@ -223,6 +222,11 @@ export default {
         }
       }
     },
+    restartVideo () {
+      this.videoElement = document.getElementById('video-playback-element')
+      this.videoElement.currentTime = 0
+      this.videoElement.play()
+    },
     async onActionMessage (elem) {
       try {
         let isGPS = /(-?\d+(\.\d+)?), (-?\d+(\.\d+)?)/.test(elem.message)
@@ -263,27 +267,24 @@ export default {
         } else if (data.id === 'video') {
           let id = elem.message.split('%')
           if (id[2]) {
-            fetch('http://' + this.config.fileUploader.ip + ':' + this.config.fileUploader.port + '/videoDownload?type=camera&key=' + id[2], { method: 'GET' }).then(async resp => {
-              if (resp.status === 404) {
+            this.$phoneAPI.getVideoLinkFromServer(id[2]).then(link => {
+              if (link) {
+                this.imgZoom = { type: 'video', link: link }
+                this.CHANGE_BRIGHTNESS_STATE(false)
+                this.restartVideo()
+              } else {
                 this.$phoneAPI.ongenericNotification({
                   message: 'VIDEO_NOT_FOUND',
                   title: 'VIDEO_ERROR_TITLE',
                   icon: 'camera',
                   color: 'rgb(205, 116, 76)',
-                  appName: 'Galleria'
+                  appName: 'Messaggi'
                 })
-                return console.error('404 error')
               }
-              var jsonResponse = await resp.json()
-              this.imgZoom = { type: 'video', link: window.URL.createObjectURL(new Blob([Buffer.from(jsonResponse.blobDataBuffer, 'base64')])) }
-              this.CHANGE_BRIGHTNESS_STATE(false)
-            }).catch((error) => { console.error(error) })
+            })
           }
         }
-      } catch (e) {
-      } finally {
-        this.ignoreControls = false
-      }
+      } catch (e) {}
     },
     async onSelectPhoneNumber (number) {
       try {

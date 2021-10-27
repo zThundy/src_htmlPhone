@@ -48,8 +48,6 @@ import { mapActions, mapGetters } from 'vuex'
 import InfoBare from '@/components/InfoBare'
 import Modal from '@/components/Modal/index'
 
-import VideoRequest from '@/VideoRequest'
-
 export default {
   name: 'photo',
   components: { InfoBare },
@@ -59,7 +57,6 @@ export default {
       recording: false,
       currentBlob: [],
       videoElement: null,
-      videoRequest: null,
       frontCamera: null,
       showSavePanel: false,
       currentSelect: 0
@@ -70,36 +67,41 @@ export default {
   },
   methods: {
     ...mapActions(['addPhoto']),
-    async onEnter () {
+    _checkVideoPresence () {
       if (this.showSavePanel) {
-        if (this.currentSelect === 1) {
-          if (this.videoElement.src && this.videoElement.src !== '') {
-            const id = this.$phoneAPI.makeid(20, true)
-            const formData = new FormData()
-            formData.append('video-file', this.currentBlob)
-            formData.append('filename', id)
-            formData.append('type', 'camera')
-            fetch('http://' + this.config.fileUploader.ip + ':' + this.config.fileUploader.port + '/videoUpload', {
-              method: 'POST',
-              body: formData
-            }).then(() => {
-              const videoFormat = '[VIDEO]%' + this.myPhoneNumber + '%' + id
-              this.addPhoto({ link: videoFormat, type: 'video' })
-              this.$phoneAPI.post('setEnabledFakeCamera', false)
-              this.$router.push({ name: 'galleria.splash' })
-            }).catch((error) => { console.error(error) })
+        switch (this.currentSelect) {
+          case 0:
+            if (this.videoElement.src && this.videoElement.src !== '') {
+              const id = this.$phoneAPI.makeid(20, true)
+              this.$phoneAPI.videoRequest.saveRecordedVideo({
+                blob: this.currentBlob,
+                id: id,
+                type: 'camera'
+              }).then(ok => {
+                if (ok) {
+                  const videoFormat = '[VIDEO]%' + this.myPhoneNumber + '%' + id
+                  this.addPhoto({ link: videoFormat, type: 'video' })
+                  this.$phoneAPI.post('setEnabledFakeCamera', false)
+                  this.$router.push({ name: 'galleria.splash' })
+                }
+              })
+              this.showSavePanel = false
+            }
+            break
+          case 1:
             this.showSavePanel = false
-          }
-        } else if (this.currentSelect === 0) {
-          this.showSavePanel = false
-          setTimeout(() => {
-            this.showSavePanel = true
-          }, 2000)
+            this.currentBlob = []
+            // setTimeout(() => {
+            //   this.showSavePanel = true
+            // }, 2000)
+            break
         }
-        return
       }
+    },
+    onEnter () {
+      this._checkVideoPresence()
       if (this.recording) {
-        this.videoRequest.stopRecording()
+        this.$phoneAPI.videoRequest.stopRecording()
         this.recording = false
         return
       }
@@ -118,12 +120,14 @@ export default {
             if (pic && pic !== '') { this.$router.push({ name: 'galleria.splash' }) }
             break
           case 2:
-            this.videoRequest.startVideoRecording(videoBlob => {
+            // create result listener
+            this.$phoneAPI.videoRequest.startVideoRecording(videoBlob => {
               if (videoBlob.size > 0) {
                 this.showSavePanel = true
                 this.currentBlob = videoBlob
               }
             })
+            // change calues to control video recording
             this.recording = true
             this.ignoreControls = false
             break
@@ -134,14 +138,12 @@ export default {
       })
     },
     onUp () {
-      if (this.videoRequest) {
-        if (this.frontCamera) {
-          this.videoRequest.setXModifier(this.frontCamera)
-          this.frontCamera = null
-        } else {
-          this.frontCamera = this.videoRequest.getXModifier()
-          this.videoRequest.setXModifier(this.frontCamera + 100)
-        }
+      if (this.frontCamera) {
+        this.$phoneAPI.videoRequest.setXModifier(this.frontCamera)
+        this.frontCamera = null
+      } else {
+        this.frontCamera = this.$phoneAPI.videoRequest.getXModifier()
+        this.$phoneAPI.videoRequest.setXModifier(this.frontCamera + 100)
       }
     },
     onLeft () {
@@ -149,16 +151,16 @@ export default {
         this.currentSelect = 0
         return
       }
-      this.frontCamera = this.videoRequest.getXModifier()
-      this.videoRequest.setXModifier(this.frontCamera + 50)
+      this.frontCamera = this.$phoneAPI.videoRequest.getXModifier()
+      this.$phoneAPI.videoRequest.setXModifier(this.frontCamera + 50)
     },
     onRight () {
       if (this.showSavePanel) {
         this.currentSelect = 1
         return
       }
-      this.frontCamera = this.videoRequest.getXModifier()
-      this.videoRequest.setXModifier(this.frontCamera - 50)
+      this.frontCamera = this.$phoneAPI.videoRequest.getXModifier()
+      this.$phoneAPI.videoRequest.setXModifier(this.frontCamera - 50)
     },
     onBack () {
       if (this.ignoreControls) {
@@ -182,15 +184,15 @@ export default {
 
     this.$phoneAPI.openFakeCamera(true).then(() => {
       this.videoElement = document.getElementById('video-view-element')
-      this.videoRequest = new VideoRequest(document.getElementById('photo-main'), this.videoElement)
+      this.$phoneAPI.videoRequest.initRenderer(document.getElementById('photo-main'), this.videoElement)
       if (this.videoElement) this.videoElement.onended = () => { this.showSavePanel = true }
     })
   },
   // mounted () {},
   beforeDestroy () {
     this.$phoneAPI.post('setEnabledFakeCamera', false)
-    if (this.videoRequest) this.videoRequest.stopCapture()
-    this.videoRequest = null
+    this.$phoneAPI.videoRequest.clearRenderer()
+
     this.$bus.$off('keyUpEnter', this.onEnter)
     this.$bus.$off('keyUpBackspace', this.onBack)
     this.$bus.$off('keyUpArrowUp', this.onUp)

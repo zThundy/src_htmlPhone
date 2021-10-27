@@ -23,18 +23,24 @@ var xModifier = 0
 var yModifier = 0
 
 class VideoRequest {
-  constructor (mainDiv, video) {
-    // check if arguments in class are passed correctly
-    if (!mainDiv || !video) {
-      return console.error('[FATAL ERROR] Video request class cannot be initialized correctly')
-    } else {
-      console.log('[MODULE] Video request class created successfully')
-    }
-    // create class variables
-    this.video = video
+  constructor (ip, port) {
+    console.log('[MODULE] Video request class created successfully')
     this.stop = false
     this.buffer = null
     this.read = null
+    this.ip = ip
+    this.port = port
+  }
+
+  initRenderer (mainDiv, video) {
+    // check if arguments in class are passed correctly
+    if (!mainDiv || !video) {
+      return console.error('[FATAL ERROR] Video request class cannot be initialized correctly')
+    }
+    console.log('[MODULE] Video request rendering function initialized')
+    // create class variables
+    this.mainDiv = mainDiv
+    this.video = video
     // set video width and height propriety to match the canvas
     if (this.video) this.video.width = appWidth
     if (this.video) this.video.height = appHeight
@@ -93,8 +99,15 @@ class VideoRequest {
     // this.startVideoRecording = this.startVideoRecording.bind(this)
     // this.stopCapture = this.stopCapture.bind(this)
     this.animate = this.animate.bind(this)
-    this.startVideoLive(mainDiv)
+    this.startVideoLive()
     requestAnimationFrame(this.animate)
+  }
+
+  clearRenderer () {
+    this.stopCapture()
+    this.stopRecording()
+    this.mainDiv = null
+    this.video = null
   }
 
   setXModifier (value) {
@@ -109,7 +122,7 @@ class VideoRequest {
     return xModifier
   }
 
-  startVideoLive (mainDiv) {
+  startVideoLive () {
     this.liveCanvas = document.createElement('canvas')
     this.liveCanvas.style.cssText = `
       display: block;
@@ -123,7 +136,7 @@ class VideoRequest {
     // this.liveCanvas.height = window.innerHeight
     if (this.liveCanvas) this.liveCanvas.width = appWidth
     if (this.liveCanvas) this.liveCanvas.height = appHeight
-    if (mainDiv) mainDiv.appendChild(this.liveCanvas)
+    if (this.mainDiv) this.mainDiv.appendChild(this.liveCanvas)
     this.liveCtx = this.liveCanvas.getContext('2d')
   }
 
@@ -172,7 +185,7 @@ class VideoRequest {
         if (cb) cb(fullBlob)
       }
     }
-    this._startAudioRecorder()
+    // this._startAudioRecorder()
     this.recorder.start()
     // this._mediaRecorder.start()
   }
@@ -183,6 +196,35 @@ class VideoRequest {
 
   stopCapture () {
     this.stop = true
+  }
+
+  async getVideoLinkFromServer (videoID = false) {
+    if (!videoID) return console.error('[MODULE] Please provide a video id to make a correct fetch')
+    return fetch(`http://${this.ip}:${this.port}/videoDownload?type=camera&key=${videoID}`, {
+      method: 'GET'
+    }).then(async resp => {
+      if (resp.status === 404) return false
+      var jsonResponse = await resp.json()
+      return window.URL.createObjectURL(new Blob([Buffer.from(jsonResponse.blobDataBuffer, 'base64')]))
+    }).catch(console.error)
+  }
+
+  async saveRecordedVideo (data = false) {
+    if (!data) return console.error('[MODULE] Please fill in the required data argument')
+    if (!data.blob) return console.error('[MODULE] Please provide a valid blob to upload')
+    if (!data.id) return console.error('[MODULE] Please provide a valid id to the provided blob')
+    if (!data.type) return console.error('[MODULE] Please provide a valid type for the uploader')
+    const formData = new FormData()
+    formData.append('video-file', data.blob)
+    formData.append('filename', data.id)
+    formData.append('type', data.type)
+    return fetch(`http://${this.ip}:${this.port}/videoUpload`, {
+      method: 'POST',
+      body: formData
+    }).then(resp => {
+      if (resp.code === 500) return false
+      return true
+    }).catch(console.error)
   }
 
   animate () {

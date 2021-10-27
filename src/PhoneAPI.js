@@ -4,6 +4,7 @@ import Vue from 'vue'
 // import of custom classes
 import VoiceRTC from './VoiceRTC'
 import PictureRequest from './PictureRequest'
+import VideoRequest from './VideoRequest'
 
 const BASE_URL = 'http://zth_gcphone/'
 
@@ -29,6 +30,9 @@ class PhoneAPI {
       this.soundList = []
       this.audioElement = new Audio()
       this.keyAudioElement = new Audio()
+      // initialize the videorequest class every time the phone
+      // is actually initialized
+      this.videoRequest = new VideoRequest(this.config.fileUploader.ip, this.config.fileUploader.port)
       // initialize the picturerequest class every time the phone
       // is actually initialized
       this.picture = new PictureRequest(this.config.picturesConfig)
