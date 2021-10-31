@@ -66,10 +66,8 @@ AddEventHandler('esx:playerLoaded', function(source, xPlayer)
     local identifier = tostring(xPlayer.identifier)
     if not identifier then identifier = gcPhoneT.getPlayerID(source) end
     local phone_number = gcPhoneT.getPhoneNumber(identifier)
-
     if phone_number ~= nil then
         gcPhoneT.updateCachedNumber(phone_number, identifier, false)
-
         if CACHED_TARIFFS[phone_number] then
             for _, v in pairs(Config.Tariffs) do
                 if v.label == CACHED_TARIFFS[phone_number].piano_tariffario then
@@ -134,8 +132,8 @@ end
 gcPhoneT.eliminaSim = function(old_number)
     local player = source
     local identifier = gcPhoneT.getPlayerID(player)
+    identifier = tostring(identifier)
     local phone_number = gcPhoneT.getPhoneNumber(identifier)
-
     if tostring(old_number) == tostring(phone_number) then
         MySQL.Async.execute('UPDATE `users` SET phone_number = @phone_number WHERE `identifier` = @identifier', {
             ['@identifier'] = identifier,
@@ -151,6 +149,7 @@ end
 gcPhoneT.usaSim = function(sim)
     local player = source
     local identifier = gcPhoneT.getPlayerID(player)
+    identifier = tostring(identifier)
     gcPhoneT.updateCachedNumber(sim.number, identifier, true)
     CACHED_TARIFFS[sim.number].identifier = identifier
     CACHED_TARIFFS[sim.number].phone_number = sim.number
@@ -163,6 +162,7 @@ end
 gcPhoneT.rinominaSim = function(number, name)
     local player = source
     local identifier = gcPhoneT.getPlayerID(player)
+    identifier = tostring(identifier)
     MySQL.Async.execute('UPDATE phone_sim SET nome_sim = @nome_sim WHERE identifier = @identifier AND phone_number = @phone_number', {
         ['@identifier'] = identifier,
         ['@phone_number'] = number,
@@ -175,6 +175,7 @@ end
 gcPhoneT.getSimList = function()
     local player = source
     local identifier = gcPhoneT.getPlayerID(player)
+    identifier = tostring(identifier)
     local cartesim = {}
     for number, v in pairs(CACHED_TARIFFS) do
         if identifier == tostring(v.identifier) then
