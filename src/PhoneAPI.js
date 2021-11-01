@@ -199,6 +199,7 @@ class PhoneAPI {
 
   ongenericNotification (data) {
     if (data.notify) data = data.notif
+    if (data.notif) data = data.notif
     Vue.notify({
       message: store.getters.LangString(data.message),
       title: store.getters.LangString(data.title) + ':',
@@ -207,20 +208,6 @@ class PhoneAPI {
       appName: data.appName,
       sound: data.sound
     })
-  }
-
-  onnewMessage (data) {
-    store.commit('ADD_MESSAGE', data.message)
-    if (!data.message.owner) {
-      Vue.notify({
-        message: data.message.message,
-        title: data.message.receiver + ':',
-        icon: 'envelope',
-        backgroundColor: 'rgb(255, 140, 30)',
-        appName: 'Messaggi',
-        sound: data.notifications ? 'msgnotify.ogg' : undefined
-      })
-    }
   }
 
   onupdateContacts (data) {

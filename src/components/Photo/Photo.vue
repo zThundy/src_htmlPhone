@@ -71,6 +71,13 @@ export default {
       if (this.showSavePanel) {
         switch (this.currentSelect) {
           case 0:
+            this.showSavePanel = false
+            this.currentBlob = []
+            // setTimeout(() => {
+            //   this.showSavePanel = true
+            // }, 2000)
+            break
+          case 1:
             if (this.videoElement.src && this.videoElement.src !== '') {
               const id = this.$phoneAPI.makeid(20, true)
               this.$phoneAPI.videoRequest.saveRecordedVideo({
@@ -86,20 +93,15 @@ export default {
                 }
               })
               this.showSavePanel = false
+              return true
             }
-            break
-          case 1:
-            this.showSavePanel = false
-            this.currentBlob = []
-            // setTimeout(() => {
-            //   this.showSavePanel = true
-            // }, 2000)
             break
         }
       }
+      return false
     },
     onEnter () {
-      this._checkVideoPresence()
+      if (this._checkVideoPresence()) return
       if (this.recording) {
         this.$phoneAPI.videoRequest.stopRecording()
         this.recording = false

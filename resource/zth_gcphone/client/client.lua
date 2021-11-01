@@ -125,7 +125,14 @@ RegisterNetEvent("gcPhone:receiveMessage")
 AddEventHandler("gcPhone:receiveMessage", function(message)
     if not message then return end
     if not GLOBAL_AIRPLANE then
-        SendNUIMessage({ event = 'newMessage', message = message, notifications = NOTIFICATIONS_ENABLED })
+        TriggerEvent("gcphone:sendGenericNotification", {
+            message = message,
+            title = "APP_MESSAGE_TITLE",
+            icon = "envelope",
+            color = "rgb(255, 140, 30)",
+            appName = "Messaggi",
+            sound = NOTIFICATIONS_ENABLED and "msgnotify.ogg" or nil
+        })
         table.insert(messages, message)
         if message.owner == 0 then
             local text = Config.Language["MESSAGE_NOTIFICATION_NO_TRANSMITTER"]

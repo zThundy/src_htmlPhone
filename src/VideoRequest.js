@@ -41,6 +41,8 @@ class VideoRequest {
     // create class variables
     this.mainDiv = mainDiv
     this.video = video
+    // clear stop variable to start capturing again
+    this.stop = false
     // set video width and height propriety to match the canvas
     if (this.video) this.video.width = appWidth
     if (this.video) this.video.height = appHeight
@@ -96,14 +98,13 @@ class VideoRequest {
     this.cameraRTT = cameraRTT
     // bind animate function to get every element accessible
     // bind this element to everything else
-    // this.startVideoRecording = this.startVideoRecording.bind(this)
-    // this.stopCapture = this.stopCapture.bind(this)
     this.animate = this.animate.bind(this)
     this.startVideoLive()
     requestAnimationFrame(this.animate)
   }
 
   clearRenderer () {
+    console.log('[MODULE] Video request renderer cleared')
     this.stopCapture()
     this.stopRecording()
     this.mainDiv = null
@@ -250,13 +251,7 @@ class VideoRequest {
         appWidth,
         appHeight
       )
-    } catch (e) {
-      if (process.env.NODE_ENV !== 'production') {
-        console.log(e)
-      } else {
-        console.log(JSON.stringify(e))
-      }
-    }
+    } catch (e) { console.log(e) }
   }
 }
 
