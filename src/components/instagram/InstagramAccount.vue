@@ -173,7 +173,7 @@ export default {
     }
   },
   methods: {
-    ...mapActions(['instagramLogin', 'instagramChangePassword', 'instagramLogout', 'instagramSetAvatar', 'instagramCreateNewAccount', 'setInstagramNotification', 'setInstagramNotificationSound']),
+    ...mapActions(['instagramChangePassword', 'instagramLogout', 'instagramSetAvatar', 'setInstagramNotification', 'setInstagramNotificationSound']),
     onUp: function () {
       if (this.ignoreControls === true) return
       let select = document.querySelector('.group.select')
@@ -282,7 +282,7 @@ export default {
       } catch (e) {}
     },
     login () {
-      this.instagramLogin({ username: this.accountLocale.username, password: this.accountLocale.password })
+      this.$phoneAPI.instagram_login(this.accountLocale.username, this.accountLocale.password)
       this.state = STATI.MENU
     },
     logout () {
@@ -290,7 +290,7 @@ export default {
     },
     createAccount () {
       if (this.validAccount === true) {
-        this.instagramCreateNewAccount(this.accountLocale)
+        this.$phoneAPI.instagram_createAccount(this.accountLocale.username, this.accountLocale.password, this.accountLocale.avatarUrl)
         this.accountLocale = {
           username: '',
           password: '',

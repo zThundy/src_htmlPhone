@@ -58,7 +58,7 @@ export default {
   watch: {
   },
   methods: {
-    ...mapActions(['instagramLogin', 'instagramPostTweet', 'instagramToogleLike']),
+    ...mapActions(['instagramPostTweet', 'instagramToogleLike']),
     ...mapMutations(['CHANGE_BRIGHTNESS_STATE']),
     formatEmoji (message) {
       return this.$phoneAPI.convertEmoji(message)
