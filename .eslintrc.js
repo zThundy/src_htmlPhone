@@ -22,6 +22,7 @@ module.exports = {
     // allow debugger during development
     'no-debugger': process.env.NODE_ENV === 'production' ? 2 : 0,
     // ignore parentesys spaces after function like switch()
-    'keyword-spacing': "off"
+    'keyword-spacing': "off",
+    'comma-dangle': "warn"
   }
 }
