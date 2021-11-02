@@ -125,7 +125,6 @@ h2 {
   height: 38px;
 }
 
-
 .botton-container {
   margin-top: 12px;
   display: flex;

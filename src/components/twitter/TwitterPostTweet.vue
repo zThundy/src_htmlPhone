@@ -22,19 +22,18 @@ export default {
   data () {
     return {
       message: '',
-      modalopened: false
+      ignoreControls: false
     }
   },
   computed: {
     ...mapGetters(['LangString'])
   },
-  watch: {
-  },
+  watch: { },
   methods: {
     ...mapActions(['twitterPostTweet']),
     async onEnter () {
-      if (this.modalopened) return
-      this.modalopened = true
+      if (this.ignoreControls) return
+      this.ignoreControls = true
       let scelte = [
         {id: 1, title: this.LangString('APP_TWITTER_POST_TWEET'), icons: 'fa-comment'},
         {id: 2, title: this.LangString('APP_TWITTER_POST_PICTURE'), icons: 'fa-camera'}
@@ -42,58 +41,62 @@ export default {
       let resp = await Modal.CreateModal({ scelte: scelte })
       if (resp.id === 1) {
         this.postTextTweet()
-        this.modalopened = false
+        this.ignoreControls = false
       } else if (resp.id === 2) {
         this.choosePicType()
       }
     },
     async choosePicType () {
-      this.modalopened = true
+      this.ignoreControls = true
       let scelte = [
         {id: 1, title: this.LangString('APP_CONFIG_LINK_PICTURE'), icons: 'fa-link'},
         {id: 2, title: this.LangString('APP_CONFIG_TAKE_PICTURE'), icons: 'fa-camera'}
       ]
       const resp = await Modal.CreateModal({ scelte: scelte })
       if (resp.id === 1) {
-        Modal.CreateTextModal({ text: 'https://i.imgur.com/' }).then(valueText => {
+        Modal.CreateTextModal({ text: 'https://i.imgur.com/' })
+        .then(valueText => {
           if (valueText.text !== '' && valueText.text !== undefined && valueText.text !== null && valueText.text !== 'https://i.imgur.com/') {
             this.twitterPostTweet({ message: valueText.text })
-            this.modalopened = false
+            this.ignoreControls = false
           }
         })
+        .catch((e) => { this.ignoreControls = false })
       } else if (resp.id === 2) {
         const pic = await this.$phoneAPI.takePhoto()
         if (pic && pic !== '') {
           this.twitterPostTweet({ message: pic })
-          this.modalopened = false
+          this.ignoreControls = false
         }
       } else {
-        this.modalopened = false
+        this.ignoreControls = false
       }
     },
     onBack () {
-      if (this.modalopened) {
-        this.modalopened = false
-      } else {
-        this.$bus.$emit('twitterHome')
-      }
+      if (this.ignoreControls) return
+      this.$bus.$emit('twitterHome')
     },
     async postTextTweet () {
-      const rep = await this.$phoneAPI.getReponseText({ title: 'Digita il messaggio da inviare' })
-      if (rep !== undefined && rep.text !== undefined) {
-        const message = rep.text.trim()
-        if (message.length !== 0) {
-          this.twitterPostTweet({ message })
+      this.ignoreControls = true
+      Modal.CreateTextModal({ title: 'Digita il messaggio da inviare' })
+      .then(resp => {
+        if (resp !== undefined && resp.text !== undefined) {
+          const message = resp.text.trim()
+          if (message.length !== 0) {
+            this.twitterPostTweet({ message })
+            this.ignoreControls = false
+          }
         }
-      }
+      })
+      .catch(e => { this.ignoreControls = false })
     }
   },
   created () {
     this.$bus.$on('keyUpEnter', this.onEnter)
     this.$bus.$on('keyUpBackspace', this.onBack)
   },
-  async mounted () {
-  },
+  // mounted () {
+  // },
   beforeDestroy () {
     this.$bus.$off('keyUpEnter', this.onEnter)
     this.$bus.$off('keyUpBackspace', this.onBack)
