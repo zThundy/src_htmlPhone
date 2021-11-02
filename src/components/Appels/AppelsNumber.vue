@@ -82,7 +82,7 @@ export default {
       }
     },
     onBackspace () {
-      if (this.ignoreControls === true) return
+      if (this.ignoreControls) return
       if (this.numero.length !== 0) {
         this.numero = this.numero.slice(0, -1)
       } else {

@@ -138,55 +138,67 @@ export default {
           this.CHANGE_BRIGHTNESS_STATE(false)
         }
       } else {
-        if (this.currentSelect === 0) {
-          // carica immagine
-          this.ignoreControl = true
-          var options = [
-            { id: 1, title: this.LangString('APP_CONFIG_LINK_PICTURE'), icons: 'fa-link' },
-            { id: 2, title: this.LangString('APP_CONFIG_TAKE_PICTURE'), icons: 'fa-camera' },
-            { id: -1, title: this.LangString('CANCEL'), icons: 'fa-undo', color: 'red' }
-          ]
-          Modal.CreateModal({ scelte: options }).then(async resp => {
-            switch (resp.id) {
-              case 1:
-                Modal.CreateTextModal({ title: 'Inserisci un link', text: 'https://i.imgur.com/' }).then(value => {
-                  if (value.text !== '' && value.text !== undefined && value.text !== null && value.text !== 'https://i.imgur.com/') {
-                    // this.tempPics.push(value.text)
-                    this.UPDATE_TEMP_INFO({ type: 'pic', text: value.text })
+        switch(this.currentSelect) {
+          case 0:
+            // carica immagine
+            this.ignoreControl = true
+            var options = [
+              { id: 1, title: this.LangString('APP_CONFIG_LINK_PICTURE'), icons: 'fa-link' },
+              { id: 2, title: this.LangString('APP_CONFIG_TAKE_PICTURE'), icons: 'fa-camera' },
+              { id: -1, title: this.LangString('CANCEL'), icons: 'fa-undo', color: 'red' }
+            ]
+            Modal.CreateModal({ scelte: options }).then(async resp => {
+              switch (resp.id) {
+                case 1:
+                  Modal.CreateTextModal({
+                    title: this.LangString('TYPE_LINK'),
+                    text: 'https://i.imgur.com/'
+                  })
+                  .then(resp => {
+                    if (resp.text !== '' && resp.text !== undefined && resp.text !== null && resp.text !== 'https://i.imgur.com/') {
+                      // this.tempPics.push(value.text)
+                      this.UPDATE_TEMP_INFO({ type: 'pic', text: resp.text })
+                      this.ignoreControl = false
+                    }
+                  })
+                  .catch(e => { this.ignoreControl = false })
+                  break
+                case 2:
+                  const pic = await this.$phoneAPI.takePhoto()
+                  if (pic && pic !== '') {
+                    this.UPDATE_TEMP_INFO({ type: 'pic', text: pic })
                     this.ignoreControl = false
                   }
-                })
-                break
-              case 2:
-                const pic = await this.$phoneAPI.takePhoto()
-                if (pic && pic !== '') {
-                  this.UPDATE_TEMP_INFO({ type: 'pic', text: pic })
+                  break
+                case -1:
                   this.ignoreControl = false
-                }
-                break
-              case -1:
+                  break
+              }
+            })
+            break
+          case 1:
+            // scrivi descrizione
+            Modal.CreateTextModal({
+              title: this.LangString('TYPE_MESSAGE')
+            })
+            .then(resp => {
+              if (resp.text !== '' && resp.text !== undefined && resp.text !== null) {
+                this.UPDATE_TEMP_INFO({ type: 'description', text: resp.text })
                 this.ignoreControl = false
-                break
+              }
+            })
+            .catch(e => { this.ignoreControl = false })
+            break
+          case 2:
+            // posta news
+            if (this.tempNews.pics.length > 0 || this.tempDescription !== '') {
+              this.$phoneAPI.postNews(this.tempNews.pics, this.tempNews.description)
+              this.UPDATE_TEMP_INFO({ type: 'clear' })
+            } else {
+              this.$phoneAPI.sendErrorMessage(this.LangString('APP_NEWS_ERROR_1'))
             }
-          })
-        } else if (this.currentSelect === 1) {
-          // scrivi descrizione
-          Modal.CreateTextModal({ title: 'Inserisci un testo', text: '' }).then(value => {
-            if (value.text !== '' && value.text !== undefined && value.text !== null) {
-              // this.tempDescription = value.text
-              this.UPDATE_TEMP_INFO({ type: 'description', text: value.text })
-              this.ignoreControl = false
-            }
-          })
-        } else if (this.currentSelect === 2) {
-          // posta news
-          if (this.tempNews.pics.length > 0 || this.tempDescription !== '') {
-            this.$phoneAPI.postNews(this.tempNews.pics, this.tempNews.description)
-            this.UPDATE_TEMP_INFO({ type: 'clear' })
-          } else {
-            this.$phoneAPI.sendErrorMessage('Devi compilare almeno un campo per poter postare una news')
-          }
-          this.$phoneAPI.fetchNews()
+            this.$phoneAPI.fetchNews()
+            break
         }
       }
     },

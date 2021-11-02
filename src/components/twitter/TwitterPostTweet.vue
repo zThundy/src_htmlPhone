@@ -54,7 +54,10 @@ export default {
       ]
       const resp = await Modal.CreateModal({ scelte: scelte })
       if (resp.id === 1) {
-        Modal.CreateTextModal({ text: 'https://i.imgur.com/' })
+        Modal.CreateTextModal({
+          text: 'https://i.imgur.com/',
+          title: this.LangString('TYPE_LINK')
+        })
         .then(valueText => {
           if (valueText.text !== '' && valueText.text !== undefined && valueText.text !== null && valueText.text !== 'https://i.imgur.com/') {
             this.twitterPostTweet({ message: valueText.text })
@@ -78,7 +81,9 @@ export default {
     },
     async postTextTweet () {
       this.ignoreControls = true
-      Modal.CreateTextModal({ title: 'Digita il messaggio da inviare' })
+      Modal.CreateTextModal({
+        title: this.LangString('TYPE_MESSAGE')
+      })
       .then(resp => {
         if (resp !== undefined && resp.text !== undefined) {
           const message = resp.text.trim()

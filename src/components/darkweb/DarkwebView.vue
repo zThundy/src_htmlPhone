@@ -97,22 +97,27 @@ export default {
           break
       }
     },
-    async reply (message) {
+    reply (message) {
       // const authorName = message.author
       const authorName = this.currentSelected
       try {
         this.ignoreControls = true
-        const rep = await Modal.CreateTextModal({ title: 'Rispondi', text: `@${authorName} ` })
-        if (rep !== undefined && rep.text !== undefined) {
-          const message = rep.text.trim()
-          if (message.length !== 0) {
-            this.darkwebPostMessage({ message, mine: 1 })
+        Modal.CreateTextModal({
+          title: this.LangString('TYPE_MESSAGE'),
+          color: '#606060',
+          text: `@${authorName}`
+        })
+        .then(resp => {
+          if (resp !== undefined && resp.text !== undefined) {
+            const message = resp.text.trim()
+            if (message.length !== 0) {
+              this.darkwebPostMessage({ message, mine: 1 })
+            }
           }
-        }
-      } catch (e) {
-      } finally {
-        this.ignoreControls = false
-      }
+          this.ignoreControls = false
+        })
+        .catch(e => { this.ignoreControls = false })
+      } catch (e) { }
     },
     resetScroll () {
       this.$nextTick(() => {
@@ -130,17 +135,17 @@ export default {
       })
     },
     onUp () {
-      if (this.ignoreControls === true) return
+      if (this.ignoreControls) return
       this.currentSelected = this.currentSelected === 0 || this.currentSelected === -1 ? 0 : this.currentSelected - 1
       this.scrollIntoView()
     },
     onDown () {
-      if (this.ignoreControls === true) return
+      if (this.ignoreControls) return
       this.currentSelected = this.currentSelected === this.darkwebMessages.length - 1 ? this.currentSelected : this.currentSelected + 1
       this.scrollIntoView()
     },
     async onEnter () {
-      if (this.ignoreControls === true) return
+      if (this.ignoreControls) return
       if (this.currentSelected !== -1) {
         this.showOption()
       }
@@ -151,7 +156,7 @@ export default {
         this.CHANGE_BRIGHTNESS_STATE(true)
         return
       }
-      if (this.ignoreControls === true) return
+      if (this.ignoreControls) return
       if (this.currentSelected !== -1) {
         this.currentSelected = -1
       } else {

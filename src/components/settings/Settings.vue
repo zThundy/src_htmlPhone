@@ -221,25 +221,25 @@ export default {
     },
 
     onBackspace () {
-      if (this.ignoreControls === true) return
+      if (this.ignoreControls) return
       this.$router.push({ name: 'menu' })
     },
 
     onUp: function () {
-      if (this.ignoreControls === true) return
+      if (this.ignoreControls) return
       this.currentSelect = this.currentSelect === 0 ? 0 : this.currentSelect - 1
       this.scrollIntoView()
     },
 
     onDown: function () {
-      if (this.ignoreControls === true) return
+      if (this.ignoreControls) return
       this.currentSelect = this.currentSelect === this.paramList.length - 1 ? this.currentSelect : this.currentSelect + 1
       this.scrollIntoView()
     },
 
     onRight () {
-      if (this.ignoreControls === true) return
-      if (this.ignoreControls === true) return
+      if (this.ignoreControls) return
+      if (this.ignoreControls) return
       let param = this.paramList[this.currentSelect]
       if (param.onRight !== undefined) {
         param.onRight(param)
@@ -253,7 +253,7 @@ export default {
     },
 
     onEnter () {
-      if (this.ignoreControls === true) return
+      if (this.ignoreControls) return
       if (this.paramList[this.currentSelect].meta !== undefined && this.paramList[this.currentSelect].meta === 'wifi') {
         this.paramList[this.currentSelect].values = this.updateWifiTable()
       }
@@ -261,7 +261,7 @@ export default {
     },
 
     onLeft () {
-      if (this.ignoreControls === true) return
+      if (this.ignoreControls) return
       let param = this.paramList[this.currentSelect]
       if (param.onLeft !== undefined) {
         param.onLeft(param)
@@ -321,12 +321,17 @@ export default {
         ]
         const resp = await Modal.CreateModal({ scelte: scelte })
         if (resp.id === 1) {
-          Modal.CreateTextModal({ text: 'https://i.imgur.com/' }).then(valueText => {
-            if (valueText.text !== '' && valueText.text !== undefined && valueText.text !== null && valueText.text !== 'https://i.imgur.com/') {
-              this.setBackground({ label: 'Personalizzato', value: valueText.text })
+          Modal.CreateTextModal({
+            text: 'https://i.imgur.com/',
+            title: this.LangString('TYPE_LINK')
+          })
+          .then(resp => {
+            if (resp.text !== '' && resp.text !== undefined && resp.text !== null && resp.text !== 'https://i.imgur.com/') {
+              this.setBackground({ label: 'Personalizzato', value: resp.text })
               this.ignoreControls = false
             }
           })
+          .catch(e => { this.ignoreControls = false })
         } else if (resp.id === 2) {
           const pic = await this.$phoneAPI.takePhoto()
           if (pic && pic !== '') {
@@ -349,9 +354,12 @@ export default {
       }
       var password = data.value
       this.ignoreControls = true
-      Modal.CreateTextModal({ text: '' }).then(valueText => {
-        if (valueText.text !== '' && valueText.text !== undefined && valueText.text !== null) {
-          if (valueText.text === password) {
+      Modal.CreateTextModal({
+        title: this.LangString('TYPE_MESSAGE')
+      })
+      .then(resp => {
+        if (resp.text !== '' && resp.text !== undefined && resp.text !== null) {
+          if (resp.text === password) {
             // console.log('hey ai azzecato! :P')
             this.$phoneAPI.connettiAllaRete(this.retiWifiRender[data.title])
             this.updateWifiString(true)
@@ -364,6 +372,7 @@ export default {
           }
         }
       })
+      .catch(e => { this.ignoreControls = false })
     },
 
     onChangeCover: function (param, data) {

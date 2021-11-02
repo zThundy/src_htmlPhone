@@ -52,7 +52,7 @@ export default {
       }
     },
     onUp () {
-      if (this.ignoreControls === true) return
+      if (this.ignoreControls) return
       if (this.gruppi.length === 0) { this.currentSelected = -1; return }
       if (this.currentSelected === -1) {
         this.selectMessage = 0
@@ -62,7 +62,7 @@ export default {
       this.scrollIntoView()
     },
     onDown () {
-      if (this.ignoreControls === true) return
+      if (this.ignoreControls) return
       if (this.gruppi.length === 0) { this.currentSelected = -1; return }
       if (this.currentSelected === -1) {
         this.currentSelected = 0
@@ -72,7 +72,7 @@ export default {
       this.scrollIntoView()
     },
     async onRight () {
-      if (this.ignoreControls === true) return
+      if (this.ignoreControls) return
       this.ignoreControls = true
       // con questo controllo se il telefono
       // ha il wifi attivo
@@ -126,13 +126,13 @@ export default {
       }
     },
     onBackspace () {
-      if (this.ignoreControls === true) { this.ignoreControls = false; return }
+      if (this.ignoreControls) { this.ignoreControls = false; return }
       if (this.currentSelected !== -1) { this.currentSelected = -1; return }
       this.$router.push({ name: 'menu' })
     },
     onEnter () {
       if (this.currentSelected === -1) return
-      if (this.ignoreControls === true) return
+      if (this.ignoreControls) return
       // qui invio il gruppo al router
       // DECOMMENTARE SE SI VUOLE SOLO SOTTO WIFI if (!this.hasWifi) {
       // DECOMMENTARE SE SI VUOLE SOLO SOTTO WIFI   this.$phoneAPI.sendErrorMessage('Non sei connesso al wifi')

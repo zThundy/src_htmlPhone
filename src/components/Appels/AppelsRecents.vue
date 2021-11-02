@@ -68,12 +68,12 @@ export default {
       })
     },
     onUp () {
-      if (this.ignoreControls === true) return
+      if (this.ignoreControls) return
       this.selectIndex = Math.max(0, this.selectIndex - 1)
       this.scrollIntoView()
     },
     onDown () {
-      if (this.ignoreControls === true) return
+      if (this.ignoreControls) return
       this.selectIndex = Math.min(this._callsHistory.length - 1, this.selectIndex + 1)
       this.scrollIntoView()
     },
@@ -124,7 +124,7 @@ export default {
       }
     },
     async onEnter () {
-      if (this.ignoreControls === true) return
+      if (this.ignoreControls) return
       if (this._callsHistory[this.selectIndex] === null || this._callsHistory[this.selectIndex] === undefined) return
       this.selectItem(this._callsHistory[this.selectIndex])
     },

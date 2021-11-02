@@ -34,7 +34,7 @@
 </template>
 
 <script>
-import { mapGetters, mapActions } from 'vuex'
+import { mapGetters } from 'vuex'
 import PhoneTitle from '@/components/PhoneTitle'
 import { Amount } from 'mand-mobile'
 import 'mand-mobile/lib/mand-mobile.css'
@@ -42,10 +42,7 @@ import Modal from '@/components/Modal/index.js'
 
 export default {
   name: 'app_banca',
-  components: {
-    PhoneTitle,
-    [Amount.name]: Amount
-  },
+  components: { PhoneTitle, [Amount.name]: Amount },
   data () {
     return {
       ignoreControls: false,
@@ -56,7 +53,6 @@ export default {
     ...mapGetters(['bankAmount', 'iban', 'LangString', 'fatture', 'movements'])
   },
   methods: {
-    ...mapActions(['requestLocalFatture', 'createPagamento']),
     scrollIntoView: function () {
       this.$nextTick(() => {
         document.querySelector('.selected').scrollIntoView({ behavior: 'smooth', block: 'start', inline: 'nearest' })
@@ -75,13 +71,35 @@ export default {
           {id: 1, title: this.LangString('APP_BANK_LISTA_FATTURE'), icons: 'fa-list-alt'},
           {id: 2, title: this.LangString('APP_BANK_CREATE_MOVEMENT'), icons: 'fa-plus'},
           {id: -1, title: this.LangString('CANCEL'), icons: 'fa-undo', color: 'red'}
-        ] }).then(resp => {
-          if (resp.id === 1) {
-            this.listaFatture()
-          } else if (resp.id === 2) {
-            this.createPagamento()
-            this.ignoreControls = false
-          } else if (resp.id === -1) { this.ignoreControls = false }
+        ] }).then(response => {
+          switch(response.id) {
+            case 1:
+              this.listaFatture()
+              break
+            case 2:
+              Modal.CreateTextModal({
+                limit: 200,
+                title: this.LangString('APP_BANK_TYPE_IBAN_TITLE'),
+                color: 'rgb(45, 74, 175)'
+              })
+              .then(iban => {
+                Modal.CreateTextModal({
+                  limit: 200,
+                  title: this.LangString('APP_BANK_TYPE_AMOUNT_TITLE'),
+                  color: 'rgb(45, 74, 175)'
+                })
+                .then(amount => {
+                  this.$phoneAPI.postUpdateMoney(Number(amount.text), iban.text.toUpperCase())
+                  this.ignoreControls = false
+                })
+                .catch(e => { this.ignoreControls = false })
+              })
+              .catch(e => { this.ignoreControls = false })
+              break
+            case -1:
+              this.ignoreControls = false
+              break
+          }
         })
       } catch (e) { }
     },
@@ -128,7 +146,7 @@ export default {
   },
   created () {
     this.$phoneAPI.requestBankInfo()
-    this.requestLocalFatture()
+    this.$phoneAPI.requestFatture()
     this.$bus.$on('keyUpBackspace', this.onBackspace)
     this.$bus.$on('keyUpArrowRight', this.onRight)
     this.$bus.$on('keyUpArrowDown', this.onDown)

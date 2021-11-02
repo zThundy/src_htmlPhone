@@ -53,37 +53,48 @@ export default {
   },
   methods: {
     ...mapActions(['editGroupTitle', 'editGroupIcon']),
-    onUp: function () {
-      if (this.ignoreControls === true) return
+    onUp () {
+      if (this.ignoreControls) return
       if (this.currentSelect === 1) return
       this.currentSelect = this.currentSelect - 1
     },
-    onDown: function () {
-      if (this.ignoreControls === true) return
+    onDown () {
+      if (this.ignoreControls) return
       if (this.currentSelect === 4) return
       this.currentSelect = this.currentSelect + 1
     },
-    async snapGroupImage () {
+    snapGroupImage () {
       this.ignoreControls = true
       let scelte = [
         {id: 1, title: this.LangString('APP_CONFIG_LINK_PICTURE'), icons: 'fa-link'},
         {id: 2, title: this.LangString('APP_CONFIG_TAKE_PICTURE'), icons: 'fa-camera'}
       ]
-      const resp = await Modal.CreateModal({ scelte })
-      if (resp.id === 1) {
-        Modal.CreateTextModal({ text: 'https://i.imgur.com/' }).then(data => {
-          if (data.text !== '' && data.text !== undefined && data.text !== null && data.text !== 'https://i.imgur.com/') {
-            this.ignoreControls = false
-            this.editGroupIcon({ text: data.text, gruppo: this.gruppo })
-          }
-        })
-      } else if (resp.id === 2) {
-        const pic = await this.$phoneAPI.takePhoto()
-        if (pic && pic !== '') {
-          this.ignoreControls = false
-          this.editGroupIcon({ text: pic, gruppo: this.gruppo })
+      Modal.CreateModal({ scelte }).then(async response => {
+        switch(response.id) {
+          case 1:
+            Modal.CreateTextModal({
+              text: 'https://i.imgur.com/',
+              title: this.LangString('TYPE_LINK'),
+              color: 'rgb(112, 255, 125)',
+              limit: 64
+            })
+            .then(resp => {
+              if (resp.text !== '' && resp.text !== undefined && resp.text !== null && resp.text !== 'https://i.imgur.com/') {
+                this.ignoreControls = false
+                this.editGroupIcon({ text: resp.text, gruppo: this.gruppo })
+              }
+            })
+            .catch(e => { this.ignoreControls = false })
+            break
+          case 2:
+            const pic = await this.$phoneAPI.takePhoto()
+            if (pic && pic !== '') {
+              this.ignoreControls = false
+              this.editGroupIcon({ text: pic, gruppo: this.gruppo })
+            }
+            break
         }
-      }
+      })
     },
     async modificaGruppo () {
       this.$router.push({ name: 'whatsapp' })
@@ -108,23 +119,32 @@ export default {
       }
     },
     onEnter () {
-      if (this.ignoreControls === true) return
+      if (this.ignoreControls) return
       let select = document.querySelector('.select')
       if (select === null) return
       if (select.dataset.type === 'button') {
         select.click()
       }
       if (select.dataset.type === 'text') {
-        this.$phoneAPI.getReponseText({ limit: parseInt(select.dataset.maxlength) || 64, text: select.dataset.defaultValue || '', title: select.dataset.title || '' }).then(data => {
-          const $input = select.querySelector('input')
-          $input.value = data.text
-          this.editGroupTitle({ text: data.text, gruppo: this.gruppo })
+        Modal.CreateTextModal({
+          limit: parseInt(select.dataset.maxlength) || 64,
+          text: select.dataset.defaultValue || '',
+          title: select.dataset.title || '',
+          color: 'rgb(112, 255, 125)'
         })
+        .then(resp => {
+          if (resp !== undefined && resp.text !== undefined) {
+            const $input = select.querySelector('input')
+            $input.value = resp.text
+            this.editGroupTitle({ text: resp.text, gruppo: this.gruppo })
+          }
+        })
+        .catch(e => { this.ignoreControls = false })
       }
       return
     },
     onBackspace () {
-      if (this.ignoreControls === true) { this.ignoreControls = false; return }
+      if (this.ignoreControls) { this.ignoreControls = false; return }
       this.$router.push({ name: 'whatsapp' })
     }
   },

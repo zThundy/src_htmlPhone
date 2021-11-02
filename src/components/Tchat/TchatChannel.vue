@@ -45,40 +45,40 @@ export default {
       })
     },
     onUp () {
-      if (this.ignoreControls === true) return
+      if (this.ignoreControls) return
       this.currentSelect = this.currentSelect === 0 ? 0 : this.currentSelect - 1
       this.scrollIntoView()
     },
     onDown () {
-      if (this.ignoreControls === true) return
+      if (this.ignoreControls) return
       this.currentSelect = this.currentSelect === this.tchatChannels.length - 1 ? this.currentSelect : this.currentSelect + 1
       this.scrollIntoView()
     },
     async onRight () {
-      if (this.ignoreControls === true) return
+      if (this.ignoreControls) return
       this.ignoreControls = true
       let scelte = [
-        {id: 1, title: this.LangString('APP_DARKTCHAT_NEW_CHANNEL'), icons: 'fa-plus', color: 'green'},
-        {id: 2, title: this.LangString('APP_DARKTCHAT_DELETE_CHANNEL'), icons: 'fa-minus', color: 'orange'},
-        {id: 3, title: this.LangString('APP_DARKTCHAT_CANCEL'), icons: 'fa-undo', color: 'red'}
+        { id: 1, title: this.LangString('APP_DARKTCHAT_NEW_CHANNEL'), icons: 'fa-plus', color: 'green' },
+        { id: 2, title: this.LangString('APP_DARKTCHAT_DELETE_CHANNEL'), icons: 'fa-minus', color: 'orange' },
+        { id: -1, title: this.LangString('CANCEL'), icons: 'fa-undo', color: 'red' }
       ]
-      if (this.tchatChannels.length === 0) {
-        scelte.splice(1, 1)
-      }
-      const rep = await Modal.CreateModal({ scelte })
-      this.ignoreControls = false
-      switch (rep.id) {
-        case 1:
-          this.addChannelOption()
-          break
-        case 2:
-          this.removeChannelOption()
-          break
-        case 3 :
-      }
+      if (this.tchatChannels.length === 0) scelte.splice(1, 1)
+      Modal.CreateModal({ scelte })
+      .then(resp => {
+        switch (resp.id) {
+          case 1:
+            this.addChannelOption()
+            break
+          case 2:
+            this.removeChannelOption()
+            break
+          case -1:
+            this.ignoreControls = false
+        }
+      })
     },
     async onEnter () {
-      if (this.ignoreControls === true) return
+      if (this.ignoreControls) return
       if (this.tchatChannels.length === 0) {
         this.ignoreControls = true
         let scelte = [
@@ -99,32 +99,38 @@ export default {
       this.$router.push({ name: 'tchat.channel.show', params: { channel } })
     },
     onBack () {
-      if (this.ignoreControls === true) return
+      if (this.ignoreControls) return
       this.$router.push({ name: 'menu' })
     },
     async addChannelOption () {
       try {
         this.ignoreControls = true
-        const rep = await Modal.CreateTextModal({ limit: 20, title: this.LangString('APP_DARKTCHAT_NEW_CHANNEL') })
-        let channel = (rep || {}).text || ''
-        channel = channel.toLowerCase().replace(/[^a-z]/g, '')
-        for (var i in this.tchatChannels) {
-          if (this.tchatChannels[i].channel === channel) {
-            this.$phoneAPI.sendErrorMessage(this.LangString('APP_DARKCHAT_ERROR_NOTIFICATION'))
-            this.ignoreControls = false
-            return
+        Modal.CreateTextModal({
+          limit: 20,
+          title: this.LangString('APP_DARKTCHAT_NEW_CHANNEL')
+        })
+        .then(resp => {
+          let channel = (resp || {}).text || ''
+          channel = channel.toLowerCase().replace(/[^a-z]/g, '')
+          for (var i in this.tchatChannels) {
+            if (this.tchatChannels[i].channel === channel) {
+              this.$phoneAPI.sendErrorMessage(this.LangString('APP_DARKCHAT_ERROR_NOTIFICATION'))
+              this.ignoreControls = false
+              return
+            }
           }
-        }
-        // questo controllo sotto vede se
-        // il canale ha un nome abbastanza lungo
-        if (channel.length > 0 && channel.length < 30) {
-          this.currentSelect = 0
-          this.tchatAddChannel({ channel })
-          this.ignoreControls = false
-        }
-      } catch (e) { } finally { this.ignoreControls = false }
+          // questo controllo sotto vede se
+          // il canale ha un nome abbastanza lungo
+          if (channel.length > 0 && channel.length < 30) {
+            this.currentSelect = 0
+            this.tchatAddChannel({ channel })
+            this.ignoreControls = false
+          }
+        })
+        .catch(e => { this.ignoreControls = false })
+      } catch (e) { }
     },
-    async removeChannelOption () {
+    removeChannelOption () {
       const channel = this.tchatChannels[this.currentSelect].channel
       this.currentSelect = 0
       this.tchatRemoveChannel({ channel })

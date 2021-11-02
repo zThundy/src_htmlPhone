@@ -73,12 +73,22 @@ export default {
     },
     onEnter () {
       if (this.aziendaIngoreControls) return
-      this.$phoneAPI.getReponseText({ title: 'Digita il messaggio' }).then(data => {
-        let message = data.text.trim()
-        if (message !== '') {
-          this.$phoneAPI.sendAziendaMessage({ azienda: this.myAziendaInfo.name, number: this.myPhoneNumber, message: message })
+      this.SET_AZIENDA_IGNORE_CONTROLS(true)
+      Modal.CreateTextModal({
+        title: this.LangString('TYPE_MESSAGE'),
+        limit: 255,
+        color: 'rgb(255, 180, 89)'
+      })
+      .then(resp => {
+        if (resp !== undefined && resp.text !== undefined) {
+          this.SET_AZIENDA_IGNORE_CONTROLS(false)
+          const message = resp.text.trim()
+          if (message !== '') {
+            this.$phoneAPI.sendAziendaMessage({ azienda: this.myAziendaInfo.name, number: this.myPhoneNumber, message: message })
+          }
         }
       })
+      .catch(e => { this.SET_AZIENDA_IGNORE_CONTROLS(false) })
     },
     onRight () {
       if (this.aziendaIngoreControls) return

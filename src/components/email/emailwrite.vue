@@ -75,46 +75,53 @@ export default {
   methods: {
     ...mapActions([]),
     onBackspace () {
-      if (this.ignoreControls === true) {
+      if (this.ignoreControls) {
         this.ignoreControls = false
         return
       }
       this.$router.push({ name: 'email' })
     },
     onUp () {
-      if (this.ignoreControls === true) return
+      if (this.ignoreControls) return
       if (this.currentSelect === -1) return
       this.currentSelect = this.currentSelect - 1
     },
     onDown () {
-      if (this.ignoreControls === true) return
+      if (this.ignoreControls) return
       if (this.currentSelect === 2) return
       this.currentSelect = this.currentSelect + 1
     },
     onEnter () {
-      if (this.ignoreControls === true) return
+      if (this.ignoreControls) return
       let select = document.querySelector('.select')
       if (select !== null) {
         let options = {
           limit: parseInt(select.dataset.maxlength) || 64,
           text: this.email[select.dataset.model] || '',
-          title: select.dataset.title || ''
+          title: select.dataset.title || '',
+          color: 'rgb(216, 71, 49)'
         }
         // aspetto la risposta da phoneapi
         if (select.dataset.model === 'receiver') {
           this.createModal(select.dataset.model, options)
         } else {
-          this.$phoneAPI.getReponseText(options).then(data => {
-            if (data.text.length > select.dataset.maxlength) {
-              this.$phoneAPI.sendErrorMessage('Non puoi digitare tutti questi caratteri in questo campo')
-              return
-            }
-            this.email[select.dataset.model] = data.text
+          this.ignoreControls = true
+          Modal.CreateTextModal({
+            title: this.LangString('TYPE_MESSAGE'),
+            limit: Number(select.dataset.maxlength),
+            color: 'rgb(216, 71, 49)'
           })
+          .then(resp => {
+            if (resp !== undefined && resp.text !== undefined) {
+              this.email[select.dataset.model] = resp.text
+            }
+            this.ignoreControls = false
+          })
+          .catch(e => { this.ignoreControls = false })
         }
       }
     },
-    async createModal (model, options) {
+    createModal (model, options) {
       this.ignoreControls = true
       var info = [
         { id: 1, title: this.LangString('APP_EMAIL_SENDING_TITLE_CHOICE_ONE'), icons: 'fa-user' },
@@ -127,12 +134,13 @@ export default {
             this.ignoreControls = false
             break
           case 2:
-            this.$phoneAPI.getReponseText(options).then(data => {
-              if (!data.text.includes(this.config.email_suffix)) { data.text = data.text + this.config.email_suffix }
-              this.email[model] = data.text
+            Modal.CreateTextModal(options)
+            .then(resp => {
+              if (!resp.text.includes(this.config.email_suffix)) { resp.text = resp.text + this.config.email_suffix }
+              this.email[model] = resp.text
+              this.ignoreControls = false
             })
-            // dopo la risposta da phoneapi riattivo i controlli
-            this.ignoreControls = false
+            .catch(e => { this.ignoreControls = false })
             break
         }
       })

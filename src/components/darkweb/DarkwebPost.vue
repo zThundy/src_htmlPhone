@@ -29,7 +29,7 @@ export default {
   data () {
     return {
       message: '',
-      modalopened: false
+      ignoreControls: false
     }
   },
   computed: {
@@ -40,46 +40,56 @@ export default {
   methods: {
     ...mapActions(['darkwebPostMessage']),
     async onEnter () {
-      if (this.modalopened) return
-      this.modalopened = true
+      if (this.ignoreControls) return
+      this.ignoreControls = true
       let resp = await Modal.CreateModal({ scelte: [
         {id: 1, title: this.LangString('APP_DARKWEB_POST_MESSAGE'), icons: 'fa-comment'},
         {id: 2, title: this.LangString('APP_DARKWEB_POST_PICTURE'), icons: 'fa-camera'}
       ] })
       if (resp.id === 1) {
-        this.postTextTweet()
-        this.modalopened = false
+        this.postMessage()
+        this.ignoreControls = false
       } else if (resp.id === 2) {
         const pic = await this.$phoneAPI.takePhoto()
         if (pic && pic !== '') {
-          this.modalopened = false
+          this.ignoreControls = false
           this.darkwebPostMessage({ message: pic, mine: 1 })
         }
       }
     },
     onBack () {
-      if (this.modalopened) {
-        this.modalopened = false
+      if (this.ignoreControls) {
+        this.ignoreControls = false
       } else {
         this.$bus.$emit('darkwebHome')
       }
     },
-    async postTextTweet () {
-      const rep = await this.$phoneAPI.getReponseText({ title: 'A cosa stai pensando?' })
-      if (rep !== undefined && rep.text !== undefined) {
-        const message = rep.text.trim()
-        if (message.length !== 0) {
-          this.darkwebPostMessage({ message, mine: 1 })
+    postMessage () {
+      if (this.ignoreControls) return
+      this.ignoreControls = true
+      Modal.CreateTextModal({
+        title: this.LangString('TYPE_MESSAGE'),
+        color: '#606060',
+        limit: 255
+      })
+      .then(resp => {
+        if (resp !== undefined && resp.text !== undefined) {
+          const message = resp.text.trim()
+          if (message.length !== 0) {
+            this.darkwebPostMessage({ message, mine: 1 })
+          }
         }
-      }
+        this.ignoreControls = false
+      })
+      .catch(e => { this.ignoreControls = false })
     }
   },
   created () {
     this.$bus.$on('keyUpEnter', this.onEnter)
     this.$bus.$on('keyUpBackspace', this.onBack)
   },
-  async mounted () {
-  },
+  // async mounted () {
+  // },
   beforeDestroy () {
     this.$bus.$off('keyUpEnter', this.onEnter)
     this.$bus.$off('keyUpBackspace', this.onBack)

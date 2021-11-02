@@ -1,28 +1,26 @@
 <template>
-<transition name="modal">
-    <div class="modal-mask">
-        <div class="modal-container" @click.stop >
-          <h2 :style="{ color }">{{ title }}</h2>
-          <textarea
-            v-autofocus
-            class="modal-textarea"
-            :class="{ oneline: limit <= 18 }"
-            ref="textarea"
-            :style="{ borderColor: color }"
-            v-model="inputText"
-            :maxlength="limit"
-          ></textarea>
-          <div class="botton-container">
-            <button :style="{ color }">
-              {{ LangString('CANCEL') }}
-            </button>
-            <button :style="{ color }">
-              {{ LangString('OK') }}
-            </button>
-          </div>
-        </div>
+  <div class="modal-mask">
+    <div class="modal-container" @click.stop>
+      <h2 :style="{ color }">{{ title }}</h2>
+      <textarea
+        v-autofocus
+        class="modal-textarea"
+        :class="{ oneline: limit <= 18 }"
+        ref="textarea"
+        :style="{ borderColor: color }"
+        v-model="inputText"
+        :maxlength="limit"
+      ></textarea>
+      <div class="botton-container">
+        <button :style="{ color }">
+          {{ LangString('CANCEL') }}
+        </button>
+        <button :style="{ color }">
+          {{ LangString('OK') }}
+        </button>
+      </div>
     </div>
-  </transition>
+  </div>
 </template>
 
 <script>
@@ -49,13 +47,14 @@ export default {
     limit: {
       type: Number,
       default: 255
+    },
+    color: {
+      type: String,
+      default: '#2A56C6'
     }
   },
   computed: {
-    ...mapGetters(['LangString']),
-    color () {
-      return '#2A56C6'
-    }
+    ...mapGetters(['LangString'])
   },
   methods: {
     scrollIntoView () {

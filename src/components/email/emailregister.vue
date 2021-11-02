@@ -5,8 +5,8 @@
     <div class="splash">
       <img src="/html/static/img/icons_app/email.png">
 
-      <div class="inputDiv" data-maxlength="25">
-        <input disabled maxlength="25" v-model="localEmail" :placeholder="LangString('APP_EMAIL_REGISTER_PLACEHOLDER')"/>
+      <div class="inputDiv">
+        <input disabled v-model="localEmail" :placeholder="LangString('APP_EMAIL_REGISTER_PLACEHOLDER')"/>
       </div>
     </div>
 
@@ -38,18 +38,25 @@ export default {
       this.ignoreControls = true
       // dopo i controlli metto le info nel input
       if (!this.localEmail) {
-        let select = document.querySelector('.inputDiv')
-        let options = { limit: parseInt(select.dataset.maxlength) || 64, title: 'Digita l\'email (senza ' + this.config.email_suffix + ')' }
-        this.$phoneAPI.getReponseText(options).then(data => {
-          if (data.text.length > 25) {
-            this.$phoneAPI.sendErrorMessage('Non puoi digitare tutti questi caratteri in questo campo')
+        // let select = document.querySelector('.inputDiv')
+        Modal.CreateTextModal({
+          limit: 25,
+          title: this.LangString('APP_EMAIL_INSERT_EMAIL_TITLE'),
+          color: 'rgb(216, 71, 49)'
+        })
+        .then(resp => {
+          if (resp.text.length > 25) {
+            this.$phoneAPI.sendErrorMessage(this.LangString('APP_EMAIL_ERROR_TOO_MANY_CHARS'))
           } else {
-            if (!data.text.includes(this.config.email_suffix)) { data.text = data.text + this.config.email_suffix }
-            data.text = data.text.replace(' ', '_')
-            this.localEmail = data.text
+            if (!resp.text.includes(this.config.email_suffix)) {
+              resp.text = resp.text + this.config.email_suffix
+            }
+            resp.text = resp.text.replace(' ', '_')
+            this.localEmail = resp.text
           }
           this.ignoreControls = false
         })
+        .catch(e => { this.ignoreControls = false })
       } else {
         this.createModal()
       }

@@ -104,8 +104,8 @@ export default {
       this.creaGruppo({ selected: this.selectedContacts, contacts: this.contacts, groupTitle: groupInfo.title, groupImage: groupInfo.image, myInfo })
       this.$router.push({ name: 'whatsapp' })
     },
-    onUp: function () {
-      if (this.ignoreControls === true) return
+    onUp () {
+      if (this.ignoreControls) return
       if (this.currentPage === this.STATES.INFO_GRUPPO) {
         let select = document.querySelector('.group.select')
         if (select === null) {
@@ -134,8 +134,8 @@ export default {
         this.scrollIntoView()
       }
     },
-    onDown: function () {
-      if (this.ignoreControls === true) return
+    onDown () {
+      if (this.ignoreControls) return
       if (this.currentPage === this.STATES.INFO_GRUPPO) {
         let select = document.querySelector('.group.select')
         if (select === null) {
@@ -170,28 +170,33 @@ export default {
         {id: 1, title: this.LangString('APP_CONFIG_LINK_PICTURE'), icons: 'fa-link'},
         {id: 2, title: this.LangString('APP_CONFIG_TAKE_PICTURE'), icons: 'fa-camera'}
       ]
-      const resp = await Modal.CreateModal({ scelte })
-      if (resp.id === 1) {
-        Modal.CreateTextModal({ text: 'https://i.imgur.com/' }).then(valueText => {
-          if (valueText.text !== '' && valueText.text !== undefined && valueText.text !== null && valueText.text !== 'https://i.imgur.com/') {
-            this.ignoreControls = false
-            this.updateGroupVars({value: valueText.text, key: 'image'})
-            setTimeout(() => {
-              this.currentPage = this.STATES.INFO_GRUPPO
-            }, 50)
-          }
-        })
-      } else if (resp.id === 2) {
-        const pic = await this.$phoneAPI.takePhoto()
-        if (pic && pic !== '') {
-          this.ignoreControls = false
-          this.updateGroupVars({value: pic, key: 'image'})
-          setTimeout(() => { this.currentPage = this.STATES.INFO_GRUPPO }, 50)
+      Modal.CreateModal({ scelte })
+      .then(async choice => {
+        switch(choice.id) {
+          case 1:
+            Modal.CreateTextModal({
+              title: this.LangString('TYPE_LINK'),
+              text: 'https://i.imgur.com/'
+            })
+            .then(resp => {
+              if (resp.text !== '' && resp.text !== undefined && resp.text !== null && resp.text !== 'https://i.imgur.com/') {
+                this.ignoreControls = false
+                this.updateGroupVars({value: resp.text, key: 'image'})
+                setTimeout(() => { this.currentPage = this.STATES.INFO_GRUPPO }, 50)
+              }
+            })
+            .catch(e => { this.ignoreControls = false })
+            break
+          case 2:
+            const pic = await this.$phoneAPI.takePhoto()
+            if (pic && pic !== '') {
+              this.ignoreControls = false
+              this.updateGroupVars({value: pic, key: 'image'})
+              setTimeout(() => { this.currentPage = this.STATES.INFO_GRUPPO }, 50)
+            }
+            break
         }
-      }
-      // bo questo forse dovrebbe venire chiamato appena l'if
-      // ha finito di venire eseguito
-      this.currentPage = this.STATES.INFO_GRUPPO
+      })
     },
     stylePuce (data) {
       data = data || {}
@@ -210,17 +215,25 @@ export default {
       }
     },
     onEnter () {
-      if (this.ignoreControls === true) return
+      if (this.ignoreControls) return
       if (this.currentPage === this.STATES.INFO_GRUPPO) {
         let select = document.querySelector('.group.select')
         if (select === null) return
         if (select.dataset !== null) {
           if (select.dataset.type === 'text') {
             const $input = select.querySelector('input')
-            this.$phoneAPI.getReponseText({ limit: parseInt(select.dataset.maxlength) || 64, text: select.dataset.defaultValue || '', title: select.dataset.title || '' }).then(data => {
-              $input.value = data.text
-              $input.dispatchEvent(new window.Event('change'))
+            Modal.CreateTextModal({
+              limit: parseInt(select.dataset.maxlength) || 64,
+              text: select.dataset.defaultValue || '',
+              title: select.dataset.title || ''
             })
+            .then(resp => {
+              if (resp !== undefined && resp.text !== undefined) {
+                $input.value = resp.text
+                $input.dispatchEvent(new window.Event('change'))
+              }
+            })
+            .catch(e => { this.ignoreControls = false })
           }
           if (select.dataset.type === 'button') {
             select.click()
@@ -232,7 +245,7 @@ export default {
         // con questo prendo il contatto dalla lista tornata dal lua
         // e uso l'indicizzazione a id per aggiornare lo stato della checkbox
         // nella lista sull'html
-        if (contatto.selected === undefined || contatto.selected === null) { contatto.selected = false }
+        if (contatto.selected === undefined || contatto.selected === null) contatto.selected = false
         contatto.selected = !contatto.selected
         this.selectedContacts[contatto.id] = !this.selectedContacts[contatto.id]
         setTimeout(() => {
@@ -245,7 +258,7 @@ export default {
       }
     },
     onBackspace () {
-      if (this.ignoreControls === true) { this.ignoreControls = false; return }
+      if (this.ignoreControls) { this.ignoreControls = false; return }
       if (this.currentPage === this.STATES.INFO_GRUPPO) { this.currentPage = this.STATES.SCELTA_PERSONE; return }
       this.$router.push({ name: 'whatsapp' })
     },
@@ -254,38 +267,40 @@ export default {
       // qui controllo: se premi destra mentre sei in fase di modifica (vedi whatsapp edit grouo)
       // allora gli creo un modal custom
       if (this.isAddingMembers === null || !this.isAddingMembers) {
-        let scelte = [
+        Modal.CreateModal({ scelte: [
           {id: 1, title: this.LangString('APP_WHATSAPP_NEXT_STEP'), icons: 'fa-arrow-right'},
           {id: 2, title: this.LangString('CANCEL'), icons: 'fa-undo', color: 'red'}
-        ]
-        const resp = await Modal.CreateModal({ scelte })
-        switch (resp.id) {
-          case 1:
-            this.currentPage = this.STATES.INFO_GRUPPO
-            this.ignoreControls = false
-            break
-          case 2:
-            this.$router.push({ name: 'whatsapp' })
-            this.ignoreControls = false
-            break
-        }
+        ] })
+        .then(resp => {
+          switch (resp.id) {
+            case 1:
+              this.currentPage = this.STATES.INFO_GRUPPO
+              this.ignoreControls = false
+              break
+            case 2:
+              this.$router.push({ name: 'whatsapp' })
+              this.ignoreControls = false
+              break
+          }
+        })
       } else {
-        let scelte = [
+        Modal.CreateModal({ scelte: [
           {id: 1, title: this.LangString('APP_WHATSAPP_ADD_MEMBERS'), icons: 'fa-check', color: 'green'},
           {id: 2, title: this.LangString('CANCEL'), icons: 'fa-undo', color: 'red'}
-        ]
-        const resp = await Modal.CreateModal({ scelte })
-        switch (resp.id) {
-          case 1:
-            this.$router.push({ name: 'whatsapp.gruppo', params: { gruppo: this.gruppo, updategroups: true } })
-            this.ignoreControls = false
-            this.addSelectedMembers({ contacts: this.contacts, gruppo: this.gruppo, selected: this.selectedContacts })
-            break
-          case 2:
-            this.$router.push({ name: 'whatsapp' })
-            this.ignoreControls = false
-            break
-        }
+        ] })
+        .then(resp => {
+          switch (resp.id) {
+            case 1:
+              this.$router.push({ name: 'whatsapp.gruppo', params: { gruppo: this.gruppo, updategroups: true } })
+              this.ignoreControls = false
+              this.addSelectedMembers({ contacts: this.contacts, gruppo: this.gruppo, selected: this.selectedContacts })
+              break
+            case 2:
+              this.$router.push({ name: 'whatsapp' })
+              this.ignoreControls = false
+              break
+          }
+        })
       }
     }
   },

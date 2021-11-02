@@ -1,5 +1,3 @@
-import PhoneAPI from './../../PhoneAPI'
-
 const state = {
   bankAmount: 0,
   iban: '#######',
@@ -14,22 +12,7 @@ const getters = {
   movements: ({ movements }) => movements
 }
 
-const actions = {
-  // funzione outdated banca
-  // inviaSoldiAPI (_, { money, iban }) {
-  //   PhoneAPI.postUpdateMoney(money, iban)
-  // },
-  async createPagamento ({ commit }) {
-    var iban = await PhoneAPI.getReponseText({ limit: 200, title: 'Inserisci l\'iban del destinatario', text: '' })
-    var amount = await PhoneAPI.getReponseText({ limit: 200, title: 'Inserisci l\'ammontare del trasferimento', text: '' })
-    PhoneAPI.postUpdateMoney(Number(amount.text), iban.text.toUpperCase())
-    // commit('ADD_MOVEMENT', { money: Number(amount.text), iban: iban.text.toUpperCase() })
-  },
-  requestLocalFatture ({ commit }) {
-    PhoneAPI.requestFatture()
-    // commit('UPDATE_FATTURE', fatture)
-  }
-}
+const actions = {}
 
 const mutations = {
   SET_BANK_AMONT (state, data) {

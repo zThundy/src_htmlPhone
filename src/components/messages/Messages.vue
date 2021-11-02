@@ -128,7 +128,7 @@ export default {
       })
     },
     onUp () {
-      if (this.ignoreControls === true) return
+      if (this.ignoreControls) return
       if (this.selectMessage === -1) {
         this.selectMessage = this.messagesListApp.length - 1
       } else {
@@ -137,7 +137,7 @@ export default {
       this.scrollIntoView()
     },
     onDown () {
-      if (this.ignoreControls === true) return
+      if (this.ignoreControls) return
       if (this.selectMessage === -1) {
         this.selectMessage = this.messagesListApp.length - 1
       } else {
@@ -146,7 +146,7 @@ export default {
       this.scrollIntoView()
     },
     onEnter () {
-      if (this.ignoreControls === true) return
+      if (this.ignoreControls) return
       if (this.imgZoom && this.imgZoom.type) {
         if (this.imgZoom.type === 'video') {
           this.restartVideo()
@@ -156,10 +156,17 @@ export default {
       if (this.selectMessage !== -1) {
         this.onActionMessage(this.messagesListApp[this.selectMessage])
       } else {
-        this.$phoneAPI.getReponseText({ title: 'Digita il messaggio' }).then(data => {
-          let message = data.text.trim()
-          if (message && message !== '') this.$phoneAPI.post('sendMessage', { phoneNumber: this.phoneNumber, message: message })
+        Modal.CreateTextModal({
+          limit: 64,
+          title: this.LangString('TYPE_MESSAGE'),
+          color: 'rgb(194, 108, 7)'
         })
+        .then(resp => {
+          let message = resp.text.trim()
+          if (message && message !== '') this.$phoneAPI.post('sendMessage', { phoneNumber: this.phoneNumber, message: message })
+          this.ignoreControls = false
+        })
+        .catch(e => { this.ignoreControls = false })
       }
     },
     send () {
@@ -313,7 +320,7 @@ export default {
         this.CHANGE_BRIGHTNESS_STATE(true)
         return
       }
-      if (this.ignoreControls === true) return
+      if (this.ignoreControls) return
       if (this.selectMessage !== -1) {
         this.selectMessage = -1
       } else {
@@ -321,7 +328,7 @@ export default {
       }
     },
     onRight: function () {
-      if (this.ignoreControls === true) return
+      if (this.ignoreControls) return
       if (this.selectMessage === -1) {
         this.showOptions()
       }

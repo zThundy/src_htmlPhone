@@ -22,6 +22,7 @@
 <script>
 import { mapGetters, mapActions } from 'vuex'
 import PhoneTitle from './../PhoneTitle'
+import Modal from '@/components/Modal/index.js'
 
 export default {
   components: { PhoneTitle },
@@ -71,14 +72,21 @@ export default {
       this.currentSelect = this.currentSelect + 1
       this.scrollIntoView()
     },
-    async onEnter () {
-      const rep = await this.$phoneAPI.getReponseText({ title: 'Digita il messaggio' })
-      if (rep !== undefined && rep.text !== undefined) {
-        const message = rep.text.trim()
-        if (message.length !== 0) {
-          this.tchatSendMessage({ channel: this.channel, message })
+    onEnter () {
+      Modal.CreateTextModal({
+        limit: 64,
+        title: this.LangString('TYPE_MESSAGE'),
+        color: 'rgb(194, 108, 7)'
+      })
+      .then(resp => {
+        if (resp !== undefined && resp.text !== undefined) {
+          const message = resp.text.trim()
+          if (message.length !== 0) {
+            this.tchatSendMessage({ channel: this.channel, message })
+          }
         }
-      }
+      })
+      .catch(e => { })
     },
     sendMessage () {
       const message = this.message.trim()
@@ -108,7 +116,7 @@ export default {
     this.scrollIntoView()
     this.setChannel(this.$route.params.channel)
   },
-  mounted () {},
+  // mounted () {},
   beforeDestroy () {
     this.$bus.$off('keyUpArrowDown', this.onDown)
     this.$bus.$off('keyUpArrowUp', this.onUp)

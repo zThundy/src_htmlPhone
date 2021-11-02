@@ -118,7 +118,7 @@ export default {
       })
     },
     onUp () {
-      if (this.ignoreControls === true) return
+      if (this.ignoreControls) return
       if (this.currentSelected === -1) {
         this.currentSelected = this.messaggi[String(this.gruppo.id)].length - 1
       } else {
@@ -127,7 +127,7 @@ export default {
       this.scrollIntoView()
     },
     onDown () {
-      if (this.ignoreControls === true) return
+      if (this.ignoreControls) return
       if (this.currentSelected === -1) {
         this.currentSelected = this.messaggi[String(this.gruppo.id)].length - 1
       } else {
@@ -141,13 +141,13 @@ export default {
         this.CHANGE_BRIGHTNESS_STATE(true)
         return
       }
-      if (this.ignoreControls === true) { this.ignoreControls = false; return }
+      if (this.ignoreControls) { this.ignoreControls = false; return }
       if (this.currentSelected !== -1) { this.currentSelected = -1; return }
       this.$router.push({ name: 'whatsapp' })
     },
     async onRight () {
       if (this.isRecording) return
-      if (this.ignoreControls === true) return
+      if (this.ignoreControls) return
       // qui controllo se hai un messaggio selezionato
       // così da farti uscire le impostazioni di quel messaggio
       // oppure della chat
@@ -226,27 +226,36 @@ export default {
         this.ignoreControls = false
         return
       }
-      if (this.ignoreControls === true) return
-      this.$phoneAPI.getReponseText({ title: 'Invia un messaggio' }).then(data => {
-        let message = data.text.trim()
-        if (message !== '') {
-          if (this.myPhoneNumber.includes('#') || this.myPhoneNumber === 0 || this.myPhoneNumber === '0') {
-            this.$phoneAPI.ongenericNotification({
-              title: 'WHATSAPP_INFO_TITLE',
-              message: 'WHATSAPP_CANNOT_GET_PHONE_NUMBER',
-              icon: 'whatsapp',
-              color: 'rgb(108, 250, 108)',
-              appName: 'Whatsapp'
-            })
-          } else {
-            this.sendMessageInGroup({ gruppo: this.gruppo, message: message, phoneNumber: this.myPhoneNumber })
+      if (this.ignoreControls) return
+      Modal.CreateTextModal({
+        title: this.LangString('TYPE_LINK'),
+        text: 'https://i.imgur.com/',
+        color: 'rgb(112, 255, 125)',
+        limit: 64
+      })
+      .then(resp => {
+        if (resp.text !== '' && resp.text !== undefined && resp.text !== null && resp.text !== 'https://i.imgur.com/') {
+          const message = resp.text.trim()
+          if (message !== '') {
+            if (this.myPhoneNumber.includes('#') || this.myPhoneNumber === 0 || this.myPhoneNumber === '0') {
+              this.$phoneAPI.ongenericNotification({
+                title: 'WHATSAPP_INFO_TITLE',
+                message: 'WHATSAPP_CANNOT_GET_PHONE_NUMBER',
+                icon: 'whatsapp',
+                color: 'rgb(108, 250, 108)',
+                appName: 'Whatsapp'
+              })
+            } else {
+              this.sendMessageInGroup({ gruppo: this.gruppo, message: message, phoneNumber: this.myPhoneNumber })
+            }
+            setTimeout(() => {
+              this.currentSelected = this.messaggi[String(this.gruppo.id)].length - 1
+              this.scrollIntoView()
+            }, 200)
           }
-          setTimeout(() => {
-            this.currentSelected = this.messaggi[String(this.gruppo.id)].length - 1
-            this.scrollIntoView()
-          }, 200)
         }
       })
+      .catch(e => { this.ignoreControls = false })
     },
     listenAudio (message) {
       setTimeout(() => {

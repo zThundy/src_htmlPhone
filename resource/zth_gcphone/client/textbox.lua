@@ -3,6 +3,11 @@ RegisterNUICallback('reponseText', function(data, cb)
     cb(json.encode({ text = resp }))
 end)
 
+RegisterNUICallback("setNuiFocus", function(data, cb)
+    SetNuiFocus(data, false)
+    cb("ok")
+end)
+
 function GetResponseText(d)
     local limit = d.limit or 255
     local text = d.text or ''

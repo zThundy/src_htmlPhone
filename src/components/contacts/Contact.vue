@@ -67,7 +67,7 @@ export default {
   },
   methods: {
     onUp () {
-      if (this.ignoreControls === true) return
+      if (this.ignoreControls) return
       let select = document.querySelector('.group.select')
       if (select.previousElementSibling !== null) {
         document.querySelectorAll('.group').forEach(elem => {
@@ -81,7 +81,7 @@ export default {
       }
     },
     onDown () {
-      if (this.ignoreControls === true) return
+      if (this.ignoreControls) return
       let select = document.querySelector('.group.select')
       if (select.nextElementSibling !== null) {
         document.querySelectorAll('.group').forEach(elem => {
@@ -95,22 +95,25 @@ export default {
       }
     },
     onEnter () {
-      if (this.ignoreControls === true) return
+      if (this.ignoreControls) return
       let select = document.querySelector('.group.select')
       if (select.dataset.type === 'text') {
-        let options = {
+        Modal.CreateTextModal({
           limit: parseInt(select.dataset.maxlength) || 64,
           text: this.contact[select.dataset.model] || '',
-          title: select.dataset.title || ''
-        }
-        this.$phoneAPI.getReponseText(options).then(data => {
+          title: select.dataset.title || '',
+          color: 'rgb(194, 108, 7)'
+        })
+        .then(resp => {
           if (select.dataset.model === 'email') {
-            if (!data.text.includes(this.config.email_suffix)) {
-              data.text = data.text + this.config.email_suffix
+            if (!resp.text.includes(this.config.email_suffix)) {
+              resp.text = resp.text + this.config.email_suffix
             }
           }
-          this.contact[select.dataset.model] = data.text
+          this.contact[select.dataset.model] = resp.text
+          this.ignoreControls = false
         })
+        .catch(e => { this.ignoreControls = false })
       }
       if (select.dataset.action && this[select.dataset.action]) {
         this[select.dataset.action]()
@@ -125,7 +128,7 @@ export default {
       history.back()
     },
     cancel () {
-      if (this.ignoreControls === true) return
+      if (this.ignoreControls) return
       history.back()
     },
     forceCancel () {

@@ -146,22 +146,26 @@ export default {
           { id: 1, title: this.LangString('APP_BOURSE_CHOICE_BUY'), icons: 'fa-dollar-sign', color: 'green' },
           { id: 2, title: this.LangString('CANCEL'), icons: 'fa-undo', color: 'red' }
         ]
-        Modal.CreateModal({ scelte }).then(reponse => {
-          if (reponse.id === 1) {
-            this.$phoneAPI.getReponseText({
-              limit: 5,
-              text: '1',
-              title: this.LangString('APP_BOURSE_BUY_TITLE')
-            }).then(data => {
-              // console.log(data.text)
-              // console.log(isNaN(Number(data.text)))
-              if (data && data.text && !isNaN(Number(data.text))) {
-                this.$phoneAPI.buyCrypto({ amount: Number(data.text), crypto: this.stocksInfo[this.currentSelect] })
-              }
+        Modal.CreateModal({ scelte }).then(response => {
+          switch(response.id) {
+            case 1:
+              Modal.CreateTextModal({
+                limit: 5,
+                text: '1',
+                title: this.LangString('APP_BOURSE_BUY_TITLE'),
+                color: 'rgb(77, 100, 111)'
+              })
+              .then(resp => {
+                if (resp && resp.text && !isNaN(Number(resp.text))) {
+                  this.$phoneAPI.buyCrypto({ amount: Number(resp.text), crypto: this.stocksInfo[this.currentSelect] })
+                }
+                this.ignoreControls = false
+              })
+              .catch(e => { this.ignoreControls = false })
+              break
+            case 2:
               this.ignoreControls = false
-            })
-          } else {
-            this.ignoreControls = false
+              break
           }
         })
       } else {
@@ -170,22 +174,26 @@ export default {
           { id: 1, title: this.LangString('APP_BOURSE_CHOICE_SELL'), icons: 'fa-dollar-sign', color: '#ff5f13' },
           { id: 2, title: this.LangString('CANCEL'), icons: 'fa-undo', color: 'red' }
         ]
-        Modal.CreateModal({ scelte }).then(reponse => {
-          if (reponse.id === 1) {
-            this.$phoneAPI.getReponseText({
-              limit: 5,
-              text: '1',
-              title: this.LangString('APP_BOURSE_SELL_TITLE')
-            }).then(data => {
-              // console.log(data.text)
-              // console.log(isNaN(Number(data.text)))
-              if (data && data.text && !isNaN(Number(data.text))) {
-                this.$phoneAPI.sellCrypto({ amount: Number(data.text), crypto: this.myStocksInfo[this.currentSelect], price: this.getCurrentMarket(this.myStocksInfo[this.currentSelect]) })
-              }
+        Modal.CreateModal({ scelte }).then(response => {
+          switch(response.id) {
+            case 1:
+              Modal.CreateTextModal({
+                limit: 5,
+                text: '1',
+                title: this.LangString('APP_BOURSE_SELL_TITLE'),
+                color: 'rgb(77, 100, 111)'
+              })
+              .then(resp => {
+                if (resp && resp.text && !isNaN(Number(resp.text))) {
+                  this.$phoneAPI.sellCrypto({ amount: Number(resp.text), crypto: this.myStocksInfo[this.currentSelect], price: this.getCurrentMarket(this.myStocksInfo[this.currentSelect]) })
+                }
+                this.ignoreControls = false
+              })
+              .catch(e => { this.ignoreControls = false })
+              break
+            case 2:
               this.ignoreControls = false
-            })
-          } else {
-            this.ignoreControls = false
+              break
           }
         })
       }

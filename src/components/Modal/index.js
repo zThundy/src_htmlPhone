@@ -7,10 +7,7 @@ import PhoneAPI from '@/PhoneAPI'
 export default {
   CreateModal (propsData = {}) {
     return new Promise((resolve, reject) => {
-      let modal = new (Vue.extend(Modal))({
-        el: document.createElement('div'),
-        propsData
-      })
+      let modal = new (Vue.extend(Modal))({ el: document.createElement('div'), propsData })
       document.querySelector('#app').appendChild(modal.$el)
       modal.$on('select', (data) => {
         resolve(data)
@@ -26,8 +23,8 @@ export default {
   },
   CreateTextModal (propsData = {}) {
     const config = PhoneAPI.config
-    console.log(config.useHTMLTextbox)
     if (config.useHTMLTextbox) {
+      PhoneAPI.setNUIFocus(true)
       return new Promise((resolve, reject) => {
         let modal = new (Vue.extend(TextModal))({ el: document.createElement('div'), propsData })
         modal.$el.onkeydown = (e) => {
@@ -39,6 +36,8 @@ export default {
             // if backspace is pressed and message is empty then
             // close modal with backspace pressed error code
             reject('backspace-pressed')
+            // reset nui focus
+            PhoneAPI.setNUIFocus(false)
           } else if (key === 'enter') {
             // this removed the element form the created div
             modal.$el.parentNode.removeChild(modal.$el)
@@ -52,13 +51,22 @@ export default {
               // inserted text
               resolve({ text: modal.inputText })
             }
+            // reset nui focus
+            PhoneAPI.setNUIFocus(false)
           }
         }
         // append the modal div element to the main #app div
         document.querySelector('#app').appendChild(modal.$el)
       })
     } else {
-      return PhoneAPI.getReponseText(propsData)
+      return new Promise((resolve, reject) => {
+        const response = PhoneAPI.getReponseText(propsData)
+        if (response !== undefined && response.text) {
+          resolve(response)
+        } else {
+          reject('no-text-given')
+        }
+      })
     }
   }
 }

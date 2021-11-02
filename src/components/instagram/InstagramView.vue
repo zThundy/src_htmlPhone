@@ -111,7 +111,7 @@ export default {
       })
     },
     onUp () {
-      if (this.ignoreControls === true) return
+      if (this.ignoreControls) return
       if (this.selectMessage === -1) {
         this.selectMessage = 0
       } else {
@@ -120,7 +120,7 @@ export default {
       this.scrollIntoView()
     },
     onDown () {
-      if (this.ignoreControls === true) return
+      if (this.ignoreControls) return
       if (this.selectMessage === -1) {
         this.selectMessage = 0
       } else {
@@ -129,7 +129,7 @@ export default {
       this.scrollIntoView()
     },
     async onEnter () {
-      if (this.ignoreControls === true) return
+      if (this.ignoreControls) return
       if (this.selectMessage !== -1) {
         this.showOption()
       }
@@ -140,7 +140,7 @@ export default {
         this.CHANGE_BRIGHTNESS_STATE(true)
         return
       }
-      if (this.ignoreControls === true) return
+      if (this.ignoreControls) return
       if (this.selectMessage !== -1) {
         this.selectMessage = -1
       } else {

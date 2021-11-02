@@ -112,29 +112,36 @@ export default {
       this.selectedMessage = (this.selectedMessage > 23) ? this.selectedMessage : this.selectedMessage + 3
       this.scrollIntoView()
     },
-    async onEnter () {
+    onEnter () {
       if (this.ignoreControls) return
       this.ignoreControls = true
       let scelte = [
-        {id: 1, title: this.LangString('APP_INSTAGRAM_WRITE_CAPTION'), icons: 'fa-pencil-alt'},
-        {id: 2, title: this.LangString('APP_INSTAGRAM_POST_IMAGE'), icons: 'fa-camera'}
+        { id: 1, title: this.LangString('APP_INSTAGRAM_WRITE_CAPTION'), icons: 'fa-pencil-alt' },
+        { id: 2, title: this.LangString('APP_INSTAGRAM_POST_IMAGE'), icons: 'fa-camera' }
       ]
-      const resp = await Modal.CreateModal({ scelte: scelte })
-      if (resp.id === 1) {
-        Modal.CreateTextModal({ }).then(valueText => {
-          if (valueText.text !== '' && valueText.text !== undefined && valueText.text !== null) {
-            this.instagramPostImage({didascalia: valueText.text, filter: this.filters[this.selectedMessage], message: this.tempImage, author: this.instagramUsername})
+      Modal.CreateModal({ scelte: scelte }).then(resp => {
+        switch(resp.id) {
+          case 1:
+            Modal.CreateTextModal({
+              title: this.LangString('TYPE_MESSAGE'),
+              limit: 255
+            })
+            .then(resp => {
+              if (resp.text !== '' && resp.text !== undefined && resp.text !== null) {
+                this.instagramPostImage({didascalia: resp.text, filter: this.filters[this.selectedMessage], message: this.tempImage, author: this.instagramUsername})
+                this.$bus.$emit('instagramHome')
+              }
+              this.ignoreControls = false
+            })
+            .catch(e => { this.ignoreControls = false })
+            break
+          case 2:
+            this.instagramPostImage({didascalia: '', filter: this.filters[this.selectedMessage], message: this.tempImage, author: this.instagramUsername})
             this.ignoreControls = false
             this.$bus.$emit('instagramHome')
-          }
-        })
-      } else if (resp.id === 2) {
-        this.instagramPostImage({didascalia: '', filter: this.filters[this.selectedMessage], message: this.tempImage, author: this.instagramUsername})
-        this.ignoreControls = false
-        this.$bus.$emit('instagramHome')
-      } else {
-        this.ignoreControls = false
-      }
+            break
+        }
+      })
     }
   },
   created () {

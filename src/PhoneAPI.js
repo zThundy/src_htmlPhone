@@ -157,6 +157,10 @@ class PhoneAPI {
     return this.post('sendErrorMessage', { message: message })
   }
 
+  async setNUIFocus (bool) {
+    return this.post('setNuiFocus', bool)
+  }
+
   async getReponseText (data) {
     if (process.env.NODE_ENV === 'production') {
       return this.post('reponseText', data || {})
