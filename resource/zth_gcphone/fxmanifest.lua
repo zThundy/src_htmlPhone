@@ -42,6 +42,7 @@ client_script {
 
     "client/req.lua",
 
+    "client/textbox.lua",
     "client/photo.lua",
     "client/app_tchat.lua",
     "client/bank.lua",

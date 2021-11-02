@@ -99,11 +99,6 @@ RegisterNUICallback('blur', function(data, cb)
     cb("ok")
 end)
 
-RegisterNUICallback('reponseText', function(data, cb)
-    local resp = GetResponseText(data)
-    cb(json.encode({ text = resp }))
-end)
-
 RegisterNUICallback('sendMessage', function(data, cb)
     if not GLOBAL_AIRPLANE then
         if data.message == '%pos%' then
