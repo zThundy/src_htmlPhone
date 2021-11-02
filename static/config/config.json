@@ -22,6 +22,8 @@
     "#78909C"
   ],
 
+  "useHTMLTextbox": false,
+
   "defaultVolume": 0.2,
   "fileUploader": {
     "ip": "TYPE_YOUR_SERVER_IP_HERE",
