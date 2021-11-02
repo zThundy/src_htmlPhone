@@ -6,13 +6,10 @@ Config.AuthKey = "YOUR_KEY_HERE"
 -- dead or not. You MUST know how to implement it, see client.lua for more info
 Config.AmbulanceJobEventName = "esx_ambulancejob:setDeathStatus"
 
--- for tokovoip addon ask zthundy on discord for a custom version of
--- the voip
--- ONLY ONE CAN BE TRUE
-Config.EnableTokoVoip = false
-Config.EnableSaltyChat = false
-Config.EnableVoiceRTC = true
-Config.EnablePMAVoice = false
+-- with this you can choose what voip type you
+-- are using on your server.
+-- VOIP supported: tokovoip, saltychat, pmavoice, voicertc
+Config.VOIPType = "saltychat"
 
 -- this is the key used to open the phone
 Config.KeyToOpenPhone = "k"

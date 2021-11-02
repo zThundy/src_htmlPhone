@@ -200,16 +200,16 @@ AddEventHandler("gcPhone:acceptCall", function(infoCall, initiator)
                 end
             end
         end)
-        if Config.EnableTokoVoip then
+        if Config.VOIPType == "tokovoip" then
             TokovoipEnstablishCall(infoCall.id)
-        elseif Config.EnableSaltyChat then
+        elseif Config.VOIPType == "saltychat" then
             if infoCall then
                 gcPhoneServerT.setEndpointSource(infoCall.receiver_src)
                 gcPhoneServerT.EstablishCall(infoCall.receiver_src)
             end
-        elseif Config.EnablePMAVoice then
+        elseif Config.VOIPType == "pmavoice" then
             PMAVoiceEnstablishCall(infoCall.id)
-        elseif Config.EnableVoiceRTC then
+        elseif Config.VOIPType == "voicertc" then
             -- noting for now :P
         end
     end
@@ -229,16 +229,17 @@ AddEventHandler("gcPhone:rejectCall", function(infoCall, callDropped)
 
     if inCall then
         inCall = false
-        if Config.EnableTokoVoip then
+        if Config.VOIPType == "tokovoip" then
             TokovoipEndCall(TokoVoipID)
-        elseif Config.EnableSaltyChat then
+        elseif Config.VOIPType == "saltychat" then
             local endPoint = gcPhoneServerT.getEndpointSource()
             if endPoint then
                 gcPhoneServerT.EndCall(endPoint)
                 gcPhoneServerT.removeEndpointSource()
             end
-        elseif Config.EnablePMAVoice then
-        elseif Config.EnableVoiceRTC then
+        elseif Config.VOIPType == "pmavoice" then
+            PMAVoiceEndCall(0)
+        elseif Config.VOIPType == "voicertc" then
             -- nothing for now :P
         end
     end
