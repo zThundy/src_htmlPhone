@@ -22,7 +22,7 @@
     "#78909C"
   ],
 
-  "useHTMLTextbox": true,
+  "useHTMLTextbox": false,
 
   "defaultVolume": 0.2,
   "fileUploader": {
