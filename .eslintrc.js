@@ -25,6 +25,7 @@ module.exports = {
     'keyword-spacing': "off",
     'comma-dangle': "warn",
     'no-unused-vars': "warn",
-    'quotes': "warn"
+    'quotes': "warn",
+    'no-redeclare': "off"
   }
 }
