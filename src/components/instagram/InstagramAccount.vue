@@ -262,11 +262,10 @@ export default {
     onPressChangeAvartar () {
       try {
         this.ignoreControls = true
-        let scelte = [
+        Modal.CreateModal({ scelte: [
           { id: 1, title: this.LangString('APP_TWITTER_LINK_PICTURE'), icons: 'fa-link' },
           { id: 2, title: this.LangString('APP_TWITTER_TAKE_PICTURE'), icons: 'fa-camera' }
-        ]
-        Modal.CreateModal({ scelte: scelte })
+        ] })
         .then(async resp => {
           switch(resp.id) {
             case 1:
@@ -294,6 +293,7 @@ export default {
               break
           }
         })
+        .catch(e => { this.ignoreControls = false })
       } catch (e) {}
     },
     login () {

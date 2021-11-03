@@ -31,49 +31,55 @@ export default {
   watch: { },
   methods: {
     ...mapActions(['twitterPostTweet']),
-    async onEnter () {
+    onEnter () {
       if (this.ignoreControls) return
       this.ignoreControls = true
-      let scelte = [
-        {id: 1, title: this.LangString('APP_TWITTER_POST_TWEET'), icons: 'fa-comment'},
-        {id: 2, title: this.LangString('APP_TWITTER_POST_PICTURE'), icons: 'fa-camera'}
-      ]
-      let resp = await Modal.CreateModal({ scelte: scelte })
-      if (resp.id === 1) {
-        this.postTextTweet()
-        this.ignoreControls = false
-      } else if (resp.id === 2) {
-        this.choosePicType()
-      }
+      Modal.CreateModal({ scelte: [
+        { id: 1, title: this.LangString('APP_TWITTER_POST_TWEET'), icons: 'fa-comment' },
+        { id: 2, title: this.LangString('APP_TWITTER_POST_PICTURE'), icons: 'fa-camera' }
+      ] })
+      .then(resp => {
+        switch(resp.id) {
+          case 1:
+            this.postTextTweet()
+            this.ignoreControls = false
+            break
+          case 2:
+            this.choosePicType()
+            break
+        }
+      })
+      .catch(e => { this.ignoreControls = false })
     },
     async choosePicType () {
       this.ignoreControls = true
-      let scelte = [
-        {id: 1, title: this.LangString('APP_CONFIG_LINK_PICTURE'), icons: 'fa-link'},
-        {id: 2, title: this.LangString('APP_CONFIG_TAKE_PICTURE'), icons: 'fa-camera'}
-      ]
-      const resp = await Modal.CreateModal({ scelte: scelte })
-      if (resp.id === 1) {
-        Modal.CreateTextModal({
-          text: 'https://i.imgur.com/',
-          title: this.LangString('TYPE_LINK')
-        })
-        .then(valueText => {
-          if (valueText.text !== '' && valueText.text !== undefined && valueText.text !== null && valueText.text !== 'https://i.imgur.com/') {
-            this.twitterPostTweet({ message: valueText.text })
-            this.ignoreControls = false
-          }
-        })
-        .catch((e) => { this.ignoreControls = false })
-      } else if (resp.id === 2) {
-        const pic = await this.$phoneAPI.takePhoto()
-        if (pic && pic !== '') {
-          this.twitterPostTweet({ message: pic })
-          this.ignoreControls = false
+      Modal.CreateModal({ scelte: [
+        { id: 1, title: this.LangString('APP_CONFIG_LINK_PICTURE'), icons: 'fa-link' },
+        { id: 2, title: this.LangString('APP_CONFIG_TAKE_PICTURE'), icons: 'fa-camera' }
+      ] })
+      .then(async resp => {
+        switch(resp.id) {
+          case 1:
+            Modal.CreateTextModal({
+              text: 'https://i.imgur.com/',
+              title: this.LangString('TYPE_LINK')
+            })
+            .then(value => {
+              this.twitterPostTweet({ message: value.text })
+              this.ignoreControls = false
+            })
+            .catch(e => { this.ignoreControls = false })
+            break
+          case 2:
+            const pic = await this.$phoneAPI.takePhoto()
+            if (pic && pic !== '') {
+              this.twitterPostTweet({ message: pic })
+              this.ignoreControls = false
+            }
+            break
         }
-      } else {
-        this.ignoreControls = false
-      }
+      })
+      .catch(e => { this.ignoreControls = false })
     },
     onBack () {
       if (this.ignoreControls) return

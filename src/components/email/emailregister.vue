@@ -78,7 +78,8 @@ export default {
         { id: 2, title: this.LangString('APP_EMAIL_REGISTER_CHOICE_TWO'), icons: 'fa-check', color: 'green' },
         { id: 0, title: this.LangString('CANCEL'), icons: 'fa-undo', color: 'red' }
       ]
-      Modal.CreateModal({ scelte: options }).then(resp => {
+      Modal.CreateModal({ scelte: options })
+      .then(resp => {
         switch (resp.id) {
           case 0:
             this.ignoreControls = false
@@ -95,6 +96,7 @@ export default {
             break
         }
       })
+      .catch(e => { this.ignoreControls = false })
     }
   },
   created () {

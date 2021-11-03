@@ -95,28 +95,16 @@ export default {
     showOption () {
       this.ignoreControls = true
       const tweet = this.tweets[this.selectMessage]
-      let optionsChoix = [{
-        id: 1,
-        title: this.LangString('APP_TWITTER_LIKE'),
-        icons: 'fa-heart'
-      }, {
-        id: 2,
-        title: this.LangString('APP_TWITTER_REPLY'),
-        icons: 'fa-retweet'
-      }, {
-        id: -1,
-        title: this.LangString('CANCEL'),
-        icons: 'fa-undo',
-        color: 'red'
-      }]
+      let scelte = [
+        { id: 1, title: this.LangString('APP_TWITTER_LIKE'), icons: 'fa-heart' },
+        { id: 2, title: this.LangString('APP_TWITTER_REPLY'), icons: 'fa-retweet' },
+        { id: -1, title: this.LangString('CANCEL'), icons: 'fa-undo', color: 'red' }
+      ]
       if (this.isImage(tweet.message)) {
-        optionsChoix = [{
-          id: 3,
-          title: this.LangString('APP_MESSAGE_ZOOM_IMG'),
-          icons: 'fa-search'
-        }, ...optionsChoix]
+        scelte = [{ id: 3, title: this.LangString('APP_MESSAGE_ZOOM_IMG'), icons: 'fa-search' }, ...scelte]
       }
-      Modal.CreateModal({ scelte: optionsChoix }).then(scelte => {
+      Modal.CreateModal({ scelte: scelte })
+      .then(scelte => {
         this.ignoreControls = false
         switch (scelte.id) {
           case 1:
@@ -129,8 +117,11 @@ export default {
             this.imgZoom = tweet.message
             this.CHANGE_BRIGHTNESS_STATE(false)
             break
+          case -1:
+            this.ignoreControls = false
         }
       })
+      .catch(e => { this.ignoreControls = false })
     },
     isImage (mess) {
       return this.$phoneAPI.isLink(mess)

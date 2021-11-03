@@ -92,36 +92,36 @@ export default {
         scelte = [{id: 6, title: this.LangString('APP_PHONE_CALL_ANONYMOUS'), icons: 'fa-mask'}, ...scelte]
         scelte = [{id: 0, title: this.LangString('APP_PHONE_CALL'), icons: 'fa-phone'}, ...scelte]
       }
-      const rep = await Modal.CreateModal({ scelte })
-      switch (rep.id) {
-        case 0:
-          this.$phoneAPI.startCall({ numero })
-          this.updateIgnoredControls(false)
-          break
-        case 1:
-          this.deletePhoneHistory({ numero })
-          this.updateIgnoredControls(false)
-          break
-        case 2:
-          this.deleteAllPhoneHistory()
-          this.updateIgnoredControls(false)
-          break
-        case 4:
-          this.save(numero)
-          this.updateIgnoredControls(false)
-          break
-        case 5:
-          this.$router.push({ name: 'messages.view', params: { display: item.display, number: numero } })
-          this.updateIgnoredControls(false)
-          break
-        case 6:
-          this.$phoneAPI.startCall({ numero: '#' + numero })
-          this.updateIgnoredControls(false)
-          break
-      }
-      if (rep.title === 'cancel') {
-        this.updateIgnoredControls(false)
-      }
+      Modal.CreateModal({ scelte })
+      .then(resp => {
+        switch (resp.id) {
+          case 0:
+            this.$phoneAPI.startCall({ numero })
+            this.updateIgnoredControls(false)
+            break
+          case 1:
+            this.deletePhoneHistory({ numero })
+            this.updateIgnoredControls(false)
+            break
+          case 2:
+            this.deleteAllPhoneHistory()
+            this.updateIgnoredControls(false)
+            break
+          case 4:
+            this.save(numero)
+            this.updateIgnoredControls(false)
+            break
+          case 5:
+            this.$router.push({ name: 'messages.view', params: { display: item.display, number: numero } })
+            this.updateIgnoredControls(false)
+            break
+          case 6:
+            this.$phoneAPI.startCall({ numero: '#' + numero })
+            this.updateIgnoredControls(false)
+            break
+        }
+      })
+      .catch(e => { this.updateIgnoredControls(false) })
     },
     async onEnter () {
       if (this.ignoreControls) return

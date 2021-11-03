@@ -104,26 +104,29 @@ export default {
       } else {
         scelte = [{id: 2, title: this.LangString('APP_WHATSAPP_NEW_GROUP'), icons: 'fa-plus', color: 'green'}]
       }
-      const resp = await Modal.CreateModal({ scelte: scelte })
-      switch (resp.id) {
-        case 1:
-          this.ignoreControls = false
-          if (this.currentSelected === 1 || this.gruppi.length === 0) { this.currentSelected = -1 } else { this.currentSelected = 0 }
-          this.leaveGroup(resp.gruppo)
-          break
-        case 2:
-          this.ignoreControls = false
-          this.$router.push({ name: 'whatsapp.newgruppo' })
-          break
-        case 3:
-          this.ignoreControls = false
-          this.$router.push({ name: 'whatsapp.editgroup', params: { gruppo: resp.gruppo } })
-          break
-        case 4:
-          this.ignoreControls = false
-          this.$phoneAPI.post('deleteWhatsappGroup', { gruppo: resp.gruppo })
-          break
-      }
+      Modal.CreateModal({ scelte: scelte })
+      .then(resp => {
+        switch (resp.id) {
+          case 1:
+            this.ignoreControls = false
+            if (this.currentSelected === 1 || this.gruppi.length === 0) { this.currentSelected = -1 } else { this.currentSelected = 0 }
+            this.leaveGroup(resp.gruppo)
+            break
+          case 2:
+            this.ignoreControls = false
+            this.$router.push({ name: 'whatsapp.newgruppo' })
+            break
+          case 3:
+            this.ignoreControls = false
+            this.$router.push({ name: 'whatsapp.editgroup', params: { gruppo: resp.gruppo } })
+            break
+          case 4:
+            this.ignoreControls = false
+            this.$phoneAPI.post('deleteWhatsappGroup', { gruppo: resp.gruppo })
+            break
+        }
+      })
+      .catch(e => { this.ignoreControls = false })
     },
     onBackspace () {
       if (this.ignoreControls) { this.ignoreControls = false; return }

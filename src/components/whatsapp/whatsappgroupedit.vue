@@ -65,11 +65,11 @@ export default {
     },
     snapGroupImage () {
       this.ignoreControls = true
-      let scelte = [
+      Modal.CreateModal({ scelte: [
         {id: 1, title: this.LangString('APP_CONFIG_LINK_PICTURE'), icons: 'fa-link'},
         {id: 2, title: this.LangString('APP_CONFIG_TAKE_PICTURE'), icons: 'fa-camera'}
-      ]
-      Modal.CreateModal({ scelte }).then(async response => {
+      ] })
+      .then(async response => {
         switch(response.id) {
           case 1:
             Modal.CreateTextModal({
@@ -95,6 +95,7 @@ export default {
             break
         }
       })
+      .catch(e => { this.ignoreControls = false })
     },
     async modificaGruppo () {
       this.$router.push({ name: 'whatsapp' })

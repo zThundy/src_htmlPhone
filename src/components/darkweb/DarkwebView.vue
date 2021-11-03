@@ -1,7 +1,7 @@
 <template>
   <div style="height: 100%;">
     
-    <div class="phone_fullscreen_img" v-if="imgZoom !== undefined">
+    <div class="phone_fullscreen_img" v-if="imgZoom !== null">
       <img :src="imgZoom" />
     </div>
 
@@ -51,7 +51,7 @@ export default {
     return {
       currentSelected: -1,
       ignoreControls: false,
-      imgZoom: undefined
+      imgZoom: null
     }
   },
   computed: {
@@ -68,56 +68,46 @@ export default {
     async showOption () {
       this.ignoreControls = true
       const message = this.darkwebMessages[this.currentSelected]
-      let optionsChoix = [{
-        id: 1,
-        title: this.LangString('APP_DARKWEB_REPLY'),
-        icons: 'fa-retweet'
-      }, {
-        id: -1,
-        title: this.LangString('CANCEL'),
-        icons: 'fa-undo',
-        color: 'red'
-      }]
+      let scelte = [
+        { id: 1, title: this.LangString('APP_DARKWEB_REPLY'), icons: 'fa-retweet' },
+        { id: -1, title: this.LangString('CANCEL'), icons: 'fa-undo', color: 'red' }
+      ]
       if (this.isImage(message.message)) {
-        optionsChoix = [{
-          id: 2,
-          title: this.LangString('APP_MESSAGE_ZOOM_IMG'),
-          icons: 'fa-search'
-        }, ...optionsChoix]
+        scelte = [{ id: 2, title: this.LangString('APP_MESSAGE_ZOOM_IMG'), icons: 'fa-search' }, ...scelte]
       }
-      const scelte = await Modal.CreateModal({ scelte: optionsChoix })
-      this.ignoreControls = false
-      switch (scelte.id) {
-        case 1:
-          this.reply(message)
-          break
-        case 2:
-          this.imgZoom = message.message
-          this.CHANGE_BRIGHTNESS_STATE(false)
-          break
-      }
+      Modal.CreateModal({ scelte: scelte })
+      .then(resp => {
+        this.ignoreControls = false
+        switch (resp.id) {
+          case 1:
+            this.reply(message)
+            break
+          case 2:
+            this.imgZoom = message.message
+            this.CHANGE_BRIGHTNESS_STATE(false)
+            break
+        }
+      })
+      .catch(e => { this.ignoreControls = false })
     },
     reply (message) {
-      // const authorName = message.author
       const authorName = this.currentSelected
-      try {
-        this.ignoreControls = true
-        Modal.CreateTextModal({
-          title: this.LangString('TYPE_MESSAGE'),
-          color: '#606060',
-          text: `@${authorName}`
-        })
-        .then(resp => {
-          if (resp !== undefined && resp.text !== undefined) {
-            const message = resp.text.trim()
-            if (message.length !== 0) {
-              this.darkwebPostMessage({ message, mine: 1 })
-            }
+      this.ignoreControls = true
+      Modal.CreateTextModal({
+        title: this.LangString('TYPE_MESSAGE'),
+        color: '#606060',
+        text: `@${authorName}`
+      })
+      .then(resp => {
+        if (resp !== undefined && resp.text !== undefined) {
+          const message = resp.text.trim()
+          if (message.length !== 0) {
+            this.darkwebPostMessage({ message, mine: 1 })
           }
-          this.ignoreControls = false
-        })
-        .catch(e => { this.ignoreControls = false })
-      } catch (e) { }
+        }
+        this.ignoreControls = false
+      })
+      .catch(e => { this.ignoreControls = false })
     },
     resetScroll () {
       this.$nextTick(() => {
@@ -151,8 +141,8 @@ export default {
       }
     },
     onBack () {
-      if (this.imgZoom !== undefined) {
-        this.imgZoom = undefined
+      if (this.imgZoom !== null) {
+        this.imgZoom = null
         this.CHANGE_BRIGHTNESS_STATE(true)
         return
       }

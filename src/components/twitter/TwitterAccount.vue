@@ -266,73 +266,71 @@ export default {
       this.localAccount[key] = $event.target.value
     },
     setLocalAccountAvartar ($event) {
-      try {
-        this.ignoreControls = true
-        Modal.CreateModal({ scelte: [
-          { id: 1, title: this.LangString('APP_TWITTER_LINK_PICTURE'), icons: 'fa-link' },
-          { id: 2, title: this.LangString('APP_TWITTER_TAKE_PICTURE'), icons: 'fa-camera' }
-        ] }).then(async choice => {
-          switch(choice.id) {
-            case 1:
-              Modal.CreateTextModal({
-                text: this.twitterAvatarUrl || 'https://i.imgur.com/',
-                title: this.LangString('TYPE_LINK')
-              })
-              .then(resp => {
-                this.twitterSetAvatar({ avatarUrl: resp.text })
-                this.ignoreControls = false
-              })
-              .catch(e => { this.ignoreControls = false })
-              break
-            case 2:
-              const pic = await this.$phoneAPI.takePhoto()
-              if (pic && pic !== '') {
-                if (this.localAccount.avatarUrl === null) {
-                  this.localAccount.avatarUrl = pic
-                  this.twitterAvatarUrl = pic
-                }
-                this.twitterSetAvatar({ avatarUrl: pic })
-                this.ignoreControls = false
+      this.ignoreControls = true
+      Modal.CreateModal({ scelte: [
+        { id: 1, title: this.LangString('APP_TWITTER_LINK_PICTURE'), icons: 'fa-link' },
+        { id: 2, title: this.LangString('APP_TWITTER_TAKE_PICTURE'), icons: 'fa-camera' }
+      ] }).then(async choice => {
+        switch(choice.id) {
+          case 1:
+            Modal.CreateTextModal({
+              text: this.twitterAvatarUrl || 'https://i.imgur.com/',
+              title: this.LangString('TYPE_LINK')
+            })
+            .then(resp => {
+              this.twitterSetAvatar({ avatarUrl: resp.text })
+              this.ignoreControls = false
+            })
+            .catch(e => { this.ignoreControls = false })
+            break
+          case 2:
+            const pic = await this.$phoneAPI.takePhoto()
+            if (pic && pic !== '') {
+              if (this.localAccount.avatarUrl === null) {
+                this.localAccount.avatarUrl = pic
+                this.twitterAvatarUrl = pic
               }
-              break
-          }
-        })
-      } catch (e) { }
+              this.twitterSetAvatar({ avatarUrl: pic })
+              this.ignoreControls = false
+            }
+            break
+        }
+      })
+      .catch(e => { this.ignoreControls = false })
     },
     async onPressChangeAvartar () {
-      try {
-        this.ignoreControls = true
-        Modal.CreateModal({ scelte: [
-          { id: 1, title: this.LangString('APP_TWITTER_LINK_PICTURE'), icons: 'fa-link' },
-          { id: 2, title: this.LangString('APP_TWITTER_TAKE_PICTURE'), icons: 'fa-camera' }
-        ] })
-        .then(async response => {
-          switch(response.id) {
-            case 1:
-              Modal.CreateTextModal({
-                text: this.twitterAvatarUrl || 'https://i.imgur.com/',
-                title: this.LangString('TYPE_LINK')
-              })
-              .then(resp => {
-                this.twitterSetAvatar({ avatarUrl: resp.text })
-                this.ignoreControls = false
-              })
-              .catch(e => { this.ignoreControls = false })
-              break
-            case 2:
-              const pic = await this.$phoneAPI.takePhoto()
-              if (pic && pic !== '') {
-                if (this.localAccount.avatarUrl === null) {
-                  this.localAccount.avatarUrl = pic
-                  this.twitterAvatarUrl = pic
-                }
-                this.twitterSetAvatar({ avatarUrl: pic })
-                this.ignoreControls = false
+      this.ignoreControls = true
+      Modal.CreateModal({ scelte: [
+        { id: 1, title: this.LangString('APP_TWITTER_LINK_PICTURE'), icons: 'fa-link' },
+        { id: 2, title: this.LangString('APP_TWITTER_TAKE_PICTURE'), icons: 'fa-camera' }
+      ] })
+      .then(async response => {
+        switch(response.id) {
+          case 1:
+            Modal.CreateTextModal({
+              text: this.twitterAvatarUrl || 'https://i.imgur.com/',
+              title: this.LangString('TYPE_LINK')
+            })
+            .then(resp => {
+              this.twitterSetAvatar({ avatarUrl: resp.text })
+              this.ignoreControls = false
+            })
+            .catch(e => { this.ignoreControls = false })
+            break
+          case 2:
+            const pic = await this.$phoneAPI.takePhoto()
+            if (pic && pic !== '') {
+              if (this.localAccount.avatarUrl === null) {
+                this.localAccount.avatarUrl = pic
+                this.twitterAvatarUrl = pic
               }
-              break
-          }
-        })
-      } catch (e) {}
+              this.twitterSetAvatar({ avatarUrl: pic })
+              this.ignoreControls = false
+            }
+            break
+        }
+      })
+      .catch(e => { this.ignoreControls = false })
     },
     login () {
       this.twitterLogin({ username: this.localAccount.username, password: this.localAccount.password })

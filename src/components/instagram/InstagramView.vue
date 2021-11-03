@@ -3,10 +3,6 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cssgram/0.1.10/cssgram.min.css">
     <!-- <link rel="stylesheet" href="https://cssgram-cssgram.netdna-ssl.com/cssgram.min.css"> -->
 
-    <div class="phone_fullscreen_img" v-if="imgZoom !== undefined" @click.stop="imgZoom = undefined">
-      <img :src="imgZoom" />
-    </div>
-
     <div class="posts" v-for='(post, key) in instaPosts' v-bind:key="post.id" v-bind:class="{ select: key === selectMessage }">
       
       <div class="instagram-profile-picture">
@@ -17,7 +13,7 @@
 
       <div class="instagram-content">
         <div class="instagram-post-picture">
-          <img :class="post.filter" v-if="isImage(post.image)" :src="post.image" class="instagram-image" @click.stop="imgZoom = post.image">
+          <img :class="post.filter" v-if="isImage(post.image)" :src="post.image" class="instagram-image">
         </div>
 
         <div class="instagram-like">
@@ -48,8 +44,7 @@ export default {
   data () {
     return {
       selectMessage: -1,
-      ignoreControls: false,
-      imgZoom: undefined
+      ignoreControls: false
     }
   },
   computed: {
@@ -66,31 +61,22 @@ export default {
     async showOption () {
       this.ignoreControls = true
       const post = this.instaPosts[this.selectMessage]
-      let optionsChoix = [{
-        id: 1,
-        title: this.LangString('APP_TWITTER_LIKE'),
-        icons: 'fa-heart'
-      }, {
-        // id: 2,
-        // title: this.LangString('APP_MESSAGE_ZOOM_IMG'),
-        // icons: 'fa-search'
-      // }, {
-        id: -1,
-        title: this.LangString('CANCEL'),
-        icons: 'fa-undo',
-        color: 'red'
-      }]
-      const scelte = await Modal.CreateModal({ scelte: optionsChoix })
-      this.ignoreControls = false
-      switch (scelte.id) {
-        case 1:
-          this.instagramToogleLike(post.id)
-          break
-        case 2:
-          this.imgZoom = post.message
-          this.CHANGE_BRIGHTNESS_STATE(false)
-          break
-      }
+      Modal.CreateModal({ scelte: [
+        { id: 1, title: this.LangString('APP_TWITTER_LIKE'), icons: 'fa-heart' },
+        { id: -1, title: this.LangString('CANCEL'), icons: 'fa-undo', color: 'red' }
+      ] })
+      .then(resp => {
+        this.ignoreControls = false
+        switch (resp.id) {
+          case 1:
+            this.instagramToogleLike(post.id)
+            break
+          case -1:
+            this.ignoreControls = false
+            break
+        }
+      })
+      .catch(e => { this.ignoreControls = false })
     },
     isImage (mess) {
       return this.$phoneAPI.isLink(mess)
@@ -135,11 +121,6 @@ export default {
       }
     },
     onBack () {
-      if (this.imgZoom !== undefined) {
-        this.imgZoom = undefined
-        this.CHANGE_BRIGHTNESS_STATE(true)
-        return
-      }
       if (this.ignoreControls) return
       if (this.selectMessage !== -1) {
         this.selectMessage = -1

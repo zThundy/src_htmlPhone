@@ -115,11 +115,10 @@ export default {
     onEnter () {
       if (this.ignoreControls) return
       this.ignoreControls = true
-      let scelte = [
+      Modal.CreateModal({ scelte: [
         { id: 1, title: this.LangString('APP_INSTAGRAM_WRITE_CAPTION'), icons: 'fa-pencil-alt' },
         { id: 2, title: this.LangString('APP_INSTAGRAM_POST_IMAGE'), icons: 'fa-camera' }
-      ]
-      Modal.CreateModal({ scelte: scelte }).then(resp => {
+      ] }).then(resp => {
         switch(resp.id) {
           case 1:
             Modal.CreateTextModal({
@@ -142,6 +141,7 @@ export default {
             break
         }
       })
+      .catch(e => { this.ignoreControls = false })
     }
   },
   created () {

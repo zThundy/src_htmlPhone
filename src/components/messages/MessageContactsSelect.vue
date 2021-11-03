@@ -33,10 +33,12 @@ export default {
           title: this.LangString('APP_PHONE_ENTER_NUMBER'),
           limit: 10,
           color: 'rgb(194, 108, 7)'
-        }).then(resp => {
+        })
+        .then(resp => {
           const message = resp.text.trim()
           if (message !== '') this.$router.push({ name: 'messages.view', params: { number: message, display: message } })
         })
+        .catch(e => { })
       } else {
         this.$router.push({name: 'messages.view', params: contact})
       }

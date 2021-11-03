@@ -54,6 +54,7 @@ export default {
             break
         }
       })
+      .catch(e => { this.updateIgnoredControls(false) })
     }
   },
 

@@ -2,7 +2,7 @@
   <div style="backgroundColor: white" class="phone_app messages">
     <PhoneTitle :backgroundColor="'rgb(194, 108, 7)'" :title="formatEmoji(displayContact)" style="color: black" /> <!--:title="displayContact" :backgroundColor="color" -->
     
-    <div class="phone_fullscreen_img" v-if="imgZoom !== undefined">
+    <div class="phone_fullscreen_img" v-if="imgZoom !== null">
       <img v-if="imgZoom.type === 'photo'" :src="imgZoom.link" />
       <video v-else-if="imgZoom.type === 'video'" width="330" height="710" id="video-playback-element" :src="imgZoom.link" autoplay />
     </div>
@@ -196,9 +196,7 @@ export default {
     },
     stylePuce (data) {
       data = data || {}
-      // console.log(data)
       data.icon = this.getSMSContactInfo(data.message).icon
-      // console.log(data.icon)
       if (data.icon !== 'undefined' && data.icon !== undefined && data.icon !== null && data.icon !== '') {
         return {
           backgroundImage: `url(${data.icon})`,
@@ -222,9 +220,7 @@ export default {
             return this.contacts[key].icon
           } else {
             this.letter = this.display.charAt(0)
-            return {
-              backgroundColor: this.color
-            }
+            return { backgroundColor: this.color }
           }
         }
       }
@@ -252,67 +248,80 @@ export default {
         if (this.isSMSImage(elem.message)) scelte = [{ id: 'zoom', title: this.LangString('APP_MESSAGE_ZOOM_IMG'), icons: 'fa-search' }, ...scelte]
         if (this.isSMSVideo(elem.message)) scelte = [{ id: 'video', title: this.LangString('APP_MESSAGE_PLAY_VIDEO'), icons: 'fa-play' }, ...scelte]
         this.ignoreControls = true
-        const data = await Modal.CreateModal({scelte})
-        if (data.id === 'delete') {
-          this.$phoneAPI.post('deleteMessage', { id: elem.id })
-        } else if (data.id === 'gps') {
-          let val = elem.message.match(/(-?\d+(\.\d+)?), (-?\d+(\.\d+)?)/)
-          this.$phoneAPI.setGPS(val[1], val[3])
-        } else if (data.id === 'num') {
-          this.$nextTick(() => { this.onSelectPhoneNumber(data.number) })
-        } else if (data.id === 'zoom') {
-          this.imgZoom = { type: 'photo', link: elem.message }
-          this.CHANGE_BRIGHTNESS_STATE(false)
-        } else if (data.id === 'inoltra') {
-          this.$router.push({ name: 'messages.chooseinoltra', params: { message: elem.message } })
-        } else if (data.id === 'add_contact') {
-          let c = this.getSMSContactInfo(elem.message)
-          this.$router.push({ name: 'contacts.view', params: { id: -1, isForwarded: true, number: c.number, display: c.name, email: c.email, icon: c.icon } })
-        } else if (data.id === 'message_contact') {
-          let c = this.getSMSContactInfo(elem.message)
-          this.$router.push({ name: 'messages.view', params: { number: c.number, display: c.name } })
-        } else if (data.id === 'video') {
-          let id = elem.message.split('%')
-          if (id[2]) {
-            this.$phoneAPI.getVideoLinkFromServer(id[2]).then(link => {
-              if (link) {
-                this.imgZoom = { type: 'video', link: link }
-                this.CHANGE_BRIGHTNESS_STATE(false)
-                this.restartVideo()
-              } else {
-                this.$phoneAPI.ongenericNotification({
-                  message: 'VIDEO_NOT_FOUND',
-                  title: 'VIDEO_ERROR_TITLE',
-                  icon: 'camera',
-                  color: 'rgb(205, 116, 76)',
-                  appName: 'Messaggi'
+        Modal.CreateModal({ scelte })
+        .then(data => {
+          switch(data.id) {
+            case 'delete':
+              this.$phoneAPI.post('deleteMessage', { id: elem.id })
+              break
+            case 'gps':
+              let val = elem.message.match(/(-?\d+(\.\d+)?), (-?\d+(\.\d+)?)/)
+              this.$phoneAPI.setGPS(val[1], val[3])
+              break
+            case 'num':
+              this.$nextTick(() => { this.onSelectPhoneNumber(data.number) })
+              break
+            case 'zoom':
+              this.imgZoom = { type: 'photo', link: elem.message }
+              this.CHANGE_BRIGHTNESS_STATE(false)
+              break
+            case 'inoltra':
+              this.$router.push({ name: 'messages.chooseinoltra', params: { message: elem.message } })
+              break
+            case 'add_contact':
+              var c = this.getSMSContactInfo(elem.message)
+              this.$router.push({ name: 'contacts.view', params: { id: -1, isForwarded: true, number: c.number, display: c.name, email: c.email, icon: c.icon } })
+              break
+            case 'message_contact':
+              var c = this.getSMSContactInfo(elem.message)
+              this.$router.push({ name: 'messages.view', params: { number: c.number, display: c.name } })
+              break
+            case 'video':
+              let id = elem.message.split('%')
+              if (id[2]) {
+                this.$phoneAPI.getVideoLinkFromServer(id[2]).then(link => {
+                  if (link) {
+                    this.imgZoom = { type: 'video', link: link }
+                    this.CHANGE_BRIGHTNESS_STATE(false)
+                    this.restartVideo()
+                  } else {
+                    this.$phoneAPI.ongenericNotification({
+                      message: 'VIDEO_NOT_FOUND',
+                      title: 'VIDEO_ERROR_TITLE',
+                      icon: 'camera',
+                      color: 'rgb(205, 116, 76)',
+                      appName: 'Messaggi'
+                    })
+                  }
                 })
               }
-            })
+              break
           }
-        }
+        })
+        .catch(e => { this.ignoreControls = false })
       } catch (e) {}
     },
-    async onSelectPhoneNumber (number) {
-      try {
-        this.ignoreControls = true
-        let scelte = [
-          { id: 'sms', title: this.LangString('APP_MESSAGE_MESS_SMS'), icons: 'fa-comment' },
-          { id: 'call', title: this.LangString('APP_MESSAGE_MESS_CALL'), icons: 'fa-phone' },
-          { id: -1, title: this.LangString('CANCEL'), icons: 'fa-undo', color: 'red' }
-        ]
-        const data = await Modal.CreateModal({ scelte })
-        if (data.id === 'sms') {
-          this.phoneNumber = number
-          this.display = undefined
-        } else if (data.id === 'call') {
-          this.$phoneAPI.startCall({ numero: number })
+    onSelectPhoneNumber (number) {
+      this.ignoreControls = true
+      Modal.CreateModal({ scelte: [
+        { id: 'sms', title: this.LangString('APP_MESSAGE_MESS_SMS'), icons: 'fa-comment' },
+        { id: 'call', title: this.LangString('APP_MESSAGE_MESS_CALL'), icons: 'fa-phone' },
+        { id: -1, title: this.LangString('CANCEL'), icons: 'fa-undo', color: 'red' }
+      ] })
+      .then(data => {
+        switch(data.id) {
+          case 'sms':
+            this.phoneNumber = number
+            this.display = undefined
+            break
+          case 'call':
+            this.$phoneAPI.startCall({ numero: number })
+            break
         }
-      } catch (e) {
-      } finally {
         this.ignoreControls = false
         this.selectMessage = -1
-      }
+      })
+      .catch(e => { this.ignoreControls = false })
     },
     onBackspace () {
       if (this.imgZoom !== undefined) {
@@ -329,26 +338,29 @@ export default {
     },
     onRight: function () {
       if (this.ignoreControls) return
-      if (this.selectMessage === -1) {
-        this.showOptions()
-      }
+      if (this.selectMessage === -1) this.showOptions()
     },
-    async showOptions () {
-      try {
-        this.ignoreControls = true
-        let scelte = [
-          { id: 1, title: this.LangString('APP_MESSAGE_SEND_GPS'), icons: 'fa-location-arrow' },
-          { id: -1, title: this.LangString('CANCEL'), icons: 'fa-undo', color: 'red' }
-        ]
-        if (this.config.picturesConfig.enabled) scelte = [{ id: 2, title: this.LangString('APP_MESSAGE_SEND_PHOTO'), icons: 'fa-image' }, ...scelte]
-        const data = await Modal.CreateModal({ scelte })
-        if (data.id === 1) this.$phoneAPI.post('sendMessage', { phoneNumber: this.phoneNumber, message: '%pos%' })
-        if (data.id === 2) {
-          const pic = await this.$phoneAPI.takePhoto()
-          if (pic && pic !== '') this.$phoneAPI.post('sendMessage', { phoneNumber: this.phoneNumber, message: pic })
-        }
+    showOptions () {
+      this.ignoreControls = true
+      let scelte = [
+        { id: 1, title: this.LangString('APP_MESSAGE_SEND_GPS'), icons: 'fa-location-arrow' },
+        { id: -1, title: this.LangString('CANCEL'), icons: 'fa-undo', color: 'red' }
+      ]
+      if (this.config.picturesConfig.enabled) scelte = [{ id: 2, title: this.LangString('APP_MESSAGE_SEND_PHOTO'), icons: 'fa-image' }, ...scelte]
+      Modal.CreateModal({ scelte: scelte })
+      .then(async data => {
         this.ignoreControls = false
-      } catch (e) {}
+        switch(data.id) {
+          case 1:
+            this.$phoneAPI.post('sendMessage', { phoneNumber: this.phoneNumber, message: '%pos%' })
+            break
+          case 2:
+            const pic = await this.$phoneAPI.takePhoto()
+            if (pic && pic !== '') this.$phoneAPI.post('sendMessage', { phoneNumber: this.phoneNumber, message: pic })
+            break
+        }
+      })
+      .catch(e => { this.ignoreControls = false })
     }
   },
   watch: {

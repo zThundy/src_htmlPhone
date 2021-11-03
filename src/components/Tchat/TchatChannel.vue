@@ -63,7 +63,7 @@ export default {
         { id: -1, title: this.LangString('CANCEL'), icons: 'fa-undo', color: 'red' }
       ]
       if (this.tchatChannels.length === 0) scelte.splice(1, 1)
-      Modal.CreateModal({ scelte })
+      Modal.CreateModal({ scelte: scelte })
       .then(resp => {
         switch (resp.id) {
           case 1:
@@ -74,22 +74,30 @@ export default {
             break
           case -1:
             this.ignoreControls = false
+            break
         }
       })
+      .catch(e => { this.ignoreControls = false })
     },
     async onEnter () {
       if (this.ignoreControls) return
       if (this.tchatChannels.length === 0) {
         this.ignoreControls = true
-        let scelte = [
+        Modal.CreateModal({ scelte: [
           {id: 1, title: this.LangString('APP_DARKTCHAT_NEW_CHANNEL'), icons: 'fa-plus', color: 'green'},
           {id: 3, title: this.LangString('APP_DARKTCHAT_CANCEL'), icons: 'fa-undo', color: 'red'}
-        ]
-        const rep = await Modal.CreateModal({ scelte })
-        this.ignoreControls = false
-        if (rep.id === 1) {
-          this.addChannelOption()
-        }
+        ] })
+        .then(resp => {
+          switch(resp.id) {
+            case 1:
+              this.addChannelOption()
+              break
+            case -1:
+              this.ignoreControls = false
+              break
+          }
+        })
+        .catch(e => { this.ignoreControls = false })
       } else {
         const channel = this.tchatChannels[this.currentSelect].channel
         this.showChannel(channel)

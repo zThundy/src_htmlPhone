@@ -75,7 +75,7 @@ export default {
   },
   data () {
     return {
-      disableBackspace: false,
+      ignoreControls: false,
       posizioni: [{
         'left': '10px',
         'padding-top': '130px',
@@ -97,31 +97,27 @@ export default {
   methods: {
     ...mapMutations(['SET_DATI_INFO']),
     onBackspace () {
-      if (this.disableBackspace) return
+      if (this.ignoreControls) return
       this.$router.push({ name: 'menu' })
     },
     async onRight () {
-      if (this.disableBackspace) return
-      this.disableBackspace = true
-      let scelte = [
-        {id: 1, title: this.LangString('APP_DATI_REFRESH'), icons: 'fa-sync'},
-        {id: 2, title: this.LangString('CANCEL'), color: 'red', icons: 'fa-undo'}
-      ]
-      const resp = await Modal.CreateModal({ scelte })
-      // risposta del menù
-      switch (resp.id) {
-        case 1:
-          this.$refs.updating.show()
-          break
-        case 2:
-          this.disableBackspace = false
-          break
-      }
-      // qui controllo se la persona ha premuto solo la backspace per
-      // chiudere il modal aperto
-      if (resp.title === 'cancel') {
-        this.disableBackspace = false
-      }
+      if (this.ignoreControls) return
+      this.ignoreControls = true
+      Modal.CreateModal({ scelte: [
+        { id: 1, title: this.LangString('APP_DATI_REFRESH'), icons: 'fa-sync' },
+        { id: 2, title: this.LangString('CANCEL'), color: 'red', icons: 'fa-undo' }
+      ] })
+      .then(resp => {
+        switch (resp.id) {
+          case 1:
+            this.$refs.updating.show()
+            break
+          case 2:
+            this.ignoreControls = false
+            break
+        }
+      })
+      .catch(e => { this.ignoreControls = false })
     },
     toastHide () {
       this.$refs.success.show()
@@ -129,7 +125,7 @@ export default {
       // questo è il timeout che nasconde
       // il toast "successo"
       setTimeout(() => {
-        this.disableBackspace = false
+        this.ignoreControls = false
         this.$refs.success.hide()
       }, 1500)
     }

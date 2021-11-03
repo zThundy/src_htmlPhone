@@ -15,7 +15,7 @@ export default {
         modal.$destroy()
       })
       modal.$on('cancel', () => {
-        resolve({title: 'cancel'})
+        reject('canceled-selection')
         modal.$el.parentNode.removeChild(modal.$el)
         modal.$destroy()
       })
@@ -29,7 +29,7 @@ export default {
         let modal = new (Vue.extend(TextModal))({ el: document.createElement('div'), propsData })
         modal.$el.onkeydown = (e) => {
           const key = e.key.toLowerCase()
-          if (modal.inputText === '' && key === 'backspace') {
+          if ((modal.inputText === '' && key === 'backspace') || key === 'escape') {
             // this removed the element form the created div
             modal.$el.parentNode.removeChild(modal.$el)
             modal.$destroy()
@@ -61,7 +61,7 @@ export default {
     } else {
       return new Promise((resolve, reject) => {
         const response = PhoneAPI.getReponseText(propsData)
-        if (response !== undefined && response.text) {
+        if (response !== undefined && response.text && response.text !== '') {
           resolve(response)
         } else {
           reject('no-text-given')

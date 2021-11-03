@@ -166,11 +166,10 @@ export default {
     },
     async snapGroupImage () {
       this.ignoreControls = true
-      let scelte = [
+      Modal.CreateModal({ scelte: [
         {id: 1, title: this.LangString('APP_CONFIG_LINK_PICTURE'), icons: 'fa-link'},
         {id: 2, title: this.LangString('APP_CONFIG_TAKE_PICTURE'), icons: 'fa-camera'}
-      ]
-      Modal.CreateModal({ scelte })
+      ] })
       .then(async choice => {
         switch(choice.id) {
           case 1:
@@ -197,6 +196,7 @@ export default {
             break
         }
       })
+      .catch(e => { this.ignoreControls = false })
     },
     stylePuce (data) {
       data = data || {}
@@ -283,6 +283,7 @@ export default {
               break
           }
         })
+        .catch(e => { this.ignoreControls = false })
       } else {
         Modal.CreateModal({ scelte: [
           {id: 1, title: this.LangString('APP_WHATSAPP_ADD_MEMBERS'), icons: 'fa-check', color: 'green'},
@@ -301,6 +302,7 @@ export default {
               break
           }
         })
+        .catch(e => { this.ignoreControls = false })
       }
     }
   },

@@ -109,12 +109,12 @@ export default {
       }
       if (this.ignoreControls) return
       this.ignoreControls = true
-      var options = [
+      Modal.CreateModal({ scelte: [
         { id: 1, title: this.LangString('APP_PHOTO_TAKE_PICTURE'), icons: 'fa-camera' },
         { id: 2, title: this.LangString('APP_PHOTO_RECORD_VIDEO'), icons: 'fa-video' },
         { id: -1, title: this.LangString('CANCEL'), icons: 'fa-undo', color: 'red' }
-      ]
-      Modal.CreateModal({ scelte: options }).then(async resp => {
+      ] })
+      .then(async resp => {
         switch (resp.id) {
           case 1:
             const pic = await this.$phoneAPI.takePhoto(false)
@@ -138,6 +138,7 @@ export default {
             break
         }
       })
+      .catch(e => { this.ignoreControls = false })
     },
     onUp () {
       if (this.frontCamera) {

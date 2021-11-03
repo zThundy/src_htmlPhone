@@ -142,12 +142,11 @@ export default {
           case 0:
             // carica immagine
             this.ignoreControl = true
-            var options = [
+            Modal.CreateModal({ scelte: [
               { id: 1, title: this.LangString('APP_CONFIG_LINK_PICTURE'), icons: 'fa-link' },
               { id: 2, title: this.LangString('APP_CONFIG_TAKE_PICTURE'), icons: 'fa-camera' },
               { id: -1, title: this.LangString('CANCEL'), icons: 'fa-undo', color: 'red' }
-            ]
-            Modal.CreateModal({ scelte: options }).then(async resp => {
+            ] }).then(async resp => {
               switch (resp.id) {
                 case 1:
                   Modal.CreateTextModal({
@@ -175,6 +174,7 @@ export default {
                   break
               }
             })
+            .catch(e => { this.ignoreControl = false })
             break
           case 1:
             // scrivi descrizione

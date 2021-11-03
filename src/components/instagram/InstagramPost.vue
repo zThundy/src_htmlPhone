@@ -61,6 +61,7 @@ export default {
             break
         }
       })
+      .catch(e => { this.ignoreControls = false })
     },
     onBack () {
       if (this.ignoreControls) {

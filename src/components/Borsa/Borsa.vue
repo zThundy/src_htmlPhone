@@ -142,11 +142,11 @@ export default {
       if (this.ignoreControls) return
       if (this.currentPage === 0) {
         this.ignoreControls = true
-        let scelte = [
+        Modal.CreateModal({ scelte: [
           { id: 1, title: this.LangString('APP_BOURSE_CHOICE_BUY'), icons: 'fa-dollar-sign', color: 'green' },
           { id: 2, title: this.LangString('CANCEL'), icons: 'fa-undo', color: 'red' }
-        ]
-        Modal.CreateModal({ scelte }).then(response => {
+        ] })
+        .then(response => {
           switch(response.id) {
             case 1:
               Modal.CreateTextModal({
@@ -168,13 +168,14 @@ export default {
               break
           }
         })
+        .catch(e => { this.ignoreControls = false })
       } else {
         this.ignoreControls = true
-        let scelte = [
+        Modal.CreateModal({ scelte: [
           { id: 1, title: this.LangString('APP_BOURSE_CHOICE_SELL'), icons: 'fa-dollar-sign', color: '#ff5f13' },
           { id: 2, title: this.LangString('CANCEL'), icons: 'fa-undo', color: 'red' }
-        ]
-        Modal.CreateModal({ scelte }).then(response => {
+        ] })
+        .then(response => {
           switch(response.id) {
             case 1:
               Modal.CreateTextModal({
@@ -196,6 +197,7 @@ export default {
               break
           }
         })
+        .catch(e => { this.ignoreControls = false })
       }
     },
     getBourseColor (tb) {

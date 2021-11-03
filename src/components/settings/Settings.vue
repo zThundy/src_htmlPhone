@@ -299,11 +299,13 @@ export default {
             return {title: key, value: param.values[key], picto: param.values[key]}
           }
         })
-        Modal.CreateModal({ scelte }).then(reponse => {
+        Modal.CreateModal({ scelte })
+        .then(resp => {
           this.ignoreControls = false
-          if (reponse.title === 'cancel' || reponse.value === 'cancel') return
-          this[param.onValid](param, reponse)
+          if (resp.title === 'cancel' || resp.value === 'cancel') return
+          this[param.onValid](param, resp)
         })
+        .catch(e => { this.ignoreControls = false })
       }
       // qui controllo se le values non sono definite
       if (param.values === undefined && param.onValid !== undefined && param.onValid !== null) {
@@ -311,36 +313,39 @@ export default {
       }
     },
 
-    async onChangeBackground (param, data) {
+    onChangeBackground (param, data) {
       let val = data.value
       if (val === 'Link') {
         this.ignoreControls = true
-        let scelte = [
-          {id: 1, title: this.LangString('APP_CONFIG_LINK_PICTURE'), icons: 'fa-link'},
-          {id: 2, title: this.LangString('APP_CONFIG_TAKE_PICTURE'), icons: 'fa-camera'}
-        ]
-        const resp = await Modal.CreateModal({ scelte: scelte })
-        if (resp.id === 1) {
-          Modal.CreateTextModal({
-            text: 'https://i.imgur.com/',
-            title: this.LangString('TYPE_LINK')
-          })
-          .then(resp => {
-            if (resp.text !== '' && resp.text !== undefined && resp.text !== null && resp.text !== 'https://i.imgur.com/') {
-              this.setBackground({ label: 'Personalizzato', value: resp.text })
-              this.ignoreControls = false
-            }
-          })
-          .catch(e => { this.ignoreControls = false })
-        } else if (resp.id === 2) {
-          const pic = await this.$phoneAPI.takePhoto()
-          if (pic && pic !== '') {
-            this.setBackground({ label: 'Personalizzato', value: pic })
-            this.ignoreControls = false
+        Modal.CreateModal({ scelte: [
+          { id: 1, title: this.LangString('APP_CONFIG_LINK_PICTURE'), icons: 'fa-link' },
+          { id: 2, title: this.LangString('APP_CONFIG_TAKE_PICTURE'), icons: 'fa-camera' }
+        ] })
+        .then(async resp => {
+          switch(resp.id) {
+            case 1:
+              Modal.CreateTextModal({
+                text: 'https://i.imgur.com/',
+                title: this.LangString('TYPE_LINK')
+              })
+              .then(resp => {
+                if (resp.text !== '' && resp.text !== undefined && resp.text !== null && resp.text !== 'https://i.imgur.com/') {
+                  this.setBackground({ label: 'Personalizzato', value: resp.text })
+                  this.ignoreControls = false
+                }
+              })
+              .catch(e => { this.ignoreControls = false })
+              break
+            case 2:
+              const pic = await this.$phoneAPI.takePhoto()
+              if (pic && pic !== '') {
+                this.setBackground({ label: 'Personalizzato', value: pic })
+                this.ignoreControls = false
+              }
+              break
           }
-        } else {
-          this.ignoreControls = false
-        }
+        })
+        .catch(e => { this.ignoreControls = false })
       } else {
         this.setBackground({ label: data.title, value: data.value })
         this.ignoreControls = false
@@ -430,22 +435,17 @@ export default {
     resetPhone: function (param, data) {
       if (data.value !== 'cancel') {
         this.ignoreControls = true
-        let scelte = [{
-          title: this.LangString('APP_CONFIG_RESET_CONFIRM'),
-          color: 'red',
-          icons: 'fa-exclamation-triangle',
-          reset: true
-        }, {
-          title: this.LangString('CANCEL'),
-          icons: 'fa-undo',
-          color: 'red'
-        }]
-        Modal.CreateModal({ scelte: scelte }).then(reponse => {
+        Modal.CreateModal({ scelte: [
+          { title: this.LangString('APP_CONFIG_RESET_CONFIRM'), color: 'red', icons: 'fa-exclamation-triangle', reset: true },
+          { title: this.LangString('CANCEL'), icons: 'fa-undo', color: 'red' }
+        ] })
+        .then(reponse => {
           this.ignoreControls = false
-          if (reponse.reset === true) {
+          if (reponse.reset) {
             this.$phoneAPI.deleteALL()
           }
         })
+        .catch(e => { this.ignoreControls = false })
       }
     }
   },

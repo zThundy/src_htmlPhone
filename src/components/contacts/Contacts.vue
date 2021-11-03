@@ -50,32 +50,34 @@ export default {
           {id: 5, title: this.LangString('CANCEL'), icons: 'fa-undo', color: 'red'}
       ]
       if (isValid === true) { scelte = [{id: 3, title: this.LangString('APP_PHONE_CALL'), icons: 'fa-phone'}, ...scelte] }
-      const resp = await Modal.CreateModal({ scelte: scelte })
-      // lista delle scelte
-      switch (resp.id) {
-        case 1:
-          this.$router.push({ path: 'contact/' + contact.id })
-          this.disableList = false
-          break
-        case 2:
-          const pic = await this.$phoneAPI.takePhoto()
-          if (pic && pic !== '') {
-            this.$phoneAPI.updateContactAvatar(contact.id, contact.display, contact.number, pic)
-          }
-          this.disableList = false
-          break
-        case 3:
-          this.$phoneAPI.startCall({ numero: contact.number })
-          this.disableList = false
-          break
-        case 4:
-          this.$router.push({ name: 'messages.chooseinoltra', params: { contact: contact } })
-          break
-        case 5:
-          this.disableList = false
-          // this.$phoneAPI.shareContact(contact)
-          break
-      }
+      Modal.CreateModal({ scelte: scelte })
+      .then(async resp => {
+        switch (resp.id) {
+          case 1:
+            this.$router.push({ path: 'contact/' + contact.id })
+            this.disableList = false
+            break
+          case 2:
+            const pic = await this.$phoneAPI.takePhoto()
+            if (pic && pic !== '') {
+              this.$phoneAPI.updateContactAvatar(contact.id, contact.display, contact.number, pic)
+            }
+            this.disableList = false
+            break
+          case 3:
+            this.$phoneAPI.startCall({ numero: contact.number })
+            this.disableList = false
+            break
+          case 4:
+            this.$router.push({ name: 'messages.chooseinoltra', params: { contact: contact } })
+            break
+          case 5:
+            this.disableList = false
+            // this.$phoneAPI.shareContact(contact)
+            break
+        }
+      })
+      .catch(e => { this.disableList = false })
     },
     back () {
       if (this.disableList === true) {

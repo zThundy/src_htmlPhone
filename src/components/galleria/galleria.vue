@@ -99,7 +99,7 @@ export default {
       this.videoElement.currentTime = 0
       this.videoElement.play()
     },
-    async onEnter () {
+    onEnter () {
       if (this.imgZoom) {
         if (this.imgZoom.type === 'video' && this.videoElement) {
           this.restartVideo()
@@ -133,76 +133,84 @@ export default {
           { id: 3, title: this.LangString('APP_GALLERIA_ELIMINA_TUTTO'), icons: 'fa-trash', color: 'red' },
           { id: -1, title: this.LangString('CANCEL'), icons: 'fa-undo', color: 'red' }
         ]
-        const data = await Modal.CreateModal({ scelte })
-        switch (data.id) {
-          case 0:
-            if (element.type === 'video') {
-              const videoData = this.getSMSVideoInfo(element.link)
-              this.$phoneAPI.getVideoLinkFromServer(videoData.id).then(link => {
-                if (link) {
-                  this.imgZoom = Object.assign({}, element)
-                  this.imgZoom.link = link
-                  this.restartVideo()
-                } else {
-                  this.$phoneAPI.ongenericNotification({
-                    message: 'VIDEO_NOT_FOUND',
-                    title: 'VIDEO_ERROR_TITLE',
-                    icon: 'camera',
-                    color: 'rgb(205, 116, 76)',
-                    appName: 'Galleria'
-                  })
-                }
-              })
-            } else if (element.type === 'photo') {
-              this.imgZoom = element
-            }
-            this.CHANGE_BRIGHTNESS_STATE(false)
-            break
-          case 1:
-            this.setBackground({ label: 'Personalizzato', value: element.link })
-            this.ignoredControls = false
-            break
-          case 2:
-            this.$router.push({ name: 'messages.chooseinoltra', params: { message: element.link } })
-            this.ignoredControls = false
-            break
-          case 3:
-            this.clearGallery()
-            this.ignoredControls = false
-            break
-          case 4:
-            if (this.bluetooth) {
-              try {
-                this.ignoredControls = true
-                let scelte = []
-                var cancel = { id: -1, title: this.LangString('CANCEL'), icons: 'fa-undo', color: 'red' }
-                this.$phoneAPI.getClosestPlayers().then(async closestPlayers => {
-                  console.log(JSON.stringify(closestPlayers))
-                  for (var i in closestPlayers) { scelte.push({ id: closestPlayers[i].id, label: closestPlayers[i].name, title: closestPlayers[i].name, icons: 'fa-share-square' }) }
-                  scelte.push(cancel)
-                  const data = await Modal.CreateModal({ scelte })
-                  if (data.id === -1) {
-                    this.ignoredControls = false
+        Modal.CreateModal({ scelte })
+        .then(resp => {
+          switch (resp.id) {
+            case 0:
+              if (element.type === 'video') {
+                const videoData = this.getSMSVideoInfo(element.link)
+                this.$phoneAPI.getVideoLinkFromServer(videoData.id).then(link => {
+                  if (link) {
+                    this.imgZoom = Object.assign({}, element)
+                    this.imgZoom.link = link
+                    this.restartVideo()
                   } else {
-                    this.ignoredControls = false
-                    this.$phoneAPI.sendPicToUser({ id: data.id, message: element.link })
+                    this.$phoneAPI.ongenericNotification({
+                      message: 'VIDEO_NOT_FOUND',
+                      title: 'VIDEO_ERROR_TITLE',
+                      icon: 'camera',
+                      color: 'rgb(205, 116, 76)',
+                      appName: 'Galleria'
+                    })
                   }
                 })
-              } catch (e) { } finally { this.ignoredControls = false }
-            } else {
-              this.$phoneAPI.sendErrorMessage('Il bluetooth è disattivo')
+              } else if (element.type === 'photo') {
+                this.imgZoom = element
+              }
+              this.CHANGE_BRIGHTNESS_STATE(false)
+              break
+            case 1:
+              this.setBackground({ label: 'Personalizzato', value: element.link })
               this.ignoredControls = false
-            }
-            break
-          case 5:
-            this.deleteSinglePicture(this.currentSelect)
-            break
-          case 6:
-            const videoData = this.getSMSVideoInfo(element.link)
-            let message = '[VIDEO]%' + this.myPhoneNumber + '%' + videoData.id
-            this.$router.push({ name: 'messages.chooseinoltra', params: { message: message } })
-            break
-        }
+              break
+            case 2:
+              this.$router.push({ name: 'messages.chooseinoltra', params: { message: element.link } })
+              this.ignoredControls = false
+              break
+            case 3:
+              this.clearGallery()
+              this.ignoredControls = false
+              break
+            case 4:
+              if (this.bluetooth) {
+                try {
+                  this.ignoredControls = true
+                  let scelte = []
+                  var cancel = { id: -1, title: this.LangString('CANCEL'), icons: 'fa-undo', color: 'red' }
+                  this.$phoneAPI.getClosestPlayers().then(closestPlayers => {
+                    for (var i in closestPlayers) { scelte.push({ id: closestPlayers[i].id, label: closestPlayers[i].name, title: closestPlayers[i].name, icons: 'fa-share-square' }) }
+                    scelte.push(cancel)
+                    Modal.CreateModal({ scelte })
+                    .then(choice => {
+                      switch(choice.id) {
+                        case -1:
+                          this.ignoredControls = false
+                          break
+                        default:
+                          this.ignoredControls = false
+                          this.$phoneAPI.sendPicToUser({ id: choice.id, message: element.link })
+                      }
+                    })
+                    .catch(e => { this.ignoredControls = false })
+                  })
+                  .catch(e => { this.ignoredControls = false })
+                } catch (e) { }
+              } else {
+                this.$phoneAPI.sendErrorMessage('Il bluetooth è disattivo')
+                this.ignoredControls = false
+              }
+              break
+            case 5:
+              this.deleteSinglePicture(this.currentSelect)
+              break
+            case 6:
+              const videoData = this.getSMSVideoInfo(element.link)
+              let message = '[VIDEO]%' + this.myPhoneNumber + '%' + videoData.id
+              this.$router.push({ name: 'messages.chooseinoltra', params: { message: message } })
+              break
+          }
+        })
+        .catch(e => { this.ignoredControls = false })
       } catch (e) { } finally { this.ignoredControls = false }
     }
   },

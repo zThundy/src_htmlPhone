@@ -39,23 +39,28 @@ export default {
   },
   methods: {
     ...mapActions(['darkwebPostMessage']),
-    async onEnter () {
+    onEnter () {
       if (this.ignoreControls) return
       this.ignoreControls = true
-      let resp = await Modal.CreateModal({ scelte: [
+      Modal.CreateModal({ scelte: [
         {id: 1, title: this.LangString('APP_DARKWEB_POST_MESSAGE'), icons: 'fa-comment'},
         {id: 2, title: this.LangString('APP_DARKWEB_POST_PICTURE'), icons: 'fa-camera'}
       ] })
-      if (resp.id === 1) {
-        this.postMessage()
-        this.ignoreControls = false
-      } else if (resp.id === 2) {
-        const pic = await this.$phoneAPI.takePhoto()
-        if (pic && pic !== '') {
-          this.ignoreControls = false
-          this.darkwebPostMessage({ message: pic, mine: 1 })
+      .then(async resp => {
+        switch(resp.id) {
+          case 1:
+            this.postMessage()
+            break
+          case 2:
+            const pic = await this.$phoneAPI.takePhoto()
+            if (pic && pic !== '') {
+              this.ignoreControls = false
+              this.darkwebPostMessage({ message: pic, mine: 1 })
+            }
+            break
         }
-      }
+      })
+      .catch(e => { this.ignoreControls = false })
     },
     onBack () {
       if (this.ignoreControls) {
@@ -65,19 +70,15 @@ export default {
       }
     },
     postMessage () {
-      if (this.ignoreControls) return
-      this.ignoreControls = true
       Modal.CreateTextModal({
         title: this.LangString('TYPE_MESSAGE'),
         color: '#606060',
         limit: 255
       })
       .then(resp => {
-        if (resp !== undefined && resp.text !== undefined) {
-          const message = resp.text.trim()
-          if (message.length !== 0) {
-            this.darkwebPostMessage({ message, mine: 1 })
-          }
+        const message = resp.text.trim()
+        if (message.length !== 0) {
+          this.darkwebPostMessage({ message: message, mine: 1 })
         }
         this.ignoreControls = false
       })
