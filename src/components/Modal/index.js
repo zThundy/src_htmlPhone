@@ -60,12 +60,13 @@ export default {
       })
     } else {
       return new Promise((resolve, reject) => {
-        const response = PhoneAPI.getReponseText(propsData)
-        if (response !== undefined && response.text && response.text !== '') {
-          resolve(response)
-        } else {
-          reject('no-text-given')
-        }
+        PhoneAPI.getReponseText(propsData).then(response => {
+          if (response !== undefined && response.text && response.text !== '') {
+            resolve(response)
+          } else {
+            reject('no-text-given')
+          }
+        })
       })
     }
   }

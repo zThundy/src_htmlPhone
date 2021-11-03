@@ -125,6 +125,7 @@ RegisterNetEvent("gcPhone:receiveMessage")
 AddEventHandler("gcPhone:receiveMessage", function(message)
     if not message then return end
     if not GLOBAL_AIRPLANE then
+        SendNUIMessage({ event = 'newMessage', message = message })
         TriggerEvent("gcphone:sendGenericNotification", {
             message = message,
             title = "APP_MESSAGE_TITLE",

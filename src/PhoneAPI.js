@@ -201,6 +201,10 @@ class PhoneAPI {
     store.commit('SET_MESSAGES', data.messages)
   }
 
+  onnewMessage (data) {
+    store.commit('ADD_MESSAGE', data.message)
+  }
+
   ongenericNotification (data) {
     if (data.notify) data = data.notif
     if (data.notif) data = data.notif
