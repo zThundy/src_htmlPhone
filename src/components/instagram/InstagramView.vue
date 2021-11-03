@@ -50,8 +50,7 @@ export default {
   computed: {
     ...mapGetters(['instaPosts', 'LangString', 'instagramUsername', 'instagramPassword'])
   },
-  watch: {
-  },
+  // watch: {},
   methods: {
     ...mapActions(['instagramPostTweet', 'instagramToogleLike']),
     ...mapMutations(['CHANGE_BRIGHTNESS_STATE']),
@@ -135,7 +134,6 @@ export default {
   },
   created () {
     this.$phoneAPI.instagram_getPosts(this.instagramUsername, this.instagramPassword)
-
     this.$bus.$on('keyUpArrowDown', this.onDown)
     this.$bus.$on('keyUpArrowUp', this.onUp)
     this.$bus.$on('keyUpEnter', this.onEnter)
