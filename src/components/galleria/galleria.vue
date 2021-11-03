@@ -135,11 +135,13 @@ export default {
         ]
         Modal.CreateModal({ scelte })
         .then(resp => {
+          this.ignoredControls = true
           switch (resp.id) {
             case 0:
               if (element.type === 'video') {
                 const videoData = this.getSMSVideoInfo(element.link)
-                this.$phoneAPI.getVideoLinkFromServer(videoData.id).then(link => {
+                this.$phoneAPI.videoRequest.getVideoLinkFromServer(videoData.id).then(link => {
+                  this.ignoredControls = false
                   if (link) {
                     this.imgZoom = Object.assign({}, element)
                     this.imgZoom.link = link

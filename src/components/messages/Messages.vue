@@ -279,7 +279,7 @@ export default {
             case 'video':
               let id = elem.message.split('%')
               if (id[2]) {
-                this.$phoneAPI.getVideoLinkFromServer(id[2]).then(link => {
+                this.$phoneAPI.videoRequest.getVideoLinkFromServer(id[2]).then(link => {
                   if (link) {
                     this.imgZoom = { type: 'video', link: link }
                     this.CHANGE_BRIGHTNESS_STATE(false)
