@@ -87,7 +87,7 @@ export default {
         {id: 2, title: this.LangString('APP_PHONE_DELETE_ALL'), icons: 'fa-trash', color: 'red'},
         {id: 3, title: this.LangString('APP_PHONE_CANCEL'), icons: 'fa-undo', color: 'red'}
       ]
-      if (isValid === true) {
+      if (isValid) {
         scelte = [{id: 5, title: this.LangString('APP_PHONE_SEND_MESSAGE'), icons: 'fa-sms'}, ...scelte]
         scelte = [{id: 6, title: this.LangString('APP_PHONE_CALL_ANONYMOUS'), icons: 'fa-mask'}, ...scelte]
         scelte = [{id: 0, title: this.LangString('APP_PHONE_CALL'), icons: 'fa-phone'}, ...scelte]

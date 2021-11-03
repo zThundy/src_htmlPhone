@@ -2,12 +2,10 @@ gcPhoneT.darkweb_fetchDarkmessages = function()
     local player = source
     local identifier = gcPhoneT.getPlayerID(player)
     local messages = {}
-
     MySQL.Async.fetchAll("SELECT * FROM phone_darkweb_messages ORDER BY id DESC LIMIT 130", {}, function(r)
         local isAble, mbToRemove = gcPhoneT.isAbleToSurfInternet(identifier, 0.01 * #r)
         if isAble then
             gcPhoneT.useInternetData(identifier, mbToRemove)
-
             for i = #r, 1, -1 do
                 i = tonumber(i)
                 messages[i] = r[i]
@@ -17,7 +15,6 @@ gcPhoneT.darkweb_fetchDarkmessages = function()
                     messages[i].mine = 0
                 end
             end
-
             TriggerClientEvent("gcphone:darkweb_sendMessages", player, messages)
         else
             TriggerClientEvent("gcphone:sendGenericNotification", player, {
@@ -37,9 +34,8 @@ gcPhoneT.darkweb_sendDarkMessage = function(data)
 	local isAble, mbToRemove = gcPhoneT.isAbleToSurfInternet(identifier, 0.5)
     if isAble then
         gcPhoneT.useInternetData(identifier, mbToRemove)
-        
         MySQL.Async.insert("INSERT INTO phone_darkweb_messages(author, message) VALUES(@author, @message)", {
-            ['@author'] = player,
+            ['@author'] = identifier,
             ['@message'] = data.message
         })
     else

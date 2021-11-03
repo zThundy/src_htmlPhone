@@ -65,31 +65,6 @@ export default {
     formatEmoji (message) {
       return this.$phoneAPI.convertEmoji(message)
     },
-    async showOption () {
-      this.ignoreControls = true
-      const message = this.darkwebMessages[this.currentSelected]
-      let scelte = [
-        { id: 1, title: this.LangString('APP_DARKWEB_REPLY'), icons: 'fa-retweet' },
-        { id: -1, title: this.LangString('CANCEL'), icons: 'fa-undo', color: 'red' }
-      ]
-      if (this.isImage(message.message)) {
-        scelte = [{ id: 2, title: this.LangString('APP_MESSAGE_ZOOM_IMG'), icons: 'fa-search' }, ...scelte]
-      }
-      Modal.CreateModal({ scelte: scelte })
-      .then(resp => {
-        this.ignoreControls = false
-        switch (resp.id) {
-          case 1:
-            this.reply(message)
-            break
-          case 2:
-            this.imgZoom = message.message
-            this.CHANGE_BRIGHTNESS_STATE(false)
-            break
-        }
-      })
-      .catch(e => { this.ignoreControls = false })
-    },
     reply (message) {
       const authorName = this.currentSelected
       this.ignoreControls = true
@@ -136,9 +111,6 @@ export default {
     },
     async onEnter () {
       if (this.ignoreControls) return
-      if (this.currentSelected !== -1) {
-        this.showOption()
-      }
     },
     onBack () {
       if (this.imgZoom !== null) {
