@@ -96,7 +96,7 @@ export default {
     // },
     restartVideo () {
       this.videoElement = document.getElementById('video-playback-element')
-      this.videoElement.currentTime = 0
+      if (this.videoElement) this.videoElement.currentTime = 0
       this.videoElement.play()
     },
     onEnter () {
@@ -135,7 +135,6 @@ export default {
         ]
         Modal.CreateModal({ scelte })
         .then(resp => {
-          this.ignoredControls = true
           switch (resp.id) {
             case 0:
               if (element.type === 'video') {
@@ -213,7 +212,7 @@ export default {
           }
         })
         .catch(e => { this.ignoredControls = false })
-      } catch (e) { } finally { this.ignoredControls = false }
+      } catch (e) { }
     }
   },
 
