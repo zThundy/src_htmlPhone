@@ -73,12 +73,22 @@ export default {
     },
     onEnter () {
       if (this.aziendaIngoreControls) return
-      this.$phoneAPI.getReponseText({ title: 'Digita il messaggio' }).then(data => {
-        let message = data.text.trim()
-        if (message !== '') {
-          this.$phoneAPI.sendAziendaMessage({ azienda: this.myAziendaInfo.name, number: this.myPhoneNumber, message: message })
+      this.SET_AZIENDA_IGNORE_CONTROLS(true)
+      Modal.CreateTextModal({
+        title: this.LangString('TYPE_MESSAGE'),
+        limit: 255,
+        color: 'rgb(255, 180, 89)'
+      })
+      .then(resp => {
+        if (resp !== undefined && resp.text !== undefined) {
+          this.SET_AZIENDA_IGNORE_CONTROLS(false)
+          const message = resp.text.trim()
+          if (message !== '') {
+            this.$phoneAPI.sendAziendaMessage({ azienda: this.myAziendaInfo.name, number: this.myPhoneNumber, message: message })
+          }
         }
       })
+      .catch(e => { this.SET_AZIENDA_IGNORE_CONTROLS(false) })
     },
     onRight () {
       if (this.aziendaIngoreControls) return
@@ -96,19 +106,27 @@ export default {
         if (isGPS) {
           scelte = [{id: 3, title: this.LangString('APP_AZIENDA_SET_POSITION'), icons: 'fa-location-arrow'}, ...scelte]
         }
-        Modal.CreateModal({ scelte }).then(resp => {
-          if (resp.id === 1) {
-            this.$phoneAPI.sendAziendaMessage({ azienda: this.myAziendaInfo.name, number: currentMessage.authorPhone, message: '%pos%' })
-            this.SET_AZIENDA_IGNORE_CONTROLS(false)
-          } else if (resp.id === 2) {
-            this.$phoneAPI.startCall({ numero: currentMessage.authorPhone })
-            this.SET_AZIENDA_IGNORE_CONTROLS(false)
-          } else if (resp.id === 3) {
-            let val = currentMessage.message.match(/(-?\d+(\.\d+)?), (-?\d+(\.\d+)?)/)
-            this.$phoneAPI.setGPS(val[1], val[3])
-            this.SET_AZIENDA_IGNORE_CONTROLS(false)
-          } else if (resp.id === -1) { this.SET_AZIENDA_IGNORE_CONTROLS(false) }
+        Modal.CreateModal({ scelte })
+        .then(resp => {
+          switch(resp.id) {
+            case 1:
+              this.$phoneAPI.sendAziendaMessage({ azienda: this.myAziendaInfo.name, number: currentMessage.authorPhone, message: '%pos%' })
+              this.SET_AZIENDA_IGNORE_CONTROLS(false)
+              break
+            case 2:
+              this.$phoneAPI.startCall({ numero: currentMessage.authorPhone })
+              this.SET_AZIENDA_IGNORE_CONTROLS(false)
+              break
+            case 3:
+              let val = currentMessage.message.match(/(-?\d+(\.\d+)?), (-?\d+(\.\d+)?)/)
+              this.$phoneAPI.setGPS(val[1], val[3])
+              this.SET_AZIENDA_IGNORE_CONTROLS(false)
+              break
+            case -1:
+              this.SET_AZIENDA_IGNORE_CONTROLS(false)
+          }
         })
+        .catch(e => { this.SET_AZIENDA_IGNORE_CONTROLS(false) })
       } catch (e) { }
     },
     onBack () {

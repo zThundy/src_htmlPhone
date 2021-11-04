@@ -92,63 +92,58 @@ export default {
     formatEmoji (message) {
       return this.$phoneAPI.convertEmoji(message)
     },
-    async showOption () {
+    showOption () {
       this.ignoreControls = true
       const tweet = this.tweets[this.selectMessage]
-      let optionsChoix = [{
-        id: 1,
-        title: this.LangString('APP_TWITTER_LIKE'),
-        icons: 'fa-heart'
-      }, {
-        id: 2,
-        title: this.LangString('APP_TWITTER_REPLY'),
-        icons: 'fa-retweet'
-      }, {
-        id: -1,
-        title: this.LangString('CANCEL'),
-        icons: 'fa-undo',
-        color: 'red'
-      }]
+      let scelte = [
+        { id: 1, title: this.LangString('APP_TWITTER_LIKE'), icons: 'fa-heart' },
+        { id: 2, title: this.LangString('APP_TWITTER_REPLY'), icons: 'fa-retweet' },
+        { id: -1, title: this.LangString('CANCEL'), icons: 'fa-undo', color: 'red' }
+      ]
       if (this.isImage(tweet.message)) {
-        optionsChoix = [{
-          id: 3,
-          title: this.LangString('APP_MESSAGE_ZOOM_IMG'),
-          icons: 'fa-search'
-        }, ...optionsChoix]
+        scelte = [{ id: 3, title: this.LangString('APP_MESSAGE_ZOOM_IMG'), icons: 'fa-search' }, ...scelte]
       }
-      const scelte = await Modal.CreateModal({ scelte: optionsChoix })
-      this.ignoreControls = false
-      switch (scelte.id) {
-        case 1:
-          this.twitterToogleLike({ tweetId: tweet.id })
-          break
-        case 2:
-          this.reply(tweet)
-          break
-        case 3:
-          this.imgZoom = tweet.message
-          this.CHANGE_BRIGHTNESS_STATE(false)
-          break
-      }
+      Modal.CreateModal({ scelte: scelte })
+      .then(scelte => {
+        this.ignoreControls = false
+        switch (scelte.id) {
+          case 1:
+            this.twitterToogleLike({ tweetId: tweet.id })
+            break
+          case 2:
+            this.reply(tweet)
+            break
+          case 3:
+            this.imgZoom = tweet.message
+            this.CHANGE_BRIGHTNESS_STATE(false)
+            break
+          case -1:
+            this.ignoreControls = false
+        }
+      })
+      .catch(e => { this.ignoreControls = false })
     },
     isImage (mess) {
       return this.$phoneAPI.isLink(mess)
     },
-    async reply (tweet) {
+    reply (tweet) {
       const authorName = tweet.author
       try {
         this.ignoreControls = true
-        const rep = await Modal.CreateTextModal({ title: 'Rispondi', text: `@${authorName} ` })
-        if (rep !== undefined && rep.text !== undefined) {
-          const message = rep.text.trim()
-          if (message.length !== 0) {
-            this.twitterPostTweet({ message })
+        Modal.CreateTextModal({
+          title: this.LangString('TYPE_MESSAGE'),
+          text: `@${authorName}`
+        })
+        .then(resp => {
+          if (resp !== undefined && resp.text !== undefined) {
+            const message = resp.text.trim()
+            if (message.length !== 0) {
+              this.twitterPostTweet({ message })
+            }
           }
-        }
-      } catch (e) {
-      } finally {
-        this.ignoreControls = false
-      }
+        })
+        .catch(e => { this.ignoreControls = false })
+      } catch (e) { }
     },
     resetScroll () {
       this.$nextTick(() => {
@@ -165,8 +160,8 @@ export default {
         }
       })
     },
-    onUp: function () {
-      if (this.ignoreControls === true) return
+    onUp () {
+      if (this.ignoreControls) return
       if (this.selectMessage === -1) {
         this.selectMessage = 0
       } else {
@@ -175,7 +170,7 @@ export default {
       this.scrollIntoView()
     },
     onDown () {
-      if (this.ignoreControls === true) return
+      if (this.ignoreControls) return
       if (this.selectMessage === -1) {
         this.selectMessage = 0
       } else {
@@ -184,10 +179,8 @@ export default {
       this.scrollIntoView()
     },
     async onEnter () {
-      if (this.ignoreControls === true) return
-      if (this.selectMessage === -1) {
-        // this.newTweet()
-      } else {
+      if (this.ignoreControls) return
+      if (this.selectMessage !== -1) {
         this.showOption()
       }
     },
@@ -197,7 +190,7 @@ export default {
         this.CHANGE_BRIGHTNESS_STATE(true)
         return
       }
-      if (this.ignoreControls === true) return
+      if (this.ignoreControls) return
       if (this.selectMessage !== -1) {
         this.selectMessage = -1
       } else {

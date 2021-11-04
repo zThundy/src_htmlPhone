@@ -74,9 +74,7 @@ export default {
     },
     onEnter () {
       if (this.keySelect === 12) {
-        if (this.numero.length > 0) {
-          this.$phoneAPI.startCall({ numero: this.numeroFormat })
-        }
+        if (this.numero.length > 0) this.$phoneAPI.startCall({ numero: this.numeroFormat })
       } else {
         if (this.numero.length >= 15) return
         this.$phoneAPI.playKeySound({ file: this.keyInfo[this.keySelect].ascii })
@@ -84,7 +82,7 @@ export default {
       }
     },
     onBackspace () {
-      if (this.ignoreControls === true) return
+      if (this.ignoreControls) return
       if (this.numero.length !== 0) {
         this.numero = this.numero.slice(0, -1)
       } else {

@@ -7,7 +7,6 @@ const constraints = {
 
 /* eslint-disable */
 class VoiceRTC {
-
   constructor (RTCConfig, RTCFilters) {
     this.myPeerConnection = null
     this.candidates = []
@@ -22,13 +21,17 @@ class VoiceRTC {
     this.RTCFilters = RTCFilters
   }
 
+  // this function will initialazie a rtc peer to peer connection
+  // using the server specified in the config.json and save the media
+  // stream inside a class variable
   async init () {
     this.close()
     this.myPeerConnection = new RTCPeerConnection(this.RTCConfig)
     this.stream = await navigator.mediaDevices.getUserMedia(constraints)
-    // this.stream = await this.startModVoiceCall()
   }
 
+  // this function will create a new connection without distinguishing if
+  // you are the initiator or not
   newConnection () {
     this.close()
     this.candidates = []
@@ -41,10 +44,10 @@ class VoiceRTC {
     this.myPeerConnection.onaddstream = this.onaddstream.bind(this)
   }
 
+  // if a connection is opened, this function will
+  // close it at any point
   close () {
-    if (this.myPeerConnection !== null) {
-      this.myPeerConnection.close()
-    }
+    if (this.myPeerConnection !== null) this.myPeerConnection.close()
     this.myPeerConnection = null
   }
 
@@ -94,7 +97,6 @@ class VoiceRTC {
     this.myPeerConnection.setLocalDescription(this.offer)
     return btoa(JSON.stringify(this.offer))
   }
-
 
   async acceptCall (infoCall) {
     const offer = JSON.parse(atob(infoCall.rtcOffer))
@@ -165,7 +167,15 @@ class VoiceRTC {
     }
   }
 
-  getAvailableCandidates() {
+  addVideoSource (stream) {
+    console.log(stream.getTracks())
+    // const track = stream.getTrackById(1)
+    // if (this.stream) {
+    //   this.stream.addTrack(track)
+    // }
+  }
+
+  getAvailableCandidates () {
     const candidates = btoa(JSON.stringify(this.myCandidates))
     this.myCandidates = []
     return candidates
@@ -192,59 +202,21 @@ class VoiceRTC {
     }
   }
 
-  onaddstream(event) {
+  onaddstream (event) {
     this.audio.srcObject = event.stream
     this.audio.play()
   }
 
   getAudioContext() {
-    var audioContext
     if (typeof AudioContext === 'function') {
-      audioContext = new AudioContext()
+      return new AudioContext()
     } else if (typeof webkitAudioContext === 'function') {
-      // eslint-disable-line new-cap
-      audioContext = new webkitAudioContext()
+      return new webkitAudioContext()
     }
-    return audioContext
   }
-
-  // async startModVoiceCall () {
-  //   // creazione dell'audiocontext per gli effetti
-  //   this.audioContext = null
-  //   if (typeof AudioContext === 'function') {
-  //     this.audioContext = new AudioContext()
-  //   } else if (typeof webkitAudioContext === 'function') {
-  //     // eslint-disable-line new-cap
-  //     this.audioContext = new webkitAudioContext()
-  //   }
-  //   // Create a filter node.
-  //   // var filterNode = audioContext.createBiquadFilter()
-  //   // See https://dvcs.w3.org/hg/audio/raw-file/tip/webaudio/specification.html#BiquadFilterNode-section
-  //   // filterNode.type = 'lowpass'
-  //   // Cutoff frequency. For highpass, audio is attenuated below this frequency.
-  //   // filterNode.frequency.value = 10000
-  //   // Create a gain node to change audio volume.
-  //   // var gainNode = audioContext.createGain()
-  //   // Default is 1 (no change). Less than 1 means audio is attenuated
-  //   // and vice versa.
-  //   // gainNode.gain.value = 0.5
-  //   var distortion = this.audioContext.createWaveShaper()
-  //   distortion.curve = makeDistortionCurve(400)
-  //   distortion.oversample = '4x'
-  //   return navigator.mediaDevices.getUserMedia(constraints, (stream) => {
-  //     // Create an AudioNode from the stream.
-  //     const mediaStreamSource = this.audioContext.createMediaStreamSource(stream)
-  //     const mediaStreamDestination = this.audioContext.createMediaStreamDestination()
-  //     mediaStreamSource.connect(distortion)
-  //     // mediaStreamSource.connect(filterNode)
-  //     // filterNode.connect(gainNode)
-  //     distortion.connect(mediaStreamDestination)
-  //     // Connect the gain node to the destination. For example, play the sound.
-  //     // gainNode.connect(audioContext.destination)
-  //   })
-  // }
 }
 
+// taken from mozilla site
 function makeDistortionCurve(amount) {
   var k = typeof amount === 'number' ? amount : 50,
     n_samples = 44100,
@@ -254,13 +226,12 @@ function makeDistortionCurve(amount) {
     x;
   for ( ; i < n_samples; ++i ) {
     x = i * 2 / n_samples - 1;
-    curve[i] = ( 3 + k ) * x * 20 * deg / ( Math.PI + k * Math.abs(x) );
+    curve[i] = (3 + k) * x * 20 * deg / (Math.PI + k * Math.abs(x));
   }
-  return curve;
-};
+  return curve
+}
 
 /* eslint-disable */
-(async function () {
-})()
+(async function () {})()
 
 export default VoiceRTC

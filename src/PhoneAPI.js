@@ -1,38 +1,51 @@
 import store from '@/store'
-import VoiceRTC from './VoiceRTC'
-// import VideoRTC from './VideoRTC'
 import Vue from 'vue'
-// import aes256 from 'aes256'
 
-import emoji from './emoji.json'
-const keyEmoji = Object.keys(emoji)
+// import of custom classes
+import VoiceRTC from './VoiceRTC'
+import PictureRequest from './PictureRequest'
+import VideoRequest from './VideoRequest'
 
-let USE_VOICE_RTC = false
 const BASE_URL = 'http://zth_gcphone/'
 
 /* eslint-disable camelcase */
 class PhoneAPI {
   constructor () {
-    // evento che controlla l'apertura e la chiusura del telefono:
-    // aggiungere che ad event.data.show si apre il lockscreen
+    console.log('[MODULE] PhoneAPI initialized')
+    // evento che controlla tutti i messaggi che vengono mandati dal lua
+    // per poi chiamare le funzioni che iniziano con "on"
     window.addEventListener('message', (event) => {
-      const eventType = event.data.event
-      if (eventType !== undefined && typeof this['on' + eventType] === 'function') {
-        this['on' + eventType](event.data)
+      if (event.data.event !== undefined && typeof this['on' + event.data.event] === 'function') {
+        this['on' + event.data.event](event.data)
       } else if (event.data.show !== undefined) {
         store.commit('SET_PHONE_VISIBILITY', event.data.show)
       }
     })
-    this.config = null
-    this.voiceRTC = null
-    this.videoRTC = null
-    this.soundList = []
-    this.audioElement = new Audio()
-    this.keyAudioElement = new Audio()
-  }
 
-  onsendParametersValues (data) {
-    store.commit('SEND_INIT_VALUES', data)
+    fetch('/html/static/config/config.json', { method: 'GET', mode: 'cors' })
+    .then(response => response.text())
+    .then(rawConfig => {
+      this.config = JSON.parse(rawConfig)
+      this.voiceRTC = null
+      this.soundList = []
+      this.audioElement = new Audio()
+      this.keyAudioElement = new Audio()
+      // initialize the videorequest class every time the phone
+      // is actually initialized
+      this.videoRequest = new VideoRequest(this.config.fileUploader.ip, this.config.fileUploader.port)
+      // initialize the picturerequest class every time the phone
+      // is actually initialized
+      this.picture = new PictureRequest(this.config.picturesConfig)
+      if (this.config.enableWebRTC) this.voiceRTC = new VoiceRTC(this.config.RTCConfig, this.config.RTCFilters)
+      this.post('notififyUseRTC', this.voiceRTC)
+      store.dispatch('loadConfig', this.config)
+    })
+
+    fetch('/html/static/config/emoji.json', { method: 'GET', mode: 'cors' })
+    .then(response => response.text())
+    .then(rawEmoji => {
+      this.emoji = JSON.parse(rawEmoji)
+    })
   }
 
   // attenzione: per evitare l'Uncaught (in promise) error sulla console, è
@@ -40,18 +53,16 @@ class PhoneAPI {
   async post (method, data) {
     try {
       const ndata = data === undefined ? '{}' : JSON.stringify(data)
-      const response = await window.jQuery.post(BASE_URL + method, ndata)
-      if (response === undefined || response === 'ok') return 'ok'
+      const response = await fetch(BASE_URL + method, {
+        method: 'POST',
+        mode: 'cors',
+        body: ndata
+      })
+      .then(response => response.text())
+      .then(text => { return JSON.parse(text) })
+      if (response === 'ok' || !response) return 'ok'
       return JSON.parse(response)
     } catch (e) { console.log(BASE_URL + method) }
-  }
-
-  async log (...data) {
-    if (process.env.NODE_ENV === 'production') {
-      return this.post('log', data)
-    } else {
-      return console.log(...data)
-    }
   }
 
   async sendLicenseResponse (bool) {
@@ -59,55 +70,41 @@ class PhoneAPI {
   }
 
   onphoneChecks (data) {
-    // console.log('aoh so qua')
     store.commit('SET_LOADED_VALUE', data)
-    // console.log('aoh sto dopo')
-    // try {
-    //   var key = data.key
-    //   var req = data.req
-    //   if (req && key) {
-    //     var decrypted = aes256.decrypt(key, req)
-    //     decrypted = JSON.parse(decrypted)
-    //     if (decrypted) {
-    //       if (decrypted.license === key && decrypted.text === 'STATUS_OK') {
-    //         store.commit('SET_LOADED_VALUE', true)
-    //         this.post('PhoneNeedAuth', false)
-    //       } else {
-    //         store.commit('SET_LOADED_VALUE', false)
-    //         this.post('PhoneNeedAuth', true)
-    //       }
-    //     } else {
-    //       this.post('PhoneNeedAuth', true)
-    //     }
-    //   } else {
-    //     this.post('PhoneNeedAuth', true)
-    //   }
-    // } catch (e) { console.log(e) }
   }
 
   getEmojis () {
-    return emoji
+    return this.emoji
   }
 
   convertEmoji (text) {
-    if (text) {
-      for (const e of keyEmoji) {
-        text = text.replace(new RegExp(`:${e}:`, 'g'), emoji[e])
-      }
-    }
+    if (text) for (const e in this.emoji) text = text.replace(new RegExp(`:${e}:`, 'g'), this.emoji[e])
     return text
   }
 
-  async sendMessage (phoneNumber, message) {
-    return this.post('sendMessage', {phoneNumber, message})
+  async takePhoto (openCamera = true) {
+    return new Promise((resolve, reject) => {
+      let tmp_status = true
+      if (openCamera) tmp_status = await this.openFakeCamera()
+      if (tmp_status) {
+        const pic = await this.picture.getPicture()
+        if (pic && pic !== '') {
+          this.post('setEnabledFakeCamera', false)
+          this.onaddPhotoToGallery({ link: pic })
+          resolve(pic)
+        } else {
+          reject('cant-get-pic')
+        }
+      }
+    })
   }
 
-  async deleteMessage (id) {
-    return this.post('deleteMessage', {id})
+  onsendParametersValues (data) {
+    store.commit('SEND_INIT_VALUES', data)
   }
 
   async deleteMessagesNumber (number) {
-    return this.post('deleteMessageNumber', {number})
+    return this.post('deleteMessageNumber', { number })
   }
 
   async deleteAllMessages () {
@@ -115,11 +112,11 @@ class PhoneAPI {
   }
 
   async setMessageRead (number) {
-    return this.post('setReadMessageNumber', {number})
+    return this.post('setReadMessageNumber', { number })
   }
 
   async updateContactAvatar (id, display, number, icon) {
-    return this.post('aggiornaAvatarContatto', { id, display, number, icon })
+    return this.post('updateContactAvatar', { id, display, number, icon })
   }
 
   async updateContact (id, display, phoneNumber, email, icon) {
@@ -151,38 +148,35 @@ class PhoneAPI {
   }
 
   async setGPS (x, y) {
-    return this.post('setGPS', {x, y})
+    return this.post('setGPS', { x, y })
   }
 
   onaddPhotoToGallery (data) {
-    store.dispatch('addPhoto', { link: data.link })
+    if (data) store.dispatch('addPhoto', { link: data.link, type: 'photo' })
   }
 
-  async savePictureObDb (data) {
-    return this.post('savePicGalleryOnDb', data)
-  }
-
-  async takePhoto () {
-    store.commit('SET_TEMPO_HIDE', true)
-    const data = await this.post('takePhoto', { url: this.config.fileUploadService_Url, field: this.config.fileUploadService_Field })
-    store.commit('SET_TEMPO_HIDE', false)
-    if (data) { return data }
+  async openFakeCamera (ignoreControls = false) {
+    return this.post('openFakeCamera', { ignoreControls })
   }
 
   async sendErrorMessage (message) {
     return this.post('sendErrorMessage', { message: message })
   }
 
+  async setNUIFocus (bool) {
+    return this.post('setNuiFocus', bool)
+  }
+
   async getReponseText (data) {
     if (process.env.NODE_ENV === 'production') {
       return this.post('reponseText', data || {})
     } else {
-      return {text: window.prompt()}
+      return { text: window.prompt() }
     }
   }
 
   async callEvent (eventName, data) {
-    return this.post('callEvent', {eventName, data})
+    return this.post('callEvent', { eventName, data })
   }
 
   async deleteALL () {
@@ -194,24 +188,6 @@ class PhoneAPI {
     store.dispatch('resetAppels')
     store.dispatch('resetDati')
     return this.post('deleteALL')
-  }
-
-  async getConfig () {
-    if (this.config === null) {
-      const response = await window.jQuery.get('/html/static/config/config.json')
-      if (process.env.NODE_ENV === 'production') {
-        this.config = JSON.parse(response)
-      } else {
-        this.config = response
-      }
-      if (this.config.enableWebRTC === true) {
-        this.voiceRTC = new VoiceRTC(this.config.RTCConfig, this.config.RTCFilters)
-        // this.videoRTC = new VideoRTC(this.config.RTCConfig)
-        USE_VOICE_RTC = true
-      }
-      this.notififyUseRTC(this.config.enableWebRTC)
-    }
-    return this.config
   }
 
   async tchatGetMessagesChannel (channel) {
@@ -231,38 +207,21 @@ class PhoneAPI {
     store.commit('SET_MESSAGES', data.messages)
   }
 
-  /*
-    transmitter = transmitter,
-    receiver = receiver,
-    message = message,
-    isRead = owner,
-    owner = owner,
-    id = id
-  */
-
-  ongenericNotification (data) {
-    Vue.notify({
-      message: store.getters.LangString(data.notif.message),
-      title: store.getters.LangString(data.notif.title) + ':',
-      icon: data.notif.icon,
-      backgroundColor: data.notif.color,
-      appName: data.notif.appName,
-      sound: data.notif.sound
-    })
-  }
-
   onnewMessage (data) {
     store.commit('ADD_MESSAGE', data.message)
-    if (!data.message.owner) {
-      Vue.notify({
-        message: data.message.message,
-        title: data.message.receiver + ':',
-        icon: 'envelope',
-        backgroundColor: 'rgb(255, 140, 30)',
-        appName: 'Messaggi',
-        sound: data.notifications ? 'msgnotify.ogg' : undefined
-      })
-    }
+  }
+
+  ongenericNotification (data) {
+    if (data.notify) data = data.notif
+    if (data.notif) data = data.notif
+    Vue.notify({
+      message: store.getters.LangString(data.message),
+      title: store.getters.LangString(data.title) + ':',
+      icon: data.icon,
+      backgroundColor: data.color,
+      appName: data.appName,
+      sound: data.sound
+    })
   }
 
   onupdateContacts (data) {
@@ -301,47 +260,8 @@ class PhoneAPI {
     return this.post('sendMoneyToIban', { money, iban })
   }
 
-  // Video Calls
-  // async startVideoCall (numero, extraData = undefined) {
-  //   if (USE_VOICE_RTC === true) {
-  //     const rtcOffer = await this.videoRTC.prepareCall()
-  //     return this.post('startVideoCall', { numero, rtcOffer, extraData })
-  //   } else {
-  //     return this.sendErrorMessage(store.getters.LangString('PHONE_RTC_NOT_ENABLED'))
-  //   }
-  // }
-
-  // async acceptVideoCall (infoCall) {
-  //   if (USE_VOICE_RTC === true) {
-  //     const rtcAnswer = await this.videoRTC.acceptCall(infoCall)
-  //     return this.post('acceptVideoCall', { infoCall, rtcAnswer })
-  //   } else {
-  //     return this.sendErrorMessage(store.getters.LangString('PHONE_RTC_NOT_ENABLED'))
-  //   }
-  // }
-
-  // async rejectVideoCall (infoCall) {
-  //   return this.post('rejectVideoCall', { infoCall })
-  // }
-
-  // onwaitingVideoCall (data) {
-  //   store.commit('SET_APPELS_INFO_IF_EMPTY', { ...data.infoCall, initiator: data.initiator })
-  // }
-
-  // onacceptVideoCall (data) {
-  //   if (USE_VOICE_RTC === true) {
-  //     if (data.initiator === true) {
-  //       this.voiceRTC.onReceiveAnswer(data.infoCall.rtcAnswer)
-  //     }
-  //     this.voiceRTC.addEventListener('onCandidate', (candidates) => {
-  //       this.post('onVideoCandidates', { id: data.infoCall.id, candidates })
-  //     })
-  //   }
-  //   store.commit('SET_APPELS_INFO_IS_ACCEPTS', true)
-  // }
-
   async startCall ({ numero }, extraData = undefined) {
-    if (USE_VOICE_RTC === true) {
+    if (this.voiceRTC) {
       const rtcOffer = await this.voiceRTC.prepareCall()
       return this.post('startCall', { numero, rtcOffer, extraData })
     } else {
@@ -350,7 +270,7 @@ class PhoneAPI {
   }
 
   async acceptCall (infoCall) {
-    if (USE_VOICE_RTC === true) {
+    if (this.voiceRTC) {
       const rtcAnswer = await this.voiceRTC.acceptCall(infoCall)
       return this.post('acceptCall', { infoCall, rtcAnswer })
     } else {
@@ -361,19 +281,19 @@ class PhoneAPI {
   removeElementAtIndex (array, index) {
     var tempArray = []
     array.forEach((elem) => {
-      if (array.indexOf(elem) !== index) {
-        tempArray.push(elem)
-      }
+      if (array.indexOf(elem) !== index) tempArray.push(elem)
     })
     return tempArray
   }
 
-  makeid (length) {
+  makeid (length, addTime) {
     var result = ''
     var characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'
     var charactersLength = characters.length
-    for (var i = 0; i < length; i++) {
-      result += characters.charAt(Math.floor(Math.random() * charactersLength))
+    for (var i = 0; i < length; i++) result += characters.charAt(Math.floor(Math.random() * charactersLength))
+    if (addTime) {
+      const date = new Date()
+      result = date.getTime() + result
     }
     return result
   }
@@ -384,11 +304,7 @@ class PhoneAPI {
   }
 
   async rejectCall (infoCall) {
-    return this.post('rejectCall', { infoCall })
-  }
-
-  async notififyUseRTC (use) {
-    return this.post('notififyUseRTC', use)
+    this.post('rejectCall', { infoCall })
   }
 
   async ignoreCall (infoCall) {
@@ -398,7 +314,7 @@ class PhoneAPI {
   oninitVoiceMail (data) {
     Vue.prototype.$bus.$emit('initVoiceMail', data.infoCall)
     store.commit('SET_APPELS_INFO_IS_ACCEPTS', true)
-    return this.post('acceptCall', data)
+    this.post('acceptCall', data)
   }
 
   onnoSignal (data) {
@@ -406,7 +322,7 @@ class PhoneAPI {
       this.audioElement.src = '/html/static/sound/phonenosignal.ogg'
       this.audioElement.volume = 0.2
       this.audioElement.onended = () => {
-        return this.post('rejectCall', data)
+        this.post('rejectCall', data)
       }
       this.audioElement.play()
     }, 250)
@@ -418,14 +334,14 @@ class PhoneAPI {
       setTimeout(() => {
         Vue.prototype.$bus.$emit('initVoiceMailListener', data)
         store.commit('SET_APPELS_INFO_IS_ACCEPTS', true)
-        return this.post('acceptCall', data)
+        this.post('acceptCall', data)
       }, 3000)
     }
   }
 
   onacceptCall (data) {
-    if (USE_VOICE_RTC === true) {
-      if (data.initiator === true) { this.voiceRTC.onReceiveAnswer(data.infoCall.rtcAnswer) }
+    if (this.voiceRTC) {
+      if (data.initiator === true) this.voiceRTC.onReceiveAnswer(data.infoCall.rtcAnswer)
       this.voiceRTC.addEventListener('onCandidate', (candidates) => { this.post('onCandidates', { id: data.infoCall.id, candidates }) })
     }
     store.commit('SET_APPELS_INFO_IS_ACCEPTS', true)
@@ -455,7 +371,6 @@ class PhoneAPI {
     if (this.soundList[data.sound] !== undefined) {
       this.soundList[data.sound].volume = Number(data.volume)
     } else {
-      // console.log('defined new soundList', data.sound)
       this.soundList[data.sound] = new Audio()
       this.soundList[data.sound].src = path
       this.soundList[data.sound].loop = data.loop || false
@@ -478,7 +393,6 @@ class PhoneAPI {
     data.volume = decimalAdjust('floor', data.volume, -2)
     if (this.soundList) {
       this.soundList.forEach((elem, sound) => {
-        console.log(elem, sound)
         if (!elem) return
         elem.volume = data.volume
       })
@@ -617,6 +531,7 @@ class PhoneAPI {
   onupdateSegnale (data) {
     store.commit('SET_SEGNALE', data.potenza)
   }
+
   // data contiene
   // {
   //   current: 299,
@@ -787,14 +702,6 @@ class PhoneAPI {
     return this.post('getClosestPlayers')
   }
 
-  onaddPicToGallery (data) {
-    store.dispatch('addPhoto', data)
-  }
-
-  onclearGallery () {
-    store.dispatch('clearGallery')
-  }
-
   async fetchDarkmessages () {
     return this.post('fetchDarkmessages')
   }
@@ -862,6 +769,7 @@ class PhoneAPI {
 
   onreceiveNewsJob (data) {
     store.commit('UPDATE_JOB', data.job)
+    store.commit('UPDATE_ACCESS', data.access)
   }
 
   async requestJobInfo () {

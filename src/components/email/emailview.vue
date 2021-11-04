@@ -83,9 +83,7 @@ export default {
 .email-header {
   display: flex;
   justify-content: left;
-
   flex-direction: column;
-
   height: 20%;
 }
 
@@ -102,14 +100,12 @@ export default {
   color: grey;
   font-size: 15px;
   text-align: center;
-
   width: 25%;
 }
 
 .email-header .email-header-content .email-header-content-text {
   color: black;
   font-weight: bolder;
-
   font-size: 14px;
 }
 
@@ -126,17 +122,14 @@ export default {
 .email-body .email-body-content {
   width: 97%;
   height: 100%;
-
   padding-left: 10px;
 }
 
 .email-body .email-body-content .email-body-content-title {
   color: grey;
   font-size: 15px;
-
   text-align: left;
   vertical-align: middle;
-
   height: 8%;
 }
 

@@ -13,6 +13,11 @@ end
 local ids = 0
 
 local function CheckForDispatchScript()
+    -- check if the resource is actually started
+    if not GetResourceState("esx_dispatch") == "started" then
+        Config.HasDispatchScript = false
+    end
+
     if Config.HasDispatchScript then
         ids = ids + 1
 
@@ -57,7 +62,7 @@ end
         TriggerEvent("esx_addons_gcphone:call", {
             coords = GetEntityCoords(GetPlayerPed(-1)),
             job = "police",
-            text = "Help i'm beeing robbed",
+            message = "Help i'm beeing robbed",
             display = "Police"
         })
     
@@ -65,7 +70,7 @@ end
         TriggerClientEvent("esx_addons_gcphone:call", source, {
             coords = GetEntityCoords(GetPlayerPed(-1)),
             job = "police",
-            text = "Help i'm beeing robbed",
+            message = "Help i'm beeing robbed",
             display = "Police"
         })
 ]]

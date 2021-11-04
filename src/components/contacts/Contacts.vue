@@ -1,11 +1,11 @@
 <template>
   <div class="contact">
-    <list :list='lcontacts' :headerBackground="'rgb(196, 117, 15)'" :disable="disableList" :title="LangString('APP_CONTACT_TITLE')" @back="back" @select='onSelect' @option='onOption'></list>
+    <list :list='lcontacts' :headerBackground="'rgb(196, 117, 15)'" :disable="ignoreControls" :title="LangString('APP_CONTACT_TITLE')" @back="back" @select='onSelect' @option='onOption'></list>
   </div>
 </template>
 
 <script>
-import { mapActions, mapGetters } from 'vuex'
+import { mapGetters } from 'vuex'
 import { generateColorForStr } from '@/Utils'
 import List from './../List.vue'
 import Modal from '@/components/Modal/index.js'
@@ -15,7 +15,7 @@ export default {
   components: { List },
   data () {
     return {
-      disableList: false
+      ignoreControls: false
     }
   },
   computed: {
@@ -31,7 +31,6 @@ export default {
     }
   },
   methods: {
-    ...mapActions(['updateContactPicture']),
     onSelect (contact) {
       if (contact.id === -1) {
         this.$router.push({ name: 'contacts.view', params: { id: contact.id } })
@@ -43,7 +42,7 @@ export default {
     async onOption (contact) {
       if (contact.id === -1 || contact.id === undefined) return
       const isValid = contact.number.startsWith('#') === false
-      this.disableList = true
+      this.ignoreControls = true
       var scelte = [
           {id: 1, title: this.LangString('APP_CONTACT_EDIT'), icons: 'fa-user-circle', color: 'orange'},
           {id: 2, title: this.LangString('APP_CONTACT_ADD_PICTURE'), icons: 'fa-camera'},
@@ -51,36 +50,39 @@ export default {
           {id: 5, title: this.LangString('CANCEL'), icons: 'fa-undo', color: 'red'}
       ]
       if (isValid === true) { scelte = [{id: 3, title: this.LangString('APP_PHONE_CALL'), icons: 'fa-phone'}, ...scelte] }
-      const resp = await Modal.CreateModal({ scelte: scelte })
-      // lista delle scelte
-      switch (resp.id) {
-        case 1:
-          this.$router.push({ path: 'contact/' + contact.id })
-          this.disableList = false
-          break
-        case 2:
-          const newAvatar = await this.$phoneAPI.takePhoto()
-          if (newAvatar.url !== null && newAvatar.url !== undefined && newAvatar !== '') {
-            this.updateContactPicture({ id: contact.id, display: contact.display, number: contact.number, icon: newAvatar.url })
-          }
-          this.disableList = false
-          break
-        case 3:
-          this.$phoneAPI.startCall({ numero: contact.number })
-          this.disableList = false
-          break
-        case 4:
-          this.$router.push({ name: 'messages.chooseinoltra', params: { contact: contact } })
-          break
-        case 5:
-          this.disableList = false
-          // this.$phoneAPI.shareContact(contact)
-          break
-      }
+      Modal.CreateModal({ scelte: scelte })
+      .then(async resp => {
+        switch (resp.id) {
+          case 1:
+            this.$router.push({ path: 'contact/' + contact.id })
+            this.ignoreControls = false
+            break
+          case 2:
+            this.$phoneAPI.takePhoto()
+            .then(pic => {
+              this.$phoneAPI.updateContactAvatar(contact.id, contact.display, contact.number, pic)
+              this.ignoreControls = false
+            })
+            .catch(e => { this.ignoreControls = false })
+            break
+          case 3:
+            this.$phoneAPI.startCall({ numero: contact.number })
+            this.ignoreControls = false
+            break
+          case 4:
+            this.$router.push({ name: 'messages.chooseinoltra', params: { contact: contact } })
+            break
+          case 5:
+            this.ignoreControls = false
+            // this.$phoneAPI.shareContact(contact)
+            break
+        }
+      })
+      .catch(e => { this.ignoreControls = false })
     },
     back () {
-      if (this.disableList === true) {
-        this.disableList = false
+      if (this.ignoreControls === true) {
+        this.ignoreControls = false
         return
       }
       this.$router.push({ name: 'menu' })

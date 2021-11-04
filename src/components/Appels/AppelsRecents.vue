@@ -56,7 +56,7 @@ export default {
     }
   },
   methods: {
-    ...mapActions(['deletePhoneHistory', 'deleteAllPhoneHistory', 'addContact', 'updateIgnoredControls']),
+    ...mapActions(['deletePhoneHistory', 'deleteAllPhoneHistory', 'updateIgnoredControls']),
     getContact (num) {
       const find = this.contacts.find(e => e.number === num)
       return find
@@ -68,12 +68,12 @@ export default {
       })
     },
     onUp () {
-      if (this.ignoreControls === true) return
+      if (this.ignoreControls) return
       this.selectIndex = Math.max(0, this.selectIndex - 1)
       this.scrollIntoView()
     },
     onDown () {
-      if (this.ignoreControls === true) return
+      if (this.ignoreControls) return
       this.selectIndex = Math.min(this._callsHistory.length - 1, this.selectIndex + 1)
       this.scrollIntoView()
     },
@@ -87,44 +87,44 @@ export default {
         {id: 2, title: this.LangString('APP_PHONE_DELETE_ALL'), icons: 'fa-trash', color: 'red'},
         {id: 3, title: this.LangString('APP_PHONE_CANCEL'), icons: 'fa-undo', color: 'red'}
       ]
-      if (isValid === true) {
+      if (isValid) {
         scelte = [{id: 5, title: this.LangString('APP_PHONE_SEND_MESSAGE'), icons: 'fa-sms'}, ...scelte]
         scelte = [{id: 6, title: this.LangString('APP_PHONE_CALL_ANONYMOUS'), icons: 'fa-mask'}, ...scelte]
         scelte = [{id: 0, title: this.LangString('APP_PHONE_CALL'), icons: 'fa-phone'}, ...scelte]
       }
-      const rep = await Modal.CreateModal({ scelte })
-      switch (rep.id) {
-        case 0:
-          this.$phoneAPI.startCall({ numero })
-          this.updateIgnoredControls(false)
-          break
-        case 1:
-          this.deletePhoneHistory({ numero })
-          this.updateIgnoredControls(false)
-          break
-        case 2:
-          this.deleteAllPhoneHistory()
-          this.updateIgnoredControls(false)
-          break
-        case 4:
-          this.save(numero)
-          this.updateIgnoredControls(false)
-          break
-        case 5:
-          this.$router.push({ name: 'messages.view', params: { display: item.display, number: numero } })
-          this.updateIgnoredControls(false)
-          break
-        case 6:
-          this.$phoneAPI.startCall({ numero: '#' + numero })
-          this.updateIgnoredControls(false)
-          break
-      }
-      if (rep.title === 'cancel') {
-        this.updateIgnoredControls(false)
-      }
+      Modal.CreateModal({ scelte })
+      .then(resp => {
+        switch (resp.id) {
+          case 0:
+            this.$phoneAPI.startCall({ numero })
+            this.updateIgnoredControls(false)
+            break
+          case 1:
+            this.deletePhoneHistory({ numero })
+            this.updateIgnoredControls(false)
+            break
+          case 2:
+            this.deleteAllPhoneHistory()
+            this.updateIgnoredControls(false)
+            break
+          case 4:
+            this.save(numero)
+            this.updateIgnoredControls(false)
+            break
+          case 5:
+            this.$router.push({ name: 'messages.view', params: { display: item.display, number: numero } })
+            this.updateIgnoredControls(false)
+            break
+          case 6:
+            this.$phoneAPI.startCall({ numero: '#' + numero })
+            this.updateIgnoredControls(false)
+            break
+        }
+      })
+      .catch(e => { this.updateIgnoredControls(false) })
     },
     async onEnter () {
-      if (this.ignoreControls === true) return
+      if (this.ignoreControls) return
       if (this._callsHistory[this.selectIndex] === null || this._callsHistory[this.selectIndex] === undefined) return
       this.selectItem(this._callsHistory[this.selectIndex])
     },

@@ -4,7 +4,6 @@ import PhoneAPI from './../../PhoneAPI'
 const state = {
   show: process.env.NODE_ENV !== 'production',
   // show: false,
-  tempoHide: false,
   myPhoneNumber: '555#####',
   background: JSON.parse(window.localStorage['gc_background'] || null),
   currentCover: JSON.parse(window.localStorage['gc_cover'] || null),
@@ -32,7 +31,6 @@ const state = {
 
 const getters = {
   show: ({ show }) => show,
-  tempoHide: ({ tempoHide }) => tempoHide,
   myPhoneNumber: ({ myPhoneNumber }) => myPhoneNumber,
   volume: ({ volume }) => volume,
   notification: ({ notification }) => notification,
@@ -41,7 +39,6 @@ const getters = {
   brightness: ({ brightness }) => brightness,
   myImage: ({ myImage, config }) => myImage,
   myData: ({ myData, config }) => myData,
-  enableTakePhoto: ({ config }) => config.enableTakePhoto === true,
   background: ({ background, config }) => {
     if (background === null) {
       if (config.background_default !== undefined) {
@@ -115,19 +112,14 @@ const getters = {
 }
 
 const actions = {
-  async loadConfig ({ commit, state }) {
-    const config = await PhoneAPI.getConfig()
+  loadConfig ({ commit, state }, config) {
     const keyLang = Object.keys(config.language)
     for (const key of keyLang) {
       const timeAgoConf = config.language[key].TIMEAGO
-      if (timeAgoConf !== undefined) {
-        Vue.prototype.$timeago.addLocale(key, timeAgoConf)
-      }
+      if (timeAgoConf !== undefined) Vue.prototype.$timeago.addLocale(key, timeAgoConf)
     }
     Vue.prototype.$timeago.setCurrentLocale(state.lang)
-    if (config.defaultContacts !== undefined) {
-      commit('SET_DEFAULT_CONTACTS', config.defaultContacts)
-    }
+    if (config.defaultContacts !== undefined) commit('SET_DEFAULT_CONTACTS', config.defaultContacts)
     commit('SET_CONFIG', config)
   },
   setVisibility ({ commit }, show) {
@@ -200,10 +192,6 @@ const mutations = {
   // },
   SET_PHONE_VISIBILITY (state, show) {
     state.show = show
-    state.tempoHide = false
-  },
-  SET_TEMPO_HIDE (state, hide) {
-    state.tempoHide = hide
   },
   SET_MY_PHONE_NUMBER (state, myPhoneNumber) {
     state.myPhoneNumber = myPhoneNumber

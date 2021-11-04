@@ -1,11 +1,12 @@
-myCover = nil
+myCover = "base"
 
 local function RefreshCovers()
     local covers = gcPhoneServerT.cover_requestCovers()
     SendNUIMessage({ event = "receiveCovers", covers = covers })
 end
 
-local function ChangeCover(label, cover)
+local function ChangeCover(cover)
+    local label = Config.Covers[cover].label or Config.Covers["base"].label
     cover = cover..".png"
     SendNUIMessage({ event = "changePhoneCover", cover = cover, label = label })
 end
@@ -18,8 +19,10 @@ local function OpenShopMenu(myCovers)
     for name, val in pairs(myCovers) do tempCovers[string.gsub(val.value, ".png", "")] = val end
 
     for name, info in pairs(Config.Covers) do
-        if tempCovers[name] == nil then
-            table.insert(elements, { label = info.label.." - "..info.price.."$", value = info, name = name })
+        if name ~= "base" then
+            if tempCovers[name] == nil then
+                table.insert(elements, { label = info.label.." - "..info.price.."$", value = info, name = name })
+            end
         end
     end
 
@@ -38,18 +41,18 @@ local function OpenShopMenu(myCovers)
 
         ESX.UI.Menu.CloseAll()
         SendNUIMessage({ show = false })
-        ChangeCover(value.label, name)
+        ChangeCover(name)
     end
 
     -- onMenuChangeIndex
     onMenuChangeIndex = function(data, _)
-        ChangeCover(data.current.value.label, data.current.name)
+        ChangeCover(data.current.name)
     end
 
     -- onMenuClose
     onMenuClose = function(data, _)
         ESX.UI.Menu.CloseAll()
-        ChangeCover(Config.Language["NO_COVER_LABEL"], "base")
+        ChangeCover("base")
         SendNUIMessage({ show = false })
     end
 
@@ -69,7 +72,7 @@ end)
 
 RegisterNUICallback("changingCover", function(data, cb)
     myCover = string.gsub(data.cover.value, ".png", "")
-    OnCoverChange()
+    onCoverChange()
     cb("ok")
 end)
 
@@ -89,13 +92,9 @@ Citizen.CreateThread(function()
 		end,
         onExit = function()
             ESX.UI.Menu.CloseAll()
-            ChangeCover(Config.Language["NO_COVER_LABEL"], "base")
+            ChangeCover("base")
             SendNUIMessage({ show = false })
         end,
-        -- need to think about this cause idk if i like this
-        -- onEnter = function()
-        --     SendNUIMessage({ show = true })
-        -- end,
 		msg = Config.Language["HELPNOTIFICATION_COVER_SHOP_LABEL"],
 	})
 

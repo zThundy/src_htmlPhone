@@ -173,9 +173,9 @@ export default {
     }
   },
   methods: {
-    ...mapActions(['instagramLogin', 'instagramChangePassword', 'instagramLogout', 'instagramSetAvatar', 'instagramCreateNewAccount', 'setInstagramNotification', 'setInstagramNotificationSound']),
+    ...mapActions(['instagramChangePassword', 'instagramLogout', 'instagramSetAvatar', 'setInstagramNotification', 'setInstagramNotificationSound']),
     onUp: function () {
-      if (this.ignoreControls === true) return
+      if (this.ignoreControls) return
       let select = document.querySelector('.group.select')
       if (select === null) {
         select = document.querySelector('.group')
@@ -200,7 +200,7 @@ export default {
       }
     },
     onDown: function () {
-      if (this.ignoreControls === true) return
+      if (this.ignoreControls) return
       let select = document.querySelector('.group.select')
       if (select === null) {
         select = document.querySelector('.group')
@@ -225,21 +225,24 @@ export default {
       }
     },
     onEnter () {
-      if (this.ignoreControls === true) return
+      if (this.ignoreControls) return
       let select = document.querySelector('.group.select')
       if (select === null) return
       if (select.dataset !== null) {
         if (select.dataset.type === 'text') {
           const $input = select.querySelector('input')
-          let options = {
+          Modal.CreateTextModal({
             limit: parseInt(select.dataset.maxlength) || 64,
             text: select.dataset.defaultValue || '',
-            title: select.dataset.title || ''
-          }
-          this.$phoneAPI.getReponseText(options).then(data => {
-            $input.value = data.text
-            $input.dispatchEvent(new window.Event('change'))
+            title: select.dataset.title || '',
+            color: 'rgba(0, 0, 0, .01)'
           })
+          .then(resp => {
+            $input.value = resp.text
+            $input.dispatchEvent(new window.Event('change'))
+            this.ignoreControls = false
+          })
+          .catch(e => { this.ignoreControls = false })
         }
         if (select.dataset.type === 'button') {
           select.click()
@@ -256,33 +259,46 @@ export default {
     setLocalAccount ($event, key) {
       this.accountLocale[key] = $event.target.value
     },
-    async onPressChangeAvartar () {
+    onPressChangeAvartar () {
       try {
         this.ignoreControls = true
-        let scelte = [
-          {id: 1, title: this.LangString('APP_TWITTER_LINK_PICTURE'), icons: 'fa-link'},
-          {id: 2, title: this.LangString('APP_TWITTER_TAKE_PICTURE'), icons: 'fa-camera'}
-        ]
-        const resp = await Modal.CreateModal({ scelte: scelte })
-        if (resp.id === 1) {
-          const data = await Modal.CreateTextModal({ text: this.instagramAvatarUrl || 'https://i.imgur.com/' })
-          this.instagramSetAvatar({ avatarUrl: data.text })
-          this.ignoreControls = false
-        } else if (resp.id === 2) {
-          const newAvatar = await this.$phoneAPI.takePhoto()
-          if (newAvatar.url !== null) {
-            if (this.accountLocale.avatarUrl === null) {
-              this.accountLocale.avatarUrl = newAvatar.url
-              this.instagramAvatarUrl = newAvatar.url
-            }
-            this.instagramSetAvatar({ avatarUrl: newAvatar.url })
-            this.ignoreControls = false
+        Modal.CreateModal({ scelte: [
+          { id: 1, title: this.LangString('APP_TWITTER_LINK_PICTURE'), icons: 'fa-link' },
+          { id: 2, title: this.LangString('APP_TWITTER_TAKE_PICTURE'), icons: 'fa-camera' }
+        ] })
+        .then(async resp => {
+          switch(resp.id) {
+            case 1:
+              Modal.CreateTextModal({
+                text: this.instagramAvatarUrl || 'https://i.imgur.com/',
+                color: 'rgba(0, 0, 0, .01)',
+                title: this.LangString('TYPE_LINK')
+              })
+              .then(response => {
+                this.instagramSetAvatar({ avatarUrl: response.text })
+                this.ignoreControls = false
+              })
+              .catch(e => { this.ignoreControls = false })
+              break
+            case 2:
+              this.$phoneAPI.takePhoto()
+              .then(pic => {
+                if (this.accountLocale.avatarUrl === null) {
+                  this.accountLocale.avatarUrl = pic
+                  this.instagramAvatarUrl = pic
+                }
+                this.instagramSetAvatar({ avatarUrl: pic })
+                this.ignoreControls = false
+              })
+              .catch(e => { this.ignoreControls = false })
+              break
           }
-        }
+        })
+        .catch(e => { this.ignoreControls = false })
       } catch (e) {}
     },
     login () {
-      this.instagramLogin({ username: this.accountLocale.username, password: this.accountLocale.password })
+      this.$phoneAPI.instagram_login(this.accountLocale.username, this.accountLocale.password)
       this.state = STATI.MENU
     },
     logout () {
@@ -290,7 +306,7 @@ export default {
     },
     createAccount () {
       if (this.validAccount === true) {
-        this.instagramCreateNewAccount(this.accountLocale)
+        this.$phoneAPI.instagram_createAccount(this.accountLocale.username, this.accountLocale.password, this.accountLocale.avatarUrl)
         this.accountLocale = {
           username: '',
           password: '',
@@ -309,40 +325,51 @@ export default {
     setNotificationSound (value) {
       this.setInstagramNotificationSound(value)
     },
-    async changePassword () {
-      if (this.ignoreControls === true) return
+    changePassword () {
+      if (this.ignoreControls) return
       this.ignoreControls = true
       // SEZIONE MODAL ASYNC //
-      const password1 = await Modal.CreateTextModal({ limit: 40, title: 'Inserisci la nuova password' })
-      if (password1.text === '' || password1.text === null || password1.text === undefined) return
-      const password2 = await Modal.CreateTextModal({ limit: 40, title: 'Ripeti la password' })
-      if (password2.text === '' || password2.text === null || password2.text === undefined) return
-      if (password2.text !== password1.text) {
-        this.$notify({
-          title: this.LangString('APP_INSTAGRAM_NAME'),
-          message: this.LangString('APP_INSTAGRAM_NOTIF_NEW_PASSWORD_MISS_MATCH'),
-          icon: 'instagram',
-          backgroundColor: '#66000080'
+      Modal.CreateTextModal({
+        limit: 40,
+        title: this.LangString('APP_INSTAGRAM_TYPE_PASSWORD_TITLE_1'),
+        color: 'rgba(0, 0, 0, .01)'
+      })
+      .then(pass1 => {
+        if (pass1.text === '' || pass1.text === null || pass1.text === undefined) return
+        Modal.CreateTextModal({
+          limit: 40,
+          title: this.LangString('APP_INSTAGRAM_TYPE_PASSWORD_TITLE_2'),
+          color: 'rgba(0, 0, 0, .01)'
         })
-        setTimeout(() => { this.ignoreControls = false }, 200)
-        return
-      } else if (password2.text.length < 6) {
-        this.$notify({
-          title: this.LangString('APP_INSTAGRAM_NAME'),
-          message: this.LangString('APP_INSTAGRAM_NOTIF_NEW_PASSWORD_LENGTH_ERROR'),
-          icon: 'instagram',
-          backgroundColor: '#66000080'
+        .then(pass2 => {
+          if (pass2.text === '' || pass2.text === null || pass2.text === undefined) return
+          if (pass1.text !== pass2.text) {
+            this.$notify({
+              title: this.LangString('APP_INSTAGRAM_NAME'),
+              message: this.LangString('APP_INSTAGRAM_NOTIF_NEW_PASSWORD_MISS_MATCH'),
+              icon: 'instagram',
+              backgroundColor: '#66000080'
+            })
+            setTimeout(() => { this.ignoreControls = false }, 200)
+          } else if (pass2.text.length < 6) {
+            this.$notify({
+              title: this.LangString('APP_INSTAGRAM_NAME'),
+              message: this.LangString('APP_INSTAGRAM_NOTIF_NEW_PASSWORD_LENGTH_ERROR'),
+              icon: 'instagram',
+              backgroundColor: '#66000080'
+            })
+            setTimeout(() => { this.ignoreControls = false }, 200)
+          } else {
+            setTimeout(() => { this.ignoreControls = false }, 200)
+            this.instagramChangePassword(pass2.text)
+          }
         })
-        setTimeout(() => { this.ignoreControls = false }, 200)
-        return
-      } else {
-        setTimeout(() => { this.ignoreControls = false }, 200)
-      }
-      this.instagramChangePassword(password2.text)
+        .catch(e => { this.ignoreControls = false })
+      })
+      .catch(e => { this.ignoreControls = false })
     }
   },
   created () {
-    // this.state = STATI.ACCOUNT
     this.$bus.$on('keyUpArrowDown', this.onDown)
     this.$bus.$on('keyUpArrowUp', this.onUp)
     this.$bus.$on('keyUpEnter', this.onEnter)
@@ -461,18 +488,6 @@ input:focus {
 .group.select .LoginText {
   color: #fff;
   background-color: #2196f3;
-}
-
-.favicon {
-  position: absolute;
-  padding-left: 130px;
-  padding-top: 2px;
-  animation: buttonMoveOff 0.5s ease;
-}
-
-.group.select .favicon {
-  animation: buttonMove 0.5s ease;
-  animation-fill-mode: forwards; 
 }
 
 @keyframes buttonMove {
@@ -631,17 +646,6 @@ input:focus {
   animation-fill-mode: forwards;
 }
 
-.mytextwithicon {
-  position: relative;
-}    
-.mytextwithicon:before {
-  content: "\25AE";  /* this is your text. You can also use UTF-8 character codes as I do here */
-  font-family: FontAwesome;
-  left:-5px;
-  position:absolute;
-  top:0;
-}
-
 .checkbox input {
   width: 24px;
   height: 0px;
@@ -678,18 +682,11 @@ input:focus {
   left: 25px;
   margin-top: -10px;
 
-  font-family: FontAwesome;
-  content: "\f00d";
-
   animation: pallinoRotazioneOff 0.5s ease;
   animation-fill-mode: forwards;
 }
 
 .checkbox input:checked::after {
-  
-  font-family: FontAwesome;
-  content: "\f00c";
-
   animation: pallinoRotazione 0.5s ease;
   animation-fill-mode: forwards;
 }

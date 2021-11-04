@@ -101,7 +101,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['LangString', 'messaggi', 'myPhoneNumber', 'enableTakePhoto', 'contacts', 'config'])
+    ...mapGetters(['LangString', 'messaggi', 'myPhoneNumber', 'contacts', 'config'])
   },
   methods: {
     ...mapActions(['requestWhatsappInfo', 'sendMessageInGroup']),
@@ -118,7 +118,7 @@ export default {
       })
     },
     onUp () {
-      if (this.ignoreControls === true) return
+      if (this.ignoreControls) return
       if (this.currentSelected === -1) {
         this.currentSelected = this.messaggi[String(this.gruppo.id)].length - 1
       } else {
@@ -127,7 +127,7 @@ export default {
       this.scrollIntoView()
     },
     onDown () {
-      if (this.ignoreControls === true) return
+      if (this.ignoreControls) return
       if (this.currentSelected === -1) {
         this.currentSelected = this.messaggi[String(this.gruppo.id)].length - 1
       } else {
@@ -141,13 +141,13 @@ export default {
         this.CHANGE_BRIGHTNESS_STATE(true)
         return
       }
-      if (this.ignoreControls === true) { this.ignoreControls = false; return }
+      if (this.ignoreControls) { this.ignoreControls = false; return }
       if (this.currentSelected !== -1) { this.currentSelected = -1; return }
       this.$router.push({ name: 'whatsapp' })
     },
     async onRight () {
       if (this.isRecording) return
-      if (this.ignoreControls === true) return
+      if (this.ignoreControls) return
       // qui controllo se hai un messaggio selezionato
       // così da farti uscire le impostazioni di quel messaggio
       // oppure della chat
@@ -155,47 +155,53 @@ export default {
         try {
           this.ignoreControls = true
           let scelte = [
-              {id: 'audio-record', title: this.LangString('APP_WHATSAPP_RECORD_AUDIO'), icons: 'fa-microphone'},
+            {id: 'audio-record', title: this.LangString('APP_WHATSAPP_RECORD_AUDIO'), icons: 'fa-microphone'},
             {id: 1, title: this.LangString('APP_WHATSAPP_SEND_GPS'), icons: 'fa-location-arrow'},
             {id: -1, title: this.LangString('CANCEL'), icons: 'fa-undo', color: 'red'}
           ]
-          if (this.enableTakePhoto) {
+          if (this.config.picturesConfig.enabled) {
             scelte = [
               {id: 'audio-record', title: this.LangString('APP_WHATSAPP_RECORD_AUDIO'), icons: 'fa-microphone'},
               {id: 1, title: this.LangString('APP_WHATSAPP_SEND_GPS'), icons: 'fa-location-arrow'},
-              {id: 2, title: this.LangString('APP_WHATSAPP_SEND_PHOTO'), icons: 'fa-picture-o'},
+              {id: 2, title: this.LangString('APP_WHATSAPP_SEND_PHOTO'), icons: 'fa-image'},
               {id: -1, title: this.LangString('CANCEL'), icons: 'fa-undo', color: 'red'}
             ]
           }
-          const resp = await Modal.CreateModal({ scelte })
-          switch (resp.id) {
-            case 1:
-              this.ignoreControls = false
-              if (this.myPhoneNumber.includes('#') || this.myPhoneNumber === 0 || this.myPhoneNumber === '0') {
-                this.$phoneAPI.ongenericNotification({
-                  title: 'GENERIC_ERROR',
-                  message: 'APP_WHATSAPP_CANNOT_GET_PHONE_NUMBER',
-                  icon: 'whatsapp',
-                  backgroundColor: 'rgb(108, 250, 108)',
-                  appName: 'Whatsapp'
+          Modal.CreateModal({ scelte: scelte })
+          .then(async resp => {
+            switch (resp.id) {
+              case 1:
+                this.ignoreControls = false
+                if (this.myPhoneNumber.includes('#') || this.myPhoneNumber === 0 || this.myPhoneNumber === '0') {
+                  this.$phoneAPI.ongenericNotification({
+                    title: 'WHATSAPP_INFO_TITLE',
+                    message: 'WHATSAPP_CANNOT_GET_PHONE_NUMBER',
+                    icon: 'whatsapp',
+                    color: 'rgb(108, 250, 108)',
+                    appName: 'Whatsapp'
+                  })
+                } else {
+                  this.sendMessageInGroup({ gruppo: this.gruppo, message: '%pos%', phoneNumber: this.myPhoneNumber })
+                }
+                break
+              case 2:
+                this.$phoneAPI.takePhoto()
+                .then(pic => {
+                  this.sendMessageInGroup({ gruppo: this.gruppo, message: pic, phoneNumber: this.myPhoneNumber })
+                  this.ignoreControls = false
                 })
-              } else {
-                this.sendMessageInGroup({ gruppo: this.gruppo, message: '%pos%', phoneNumber: this.myPhoneNumber })
-              }
-              break
-            case 2:
-              this.ignoreControls = false
-              const { url } = await this.$phoneAPI.takePhoto()
-              if (url !== null && url !== undefined) { this.sendMessageInGroup({ gruppo: this.gruppo, message: url, phoneNumber: this.myPhoneNumber }) }
-              break
-            case -1:
-              this.ignoreControls = false
-              break
-            case 'audio-record':
-              this.ignoreControls = false
-              this.start()
-              break
-          }
+                .catch(e => { this.ignoreControls = false })
+                break
+              case -1:
+                this.ignoreControls = false
+                break
+              case 'audio-record':
+                this.ignoreControls = false
+                this.start()
+                break
+            }
+          })
+          .catch(e => { this.ignoreControls = false })
         } catch (e) {}
       } else {
         this.onActionMessage(this.messaggi[String(this.gruppo.id)][this.currentSelected])
@@ -226,16 +232,21 @@ export default {
         this.ignoreControls = false
         return
       }
-      if (this.ignoreControls === true) return
-      this.$phoneAPI.getReponseText({ title: 'Invia un messaggio' }).then(data => {
-        let message = data.text.trim()
+      if (this.ignoreControls) return
+      Modal.CreateTextModal({
+        title: this.LangString('TYPE_MESSAGE'),
+        color: 'rgb(112, 255, 125)',
+        limit: 64
+      })
+      .then(resp => {
+        const message = resp.text.trim()
         if (message !== '') {
           if (this.myPhoneNumber.includes('#') || this.myPhoneNumber === 0 || this.myPhoneNumber === '0') {
             this.$phoneAPI.ongenericNotification({
-              title: 'GENERIC_ERROR',
-              message: 'APP_WHATSAPP_CANNOT_GET_PHONE_NUMBER',
+              title: 'WHATSAPP_INFO_TITLE',
+              message: 'WHATSAPP_CANNOT_GET_PHONE_NUMBER',
               icon: 'whatsapp',
-              backgroundColor: 'rgb(108, 250, 108)',
+              color: 'rgb(108, 250, 108)',
               appName: 'Whatsapp'
             })
           } else {
@@ -247,14 +258,15 @@ export default {
           }, 200)
         }
       })
+      .catch(e => { this.ignoreControls = false })
     },
     listenAudio (message) {
       setTimeout(() => {
         let audioInfo = this.getSMSAudioInfo(message)
-        fetch('http://' + this.config.fileUploader.ip + ':3000/audioDownload?type=whatsapp&key=' + audioInfo.id, {
+        fetch('http://' + this.config.fileUploader.ip + ':' + this.config.fileUploader.port + '/audioDownload?type=whatsapp&key=' + audioInfo.id, {
           method: 'GET'
         }).then(async resp => {
-          if (resp.status === 404) { return console.err('404 error') }
+          if (resp.status === 404) { return console.error('404 error') }
           const progressElement = document.getElementById('audio-progress-' + audioInfo.id)
           this.audioElement = document.getElementById('audio-player-' + audioInfo.id)
           var jsonResponse = await resp.json()
@@ -274,7 +286,7 @@ export default {
           }
           this.audioElement.play()
           this.isPlaying = true
-        }).catch(() => {})
+        }).catch((error) => { console.error(error) })
       }, 500)
     },
     async start () {
@@ -317,19 +329,19 @@ export default {
       setTimeout(() => {
         const blobData = new Blob(this.chunks, { 'type': 'audio/ogg;codecs=opus' })
         if (blobData.size > 0) {
-          const id = this.$phoneAPI.makeid(15)
+          const id = this.$phoneAPI.makeid(15, true)
           const formData = new FormData()
           formData.append('audio-file', blobData)
           formData.append('filename', id)
           formData.append('type', 'whatsapp')
-          fetch('http://' + this.config.fileUploader.ip + ':3000/audioUpload', {
+          fetch('http://' + this.config.fileUploader.ip + ':' + this.config.fileUploader.port + '/audioUpload', {
             method: 'POST',
             body: formData
           }).then(() => {
             this.sendMessageInGroup({ gruppo: this.gruppo, message: '[AUDIO]%' + this.myPhoneNumber + '%' + id, phoneNumber: this.myPhoneNumber })
             this.isPaused = false
             this.isRecording = false
-          })
+          }).catch((error) => { console.error(error) })
         }
         this.chunks = []
       }, 500)
@@ -338,13 +350,13 @@ export default {
       if (messaggio.sender === this.myPhoneNumber) return true
       return false
     },
-    async onActionMessage (message) {
+    onActionMessage (message) {
       try {
         let isGPS = /(-?\d+(\.\d+)?), (-?\d+(\.\d+)?)/.test(message.message)
         let scelte = [
-              {id: 'audio-record', title: this.LangString('APP_WHATSAPP_RECORD_AUDIO'), icons: 'fa-microphone'},
+          { id: 'audio-record', title: this.LangString('APP_WHATSAPP_RECORD_AUDIO'), icons: 'fa-microphone' },
           { id: 1, title: this.LangString('APP_WHATSAPP_SEND_GPS'), icons: 'fa-location-arrow' },
-          { id: 2, title: this.LangString('APP_WHATSAPP_SEND_PHOTO'), icons: 'fa-picture-o' },
+          { id: 2, title: this.LangString('APP_WHATSAPP_SEND_PHOTO'), icons: 'fa-image' },
           { id: -1, title: this.LangString('CANCEL'), icons: 'fa-undo', color: 'red' }
         ]
         if (isGPS === true) { scelte = [{ id: 'gps', title: this.LangString('APP_WHATSAPP_SET_GPS'), icons: 'fa-location-arrow' }, ...scelte] }
@@ -353,37 +365,51 @@ export default {
           scelte = [{ id: 'audio-listen', title: this.LangString('APP_WHATSAPP_LISTEN_AUDIO'), icons: 'fa-headphones' }, ...scelte]
         }
         this.ignoreControls = true
-        const data = await Modal.CreateModal({ scelte })
-        this.ignoreControls = false
-        if (data.id === 'gps') {
-          let val = message.message.match(/(-?\d+(\.\d+)?), (-?\d+(\.\d+)?)/)
-          this.$phoneAPI.setGPS(val[1], val[3])
-        } else if (data.id === 'zoom') {
-          this.CHANGE_BRIGHTNESS_STATE(false)
-          this.imgZoom = message.message
-        } else if (data.id === 'audio-listen') {
-          this.listenAudio(message.message)
-        } else if (data.id === 'audio-record') {
-          this.start()
-        } else if (data.id === 1) {
-          if (this.myPhoneNumber.includes('#') || this.myPhoneNumber === 0 || this.myPhoneNumber === '0') {
-            this.$phoneAPI.ongenericNotification({
-              title: 'GENERIC_ERROR',
-              message: 'APP_WHATSAPP_CANNOT_GET_PHONE_NUMBER',
-              icon: 'whatsapp',
-              backgroundColor: 'rgb(108, 250, 108)',
-              appName: 'Whatsapp'
-            })
-          } else {
-            this.sendMessageInGroup({ gruppo: this.gruppo, message: '%pos%', phoneNumber: this.myPhoneNumber })
+        Modal.CreateModal({ scelte })
+        .then(async data => {
+          this.ignoreControls = false
+          switch(data.id) {
+            case 'gps':
+              let val = message.message.match(/(-?\d+(\.\d+)?), (-?\d+(\.\d+)?)/)
+              this.$phoneAPI.setGPS(val[1], val[3])
+              break
+            case 'zoom':
+              this.CHANGE_BRIGHTNESS_STATE(false)
+              this.imgZoom = message.message
+              break
+            case 'audio-listen':
+              this.listenAudio(message.message)
+              break
+            case 'audio-record':
+              this.start()
+              break
+            case 1:
+              if (this.myPhoneNumber.includes('#') || this.myPhoneNumber === 0 || this.myPhoneNumber === '0') {
+                this.$phoneAPI.ongenericNotification({
+                  title: 'WHATSAPP_INFO_TITLE',
+                  message: 'WHATSAPP_CANNOT_GET_PHONE_NUMBER',
+                  icon: 'whatsapp',
+                  color: 'rgb(108, 250, 108)',
+                  appName: 'Whatsapp'
+                })
+              } else {
+                this.sendMessageInGroup({ gruppo: this.gruppo, message: '%pos%', phoneNumber: this.myPhoneNumber })
+              }
+              break
+            case 2:
+              this.$phoneAPI.takePhoto()
+              .then(pic => {
+                this.sendMessageInGroup({ gruppo: this.gruppo, message: pic, phoneNumber: this.myPhoneNumber })
+                this.ignoreControls = false
+              })
+              .catch(e => { this.ignoreControls = false })
+              break
           }
-        } else if (data.id === 2) {
-          const pic = await this.$phoneAPI.takePhoto()
-          if (pic !== null && pic !== undefined) { this.sendMessageInGroup({ gruppo: this.gruppo, message: pic.url, phoneNumber: this.myPhoneNumber }) }
-        }
+        })
+        .catch(e => { this.ignoreControls = false })
       } catch (e) { }
     },
-    async startUpdatingMessages () {
+    startUpdatingMessages () {
       this.$refs.updating.show()
       this.ignoreControls = true
       setTimeout(() => {

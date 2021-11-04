@@ -22,47 +22,47 @@ export default {
   computed: {
     ...mapGetters(['LangString'])
   },
-  watch: {
-  },
+  // watch: { },
   methods: {
     ...mapActions(['instagramSaveTempPost']),
     async onEnter () {
       if (this.ignoreControls) return
       this.ignoreControls = true
-      // this.$bus.$emit('instagramScegliFiltri')
-      // const post = await PhoneAPI.takePhoto()
-      // if (post.url !== null) {
-      //   this.instagramSaveTempPost(post.url)
-      //   this.ignoreControls = false
-      //   this.$bus.$emit('instagramScegliFiltri')
-      // }
       this.choosePicType()
     },
     async choosePicType () {
       this.ignoreControls = true
-      let scelte = [
-        {id: 1, title: this.LangString('APP_CONFIG_LINK_PICTURE'), icons: 'fa-link'},
-        {id: 2, title: this.LangString('APP_CONFIG_TAKE_PICTURE'), icons: 'fa-camera'}
-      ]
-      const resp = await Modal.CreateModal({ scelte: scelte })
-      if (resp.id === 1) {
-        Modal.CreateTextModal({ text: 'https://i.imgur.com/' }).then(valueText => {
-          if (valueText.text !== '' && valueText.text !== undefined && valueText.text !== null && valueText.text !== 'https://i.imgur.com/') {
-            this.instagramSaveTempPost(valueText.text)
-            this.$bus.$emit('instagramScegliFiltri')
-            this.ignoreControls = false
-          }
-        })
-      } else if (resp.id === 2) {
-        const newAvatar = await this.$phoneAPI.takePhoto()
-        if (newAvatar.url !== null) {
-          this.instagramSaveTempPost(newAvatar.url)
-          this.$bus.$emit('instagramScegliFiltri')
-          this.ignoreControls = false
+      Modal.CreateModal({ scelte: [
+        { id: 1, title: this.LangString('APP_CONFIG_LINK_PICTURE'), icons: 'fa-link' },
+        { id: 2, title: this.LangString('APP_CONFIG_TAKE_PICTURE'), icons: 'fa-camera' }
+      ] }).then(async resp => {
+        switch(resp.id) {
+          case 1:
+            Modal.CreateTextModal({
+              text: 'https://i.imgur.com/',
+              title: this.LangString('TYPE_LINK')
+            })
+            .then(resp => {
+              if (resp.text !== '' && resp.text !== undefined && resp.text !== null && resp.text !== 'https://i.imgur.com/') {
+                this.instagramSaveTempPost(resp.text)
+                this.$bus.$emit('instagramScegliFiltri')
+                this.ignoreControls = false
+              }
+            })
+            .catch(e => { this.ignoreControls = false })
+            break
+          case 2:
+            this.$phoneAPI.takePhoto()
+            .then(pic => {
+              this.instagramSaveTempPost(pic)
+              this.$bus.$emit('instagramScegliFiltri')
+              this.ignoreControls = false
+            })
+            .catch(e => { this.ignoreControls = false })
+            break
         }
-      } else {
-        this.ignoreControls = false
-      }
+      })
+      .catch(e => { this.ignoreControls = false })
     },
     onBack () {
       if (this.ignoreControls) {

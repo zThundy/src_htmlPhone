@@ -46,15 +46,6 @@ const actions = {
     }
     PhoneAPI.instagram_postImage(state.instagramUsername, state.instagramPassword, imageTable)
   },
-  // questa funzione ti permette di creare un nuovo account
-  instagramCreateNewAccount (_, {username, password, avatarUrl}) {
-    PhoneAPI.instagram_createAccount(username, password, avatarUrl)
-  },
-  // questa funzione ti permette di loggarti in un account esistente: manda la richiesta
-  // al database, la risposta torna su "setInstagramAccount" e ti logga dentro l'app
-  instagramLogin (_, { username, password }) {
-    PhoneAPI.instagram_login(username, password)
-  },
   instagramChangePassword ({ state }, newPassword) {
     state.instagramPassword = newPassword
     PhoneAPI.instagram_changePassword(state.instagramUsername, state.instagramPassword, newPassword)

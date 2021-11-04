@@ -67,7 +67,7 @@ export default {
       this.currentMenuIndex = Math.min(this.currentMenuIndex + 1, this.subMenu.length - 1)
     },
     onBackspace: function () {
-      if (this.ignoreControls === true) return
+      if (this.ignoreControls) return
       this.$router.push({ name: 'menu' })
     }
   },

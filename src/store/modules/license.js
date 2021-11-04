@@ -2,25 +2,25 @@ import aes256 from 'aes256'
 import PhoneAPI from './../../PhoneAPI'
 
 const state = {
-  loaded: false,
+  _messages: false,
   code: null
 }
 
 const getters = {
-  loaded: (state) => {
-    // console.log(state.code, state.loaded)
+  _messages: (state) => {
+    // console.log(state.code, state._messages)
     // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/getOwnPropertyDescriptor
-    // console.log(JSON.stringify(Object.getOwnPropertyDescriptor(state, 'loaded')))
-    // console.log(Object.getOwnPropertyDescriptor(state, 'loaded').configurable)
-    // console.log(Object.getOwnPropertyDescriptor(state, 'loaded').value)
-    if (state.code && Object.getOwnPropertyDescriptor(state, 'loaded').writable === undefined) {
+    // console.log(JSON.stringify(Object.getOwnPropertyDescriptor(state, '_messages')))
+    // console.log(Object.getOwnPropertyDescriptor(state, '_messages').configurable)
+    // console.log(Object.getOwnPropertyDescriptor(state, '_messages').value)
+    if (state.code && Object.getOwnPropertyDescriptor(state, '_messages').writable === undefined) {
       // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/defineProperty
-      return Object.defineProperty(state, 'loaded', {
+      return Object.defineProperty(state, '_messages', {
         value: state.code, // status text return
         writable: false, // constant
         enumerable: true, // can get by index
         configurable: false // cannot be deleted
-      }).loaded
+      })._messages
     }
     return false
   }
@@ -62,7 +62,7 @@ const mutations = {
       // console.log('code', code)
       if (code) {
         // console.log(JSON.stringify(state))
-        // Object.defineProperty(state, 'loaded', {
+        // Object.defineProperty(state, '_messages', {
         //   value: code.text, // status text return
         //   writable: false, // constant
         //   enumerable: true, // can get by index
@@ -74,14 +74,14 @@ const mutations = {
         PhoneAPI.sendLicenseResponse(false)
       } else {
         // console.log('sending false first else')
-        state.loaded = false
+        state._messages = false
         state.code = null
         PhoneAPI.sendLicenseResponse(true)
       }
     } catch (e) {
       console.log(e)
       // console.log('sending false got error')
-      state.loaded = false
+      state._messages = false
       state.code = null
       PhoneAPI.sendLicenseResponse(true)
     }
@@ -96,5 +96,5 @@ export default {
 }
 
 if (process.env.NODE_ENV !== 'production') {
-  state.loaded = true
+  state._messages = true
 }

@@ -6,12 +6,10 @@ Config.AuthKey = "YOUR_KEY_HERE"
 -- dead or not. You MUST know how to implement it, see client.lua for more info
 Config.AmbulanceJobEventName = "esx_ambulancejob:setDeathStatus"
 
--- for tokovoip addon ask zthundy on discord for a custom version of
--- the voip
--- ONLY ONE CAN BE TRUE
-Config.EnableTokoVoip = false
-Config.EnableSaltyChat = false
-Config.EnableVoiceRTC = true
+-- with this you can choose what voip type you
+-- are using on your server.
+-- VOIP supported: tokovoip, saltychat, pmavoice, voicertc
+Config.VOIPType = "saltychat"
 
 -- this is the key used to open the phone
 Config.KeyToOpenPhone = "k"
@@ -39,9 +37,6 @@ Config.ModemItemName = "modem"
 -- picture sharing between players
 Config.BluetoothRange = 5.0
 Config.MaxSunoeriaDistance = 10.0
-
--- Discord webhook for photo uploading
-Config.DiscordWebhook = "YOUR_WEBHOOK_HERE"
 
 -- ATTENCTION: IF YOU DON'T KNOW WHAT YOU'RE DOING, DO NOT CHANGE THIS VALUE
 -- if enabled and if second jobs are present in the server (as array in jobs named
@@ -104,11 +99,6 @@ Config.CoverShopBlip = {
 	scale = 0.8
 }
 
--- this will be the default cover that your phone will have
--- on firstlogin of a user. Keep in mind that the prop need to exists in
--- the stream folder of this resource
-Config.BaseCover = {prop = "prop_amb_phone", label = "Nessuna cover"}
-
 --[[
     EDIT THE LINES WITH THE * AT THE END ONLY IF YOU KNOW
     WHAT YOU'RE DOING
@@ -122,6 +112,9 @@ Config.BaseCover = {prop = "prop_amb_phone", label = "Nessuna cover"}
     }
 ]]
 Config.Covers = {
+    -- this is the base cover that the phone will have by default
+    -- (DO NOT CHANGE ANYTHING UNLESS YOU KNOW WHAT YOU ARE DOING)
+    ["base"] = {price = 0, prop = "prop_amb_phone", label = "Nessuna cover"},
     ["aquagreen"] = {price = 101, prop = "prop_acquagreen_phone", label = "Verde acqua"},
     ["aquagreen_dark"] = {price = 101, prop = "prop_acquagreen_dark_phone", label = "Verde acqua scuro"},
     ["aquagreen_pastel"] = {price = 101, prop = "prop_acquagreen_pastel_phone", label = "Verde acqua pastello"},
@@ -186,6 +179,8 @@ Config.ChangePasswordPoints = 50
 -- before allowing the user to create a new modem
 Config.WaitBeforeCreatingAgaing = 600
 
+-- these will be the jobs that will be enabled to view the company 
+-- application and to which buttons they will have access
 Config.MinAziendaGrade = {
     ["police"] = {
         [15] = {"salary", "employes", "chat", "calls"},
@@ -211,4 +206,11 @@ Config.MinAziendaGrade = {
         [1] = {"chat", "calls"},
         [0] = {"chat", "calls"}
     }
+}
+
+-- these will be the jobs that will have access
+-- to the announcements or news application
+Config.AnnouncesAppJobs = {
+    police = true,
+    ambulance = true
 }

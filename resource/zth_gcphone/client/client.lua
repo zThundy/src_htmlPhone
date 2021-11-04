@@ -125,7 +125,15 @@ RegisterNetEvent("gcPhone:receiveMessage")
 AddEventHandler("gcPhone:receiveMessage", function(message)
     if not message then return end
     if not GLOBAL_AIRPLANE then
-        SendNUIMessage({ event = 'newMessage', message = message, notifications = NOTIFICATIONS_ENABLED })
+        SendNUIMessage({ event = 'newMessage', message = message })
+        TriggerEvent("gcphone:sendGenericNotification", {
+            message = message,
+            title = "APP_MESSAGE_TITLE",
+            icon = "envelope",
+            color = "rgb(255, 140, 30)",
+            appName = "Messaggi",
+            sound = NOTIFICATIONS_ENABLED and "msgnotify.ogg" or nil
+        })
         table.insert(messages, message)
         if message.owner == 0 then
             local text = Config.Language["MESSAGE_NOTIFICATION_NO_TRANSMITTER"]
@@ -174,17 +182,14 @@ RegisterNetEvent("gcPhone:acceptCall")
 AddEventHandler("gcPhone:acceptCall", function(infoCall, initiator)
     if not inCall then
         inCall = true
-
         Citizen.CreateThread(function()
             local coords, distance = nil, nil
-
             while inCall do
                 Citizen.Wait(1000)
                 if initiator then
                     infoCall.secondiRimanenti = infoCall.secondiRimanenti - 1
                     if infoCall.secondiRimanenti == 0 then gcPhoneServerT.rejectCall(infoCall) end
                 end
-
                 if Config.PhoneBoxes[infoCall.receiver_num] then
                     if not initiator then
                         coords = GetEntityCoords(GetPlayerPed(-1))
@@ -196,19 +201,19 @@ AddEventHandler("gcPhone:acceptCall", function(infoCall, initiator)
                 end
             end
         end)
-        
-        if Config.EnableTokoVoip then
+        if Config.VOIPType == "tokovoip" then
             TokovoipEnstablishCall(infoCall.id)
-        elseif Config.EnableSaltyChat then
+        elseif Config.VOIPType == "saltychat" then
             if infoCall then
                 gcPhoneServerT.setEndpointSource(infoCall.receiver_src)
                 gcPhoneServerT.EstablishCall(infoCall.receiver_src)
             end
-        elseif Config.EnableVoiceRTC then
+        elseif Config.VOIPType == "pmavoice" then
+            PMAVoiceEnstablishCall(infoCall.id)
+        elseif Config.VOIPType == "voicertc" then
             -- noting for now :P
         end
     end
-
     if not menuIsOpen then  TogglePhone() end
     PhonePlayCall()
     SendNUIMessage({ event = 'acceptCall', infoCall = infoCall, initiator = initiator })
@@ -225,15 +230,17 @@ AddEventHandler("gcPhone:rejectCall", function(infoCall, callDropped)
 
     if inCall then
         inCall = false
-        if Config.EnableTokoVoip then
+        if Config.VOIPType == "tokovoip" then
             TokovoipEndCall(TokoVoipID)
-        elseif Config.EnableSaltyChat then
+        elseif Config.VOIPType == "saltychat" then
             local endPoint = gcPhoneServerT.getEndpointSource()
             if endPoint then
                 gcPhoneServerT.EndCall(endPoint)
                 gcPhoneServerT.removeEndpointSource()
             end
-        elseif Config.EnableVoiceRTC then
+        elseif Config.VOIPType == "pmavoice" then
+            PMAVoiceEndCall(0)
+        elseif Config.VOIPType == "voicertc" then
             -- nothing for now :P
         end
     end
@@ -271,27 +278,6 @@ RegisterNetEvent("gcPhone:candidates")
 AddEventHandler("gcPhone:candidates", function(candidates)
     SendNUIMessage({ event = 'candidatesAvailable', candidates = candidates })
 end)
-
-function GetResponseText(d)
-    local limit = d.limit or 255
-    local text = d.text or ''
-    local title = d.title or "NO_LABEL_DEFINED"
-    
-    AddTextEntry('CUSTOM_PHONE_TITLE', title)
-    DisplayOnscreenKeyboard(1, "CUSTOM_PHONE_TITLE", "", text, "", "", "", limit)
-    while UpdateOnscreenKeyboard() == 0 do
-        DisableAllControlActions(0)
-        DisableAllControlActions(1)
-        DisableAllControlActions(2)
-        Wait(0)
-    end
-
-    if GetOnscreenKeyboardResult() then
-        text = GetOnscreenKeyboardResult()
-    end
-
-    return text
-end
 
 function TogglePhone()
     menuIsOpen = not menuIsOpen

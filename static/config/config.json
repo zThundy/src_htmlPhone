@@ -22,9 +22,20 @@
     "#78909C"
   ],
 
+  "useHTMLTextbox": false,
+
   "defaultVolume": 0.2,
   "fileUploader": {
-    "ip": "TYPE_YOUR_SERVER_IP_HERE"
+    "ip": "TYPE_YOUR_SERVER_IP_HERE",
+    "port": "3000"
+  },
+
+  "picturesConfig": {
+    "enabled": true,
+    "encoding": "png",
+    "quality": 0.92,
+    "field": "files[]",
+    "upload": "YOUR_WEBHOOK_HERE"
   },
 
   "enableWebRTC": false,
@@ -34,13 +45,6 @@
     }],
     "iceCandidatePoolSize": 10
   },
-
-  "comment": "This is the old configuration for the iceServer that was used for the rtc",
-  "iceServers_old": [{
-    "urls": ["turn:185.25.206.106:3478"],
-    "username": "gtam",
-    "credential": "jgf8RD64GJ84jgf"
-  }],
 
   "RTCFilters": {
     "enable": false,
@@ -52,8 +56,6 @@
     "oversample": "4x",
     "distortion": 15
   },
-
-  "enableTakePhoto": true,
 
   "background": {
     "Apple": "apple.png",
@@ -81,10 +83,6 @@
   "suoneria_default": {
     "label": "Iphone 11",
     "value": "iphone_11.ogg"
-  },
-
-  "weazelJob": {
-    "police": true
   },
 
   "serviceCall": [
@@ -278,20 +276,31 @@
       "icons": "/html/static/img/icons_app/calculator.png",
       "routeName": "calculator.splash",
       "enabled": true
+    },
+    {
+      "name": "Video chiamate",
+      "it_IT__name": "Video chiamate",
+      "en_EN__name": "Video calls",
+      "icons": "/html/static/img/icons_app/videocalls.png",
+      "routeName": "videocalls.splash",
+      "enabled": false
     }
   ],
   "defaultLanguage": "it_IT",
   "language": {
-     "it_IT": {
+    "it_IT": {
       "icons": "fa-flag",
       "NAME": "Italiano",
       "PHONE_RTC_NOT_ENABLED": "Chiamate RTC non abilitate",
       "CONFIRM": "Accetta",
       "CANCEL": "Annulla",
-      "GENERIC_ERROR": "Errore",
-      "APP_PHOTO_TITLE": "Fotocamera",
+      "TYPE_MESSAGE": "Digita il messaggio",
+      "TYPE_LINK": "Digita un link",
+      "VIDEO_NOT_FOUND": "Video non trovato",
+      "VIDEO_ERROR_TITLE": "Errore nella riproduzione",
       "APP_PHOTO_TAKE_PICTURE": "Scatta fotografia",
       "APP_PHOTO_RECORD_VIDEO": "Registra video",
+      "APP_PHOTO_SAVE_VIDEO_TITLE": "Vuoi salvare il video registrato?",
       "APP_PHONE_CANCEL": "Annulla",
       "APP_PHONE_NO_SIM_INSTALLED": "Non hai una sim installata",
       "APP_PHONE_ADD": "Aggiungi",
@@ -319,9 +328,10 @@
       "APP_CONFIG_DISABLED_1": "Disattiva",
       "APP_CONFIG_DISABLED_2": "Disattivo",
       "APP_CONFIG_DISABLED_3": "Disattive",
-      "PHONE_AUDIO_MESSAGE_TITLE": "Messaggio audio",
-      "PHONE_CONTACT_MESSAGE_TITILE": "Contatto",
-      "PHONE_IMAGE_MESSAGE_TITLE": "Immagine",
+      "PHONE_AUDIO_MESSAGE_TITLE": "🔊 Messaggio audio",
+      "PHONE_CONTACT_MESSAGE_TITILE": "📱 Contatto",
+      "PHONE_IMAGE_MESSAGE_TITLE": "📷 Immagine",
+      "PHONE_VIDEO_MESSAGE_TITLE": "🎥 Video",
       "APP_PHONE_FAVOURITES_MODAL_TITLE": "Digita un messaggio",
       "APP_PHONE_KEYPAD_PLACEHOLDER": "Digita un numero",
       "APP_PHONE_DIALING_MESSAGE": ". . .",
@@ -367,6 +377,7 @@
       "APP_MESSAGE_SEND_GPS": "Invia posizione",
       "APP_MESSAGE_SEND_PHOTO": "Invia fotografia",
       "APP_MESSAGE_SET_GPS": "Posizione GPS",
+      "APP_MESSAGE_PLAY_VIDEO": "Riproduci video",
       "APP_MESSAGE_ZOOM_IMG": "Zoom",
       "APP_MESSAGE_DELETE": "Elimina",
       "APP_MESSAGE_MESS_NUMBER": "Numero ",
@@ -433,7 +444,11 @@
       "APP_TWITTER_NOTIF_NEW_PASSWORD_ERROR": "Spiacenti, la password non può essere modificata",
       "APP_TWITTER_NOTIF_NEW_PASSWORD_MISS_MATCH": "Le passwords non corrispondono",
       "APP_TWITTER_NOTIF_NEW_PASSWORD_LENGTH_ERROR": "La password è troppo corta",
+      "APP_TWITTER_TYPE_PASSWORD_TITLE_1": "Inserisci la password",
+      "APP_TWITTER_TYPE_PASSWORD_TITLE_2": "Conferma la password",
       "APP_INSTAGRAM_NAME": "Instagram",
+      "APP_INSTAGRAM_TYPE_PASSWORD_TITLE_1": "Inserisci la password",
+      "APP_INSTAGRAM_TYPE_PASSWORD_TITLE_2": "Conferma la password",
       "APP_INSTAGRAM_NOTIF_NEW_PASSWORD_MISS_MATCH": "Le password non corrispondono",
       "APP_INSTAGRAM_NOTIF_NEW_PASSWORD_LENGTH_ERROR": "La password è troppo corta",
       "APP_INSTAGRAM_SHOW_POSTS_TITLE": "Post recenti",
@@ -475,6 +490,8 @@
       "APP_BANK_MOVEMENTS_FROM": "Da",
       "APP_BANK_MOVEMENTS_TO": "Per",
       "APP_BANK_MOVEMENTS_AMOUNT": "Soldi",
+      "APP_BANK_TYPE_IBAN_TITLE": "Inserisci l'iban del destinatario",
+      "APP_BANK_TYPE_AMOUNT_TITLE": "Inserisci l'ammontare del trasferimento",
       "APP_WIFI_TITLE": "Reti Wifi",
       "APP_WHATSAPP_TITLE": "Whatsapp",
       "APP_WHATSAPP_QUIT_GROUP": "Abbandona il gruppo",
@@ -499,13 +516,17 @@
       "WHATSAPP_INFO_TITLE": "Whatsapp info",
       "WHATSAPP_NOT_ENOUGH_GIGA": "Non hai abbastanza giga per farlo!",
       "WHATSAPP_ERROR_CREATING_GROUP": "Impossibile creare il gruppo",
+      "WHATSAPP_CANNOT_GET_PHONE_NUMBER": "Impossibile ottenere il numero di telefono",
       "APP_GALLERIA_TITLE": "Galleria",
       "APP_GALLERIA_SET_WALLPAPER": "Imposta come sfondo",
       "APP_GALLERIA_INOLTRA": "Inoltra",
       "APP_GALLERIA_INOLTRA_WHATSAPP": "Inoltra su whatsapp",
       "APP_GALLERIA_ELIMINA_TUTTO": "Pulisci la galleria",
+      "APP_GALLERIA_INOLTRA_VIDEO": "Inoltra video",
       "APP_GALLERIA_ELIMINA": "Elimina fotografia",
+      "APP_GALLERIA_ELIMINA_VIDEO": "Elimina video",
       "APP_GALLERIA_ZOOM": "Ingrandisci l'immagine",
+      "APP_GALLERIA_ZOOM_VIDEO": "Riproduci il video",
       "APP_GALLERIA_SEND_BLUETOOTH": "Invia con bluetooth",
       "APP_DARKWEB_TITLE": "Darkweb",
       "APP_DARKWEB_USER_TITLE": "Anonimo",
@@ -544,6 +565,8 @@
       "APP_EMAIL_REGISTER_CHOICE_ONE": "Modifica",
       "APP_EMAIL_REGISTER_CHOICE_TWO": "Registrati",
       "APP_EMAIL_ERROR_INTERNET": "Non hai abbastanza giga per poter eseguire questa azione",
+      "APP_EMAIL_INSERT_EMAIL_TITLE": "Inserisci l'indirizzo email senza il suffisso",
+      "APP_EMAIL_ERROR_TOO_MANY_CHARS": "Non puoi digitare tutti questi caratteri in questo campo",
       "APP_NEWS_TITLE": "News",
       "APP_NEWS_UPLOAD_PICTURE": "Carica immagine",
       "APP_NEWS_WRITE_MESSAGE": "Scrivi descrizione",
@@ -552,6 +575,7 @@
       "APP_NEWS_NEW_POST_DESCRIPTION": "Un nuovo post è stato pubblicato sull'app delle news. Corri a leggerlo!",
       "APP_NEWS_POST_ERROR_TITLE": "Errore nella creazione",
       "APP_NEWS_POST_ERROR_DESCRIPTION": "Per poter creare un post devi aggiungere almeno una descrizione o una immagine al post",
+      "APP_NEWS_ERROR_1": "Devi compilare almeno un campo per poter postare una news",
       "APP_AZIENDA_TITLE": "Azienda",
       "AZIENDA_INFO_TITLE": "Azienda info",
       "APP_AZIENDA_NOTIF_NO_CONNECTION": "Nessuna connessione a internet",
@@ -583,6 +607,7 @@
       "APP_BOURSE_SELL_TITLE": "Quanti ne vuoi vendere?",
       "APP_BOURSE_ERROR_INTERNET": "Non hai abbastanza giga per eseguire questa azione",
       "APP_CALCULATOR_TITLE": "Calcolatrice",
+      "APP_VIDEOCALLS_TITLE": "Video Chiamate",
 
       "TIMEAGO": [
         "Proprio adesso",
@@ -601,10 +626,13 @@
       "PHONE_RTC_NOT_ENABLED": "RTC calls are not enabled",
       "CONFIRM": "Accept",
       "CANCEL": "Discard",
-      "GENERIC_ERROR": "Error",
-      "APP_PHOTO_TITLE": "Camera",
+      "TYPE_MESSAGE": "Type a message",
+      "TYPE_LINK": "Type a link",
+      "VIDEO_NOT_FOUND": "Video not found",
+      "VIDEO_ERROR_TITLE": "Error on playing video",
       "APP_PHOTO_TAKE_PICTURE": "Take photo",
       "APP_PHOTO_RECORD_VIDEO": "Record video",
+      "APP_PHOTO_SAVE_VIDEO_TITLE": "Do you want to save the recorded video?",
       "APP_PHONE_CANCEL": "Discard",
       "APP_PHONE_ADD": "Add",
       "APP_DATI_TITLE": "Tariff plan",
@@ -631,9 +659,10 @@
       "APP_CONFIG_DISABLED_1": "Disabled",
       "APP_CONFIG_DISABLED_2": "Disabled",
       "APP_CONFIG_DISABLED_3": "Disabled",
-      "PHONE_AUDIO_MESSAGE_TITLE": "Audio message",
-      "PHONE_CONTACT_MESSAGE_TITILE": "Contact",
-      "PHONE_IMAGE_MESSAGE_TITLE": "Photo",
+      "PHONE_AUDIO_MESSAGE_TITLE": "🔊 Audio message",
+      "PHONE_CONTACT_MESSAGE_TITILE": "📱 Contact",
+      "PHONE_IMAGE_MESSAGE_TITLE": "📷 Photo",
+      "PHONE_VIDEO_MESSAGE_TITLE": "🔊 Video",
       "APP_PHONE_FAVOURITES_MODAL_TITLE": "Type a message",
       "APP_PHONE_KEYPAD_PLACEHOLDER": "Type a number",
       "APP_PHONE_DIALING_MESSAGE": ". . .",
@@ -679,6 +708,7 @@
       "APP_MESSAGE_SEND_GPS": "Send position",
       "APP_MESSAGE_SEND_PHOTO": "Send photo",
       "APP_MESSAGE_SET_GPS": "GPS position",
+      "APP_MESSAGE_PLAY_VIDEO": "Play video",
       "APP_MESSAGE_ZOOM_IMG": "Zoom",
       "APP_MESSAGE_DELETE": "Delete",
       "APP_MESSAGE_MESS_NUMBER": "Number ",
@@ -745,7 +775,11 @@
       "APP_TWITTER_NOTIF_NEW_PASSWORD_ERROR": "Password can't be changed",
       "APP_TWITTER_NOTIF_NEW_PASSWORD_MISS_MATCH": "Passwords do not match",
       "APP_TWITTER_NOTIF_NEW_PASSWORD_LENGTH_ERROR": "Password too short",
+      "APP_TWITTER_TYPE_PASSWORD_TITLE_1": "Type the password",
+      "APP_TWITTER_TYPE_PASSWORD_TITLE_2": "Confirm the password",
       "APP_INSTAGRAM_NAME": "Instagram",
+      "APP_INSTAGRAM_TYPE_PASSWORD_TITLE_1": "Type the password",
+      "APP_INSTAGRAM_TYPE_PASSWORD_TITLE_2": "Confirm the password",
       "APP_INSTAGRAM_NOTIF_NEW_PASSWORD_MISS_MATCH": "Passwords do not match",
       "APP_INSTAGRAM_NOTIF_NEW_PASSWORD_LENGTH_ERROR": "Password too short",
       "APP_INSTAGRAM_SHOW_POSTS_TITLE": "Recent posts",
@@ -787,6 +821,8 @@
       "APP_BANK_MOVEMENTS_FROM": "From",
       "APP_BANK_MOVEMENTS_TO": "To",
       "APP_BANK_MOVEMENTS_AMOUNT": "Money",
+      "APP_BANK_TYPE_IBAN_TITLE": "Type the receiver IBAN",
+      "APP_BANK_TYPE_AMOUNT_TITLE": "Type the amount you want to send",
       "APP_WIFI_TITLE": "Wifi",
       "APP_WHATSAPP_TITLE": "Whatsapp",
       "APP_WHATSAPP_QUIT_GROUP": "Leave group",
@@ -811,13 +847,17 @@
       "WHATSAPP_INFO_TITLE": "Whatsapp info",
       "WHATSAPP_NOT_ENOUGH_GIGA": "You do not have enough internet to do this!",
       "WHATSAPP_ERROR_CREATING_GROUP": "Error creating the group",
+      "WHATSAPP_CANNOT_GET_PHONE_NUMBER": "Can't obtain phone number",
       "APP_GALLERIA_TITLE": "Gallery",
       "APP_GALLERIA_SET_WALLPAPER": "Set as background",
       "APP_GALLERIA_INOLTRA": "Forward",
       "APP_GALLERIA_INOLTRA_WHATSAPP": "Forward on whatsapp",
       "APP_GALLERIA_ELIMINA_TUTTO": "Clear gallery",
+      "APP_GALLERIA_INOLTRA_VIDEO": "Forward video",
       "APP_GALLERIA_ELIMINA": "Delete picture",
+      "APP_GALLERIA_ELIMINA_VIDEO": "Delete video",
       "APP_GALLERIA_ZOOM": "Zoom",
+      "APP_GALLERIA_ZOOM_VIDEO": "Play video",
       "APP_GALLERIA_SEND_BLUETOOTH": "Send with bluetooth",
       "APP_DARKWEB_TITLE": "Darkweb",
       "APP_DARKWEB_USER_TITLE": "Anon",
@@ -856,6 +896,8 @@
       "APP_EMAIL_REGISTER_CHOICE_ONE": "Edit",
       "APP_EMAIL_REGISTER_CHOICE_TWO": "Register",
       "APP_EMAIL_ERROR_INTERNET": "You do not have enough internet to do this!",
+      "APP_EMAIL_INSERT_EMAIL_TITLE": "Type the email address whitout the suffix",
+      "APP_EMAIL_ERROR_TOO_MANY_CHARS": "Please choose a shorter email address",
       "APP_NEWS_TITLE": "News",
       "APP_NEWS_UPLOAD_PICTURE": "Upload photo",
       "APP_NEWS_WRITE_MESSAGE": "Write description",
@@ -864,6 +906,7 @@
       "APP_NEWS_NEW_POST_DESCRIPTION": "A new post has been added to the News app. Go check it out!",
       "APP_NEWS_POST_ERROR_TITLE": "Error in creating the post",
       "APP_NEWS_POST_ERROR_DESCRIPTION": "To add a post you must write a description or upload at least one image",
+      "APP_NEWS_ERROR_1": "You must fill at least one field to post a news",
       "APP_AZIENDA_TITLE": "Azienda",
       "AZIENDA_INFO_TITLE": "Azienda info",
       "APP_AZIENDA_NOTIF_NO_CONNECTION": "You do not have enough internet to do this!",
@@ -895,6 +938,7 @@
       "APP_BOURSE_SELL_TITLE": "How many do you want to sell?",
       "APP_BOURSE_ERROR_INTERNET": "You do not have enough internet to do this!",
       "APP_CALCULATOR_TITLE": "Calculator",
+      "APP_VIDEOCALLS_TITLE": "Video Calls",
 
       "TIMEAGO": [
         "Now",

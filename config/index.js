@@ -3,9 +3,11 @@ var path = require('path')
 
 module.exports = {
   build: {
-    env: require('./prod.env'),
+    env: { NODE_ENV: '"production"' },
     index: path.resolve(__dirname, '../resource/zth_gcphone/html/index.html'),
     assetsRoot: path.resolve(__dirname, '../resource/zth_gcphone/html'),
+    // index: path.resolve(__dirname, "../../default_esx/txData/PlumeESX_A367D0.base/resources/[phone]/zth_gcphone/html/index.html"),
+    // assetsRoot: path.resolve(__dirname, "../../default_esx/txData/PlumeESX_A367D0.base/resources/[phone]/zth_gcphone/html"),
     assetsSubDirectory: 'static',
     assetsPublicPath: '/html/',
     productionSourceMap: false,
@@ -22,7 +24,7 @@ module.exports = {
     bundleAnalyzerReport: process.env.npm_config_report
   },
   dev: {
-    env: require('./dev.env'),
+    env: { NODE_ENV: '"development"' },
     port: 8080,
     autoOpenBrowser: true,
     assetsSubDirectory: 'html/static',

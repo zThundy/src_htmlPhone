@@ -41,7 +41,7 @@
 </template>
 
 <script>
-import { mapGetters, mapActions } from 'vuex'
+import { mapGetters } from 'vuex'
 import PhoneTitle from './../PhoneTitle'
 import Modal from '@/components/Modal/index.js'
 
@@ -66,9 +66,8 @@ export default {
     ...mapGetters(['config', 'LangString', 'contacts'])
   },
   methods: {
-    ...mapActions(['updateContact', 'addContact']),
     onUp () {
-      if (this.ignoreControls === true) return
+      if (this.ignoreControls) return
       let select = document.querySelector('.group.select')
       if (select.previousElementSibling !== null) {
         document.querySelectorAll('.group').forEach(elem => {
@@ -82,7 +81,7 @@ export default {
       }
     },
     onDown () {
-      if (this.ignoreControls === true) return
+      if (this.ignoreControls) return
       let select = document.querySelector('.group.select')
       if (select.nextElementSibling !== null) {
         document.querySelectorAll('.group').forEach(elem => {
@@ -96,22 +95,25 @@ export default {
       }
     },
     onEnter () {
-      if (this.ignoreControls === true) return
+      if (this.ignoreControls) return
       let select = document.querySelector('.group.select')
       if (select.dataset.type === 'text') {
-        let options = {
+        Modal.CreateTextModal({
           limit: parseInt(select.dataset.maxlength) || 64,
           text: this.contact[select.dataset.model] || '',
-          title: select.dataset.title || ''
-        }
-        this.$phoneAPI.getReponseText(options).then(data => {
+          title: select.dataset.title || '',
+          color: 'rgb(194, 108, 7)'
+        })
+        .then(resp => {
           if (select.dataset.model === 'email') {
-            if (!data.text.includes(this.config.email_suffix)) {
-              data.text = data.text + this.config.email_suffix
+            if (!resp.text.includes(this.config.email_suffix)) {
+              resp.text = resp.text + this.config.email_suffix
             }
           }
-          this.contact[select.dataset.model] = data.text
+          this.contact[select.dataset.model] = resp.text
+          this.ignoreControls = false
         })
+        .catch(e => { this.ignoreControls = false })
       }
       if (select.dataset.action && this[select.dataset.action]) {
         this[select.dataset.action]()
@@ -119,14 +121,14 @@ export default {
     },
     save () {
       if (this.id === -1 || this.id === 0) {
-        this.addContact({ display: this.contact.display, number: this.contact.number, email: this.contact.email, icon: this.contact.icon })
+        this.$phoneAPI.addContact(this.contact.display, this.contact.number, this.contact.email, this.contact.icon)
       } else {
-        this.updateContact({ id: this.id, display: this.contact.display, number: this.contact.number, email: this.contact.email, icon: this.contact.icon })
+        this.$phoneAPI.updateContact(this.id, this.contact.display, this.contact.number, this.contact.email, this.contact.icon)
       }
       history.back()
     },
     cancel () {
-      if (this.ignoreControls === true) return
+      if (this.ignoreControls) return
       history.back()
     },
     forceCancel () {
@@ -135,17 +137,18 @@ export default {
     deleteC () {
       if (this.id !== -1) {
         this.ignoreControls = true
-        let scelte = [
+        Modal.CreateModal({ scelte: [
           { id: 1, title: this.LangString('APP_PHONE_DELETE'), icons: 'fa-trash', color: 'red' },
           { id: 2, title: this.LangString('CANCEL'), icons: 'fa-undo', color: 'red' }
-        ]
-        Modal.CreateModal({ scelte }).then(reponse => {
+        ] })
+        .then(reponse => {
           this.ignoreControls = false
           if (reponse.id === 1) {
             this.$phoneAPI.deleteContact(this.id)
             history.back()
           }
         })
+        .catch(e => { this.ignoreControls = false })
       } else {
         history.back()
       }

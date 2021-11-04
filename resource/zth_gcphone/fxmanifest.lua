@@ -1,16 +1,16 @@
 fx_version "bodacious"
 game "gta5"
-version "3.7.1"
+version "4.0.1"
 author "zThundy__"
 
 ui_page 'html/index.html'
 
 files {
     'html/index.html',
-    'html/static/css/app.css',
+    'html/static/css/*.css',
     'html/static/js/*.js',
 
-    'html/static/config/config.json',
+    'html/static/config/*.json',
     'html/static/img/**/*',
     'html/static/img/*.png',
     'html/static/fonts/*',
@@ -42,6 +42,7 @@ client_script {
 
     "client/req.lua",
 
+    "client/textbox.lua",
     "client/photo.lua",
     "client/app_tchat.lua",
     "client/bank.lua",
@@ -61,6 +62,7 @@ client_script {
 
     -- modules
     "modules/tokovoip.lua",
+    "modules/pmavoice.lua",
     "modules/wifi/client/*.lua",
     "modules/sim/client/*.lua",
     "modules/services/client/*.lua",
@@ -97,8 +99,7 @@ server_script {
 
 dependencies {
     'es_extended',
-    'gridsystem',
-    'screenshot-basic'
+    'gridsystem'
 }
 
 data_file 'DLC_ITYP_REQUEST' 'stream/bk_phone.ytyp'

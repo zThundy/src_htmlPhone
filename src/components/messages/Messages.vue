@@ -1,32 +1,28 @@
 <template>
-<!--ESTE HTML ES ACOPLADO DEL VIEJO--> 
   <div style="backgroundColor: white" class="phone_app messages">
-    <PhoneTitle :backgroundColor="'rgb(194, 108, 7)'" :title="formatEmoji(displayContact)" style="color: black" @back="quit"/> <!--:title="displayContact" :backgroundColor="color" -->
+    <PhoneTitle :backgroundColor="'rgb(194, 108, 7)'" :title="formatEmoji(displayContact)" style="color: black" /> <!--:title="displayContact" :backgroundColor="color" -->
     
-    <div class="phone_fullscreen_img" v-if="imgZoom !== undefined">
-      <img :src="imgZoom" />
+    <div class="phone_fullscreen_img" v-if="imgZoom !== null">
+      <img v-if="imgZoom.type === 'photo'" :src="imgZoom.link" />
+      <video v-else-if="imgZoom.type === 'video'" width="330" height="710" id="video-playback-element" :src="imgZoom.link" autoplay />
     </div>
-
-    <!-- <textarea ref="copyTextarea" class="copyTextarea"/> -->
     
     <div id='sms_list'>
       <div style="position: absolute;" class="groupImage" data-type="button">
         <img v-if="isSMSImage(getContactIcon())" :src="getContactIcon()"/>
       </div>
 
-      <div class="sms" v-bind:class="{ select: key === selectMessage }" v-for='(mess, key) in messagesListApp' v-bind:key="mess.id">
+      <div class="sms" v-bind:class="{ select: key === selectMessage }" v-for='(mess, key) in messagesListApp' :key="mess.id">
         <div class="sms_message_time">
-          <!-- <h6 v-bind:class="{ sms_me : mess.owner === 1 }" class="name_other_sms_me">{{ displayContact }}</h6> -->
-          <h6 v-bind:class="{ sms_me : mess.owner === 1 }" class="name_other_sms_other"><timeago class="sms_time" :since='mess.time' :auto-update="20"></timeago></h6>
+          <h6 :class="{ sms_me : mess.owner === 1 }" class="name_other_sms_other"><timeago class="sms_time" :since='mess.time' :auto-update="20"></timeago></h6>
         </div>
 
-        <span class='sms_message sms_me' v-bind:class="{ sms_other : mess.owner === 0 }">
+        <span class='sms_message sms_me' :class="{ sms_other : mess.owner === 0 }">
           <img v-if="isSMSImage(mess.message)" class="sms-img" :src="mess.message"/>
 
           <div v-else-if="isSMSContact(mess.message)" class="contact-forward-container">
             <div class="contact-forward-background">
               <div class="contact-forward-pic" :style="stylePuce(mess)">{{ getSMSContactInfo(mess.message).letter }}</div>
-              <!-- <img class="contact-forward-pic" :src="getSMSContactInfo(mess.message).pic"> -->
               <div class="contact-forward-info-container">
                 <span class="contact-forward-number">{{ getSMSContactInfo(mess.message).number }}</span>
                 <span class="contact-forward-name">{{ formatEmoji(getSMSContactInfo(mess.message).name) }}</span>
@@ -41,28 +37,24 @@
               </div>
             </div>
           </div>
-          <!--
-            <div v-if="mess.message.includes('%CONTACT%')">
-              {{ mess.message.split(':').pop() }}
-              <input type="button" :value="LangString('APP_MESSAGES_ADD_CONTACT')">
-            </div>
-          -->
+
+          <div v-else-if="isSMSVideo(mess.message)" class="video-message-container">
+            <i class="fas fa-play"></i>
+          </div>
+          
           <span v-else class="sms_message">{{ formatEmoji(mess.message) }}</span>
-            <!-- <span style="color: white; font-size: 17px; margin: 24px;" @click.stop="onActionMessage(mess)"><timeago class="sms_time" :since='mess.time' :auto-update="20"></timeago></span> -->
         </span>
 
       </div>
     </div>
 
-    <div style="width: 306px;" id='sms_write'>
-      <input type="text" v-model="message" :placeholder="LangString('APP_MESSAGE_PLACEHOLDER_ENTER_MESSAGE')">
-      <div class="sms_send">
-        <svg height="24" viewBox="0 0 24 24" width="24">
-          <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/>
-          <path d="M0 0h24v24H0z" fill="none"/>
-        </svg>
+    <div class="write-input-container">
+      <div class='write-input'>
+        <input type="text" :placeholder="LangString('APP_DARKTCHAT_PLACEHOLDER_ENTER_MESSAGE')">
+        <i class="fas fa-paper-plane"></i>
       </div>
     </div>
+
   </div>
 </template>
 
@@ -73,20 +65,49 @@ import PhoneTitle from './../PhoneTitle'
 import Modal from '@/components/Modal/index.js'
 
 export default {
+  name: 'messages-screen',
+  components: { PhoneTitle },
   data () {
     return {
       ignoreControls: false,
       selectMessage: -1,
       display: '',
       phoneNumber: '',
-      imgZoom: undefined,
+      imgZoom: null,
+      videoElement: null,
       message: '',
       letter: ''
     }
   },
-  components: { PhoneTitle },
+  computed: {
+    ...mapGetters(['LangString', 'messages', 'contacts', 'config']),
+    messagesListApp () {
+      return this.messages.filter(e => e.transmitter === this.phoneNumber).sort((a, b) => a.time - b.time)
+    },
+    displayContact () {
+      if (this.display !== undefined) {
+        return this.display
+      }
+      const c = this.contacts.find(c => c.number === this.phoneNumber)
+      if (c !== undefined) {
+        return c.display
+      }
+      return this.phoneNumber
+    },
+    color () {
+      return generateColorForStr(this.phoneNumber)
+    },
+    colorSmsOwner () {
+      return [
+        {
+          backgroundColor: this.color,
+          color: getBestFontColor(this.color)
+        }, {}
+      ]
+    }
+  },
   methods: {
-    ...mapActions(['setMessageRead', 'sendMessage', 'deleteMessage']),
+    ...mapActions(['setMessageRead']),
     ...mapMutations(['CHANGE_BRIGHTNESS_STATE']),
     formatEmoji (message) {
       return this.$phoneAPI.convertEmoji(message)
@@ -106,12 +127,8 @@ export default {
         }
       })
     },
-    quit () {
-      // this.$router.push({path: '/messages'})
-      this.$router.go(-1)
-    },
     onUp () {
-      if (this.ignoreControls === true) return
+      if (this.ignoreControls) return
       if (this.selectMessage === -1) {
         this.selectMessage = this.messagesListApp.length - 1
       } else {
@@ -120,7 +137,7 @@ export default {
       this.scrollIntoView()
     },
     onDown () {
-      if (this.ignoreControls === true) return
+      if (this.ignoreControls) return
       if (this.selectMessage === -1) {
         this.selectMessage = this.messagesListApp.length - 1
       } else {
@@ -129,39 +146,46 @@ export default {
       this.scrollIntoView()
     },
     onEnter () {
-      if (this.ignoreControls === true) return
+      if (this.ignoreControls) return
+      if (this.imgZoom && this.imgZoom.type) {
+        if (this.imgZoom.type === 'video') {
+          this.restartVideo()
+          return
+        }
+      }
       if (this.selectMessage !== -1) {
         this.onActionMessage(this.messagesListApp[this.selectMessage])
       } else {
-        this.$phoneAPI.getReponseText({ title: 'Digita il messaggio' }).then(data => {
-          let message = data.text.trim()
-          if (message !== '') {
-            this.sendMessage({ phoneNumber: this.phoneNumber, message })
-          }
+        Modal.CreateTextModal({
+          limit: 64,
+          title: this.LangString('TYPE_MESSAGE'),
+          color: 'rgb(194, 108, 7)'
         })
+        .then(resp => {
+          let message = resp.text.trim()
+          if (message && message !== '') this.$phoneAPI.post('sendMessage', { phoneNumber: this.phoneNumber, message: message })
+          this.ignoreControls = false
+        })
+        .catch(e => { this.ignoreControls = false })
       }
     },
     send () {
       const message = this.message.trim()
       if (message === '') return
       this.message = ''
-      this.sendMessage({ phoneNumber: this.phoneNumber, message })
+      this.$phoneAPI.post('sendMessage', { phoneNumber: this.phoneNumber, message: message })
     },
     isSMSImage (mess) {
-      var pattern = new RegExp('^(https?:\\/\\/)?' + '((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|' + '((\\d{1,3}\\.){3}\\d{1,3}))' + '(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*' + '(\\?[;&a-z\\d%_.~+=-]*)?' + '(\\#[-a-z\\d_]*)?$', 'i')
-      return !!pattern.test(mess)
+      return this.$phoneAPI.isLink(mess)
     },
     isSMSContact (mess) {
-      // console.log(mess.indexOf('%CONTACT%'))
-      // console.log(mess)
       return mess.indexOf('[CONTACT]') === 0
+    },
+    isSMSVideo (mess) {
+      return mess.indexOf('[VIDEO]') === 0
     },
     getSMSContactInfo (mess) {
       var obj = mess.split('%')
-      // console.log(obj[2])
-      // if (obj[4] === '' || obj[4] === undefined) {
-      //   obj[4] === null
-      // }
       return {
         name: obj[2],
         number: obj[1],
@@ -172,9 +196,7 @@ export default {
     },
     stylePuce (data) {
       data = data || {}
-      // console.log(data)
       data.icon = this.getSMSContactInfo(data.message).icon
-      // console.log(data.icon)
       if (data.icon !== 'undefined' && data.icon !== undefined && data.icon !== null && data.icon !== '') {
         return {
           backgroundImage: `url(${data.icon})`,
@@ -198,152 +220,108 @@ export default {
             return this.contacts[key].icon
           } else {
             this.letter = this.display.charAt(0)
-            return {
-              backgroundColor: this.color
-            }
+            return { backgroundColor: this.color }
           }
         }
       }
     },
-    async onActionMessage (message) {
+    restartVideo () {
+      this.videoElement = document.getElementById('video-playback-element')
+      this.videoElement.currentTime = 0
+      this.videoElement.play()
+    },
+    async onActionMessage (elem) {
       try {
-        // let message = this.messagesListApp[this.selectMessage]
-        let isGPS = /(-?\d+(\.\d+)?), (-?\d+(\.\d+)?)/.test(message.message)
-        let hasNumber = /#([0-9]+)/.test(message.message)
+        let isGPS = /(-?\d+(\.\d+)?), (-?\d+(\.\d+)?)/.test(elem.message)
+        let hasNumber = /#([0-9]+)/.test(elem.message)
         let scelte = [
-          {
-            id: 'inoltra',
-            title: this.LangString('APP_MESSAGE_INOLTRA_IMG'),
-            icons: 'fa-paper-plane'
-          },
-          {
-            id: 'delete',
-            title: this.LangString('APP_MESSAGE_DELETE'),
-            icons: 'fa-trash'
-          },
-          {
-            id: -1,
-            title: this.LangString('CANCEL'),
-            icons: 'fa-undo',
-            color: 'red'
-          }
+          { id: 'inoltra', title: this.LangString('APP_MESSAGE_INOLTRA_IMG'), icons: 'fa-paper-plane' },
+          { id: 'delete', title: this.LangString('APP_MESSAGE_DELETE'), icons: 'fa-trash' },
+          { id: -1, title: this.LangString('CANCEL'), icons: 'fa-undo', color: 'red' }
         ]
-        if (isGPS === true) {
-          scelte = [{
-            id: 'gps',
-            title: this.LangString('APP_MESSAGE_SET_GPS'),
-            icons: 'fa-location-arrow'
-          }, ...scelte]
-        }
-        if (this.isSMSContact(message.message)) {
-          scelte = [{
-            id: 'add_contact',
-            title: this.LangString('APP_MESSAGE_ADD_CONTACT'),
-            icons: 'fa-plus'
-          }, ...scelte]
-          // {
-          //   id: 'message_contact',
-          //   title: this.LangString('APP_MESSAGE_MESSAGE_CONTACT'),
-          //   icons: 'fa-comment'
-          // }, ...scelte]
-        }
+        if (isGPS) scelte = [{ id: 'gps', title: this.LangString('APP_MESSAGE_SET_GPS'), icons: 'fa-location-arrow' }, ...scelte]
+        if (this.isSMSContact(elem.message)) scelte = [{ id: 'add_contact', title: this.LangString('APP_MESSAGE_ADD_CONTACT'), icons: 'fa-plus' }, ...scelte]
         if (hasNumber) {
-          const num = message.message.match(/#([0-9-]*)/)[1]
-          scelte = [{
-            id: 'num',
-            title: `${this.LangString('APP_MESSAGE_MESS_NUMBER')} ${num}`,
-            number: num,
-            icons: 'fa-phone'
-          }, ...scelte]
+          const num = elem.message.match(/#([0-9-]*)/)[1]
+          scelte = [{ id: 'num', title: `${this.LangString('APP_MESSAGE_MESS_NUMBER')} ${num}`, number: num, icons: 'fa-phone' }, ...scelte]
         }
-        if (this.isSMSImage(message.message)) {
-          scelte = [{
-            id: 'zoom',
-            title: this.LangString('APP_MESSAGE_ZOOM_IMG'),
-            icons: 'fa-search'
-          }, ...scelte]
-        }
+        if (this.isSMSImage(elem.message)) scelte = [{ id: 'zoom', title: this.LangString('APP_MESSAGE_ZOOM_IMG'), icons: 'fa-search' }, ...scelte]
+        if (this.isSMSVideo(elem.message)) scelte = [{ id: 'video', title: this.LangString('APP_MESSAGE_PLAY_VIDEO'), icons: 'fa-play' }, ...scelte]
         this.ignoreControls = true
-        const data = await Modal.CreateModal({scelte})
-        if (data.id === 'delete') {
-          this.deleteMessage({ id: message.id })
-        } else if (data.id === 'gps') {
-          let val = message.message.match(/(-?\d+(\.\d+)?), (-?\d+(\.\d+)?)/)
-          this.$phoneAPI.setGPS(val[1], val[3])
-        } else if (data.id === 'num') {
-          this.$nextTick(() => {
-            this.onSelectPhoneNumber(data.number)
-          })
-        } else if (data.id === 'zoom') {
-          this.imgZoom = message.message
-          this.CHANGE_BRIGHTNESS_STATE(false)
-        } else if (data.id === 'inoltra') {
-          this.$router.push({ name: 'messages.chooseinoltra', params: { message: message.message } })
-          // this.sendMessage({ phoneNumber: this.phoneNumber, message })
-        } else if (data.id === 'add_contact') {
-          let c = this.getSMSContactInfo(message.message)
-          this.$router.push({ name: 'contacts.view', params: { id: -1, isForwarded: true, number: c.number, display: c.name, email: c.email, icon: c.icon } })
-        } else if (data.id === 'message_contact') {
-          let c = this.getSMSContactInfo(message.message)
-          this.$router.push({ name: 'messages.view', params: { number: c.number, display: c.name } })
-        }
-      } catch (e) {
-        // console.log(e)
-      } finally {
-        this.ignoreControls = false
-        // this.selectMessage = -1
-      }
+        Modal.CreateModal({ scelte })
+        .then(data => {
+          switch(data.id) {
+            case 'delete':
+              this.$phoneAPI.post('deleteMessage', { id: elem.id })
+              break
+            case 'gps':
+              let val = elem.message.match(/(-?\d+(\.\d+)?), (-?\d+(\.\d+)?)/)
+              this.$phoneAPI.setGPS(val[1], val[3])
+              break
+            case 'num':
+              this.$nextTick(() => { this.onSelectPhoneNumber(data.number) })
+              break
+            case 'zoom':
+              this.imgZoom = { type: 'photo', link: elem.message }
+              this.CHANGE_BRIGHTNESS_STATE(false)
+              break
+            case 'inoltra':
+              this.$router.push({ name: 'messages.chooseinoltra', params: { message: elem.message } })
+              break
+            case 'add_contact':
+              var c = this.getSMSContactInfo(elem.message)
+              this.$router.push({ name: 'contacts.view', params: { id: -1, isForwarded: true, number: c.number, display: c.name, email: c.email, icon: c.icon } })
+              break
+            case 'message_contact':
+              var c = this.getSMSContactInfo(elem.message)
+              this.$router.push({ name: 'messages.view', params: { number: c.number, display: c.name } })
+              break
+            case 'video':
+              let id = elem.message.split('%')
+              if (id[2]) {
+                this.$phoneAPI.videoRequest.getVideoLinkFromServer(id[2]).then(link => {
+                  if (link) {
+                    this.imgZoom = { type: 'video', link: link }
+                    this.CHANGE_BRIGHTNESS_STATE(false)
+                    this.restartVideo()
+                  } else {
+                    this.$phoneAPI.ongenericNotification({
+                      message: 'VIDEO_NOT_FOUND',
+                      title: 'VIDEO_ERROR_TITLE',
+                      icon: 'camera',
+                      color: 'rgb(205, 116, 76)',
+                      appName: 'Messaggi'
+                    })
+                  }
+                })
+              }
+              break
+          }
+        })
+        .catch(e => { this.ignoreControls = false })
+      } catch (e) {}
     },
-    async onSelectPhoneNumber (number) {
-      try {
-        this.ignoreControls = true
-        let scelte = [
-          {
-            id: 'sms',
-            title: this.LangString('APP_MESSAGE_MESS_SMS'),
-            icons: 'fa-comment'
-          },
-          {
-            id: 'call',
-            title: this.LangString('APP_MESSAGE_MESS_CALL'),
-            icons: 'fa-phone'
-          },
-          {
-            id: -1,
-            title: this.LangString('CANCEL'),
-            icons: 'fa-undo',
-            color: 'red'
-          }// ,
-          // {
-          //   id: 'copy',
-          //   title: this.LangString('APP_MESSAGE_MESS_COPY'),
-          //   icons: 'fa-copy'
-          // }
-        ]
-
-        const data = await Modal.CreateModal({ scelte })
-        if (data.id === 'sms') {
-          this.phoneNumber = number
-          this.display = undefined
-        } else if (data.id === 'call') {
-          this.$phoneAPI.startCall({ numero: number })
-        // } else if (data.id === 'copy') {
-        //   try {
-        //     const $copyTextarea = this.$refs.copyTextarea
-        //     $copyTextarea.value = number
-        //     $copyTextarea.style.height = '20px'
-        //     $copyTextarea.focus()
-        //     $copyTextarea.select()
-        //     await document.execCommand('copy')
-        //     $copyTextarea.style.height = '0'
-        //   } catch (error) {
-        //   }
+    onSelectPhoneNumber (number) {
+      this.ignoreControls = true
+      Modal.CreateModal({ scelte: [
+        { id: 'sms', title: this.LangString('APP_MESSAGE_MESS_SMS'), icons: 'fa-comment' },
+        { id: 'call', title: this.LangString('APP_MESSAGE_MESS_CALL'), icons: 'fa-phone' },
+        { id: -1, title: this.LangString('CANCEL'), icons: 'fa-undo', color: 'red' }
+      ] })
+      .then(data => {
+        switch(data.id) {
+          case 'sms':
+            this.phoneNumber = number
+            this.display = undefined
+            break
+          case 'call':
+            this.$phoneAPI.startCall({ numero: number })
+            break
         }
-      } catch (e) {
-      } finally {
         this.ignoreControls = false
         this.selectMessage = -1
-      }
+      })
+      .catch(e => { this.ignoreControls = false })
     },
     onBackspace () {
       if (this.imgZoom !== undefined) {
@@ -351,79 +329,42 @@ export default {
         this.CHANGE_BRIGHTNESS_STATE(true)
         return
       }
-      if (this.ignoreControls === true) return
+      if (this.ignoreControls) return
       if (this.selectMessage !== -1) {
         this.selectMessage = -1
       } else {
-        this.quit()
+        this.$router.go(-1)
       }
     },
     onRight: function () {
-      if (this.ignoreControls === true) return
-      if (this.selectMessage === -1) {
-        this.showOptions()
-      }
+      if (this.ignoreControls) return
+      if (this.selectMessage === -1) this.showOptions()
     },
-    async showOptions () {
-      try {
-        this.ignoreControls = true
-        let scelte = [
-          {id: 1, title: this.LangString('APP_MESSAGE_SEND_GPS'), icons: 'fa-location-arrow'},
-          {id: -1, title: this.LangString('CANCEL'), icons: 'fa-undo', color: 'red'}
-        ]
-        if (this.enableTakePhoto) {
-          scelte = [
-            {id: 1, title: this.LangString('APP_MESSAGE_SEND_GPS'), icons: 'fa-location-arrow'},
-            {id: 2, title: this.LangString('APP_MESSAGE_SEND_PHOTO'), icons: 'fa-picture-o'},
-            {id: -1, title: this.LangString('CANCEL'), icons: 'fa-undo', color: 'red'}
-          ]
-        }
-        const data = await Modal.CreateModal({ scelte })
-        if (data.id === 1) {
-          this.sendMessage({ phoneNumber: this.phoneNumber, message: '%pos%' })
-        }
-        if (data.id === 2) {
-          const { url } = await this.$phoneAPI.takePhoto()
-          if (url !== null && url !== undefined) {
-            this.sendMessage({ phoneNumber: this.phoneNumber, message: url })
-          }
-        }
-        this.ignoreControls = false
-      } catch (e) {
-      } finally {
-        this.ignoreControls = false
-      }
-    }
-  },
-  computed: {
-    ...mapGetters(['LangString', 'messages', 'contacts', 'enableTakePhoto']),
-    messagesListApp () {
-      return this.messages.filter(e => e.transmitter === this.phoneNumber).sort((a, b) => a.time - b.time)
-      // messages = messages.forEach(element => {
-      //   element.message = this.$phoneAPI.convertEmoji(element.message)
-      // })
-      // return messages
-    },
-    displayContact () {
-      if (this.display !== undefined) {
-        return this.display
-      }
-      const c = this.contacts.find(c => c.number === this.phoneNumber)
-      if (c !== undefined) {
-        return c.display
-      }
-      return this.phoneNumber
-    },
-    color () {
-      return generateColorForStr(this.phoneNumber)
-    },
-    colorSmsOwner () {
-      return [
-        {
-          backgroundColor: this.color,
-          color: getBestFontColor(this.color)
-        }, {}
+    showOptions () {
+      this.ignoreControls = true
+      let scelte = [
+        { id: 1, title: this.LangString('APP_MESSAGE_SEND_GPS'), icons: 'fa-location-arrow' },
+        { id: -1, title: this.LangString('CANCEL'), icons: 'fa-undo', color: 'red' }
       ]
+      if (this.config.picturesConfig.enabled) scelte = [{ id: 2, title: this.LangString('APP_MESSAGE_SEND_PHOTO'), icons: 'fa-image' }, ...scelte]
+      Modal.CreateModal({ scelte: scelte })
+      .then(async data => {
+        this.ignoreControls = false
+        switch(data.id) {
+          case 1:
+            this.$phoneAPI.post('sendMessage', { phoneNumber: this.phoneNumber, message: '%pos%' })
+            break
+          case 2:
+            this.$phoneAPI.takePhoto()
+            .then(pic => {
+              this.$phoneAPI.post('sendMessage', { phoneNumber: this.phoneNumber, message: pic })
+              this.ignoreControls = false
+            })
+            .catch(e => { this.ignoreControls = false })
+            break
+        }
+      })
+      .catch(e => { this.ignoreControls = false })
     }
   },
   watch: {
@@ -594,19 +535,6 @@ export default {
   background-color: rgba(236, 236, 241, 0)
 }
 
-.sms_send {
-  float: right;
-  margin-right: 10px;
-  font-size: 10px;
-}
-
-.sms_send svg {
-  margin: 8px; 
-  width: 36px;
-  height: 36px;
-  fill: #C0C0C0;
-}
-
 .copyTextarea {
   height: 0;
   border: 0;
@@ -716,5 +644,67 @@ export default {
   color: rgb(0, 119, 255);
   font-weight: bold;
   font-size: 14px;
+}
+
+/* VIDEO MESSAGE SECTION */
+
+.video-message-container {
+  margin-top: 5px;
+  width: 200px;
+  height: 100px;
+  background-color: black;
+  border-radius: 10px;
+  text-align: center;
+}
+
+.video-message-container i {
+  color: white;
+  font-size: 20px;
+  margin-top: 20%;
+}
+
+.write-input-container {
+  width: 330px;
+  height: 55px;
+  bottom: 5px;
+  position: relative;
+  background-color: white;
+}
+
+.write-input {
+  position: relative;
+  height: 40px;
+  width: 90%;
+  background-color: #e9e9eb;
+  border-radius: 56px;
+  margin-left: auto;
+  margin-right: auto;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.6);
+}
+
+.write-input input {
+  height: 100%;
+  border: none;
+  outline: none;
+  font-size: 15px;
+  margin-left: 14px;
+  padding: 12px 5px;
+  background-color: rgba(236, 236, 241, 0)
+}
+
+.write-input i {
+  height: 50px;
+  width: 50px;
+  font-size: 15px;
+  bottom: 5px;
+  color: #e2e2e2;
+  float: right;
+  position: relative;
+  padding-top: 16px;
+  border-radius: 50px;
+  text-align-last: center;
+  background-color: rgb(194, 108, 7);
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.6);
+  transition: all .5s ease;
 }
 </style>

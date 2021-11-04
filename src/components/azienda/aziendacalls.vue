@@ -81,22 +81,23 @@ export default {
     },
     openMessageOptions (data) {
       if (this.aziendaIngoreControls) return
-      try {
-        this.SET_AZIENDA_IGNORE_CONTROLS(true)
-        let scelte = [
-          { id: 'gps', title: this.LangString('APP_MESSAGE_SET_GPS'), icons: 'fa-location-arrow' },
-          { id: 'num', title: `${this.LangString('APP_MESSAGE_MESS_NUMBER')} ${data.number}`, number: data.number, icons: 'fa-phone' },
-          { id: -1, title: this.LangString('CANCEL'), icons: 'fa-undo', color: 'red' }
-        ]
-        Modal.CreateModal({ scelte }).then(resp => {
-          if (resp.id === 'gps') {
+      this.SET_AZIENDA_IGNORE_CONTROLS(true)
+      Modal.CreateModal({ scelte: [
+        { id: 'gps', title: this.LangString('APP_MESSAGE_SET_GPS'), icons: 'fa-location-arrow' },
+        { id: 'num', title: `${this.LangString('APP_MESSAGE_MESS_NUMBER')} ${data.number}`, number: data.number, icons: 'fa-phone' },
+        { id: -1, title: this.LangString('CANCEL'), icons: 'fa-undo', color: 'red' }
+      ] })
+      .then(resp => {
+        switch(resp.id) {
+          case 'gps':
             this.$phoneAPI.setGPS(data.coords.x, data.coords.y)
-          } else if (resp.id === 'num') {
+            break
+          case 'num':
             this.$phoneAPI.startCall({ numero: resp.number })
-          }
-          this.SET_AZIENDA_IGNORE_CONTROLS(false)
-        })
-      } catch (e) {}
+            break
+        }
+        this.SET_AZIENDA_IGNORE_CONTROLS(false)
+      })
     }
   },
   created () {
@@ -106,12 +107,9 @@ export default {
     this.$bus.$on('keyUpArrowRight', this.onRight)
     this.$bus.$on('keyUpBackspace', this.onBack)
     this.currentSelected = this.aziendaCalls.length - 1
-    setTimeout(() => {
-      this.scrollIntoView()
-    }, 500)
+    setTimeout(() => { this.scrollIntoView() }, 500)
   },
-  mounted () {
-  },
+  // mounted () {},
   beforeDestroy () {
     this.$bus.$off('keyUpArrowUp', this.onUp)
     this.$bus.$off('keyUpArrowDown', this.onDown)

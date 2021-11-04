@@ -3,17 +3,18 @@
     <PhoneTitle :title="LangString('APP_GALLERIA_TITLE')" backgroundColor="rgb(217, 122, 81)" :titleColor="'black'" />
 
     <div class="phone_fullscreen_img" v-if="imgZoom !== undefined">
-      <img :src="imgZoom" />
+      <img v-if="imgZoom.type === 'photo'" :src="imgZoom.link" />
+      <video v-else-if="imgZoom.type === 'video'" width="330" height="710" id="video-playback-element" :src="imgZoom.link" autoplay />
     </div>
 
     <div class="div_immagini">
-      
-      <div class='immagini'
-        v-for="(val, key) of fotografie" 
-        :key="key + 1" 
-        :style="{ src: 'url(' + val.link +')' }"
-      >
-        <img class="immagine" :src="val.link" :class="{ select: key + 1 === currentSelect }" />
+      <div class='immagini' v-for="(val, key) of fotografie" :key="key + 1">
+        <img v-if="val.type === 'photo'" class="immagine" :src="val.link" :class="{ select: key + 1 === currentSelect }" />
+        <div v-else-if="val.type === 'video'" class="video-container" :class="{ select: key + 1 === currentSelect }">
+        <!-- <div v-else-if="val.type === 'video'" class="video-container" :class="{ select: key + 1 === currentSelect }" :id="'container-video-' + getSMSVideoInfo(val.link).id"> -->
+          <!-- <i :id="generateThumbnail(getSMSVideoInfo(val.link))" class="fas fa-play"></i> -->
+          <i class="fas fa-play"></i>
+        </div>
       </div>
     </div>
 
@@ -32,11 +33,12 @@ export default {
     return {
       currentSelect: 1,
       ignoredControls: false,
-      imgZoom: undefined
+      imgZoom: undefined,
+      createWait: {}
     }
   },
   computed: {
-    ...mapGetters(['LangString', 'fotografie', 'bluetooth'])
+    ...mapGetters(['LangString', 'fotografie', 'bluetooth', 'config', 'myPhoneNumber'])
   },
   methods: {
     ...mapActions(['setBackground', 'clearGallery', 'deleteSinglePicture']),
@@ -81,68 +83,136 @@ export default {
       if (this.ignoredControls) return
       this.$router.push({ name: 'menu' })
     },
-    async onEnter () {
+    getSMSVideoInfo (mess) {
+      var obj = mess.split('%')
+      return {
+        id: obj[2],
+        number: obj[1]
+      }
+    },
+    // generateThumbnail (value) {
+    //   this.createWait[value.id] = value
+    //   return String(value.id)
+    // },
+    restartVideo () {
+      this.videoElement = document.getElementById('video-playback-element')
+      if (this.videoElement) this.videoElement.currentTime = 0
+      this.videoElement.play()
+    },
+    onEnter () {
+      if (this.imgZoom) {
+        if (this.imgZoom.type === 'video' && this.videoElement) {
+          this.restartVideo()
+        }
+        return
+      }
       if (this.fotografie.length === 0) return
       if (this.ignoredControls) return
-      var foto = this.fotografie[this.currentSelect - 1]
+      var element = this.fotografie[this.currentSelect - 1]
       this.ignoredControls = true
       try {
-        let scelte = [
-          { id: 0, title: this.LangString('APP_GALLERIA_ZOOM'), icons: 'fa-search' },
-          { id: 1, title: this.LangString('APP_GALLERIA_SET_WALLPAPER'), icons: 'fa-mobile' },
-          { id: 2, title: this.LangString('APP_GALLERIA_INOLTRA'), icons: 'fa-paper-plane' },
-          { id: 4, title: this.LangString('APP_GALLERIA_SEND_BLUETOOTH'), icons: 'fa-share-square' },
-          { id: 5, title: this.LangString('APP_GALLERIA_ELIMINA'), icons: 'fa-trash', color: 'orange' },
+        let scelte = []
+        if (element.type === 'photo') {
+          scelte = [
+            { id: 0, title: this.LangString('APP_GALLERIA_ZOOM'), icons: 'fa-search' },
+            { id: 1, title: this.LangString('APP_GALLERIA_SET_WALLPAPER'), icons: 'fa-mobile' },
+            { id: 2, title: this.LangString('APP_GALLERIA_INOLTRA'), icons: 'fa-paper-plane' },
+            { id: 4, title: this.LangString('APP_GALLERIA_SEND_BLUETOOTH'), icons: 'fa-share-square' },
+            { id: 5, title: this.LangString('APP_GALLERIA_ELIMINA'), icons: 'fa-trash', color: 'orange' }
+          ]
+        } else if (element.type === 'video') {
+          scelte = [
+            { id: 0, title: this.LangString('APP_GALLERIA_ZOOM_VIDEO'), icons: 'fa-search' },
+            { id: 6, title: this.LangString('APP_GALLERIA_INOLTRA_VIDEO'), icons: 'fa-paper-plane' },
+            { id: 4, title: this.LangString('APP_GALLERIA_SEND_BLUETOOTH'), icons: 'fa-share-square' },
+            { id: 5, title: this.LangString('APP_GALLERIA_ELIMINA_VIDEO'), icons: 'fa-trash', color: 'orange' }
+          ]
+        }
+        scelte = [
+          ...scelte,
           { id: 3, title: this.LangString('APP_GALLERIA_ELIMINA_TUTTO'), icons: 'fa-trash', color: 'red' },
           { id: -1, title: this.LangString('CANCEL'), icons: 'fa-undo', color: 'red' }
         ]
-        const data = await Modal.CreateModal({ scelte })
-        switch (data.id) {
-          case 0:
-            this.imgZoom = foto.link
-            this.CHANGE_BRIGHTNESS_STATE(false)
-            break
-          case 1:
-            this.setBackground({ label: 'Personalizzato', value: foto.link })
-            this.ignoredControls = false
-            break
-          case 2:
-            this.$router.push({ name: 'messages.chooseinoltra', params: { message: foto.link } })
-            this.ignoredControls = false
-            break
-          case 3:
-            this.clearGallery()
-            this.ignoredControls = false
-            break
-          case 4:
-            if (this.bluetooth) {
-              try {
-                this.ignoredControls = true
-                let scelte = []
-                var cancel = { id: -1, title: this.LangString('CANCEL'), icons: 'fa-undo', color: 'red' }
-                this.$phoneAPI.getClosestPlayers().then(async closestPlayers => {
-                  console.log(JSON.stringify(closestPlayers))
-                  for (var i in closestPlayers) { scelte.push({ id: closestPlayers[i].id, label: closestPlayers[i].name, title: closestPlayers[i].name, icons: 'fa-share-square' }) }
-                  scelte.push(cancel)
-                  const data = await Modal.CreateModal({ scelte })
-                  if (data.id === -1) {
-                    this.ignoredControls = false
+        Modal.CreateModal({ scelte })
+        .then(resp => {
+          switch (resp.id) {
+            case 0:
+              if (element.type === 'video') {
+                const videoData = this.getSMSVideoInfo(element.link)
+                this.$phoneAPI.videoRequest.getVideoLinkFromServer(videoData.id).then(link => {
+                  this.ignoredControls = false
+                  if (link) {
+                    this.imgZoom = Object.assign({}, element)
+                    this.imgZoom.link = link
+                    this.restartVideo()
                   } else {
-                    this.ignoredControls = false
-                    this.$phoneAPI.sendPicToUser({ id: data.id, message: foto.link })
+                    this.$phoneAPI.ongenericNotification({
+                      message: 'VIDEO_NOT_FOUND',
+                      title: 'VIDEO_ERROR_TITLE',
+                      icon: 'camera',
+                      color: 'rgb(205, 116, 76)',
+                      appName: 'Galleria'
+                    })
                   }
                 })
-              } catch (e) { } finally { this.ignoredControls = false }
-            } else {
-              this.$phoneAPI.sendErrorMessage('Il bluetooth è disattivo')
+              } else if (element.type === 'photo') {
+                this.imgZoom = element
+              }
+              this.CHANGE_BRIGHTNESS_STATE(false)
+              break
+            case 1:
+              this.setBackground({ label: 'Personalizzato', value: element.link })
               this.ignoredControls = false
-            }
-            break
-          case 5:
-            this.deleteSinglePicture(this.currentSelect)
-            break
-        }
-      } catch (e) { } finally { this.ignoredControls = false }
+              break
+            case 2:
+              this.$router.push({ name: 'messages.chooseinoltra', params: { message: element.link } })
+              this.ignoredControls = false
+              break
+            case 3:
+              this.clearGallery()
+              this.ignoredControls = false
+              break
+            case 4:
+              if (this.bluetooth) {
+                try {
+                  this.ignoredControls = true
+                  let scelte = []
+                  var cancel = { id: -1, title: this.LangString('CANCEL'), icons: 'fa-undo', color: 'red' }
+                  this.$phoneAPI.getClosestPlayers().then(closestPlayers => {
+                    for (var i in closestPlayers) { scelte.push({ id: closestPlayers[i].id, label: closestPlayers[i].name, title: closestPlayers[i].name, icons: 'fa-share-square' }) }
+                    scelte.push(cancel)
+                    Modal.CreateModal({ scelte })
+                    .then(choice => {
+                      switch(choice.id) {
+                        case -1:
+                          this.ignoredControls = false
+                          break
+                        default:
+                          this.ignoredControls = false
+                          this.$phoneAPI.sendPicToUser({ id: choice.id, message: element.link })
+                      }
+                    })
+                    .catch(e => { this.ignoredControls = false })
+                  })
+                  .catch(e => { this.ignoredControls = false })
+                } catch (e) { }
+              } else {
+                this.$phoneAPI.sendErrorMessage('Il bluetooth è disattivo')
+                this.ignoredControls = false
+              }
+              break
+            case 5:
+              this.deleteSinglePicture(this.currentSelect)
+              break
+            case 6:
+              const videoData = this.getSMSVideoInfo(element.link)
+              let message = '[VIDEO]%' + this.myPhoneNumber + '%' + videoData.id
+              this.$router.push({ name: 'messages.chooseinoltra', params: { message: message } })
+              break
+          }
+        })
+        .catch(e => { this.ignoredControls = false })
+      } catch (e) { }
     }
   },
 
@@ -193,6 +263,24 @@ export default {
 }
 
 .immagine.select {
+  border: 3px solid rgb(205, 116, 76);
+  filter: brightness(90%)
+}
+
+.video-container {
+  background-color: black;
+  width: inherit;
+  height: inherit;
+  text-align: center;
+  padding-top: 20%;
+}
+
+.video-container i {
+  color: white;
+  z-index: 2;
+}
+
+.video-container.select {
   border: 3px solid rgb(205, 116, 76);
   filter: brightness(90%)
 }

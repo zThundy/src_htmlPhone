@@ -12,7 +12,7 @@
       </div>
     </div>
 
-    <div class='phone_content elements'>
+    <div class='phone_content' style="overflow: hidden;">
       <div class='element' v-for='(elem, key) in paramList' v-bind:class="{ select: key === currentSelect }" v-bind:key="key">
         <i class="fa" v-bind:class="elem.icons" v-bind:style="{ color: elem.color }"></i>
 
@@ -28,13 +28,6 @@
 
       </div>
     </div>
-
-    <!-- 
-    <div class="switch md-example-child md-example-child-switch md-example-child-switch-0">
-      <md-switch v-model="isActive" @change="handler('switch0', isActive, $event)"></md-switch>
-      <md-switch v-model="isActive"></md-switch>
-    </div>
-     -->
     
   </div>
 </template>
@@ -46,7 +39,6 @@ import Modal from '@/components/Modal/index.js'
 
 import CustomSwitch from '@/components/CustomSwitch'
 
-// import { Icon, Switch } from 'mand-mobile'
 import { Icon } from 'mand-mobile'
 import 'mand-mobile/lib/mand-mobile.css'
 
@@ -55,7 +47,6 @@ export default {
     PhoneTitle,
     CustomSwitch,
     [Icon.name]: Icon
-    // [Switch.name]: Switch
   },
   data () {
     return {
@@ -67,26 +58,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters([
-      'LangString',
-      'myPhoneNumber',
-      'backgroundLabel',
-      'suoneriaLabel',
-      'zoom',
-      'config',
-      'volume',
-      'availableLanguages',
-      'wifiString',
-      'retiWifi',
-      'notification',
-      'airplane',
-      'bluetooth',
-      'currentCover',
-      'myCovers',
-      'myImage',
-      'myData',
-      'isWifiOn'
-    ]),
+    ...mapGetters(['LangString', 'myPhoneNumber', 'backgroundLabel', 'suoneriaLabel', 'zoom', 'config', 'volume', 'availableLanguages', 'wifiString', 'retiWifi', 'notification', 'airplane', 'bluetooth', 'currentCover', 'myCovers', 'myImage', 'myData', 'isWifiOn']),
     paramList () {
       // stringa di conferma reset
       const confirmResetStr = this.LangString('APP_CONFIG_RESET_CONFIRM')
@@ -139,7 +111,7 @@ export default {
         },
         {
           meta: 'background',
-          icons: 'fa-picture-o',
+          icons: 'fa-image',
           title: this.LangString('APP_CONFIG_WALLPAPER'),
           value: this.backgroundLabel,
           onValid: 'onChangeBackground',
@@ -249,25 +221,25 @@ export default {
     },
 
     onBackspace () {
-      if (this.ignoreControls === true) return
+      if (this.ignoreControls) return
       this.$router.push({ name: 'menu' })
     },
 
     onUp: function () {
-      if (this.ignoreControls === true) return
+      if (this.ignoreControls) return
       this.currentSelect = this.currentSelect === 0 ? 0 : this.currentSelect - 1
       this.scrollIntoView()
     },
 
     onDown: function () {
-      if (this.ignoreControls === true) return
+      if (this.ignoreControls) return
       this.currentSelect = this.currentSelect === this.paramList.length - 1 ? this.currentSelect : this.currentSelect + 1
       this.scrollIntoView()
     },
 
     onRight () {
-      if (this.ignoreControls === true) return
-      if (this.ignoreControls === true) return
+      if (this.ignoreControls) return
+      if (this.ignoreControls) return
       let param = this.paramList[this.currentSelect]
       if (param.onRight !== undefined) {
         param.onRight(param)
@@ -281,7 +253,7 @@ export default {
     },
 
     onEnter () {
-      if (this.ignoreControls === true) return
+      if (this.ignoreControls) return
       if (this.paramList[this.currentSelect].meta !== undefined && this.paramList[this.currentSelect].meta === 'wifi') {
         this.paramList[this.currentSelect].values = this.updateWifiTable()
       }
@@ -289,7 +261,7 @@ export default {
     },
 
     onLeft () {
-      if (this.ignoreControls === true) return
+      if (this.ignoreControls) return
       let param = this.paramList[this.currentSelect]
       if (param.onLeft !== undefined) {
         param.onLeft(param)
@@ -310,7 +282,7 @@ export default {
               }
             }
             if (param.meta === 'background') {
-              return {title: key, value: param.values[key], picto: param.values[key], icons: 'fa-picture-o'}
+              return {title: key, value: param.values[key], picto: param.values[key], icons: 'fa-image'}
             }
             if (param.meta === 'suoneria') {
               return {title: key, value: param.values[key], picto: param.values[key], icons: 'fa-bell'}
@@ -327,11 +299,13 @@ export default {
             return {title: key, value: param.values[key], picto: param.values[key]}
           }
         })
-        Modal.CreateModal({ scelte }).then(reponse => {
+        Modal.CreateModal({ scelte })
+        .then(resp => {
           this.ignoreControls = false
-          if (reponse.title === 'cancel' || reponse.value === 'cancel') return
-          this[param.onValid](param, reponse)
+          if (resp.title === 'cancel' || resp.value === 'cancel') return
+          this[param.onValid](param, resp)
         })
+        .catch(e => { this.ignoreControls = false })
       }
       // qui controllo se le values non sono definite
       if (param.values === undefined && param.onValid !== undefined && param.onValid !== null) {
@@ -339,31 +313,40 @@ export default {
       }
     },
 
-    async onChangeBackground (param, data) {
+    onChangeBackground (param, data) {
       let val = data.value
       if (val === 'Link') {
         this.ignoreControls = true
-        let scelte = [
-          {id: 1, title: this.LangString('APP_CONFIG_LINK_PICTURE'), icons: 'fa-link'},
-          {id: 2, title: this.LangString('APP_CONFIG_TAKE_PICTURE'), icons: 'fa-camera'}
-        ]
-        const resp = await Modal.CreateModal({ scelte: scelte })
-        if (resp.id === 1) {
-          Modal.CreateTextModal({ text: 'https://i.imgur.com/' }).then(valueText => {
-            if (valueText.text !== '' && valueText.text !== undefined && valueText.text !== null && valueText.text !== 'https://i.imgur.com/') {
-              this.setBackground({ label: 'Personalizzato', value: valueText.text })
-              this.ignoreControls = false
-            }
-          })
-        } else if (resp.id === 2) {
-          const newAvatar = await this.$phoneAPI.takePhoto()
-          if (newAvatar.url !== null) {
-            this.setBackground({ label: 'Personalizzato', value: newAvatar.url })
-            this.ignoreControls = false
+        Modal.CreateModal({ scelte: [
+          { id: 1, title: this.LangString('APP_CONFIG_LINK_PICTURE'), icons: 'fa-link' },
+          { id: 2, title: this.LangString('APP_CONFIG_TAKE_PICTURE'), icons: 'fa-camera' }
+        ] })
+        .then(async resp => {
+          switch(resp.id) {
+            case 1:
+              Modal.CreateTextModal({
+                text: 'https://i.imgur.com/',
+                title: this.LangString('TYPE_LINK')
+              })
+              .then(resp => {
+                if (resp.text !== '' && resp.text !== undefined && resp.text !== null && resp.text !== 'https://i.imgur.com/') {
+                  this.setBackground({ label: 'Personalizzato', value: resp.text })
+                  this.ignoreControls = false
+                }
+              })
+              .catch(e => { this.ignoreControls = false })
+              break
+            case 2:
+              this.$phoneAPI.takePhoto()
+              .then(pic => {
+                this.setBackground({ label: 'Personalizzato', value: pic })
+                this.ignoreControls = false
+              })
+              .catch(e => { this.ignoreControls = false })
+              break
           }
-        } else {
-          this.ignoreControls = false
-        }
+        })
+        .catch(e => { this.ignoreControls = false })
       } else {
         this.setBackground({ label: data.title, value: data.value })
         this.ignoreControls = false
@@ -377,9 +360,12 @@ export default {
       }
       var password = data.value
       this.ignoreControls = true
-      Modal.CreateTextModal({ text: '' }).then(valueText => {
-        if (valueText.text !== '' && valueText.text !== undefined && valueText.text !== null) {
-          if (valueText.text === password) {
+      Modal.CreateTextModal({
+        title: this.LangString('TYPE_MESSAGE')
+      })
+      .then(resp => {
+        if (resp.text !== '' && resp.text !== undefined && resp.text !== null) {
+          if (resp.text === password) {
             // console.log('hey ai azzecato! :P')
             this.$phoneAPI.connettiAllaRete(this.retiWifiRender[data.title])
             this.updateWifiString(true)
@@ -392,6 +378,7 @@ export default {
           }
         }
       })
+      .catch(e => { this.ignoreControls = false })
     },
 
     onChangeCover: function (param, data) {
@@ -449,22 +436,17 @@ export default {
     resetPhone: function (param, data) {
       if (data.value !== 'cancel') {
         this.ignoreControls = true
-        let scelte = [{
-          title: this.LangString('APP_CONFIG_RESET_CONFIRM'),
-          color: 'red',
-          icons: 'fa-exclamation-triangle',
-          reset: true
-        }, {
-          title: this.LangString('CANCEL'),
-          icons: 'fa-undo',
-          color: 'red'
-        }]
-        Modal.CreateModal({ scelte: scelte }).then(reponse => {
+        Modal.CreateModal({ scelte: [
+          { title: this.LangString('APP_CONFIG_RESET_CONFIRM'), color: 'red', icons: 'fa-exclamation-triangle', reset: true },
+          { title: this.LangString('CANCEL'), icons: 'fa-undo', color: 'red' }
+        ] })
+        .then(reponse => {
           this.ignoreControls = false
-          if (reponse.reset === true) {
+          if (reponse.reset) {
             this.$phoneAPI.deleteALL()
           }
         })
+        .catch(e => { this.ignoreControls = false })
       }
     }
   },

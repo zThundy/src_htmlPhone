@@ -1,10 +1,10 @@
 <template>
-  <div style="height: 100vh; width: 100vw;">
+  <div style="height: 100vh; width: 100vw; overflow: hidden;">
     <!-- <canvas id="self-render" class="content-area"></canvas> -->
     <!-- <div style="width: 50%; height: 50%; background-color: rgba(0,0,0,0.5)"></div> -->
     <!-- <canvas class="video-recorder-canvas" id="video-recorder-canvas"></canvas> -->
 
-    <div v-if="show === true && tempoHide === false" :style="getStyle()">
+    <div v-if="show === true" :style="getStyle()">
       <div class="phone_wrapper" :style="classObject()">
         <div v-if="currentCover" class="phone_coque" :style="{ backgroundImage: 'url(/html/static/img/cover/' + currentCover.value + ')' }"></div>
         
@@ -28,12 +28,14 @@
         </div>
       </div>
     </div>
+
+    <!-- <div class="test-elem"></div> -->
+    <!-- <video style="z-index: 0;" id="test-video-element" src="/html/static/img/Montage_Jojo.mp4" crossorigin="anonymous" autoplay controls loop></video> -->
   </div>
 </template>
 
 <script>
 import './PhoneBaseStyle.css'
-import './assets/css/font-awesome.min.css'
 import './assets/css/cssgram.css'
 
 import { mapGetters, mapActions } from 'vuex'
@@ -51,7 +53,7 @@ export default {
     }
   },
   methods: {
-    ...mapActions(['loadConfig', 'rejectCall']),
+    ...mapActions(['rejectCall']),
     closePhone () {
       this.$phoneAPI.closePhone()
     },
@@ -66,10 +68,10 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['loaded', 'show', 'zoom', 'currentCover', 'suoneria', 'appelsInfo', 'myPhoneNumber', 'volume', 'tempoHide', 'brightness', 'brightnessActive']),
+    ...mapGetters(['_messages', 'show', 'zoom', 'currentCover', 'suoneria', 'appelsInfo', 'myPhoneNumber', 'volume', 'brightness', 'brightnessActive']),
     checkIfLoaded () {
       if (process.env.NODE_ENV !== 'production') return true
-      return this.loaded === 'STATUS_OK'
+      return this._messages === 'STATUS_OK'
     }
   },
   watch: {
@@ -82,9 +84,6 @@ export default {
         } else {
           path = '/html/static/sound/' + this.suoneria.value
         }
-        // if (this.$phoneAPI.isLink(this.suoneria.value)) {
-        //   path = this.suoneria.value
-        // }
         this.audioElement.src = path
         this.audioElement.loop = true
         this.soundCall = this.audioElement
@@ -107,58 +106,24 @@ export default {
     }
   },
   mounted () {
-    this.loadConfig()
     window.addEventListener('message', (event) => {
       if (event.data.keyUp !== undefined) { this.$bus.$emit('keyUp' + event.data.keyUp) }
     })
     if (process.env.NODE_ENV !== 'production') {
       const keyValid = ['ArrowRight', 'ArrowLeft', 'ArrowUp', 'ArrowDown', 'Backspace', 'Enter']
       window.addEventListener('keyup', (event) => {
-        if (keyValid.indexOf(event.key) !== -1) {
-          this.$bus.$emit('keyUp' + event.key)
-          if (event.key === 'Backspace') { }
-        }
-        if (event.key === 'Escape') { this.$phoneAPI.closePhone() }
+        if (keyValid.includes(event.key) !== -1) this.$bus.$emit('keyUp' + event.key)
+        if (event.key === 'Escape') this.$phoneAPI.closePhone()
       })
     }
   },
   created () {
     this.$router.push({ name: 'lockscreen' })
-    // this.$router.beforeEach((to, from, next) => {
-    //   if ((to.meta !== undefined && to.meta !== null) && (from.meta !== undefined && from.meta !== null)) {
-    //     // se stai arrivando da un router che si trova più in alto
-    //     // (indice maggiore) di quello a cui stai andando, fai l'animazione
-    //     if (to.meta.depth > from.meta.depth) {
-    //       this.isChanging = true
-    //     }
-    //     // if (from.meta.depth > to.meta.depth) {
-    //     //   this.index = from.meta.depth
-    //     // }
-    //   }
-    //   setTimeout(() => {
-    //     this.isChanging = false
-    //   }, 500)
-    //   next()
-    // })
-
-    // function dev () {
-    //   Vue.notify({
-    //     message: 'Messaggio superfiko inviato da qualcuno',
-    //     title: '55537282' + ':',
-    //     icon: 'envelope',
-    //     backgroundColor: 'rgb(255, 140, 30)',
-    //     appName: 'Messaggi'
-    //   })
-    //   setTimeout(() => {
-    //     dev()
-    //   }, 1000)
-    // }
-    // dev()
   }
 }
 </script>
 
-<style lang="css">
+<style scoped>
 .noselect {
   user-select: none;
 }
@@ -192,4 +157,29 @@ export default {
   margin: auto;
   text-align: center;
 }
+
+#canvas-recorder {
+  display: none;
+  overflow: hidden;
+  width: 100vw;
+  height: 100vh;
+}
+
+/*
+.test-elem {
+  position: absolute;
+  bottom: 550px;
+  left: 500px;
+  width: 50px;
+  height: 50px;
+  background-color: red;
+  animation: test 1.0s linear infinite;
+}
+
+@keyframes test {
+  50% {
+    transform: rotate(180deg)
+  }
+}
+*/
 </style>

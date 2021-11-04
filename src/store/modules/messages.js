@@ -15,12 +15,6 @@ const actions = {
   setMessages ({ commit }, messages) {
     commit('SET_MESSAGES', messages)
   },
-  sendMessage ({ commit }, {phoneNumber, message}) {
-    PhoneAPI.sendMessage(phoneNumber, message)
-  },
-  deleteMessage ({ commit }, { id }) {
-    PhoneAPI.deleteMessage(id)
-  },
   deleteMessagesNumber ({ commit, state }, { num }) {
     PhoneAPI.deleteMessagesNumber(num)
     commit('SET_MESSAGES', state.messages.filter(mess => {
@@ -104,6 +98,8 @@ if (process.env.NODE_ENV !== 'production') {
     {id: 20, transmitter: numRandom, time, message: ':100: :100:', isRead: 1, owner: 0},
     {id: 21, transmitter: numRandom, time, message: 'https://i.imgur.com/gthahbs.png', isRead: 0, owner: 1},
     {id: 22, transmitter: numRandom, time, message: 'https://i.imgur.com/gthahbs.png', isRead: 0, owner: 0},
+    {id: 23, transmitter: numRandom, time, message: '[CONTACT]%5125123%Figo%figo@phone.it%https://cdn.discordapp.com/attachments/848629680655433738/881256505716924486/screenshot.jpg', isRead: 0, owner: 1},
+    {id: 24, transmitter: numRandom, time, message: '[VIDEO]%5125123%iAOFDcdu7GAcLWgcL58m', isRead: 0, owner: 1},
     {id: 1, transmitter: '5554444', time, message: 'Cazz c fai ca? !', isRead: 0, owner: 0},
     {id: 2, transmitter: '5554444', time, message: 'Cazz c fai ca? !', isRead: 0, owner: 1},
     {id: 3, transmitter: '5554444', time, message: 'Cazz c fai ca? !', isRead: 0, owner: 0},

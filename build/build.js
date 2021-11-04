@@ -1,5 +1,3 @@
-require('./check-versions')()
-
 process.env.NODE_ENV = 'production'
 
 var ora = require('ora')
@@ -15,7 +13,9 @@ var spinner = ora('HEY STO BUILDANDO...')
 spinner.start()
 
 var JavaScriptObfuscator = require('javascript-obfuscator');
+var UglifyJS = require("uglify-js");
 
+/*
 var options = {
   compact: true,
   controlFlowFlattening: false,
@@ -43,6 +43,12 @@ var options = {
   target: 'browser',
   unicodeEscapeSequence: false
 }
+*/
+
+const minifyFiles = ["app.js", "vendor.js", "manifest.js"]
+// const minifyFiles = []
+const objuscateFiles = ["app.js"]
+// const objuscateFiles = []
 
 rm(path.join(config.build.assetsRoot, config.build.assetsSubDirectory), err => {
   if (err) throw err
@@ -56,23 +62,13 @@ rm(path.join(config.build.assetsRoot, config.build.assetsSubDirectory), err => {
       chunks: false,
       chunkModules: false
     }) + '\n\n')
-
-    console.log(chalk.cyan('  HEY HO FINITO UPPAMI!!11!!111!.\n'))
-    // console.log(chalk.yellow(
-    //   '  Tip: built files are meant to be served over an HTTP server.\n' +
-    //   '  Opening index.html over file:// won\'t work.\n'
-    // ))
-
-    let path = './resource/zth_gcphone/html/static/js/app.js'
-    // let path = 'C:/Users/anton/Desktop/src_htmlPhone/resource/zth_gcphone/html/static/js/app.js'
-    ObfuscateFile(path, "app.js", () => {
+    console.log(chalk.cyan('Building completato, modifica dei file in corso...\n'))
+    minifyFiles.forEach(file => {
+      let path = config.build.assetsRoot + '/static/js/' + file
+      MinifyFile(path, file, () => {
+        if (objuscateFiles.includes(file)) ObfuscateFile(path, file)
+      })
     })
-
-    // disabilito la doppia obfuscazione che tanto
-    // è inutile per ora
-    // setTimeout(() => {
-    //   ObfuscateFile()
-    // }, 3500)
   })
 })
 
@@ -80,49 +76,62 @@ function makeid(length) {
   var result = [];
   var characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
   var charactersLength = characters.length;
-  for (var i = 0; i < length; i++) {
-    result.push(characters.charAt(Math.floor(Math.random() * charactersLength)));
-  }
+  for (var i = 0; i < length; i++) result.push(characters.charAt(Math.floor(Math.random() * charactersLength)));
   return result.join('');
 }
 
-function ObfuscateFile(path, file, cb) {
-  var obf = ora('METTENDOLO IN CULO AI DUMPER (' + file + ') ...')
-  obf.start()
-
-  setTimeout(() => {
-    fs.readFile(path, "utf8", function(err, data) {
+function MinifyFile(path, file, cb) {
+  var min = ora('Minifying del file in corso (' + file + ') ...')
+  min.start()
+  fs.readFile(path, "utf8", function(err, data) {
+    if (err) { return console.log(err) }
+    var code = UglifyJS.minify(data, { mangle: { toplevel: true } }).code
+    fs.writeFile(path, code, function(err) {
       if (err) { return console.log(err) }
-  
-      // Obfuscate content of the JS file
-      // var obfuscationResult = JavaScriptObfuscator.obfuscate(data, options);
-      var newseed = makeid(50)
-      var obfuscationResult = JavaScriptObfuscator.obfuscate(data, {
-        selfDefending: true,
-        numbersToExpressions: true,
-        shuffleStringArray: true,
-        splitStrings: true,
-
-        stringArray: true,
-        stringArrayEncoding: ['base64'],
-        stringArrayIndexShift: true,
-        rotateStringArray: true,
-
-        deadCodeInjection: true,
-        seed: newseed,
-        disableConsoleOutput: true,
-        compact: true
-      });
-      
-      // Write the obfuscated code into a new file
-      fs.writeFile(path, obfuscationResult.getObfuscatedCode(), function(err) {
-        if (err) { return console.log(err) }
-        
-        obf.stop()
-        console.log(chalk.cyan('  FILE OFFUSCATO (' + file + '). FANCULO DUMPERS.\n  SEED GENERATO: ' + newseed))
-        // console.log(chalk.cyan('  FILE OFFUSCATO (' + file + '). FANCULO DUMPERS.\n  SEED GENERATO: ****'))
-        if (cb) cb();
-      });
+      min.stop()
+      console.log(chalk.cyan('Minifying del file completato (' + file + ').'))
+      if (cb) cb();
     });
-  }, 100)
+  });
+}
+
+function ObfuscateFile(path, file, cb) {
+  var obf = ora('Offuscamento del file in corso (' + file + ') ...')
+  obf.start()
+  fs.readFile(path, "utf8", function(err, data) {
+    if (err) { return console.log(err) }
+    // Obfuscate content of the JS file
+    var newseed = makeid(50)
+    var obfuscationResult = JavaScriptObfuscator.obfuscate(data, {
+      selfDefending: true,
+      numbersToExpressions: true,
+      // shuffleStringArray: true,
+      stringArrayShuffle: true,
+      splitStrings: true,
+      splitStringsChunkLength: 5,
+
+      stringArray: true,
+      stringArrayEncoding: ['base64'],
+      stringArrayIndexShift: true,
+      // rotateStringArray: true,
+      stringArrayRotate: true,
+
+      deadCodeInjection: true,
+      seed: newseed,
+      disableConsoleOutput: true,
+      compact: true,
+      simplify: true,
+      debugProtection: true,
+      renameProperties: false,
+      renamePropertiesMode: "safe"
+    });
+    
+    // Write the obfuscated code into a new file
+    fs.writeFile(path, obfuscationResult.getObfuscatedCode(), function(err) {
+      if (err) { return console.log(err) }
+      obf.stop()
+      console.log(chalk.cyan('Offuscamento del file completato (' + file + ').\nSeed generato: ' + newseed))
+      if (cb) cb();
+    });
+  });
 }

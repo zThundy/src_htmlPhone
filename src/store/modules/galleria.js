@@ -12,6 +12,8 @@ const getters = {
 
 const actions = {
   addPhoto ({ commit, state }, data) {
+    // console.log('received addPhoto data')
+    // console.log(JSON.stringify(data))
     commit('APP_PHOTO', data)
     window.localStorage['gc_fotografie'] = JSON.stringify(state.fotografie)
     // console.log(JSON.stringify(window.localStorage['gc_fotografie']))
@@ -27,8 +29,7 @@ const actions = {
 
 const mutations = {
   APP_PHOTO (state, data) {
-    var foto = { link: data.link }
-    state.fotografie.push(foto)
+    state.fotografie.push(data)
   },
   CLEAR_GALLERY (state) {
     state.fotografie = []
@@ -50,23 +51,27 @@ if (process.env.NODE_ENV !== 'production') {
   state.fotografie = [
     {
       link: 'https://u.trs.tn/tohqw.jpg',
-      data: 'bo forse'
+      type: 'photo'
     },
     {
       link: 'https://i.imgur.com/rNXepFS.jpeg',
-      data: 'bo forse'
+      type: 'photo'
     },
     {
       link: 'https://i.imgur.com/InUodqS.jpeg',
-      data: 'bo forse'
+      type: 'photo'
     },
     {
       link: 'https://i.imgur.com/LQukntX.jpeg',
-      data: 'bo forse'
+      type: 'photo'
     },
     {
       link: 'https://i.imgur.com/KIpi534.jpeg',
-      data: 'bo forse'
+      type: 'photo'
+    },
+    {
+      link: '[VIDEO]%646467%8deQpNthxKbWA7m7S0OK',
+      type: 'video'
     }
   ]
 }

@@ -1,7 +1,7 @@
 <template>
   <div style="height: 100%;">
     
-    <div class="phone_fullscreen_img" v-if="imgZoom !== undefined">
+    <div class="phone_fullscreen_img" v-if="imgZoom !== null">
       <img :src="imgZoom" />
     </div>
 
@@ -51,7 +51,7 @@ export default {
     return {
       currentSelected: -1,
       ignoreControls: false,
-      imgZoom: undefined
+      imgZoom: null
     }
   },
   computed: {
@@ -65,54 +65,24 @@ export default {
     formatEmoji (message) {
       return this.$phoneAPI.convertEmoji(message)
     },
-    async showOption () {
-      this.ignoreControls = true
-      const message = this.darkwebMessages[this.currentSelected]
-      let optionsChoix = [{
-        id: 1,
-        title: this.LangString('APP_DARKWEB_REPLY'),
-        icons: 'fa-retweet'
-      }, {
-        id: -1,
-        title: this.LangString('CANCEL'),
-        icons: 'fa-undo',
-        color: 'red'
-      }]
-      if (this.isImage(message.message)) {
-        optionsChoix = [{
-          id: 2,
-          title: this.LangString('APP_MESSAGE_ZOOM_IMG'),
-          icons: 'fa-search'
-        }, ...optionsChoix]
-      }
-      const scelte = await Modal.CreateModal({ scelte: optionsChoix })
-      this.ignoreControls = false
-      switch (scelte.id) {
-        case 1:
-          this.reply(message)
-          break
-        case 2:
-          this.imgZoom = message.message
-          this.CHANGE_BRIGHTNESS_STATE(false)
-          break
-      }
-    },
-    async reply (message) {
-      // const authorName = message.author
+    reply (message) {
       const authorName = this.currentSelected
-      try {
-        this.ignoreControls = true
-        const rep = await Modal.CreateTextModal({ title: 'Rispondi', text: `@${authorName} ` })
-        if (rep !== undefined && rep.text !== undefined) {
-          const message = rep.text.trim()
+      this.ignoreControls = true
+      Modal.CreateTextModal({
+        title: this.LangString('TYPE_MESSAGE'),
+        color: '#606060',
+        text: `@${authorName}`
+      })
+      .then(resp => {
+        if (resp !== undefined && resp.text !== undefined) {
+          const message = resp.text.trim()
           if (message.length !== 0) {
             this.darkwebPostMessage({ message, mine: 1 })
           }
         }
-      } catch (e) {
-      } finally {
         this.ignoreControls = false
-      }
+      })
+      .catch(e => { this.ignoreControls = false })
     },
     resetScroll () {
       this.$nextTick(() => {
@@ -130,28 +100,25 @@ export default {
       })
     },
     onUp () {
-      if (this.ignoreControls === true) return
+      if (this.ignoreControls) return
       this.currentSelected = this.currentSelected === 0 || this.currentSelected === -1 ? 0 : this.currentSelected - 1
       this.scrollIntoView()
     },
     onDown () {
-      if (this.ignoreControls === true) return
+      if (this.ignoreControls) return
       this.currentSelected = this.currentSelected === this.darkwebMessages.length - 1 ? this.currentSelected : this.currentSelected + 1
       this.scrollIntoView()
     },
     async onEnter () {
-      if (this.ignoreControls === true) return
-      if (this.currentSelected !== -1) {
-        this.showOption()
-      }
+      if (this.ignoreControls) return
     },
     onBack () {
-      if (this.imgZoom !== undefined) {
-        this.imgZoom = undefined
+      if (this.imgZoom !== null) {
+        this.imgZoom = null
         this.CHANGE_BRIGHTNESS_STATE(true)
         return
       }
-      if (this.ignoreControls === true) return
+      if (this.ignoreControls) return
       if (this.currentSelected !== -1) {
         this.currentSelected = -1
       } else {

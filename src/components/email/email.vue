@@ -168,7 +168,7 @@ export default {
     openModal () {
       this.ignoreControl = true
       var info = [
-        { id: 1, title: this.LangString('APP_EMAIL_WRITE_EMAIL'), icons: 'fa-pencil-square-o' }
+        { id: 1, title: this.LangString('APP_EMAIL_WRITE_EMAIL'), icons: 'fa-pencil-alt' }
       ]
       if (this.currentSelect !== -1) {
         info = [
@@ -178,7 +178,8 @@ export default {
           { id: -1, title: this.LangString('CANCEL'), color: 'red', icons: 'fa-undo' }
         ]
       }
-      Modal.CreateModal({ scelte: info }).then(response => {
+      Modal.CreateModal({ scelte: info })
+      .then(response => {
         switch (response.id) {
           case 1:
             this.$router.push({ name: 'email.write' })
@@ -203,6 +204,7 @@ export default {
             this.ignoreControl = false
         }
       })
+      .catch(e => { this.ignoreControl = false })
     },
     requestAllEmails () {
       this.$phoneAPI.requestMyEmail()
@@ -256,7 +258,6 @@ export default {
 .emails-container {
   overflow: auto;
   position: relative;
-
   height: 100%;
   width: 100%;
 }
@@ -289,7 +290,6 @@ export default {
 
 .email-header {
   font-size: 15px;
-
   position: absolute;
   left: 19%;
   padding-top: 3%;
@@ -298,7 +298,6 @@ export default {
 
 .email-body {
   font-size: 15px;
-
   position: absolute;
   left: 22%;
   padding-top: 10%;
@@ -309,12 +308,10 @@ export default {
 .email-header .email-text {
   position: relative;
   font-weight: bold;
-
-  font-size: 12px;
+  font-size: 11px;
   font-family: SanFrancisco;
   font-style: normal;
-
-  bottom: 2px;
+  bottom: 4px;
 }
 
 .email-timestamp {

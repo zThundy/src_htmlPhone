@@ -58,7 +58,7 @@
       </div>
     </div>
     
-    <div class="journal-footer" v-if="config.weazelJob[job]">
+    <div class="journal-footer" v-if="enabledJobs[job]">
       <div class="journal-footer-item" :class="{ selected: 0 === currentModule }">
         <i class="fa fa-newspaper-o"></i>
       </div>
@@ -95,7 +95,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['LangString', 'news', 'job', 'tempNews', 'config'])
+    ...mapGetters(['LangString', 'news', 'job', 'tempNews', 'config', 'enabledJobs'])
   },
   methods: {
     ...mapMutations(['UPDATE_TEMP_INFO', 'CHANGE_BRIGHTNESS_STATE']),
@@ -138,61 +138,74 @@ export default {
           this.CHANGE_BRIGHTNESS_STATE(false)
         }
       } else {
-        if (this.currentSelect === 0) {
-          // carica immagine
-          this.ignoreControl = true
-          var options = [
-            { id: 1, title: this.LangString('APP_CONFIG_LINK_PICTURE'), icons: 'fa-link' },
-            { id: 2, title: this.LangString('APP_CONFIG_TAKE_PICTURE'), icons: 'fa-camera' },
-            { id: -1, title: this.LangString('CANCEL'), icons: 'fa-undo', color: 'red' }
-          ]
-          Modal.CreateModal({ scelte: options }).then(resp => {
-            switch (resp.id) {
-              case 1:
-                Modal.CreateTextModal({ title: 'Inserisci un link', text: 'https://i.imgur.com/' }).then(value => {
-                  if (value.text !== '' && value.text !== undefined && value.text !== null && value.text !== 'https://i.imgur.com/') {
-                    // this.tempPics.push(value.text)
-                    this.UPDATE_TEMP_INFO({ type: 'pic', text: value.text })
+        switch(this.currentSelect) {
+          case 0:
+            // carica immagine
+            this.ignoreControl = true
+            Modal.CreateModal({ scelte: [
+              { id: 1, title: this.LangString('APP_CONFIG_LINK_PICTURE'), icons: 'fa-link' },
+              { id: 2, title: this.LangString('APP_CONFIG_TAKE_PICTURE'), icons: 'fa-camera' },
+              { id: -1, title: this.LangString('CANCEL'), icons: 'fa-undo', color: 'red' }
+            ] }).then(async resp => {
+              switch (resp.id) {
+                case 1:
+                  Modal.CreateTextModal({
+                    title: this.LangString('TYPE_LINK'),
+                    text: 'https://i.imgur.com/'
+                  })
+                  .then(resp => {
+                    if (resp.text !== '' && resp.text !== undefined && resp.text !== null && resp.text !== 'https://i.imgur.com/') {
+                      // this.tempPics.push(value.text)
+                      this.UPDATE_TEMP_INFO({ type: 'pic', text: resp.text })
+                      this.ignoreControl = false
+                    }
+                  })
+                  .catch(e => { this.ignoreControl = false })
+                  break
+                case 2:
+                  this.$phoneAPI.takePhoto()
+                  .then(pic => {
+                    this.UPDATE_TEMP_INFO({ type: 'pic', text: pic })
                     this.ignoreControl = false
-                  }
-                })
-                break
-              case 2:
-                this.$phoneAPI.takePhoto().then(pic => {
-                  // this.tempPics.push(pic.url)
-                  this.UPDATE_TEMP_INFO({ type: 'pic', text: pic.url })
+                  })
+                  .catch(e => { this.ignoreControl = false })
+                  break
+                case -1:
                   this.ignoreControl = false
-                })
-                break
-              case -1:
+                  break
+              }
+            })
+            .catch(e => { this.ignoreControl = false })
+            break
+          case 1:
+            // scrivi descrizione
+            Modal.CreateTextModal({
+              title: this.LangString('TYPE_MESSAGE')
+            })
+            .then(resp => {
+              if (resp.text !== '' && resp.text !== undefined && resp.text !== null) {
+                this.UPDATE_TEMP_INFO({ type: 'description', text: resp.text })
                 this.ignoreControl = false
-                break
+              }
+            })
+            .catch(e => { this.ignoreControl = false })
+            break
+          case 2:
+            // posta news
+            if (this.tempNews.pics.length > 0 || this.tempDescription !== '') {
+              this.$phoneAPI.postNews(this.tempNews.pics, this.tempNews.description)
+              this.UPDATE_TEMP_INFO({ type: 'clear' })
+            } else {
+              this.$phoneAPI.sendErrorMessage(this.LangString('APP_NEWS_ERROR_1'))
             }
-          })
-        } else if (this.currentSelect === 1) {
-          // scrivi descrizione
-          Modal.CreateTextModal({ title: 'Inserisci un testo', text: '' }).then(value => {
-            if (value.text !== '' && value.text !== undefined && value.text !== null) {
-              // this.tempDescription = value.text
-              this.UPDATE_TEMP_INFO({ type: 'description', text: value.text })
-              this.ignoreControl = false
-            }
-          })
-        } else if (this.currentSelect === 2) {
-          // posta news
-          if (this.tempNews.pics.length > 0 || this.tempDescription !== '') {
-            this.$phoneAPI.postNews(this.tempNews.pics, this.tempNews.description)
-            this.UPDATE_TEMP_INFO({ type: 'clear' })
-          } else {
-            this.$phoneAPI.sendErrorMessage('Devi compilare almeno un campo per poter postare una news')
-          }
-          this.$phoneAPI.fetchNews()
+            this.$phoneAPI.fetchNews()
+            break
         }
       }
     },
     async onRight () {
       if (this.ignoreControl) return
-      if (!this.config.weazelJob[this.job]) return
+      if (!this.enabledJobs[this.job]) return
       if (this.currentModule === 1) return
       this.currentModule = this.currentModule + 1
       this.currentSelect = -1

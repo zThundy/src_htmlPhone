@@ -20,26 +20,27 @@ end
 local function NewSim(source)
     local player = source
     local xPlayer = ESX.GetPlayerFromId(player)
+    local identifier = tostring(xPlayer.identifier)
     
-    MySQL.Async.fetchAll('SELECT * FROM users WHERE identifier = @identifier', {['@identifier'] = xPlayer.identifier}, function(result)
+    MySQL.Async.fetchAll('SELECT * FROM users WHERE identifier = @identifier', {['@identifier'] = identifier}, function(result)
         local result = MySQL.Sync.fetchAll("SELECT * FROM phone_sim", {})
         local phone_number = GenerateUniquePhoneNumber(result)
         
         if phone_number ~= nil then
             MySQL.Async.insert('INSERT INTO phone_sim(phone_number, identifier, piano_tariffario, minuti, messaggi, dati) VALUES(@phone_number, @identifier, @piano_tariffario, @minuti, @messaggi, @dati)', {
                 ['@phone_number'] = phone_number,
-                ['@identifier'] = xPlayer.identifier,
+                ['@identifier'] = identifier,
                 ['@piano_tariffario'] = "nessuno",
                 ['@minuti'] = 0,
                 ['@messaggi'] = 0,
                 ['@dati'] = 0
             }, function(id)
                 showXNotification(xPlayer, Config.Language["SIM_CREATED_MESSAGE_OK"])
-                gcPhoneT.updateCachedNumber(phone_number, xPlayer.identifier, false)
+                gcPhoneT.updateCachedNumber(phone_number, identifier, false)
 
                 CACHED_TARIFFS[phone_number] = {
                     phone_number = phone_number,
-                    identifier = xPlayer.identifier,
+                    identifier = identifier,
                     piano_tariffario = "nessuno",
                     minuti = 0,
                     messaggi = 0,
@@ -62,13 +63,11 @@ end)
 
 RegisterServerEvent("esx:playerLoaded")
 AddEventHandler('esx:playerLoaded', function(source, xPlayer)
-    local identifier = xPlayer.identifier
+    local identifier = tostring(xPlayer.identifier)
     if not identifier then identifier = gcPhoneT.getPlayerID(source) end
     local phone_number = gcPhoneT.getPhoneNumber(identifier)
-
     if phone_number ~= nil then
         gcPhoneT.updateCachedNumber(phone_number, identifier, false)
-
         if CACHED_TARIFFS[phone_number] then
             for _, v in pairs(Config.Tariffs) do
                 if v.label == CACHED_TARIFFS[phone_number].piano_tariffario then
@@ -133,8 +132,8 @@ end
 gcPhoneT.eliminaSim = function(old_number)
     local player = source
     local identifier = gcPhoneT.getPlayerID(player)
+    identifier = tostring(identifier)
     local phone_number = gcPhoneT.getPhoneNumber(identifier)
-
     if tostring(old_number) == tostring(phone_number) then
         MySQL.Async.execute('UPDATE `users` SET phone_number = @phone_number WHERE `identifier` = @identifier', {
             ['@identifier'] = identifier,
@@ -150,6 +149,7 @@ end
 gcPhoneT.usaSim = function(sim)
     local player = source
     local identifier = gcPhoneT.getPlayerID(player)
+    identifier = tostring(identifier)
     gcPhoneT.updateCachedNumber(sim.number, identifier, true)
     CACHED_TARIFFS[sim.number].identifier = identifier
     CACHED_TARIFFS[sim.number].phone_number = sim.number
@@ -162,6 +162,7 @@ end
 gcPhoneT.rinominaSim = function(number, name)
     local player = source
     local identifier = gcPhoneT.getPlayerID(player)
+    identifier = tostring(identifier)
     MySQL.Async.execute('UPDATE phone_sim SET nome_sim = @nome_sim WHERE identifier = @identifier AND phone_number = @phone_number', {
         ['@identifier'] = identifier,
         ['@phone_number'] = number,
@@ -174,9 +175,10 @@ end
 gcPhoneT.getSimList = function()
     local player = source
     local identifier = gcPhoneT.getPlayerID(player)
+    identifier = tostring(identifier)
     local cartesim = {}
     for number, v in pairs(CACHED_TARIFFS) do
-        if identifier == v.identifier then
+        if identifier == tostring(v.identifier) then
             if v.nome_sim ~= '' then
                 table.insert(cartesim, { label = tostring(v.nome_sim), value = v, piano_tariffario = v.piano_tariffario })
             else

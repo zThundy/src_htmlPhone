@@ -15,6 +15,6 @@ end)
 
 RegisterNUICallback("requestJob", function(data, cb)
     local job = gcPhoneServerT.news_requestMyJob()
-    SendNUIMessage({ event = "receiveNewsJob", job = job })
+    SendNUIMessage({ event = "receiveNewsJob", job = job, access = Config.AnnouncesAppJobs })
     cb("ok")
 end)

@@ -52,7 +52,7 @@ export default {
       }
     },
     onUp () {
-      if (this.ignoreControls === true) return
+      if (this.ignoreControls) return
       if (this.gruppi.length === 0) { this.currentSelected = -1; return }
       if (this.currentSelected === -1) {
         this.selectMessage = 0
@@ -62,7 +62,7 @@ export default {
       this.scrollIntoView()
     },
     onDown () {
-      if (this.ignoreControls === true) return
+      if (this.ignoreControls) return
       if (this.gruppi.length === 0) { this.currentSelected = -1; return }
       if (this.currentSelected === -1) {
         this.currentSelected = 0
@@ -72,7 +72,7 @@ export default {
       this.scrollIntoView()
     },
     async onRight () {
-      if (this.ignoreControls === true) return
+      if (this.ignoreControls) return
       this.ignoreControls = true
       // con questo controllo se il telefono
       // ha il wifi attivo
@@ -84,10 +84,10 @@ export default {
       // è valido oppure no
       if (this.myPhoneNumber.includes('#') || this.myPhoneNumber === 0 || this.myPhoneNumber === '0') {
         this.$phoneAPI.ongenericNotification({
-          title: 'GENERIC_ERROR',
-          message: 'APP_WHATSAPP_CANNOT_GET_PHONE_NUMBER',
+          title: 'WHATSAPP_INFO_TITLE',
+          message: 'WHATSAPP_CANNOT_GET_PHONE_NUMBER',
           icon: 'whatsapp',
-          backgroundColor: 'rgb(108, 250, 108)',
+          color: 'rgb(108, 250, 108)',
           appName: 'Whatsapp'
         })
         return
@@ -100,43 +100,43 @@ export default {
           {id: 1, title: this.LangString('APP_WHATSAPP_QUIT_GROUP'), icons: 'fa-trash', color: 'firebrick', gruppo: gruppo}
         ]
         if (!gruppo.partecipanti) gruppo.partecipanti = {}
-        if (gruppo.partecipanti.creator.number === this.myPhoneNumber) {
-          scelte = [{id: 4, title: this.LangString('APP_WHATSAPP_DELETE_GROUP'), icons: 'fa-trash', color: 'red', gruppo: gruppo}, ...scelte]
-        }
+        if (gruppo.partecipanti && gruppo.partecipanti.creator && gruppo.partecipanti.creator.number === this.myPhoneNumber) scelte = [{id: 4, title: this.LangString('APP_WHATSAPP_DELETE_GROUP'), icons: 'fa-trash', color: 'red', gruppo: gruppo}, ...scelte]
       } else {
         scelte = [{id: 2, title: this.LangString('APP_WHATSAPP_NEW_GROUP'), icons: 'fa-plus', color: 'green'}]
       }
-      const resp = await Modal.CreateModal({ scelte: scelte })
-      switch (resp.id) {
-        case 1:
-          this.ignoreControls = false
-          if (this.currentSelected === 1 || this.gruppi.length === 0) { this.currentSelected = -1 } else { this.currentSelected = 0 }
-          this.leaveGroup(resp.gruppo)
-          break
-        case 2:
-          this.ignoreControls = false
-          this.$router.push({ name: 'whatsapp.newgruppo' })
-          break
-        case 3:
-          this.ignoreControls = false
-          this.$router.push({ name: 'whatsapp.editgroup', params: { gruppo: resp.gruppo } })
-          break
-        case 4:
-          this.ignoreControls = false
-          this.$phoneAPI.post('deleteWhatsappGroup', { gruppo: resp.gruppo })
-          break
-      }
+      Modal.CreateModal({ scelte: scelte })
+      .then(resp => {
+        switch (resp.id) {
+          case 1:
+            this.ignoreControls = false
+            if (this.currentSelected === 1 || this.gruppi.length === 0) { this.currentSelected = -1 } else { this.currentSelected = 0 }
+            this.leaveGroup(resp.gruppo)
+            break
+          case 2:
+            this.ignoreControls = false
+            this.$router.push({ name: 'whatsapp.newgruppo' })
+            break
+          case 3:
+            this.ignoreControls = false
+            this.$router.push({ name: 'whatsapp.editgroup', params: { gruppo: resp.gruppo } })
+            break
+          case 4:
+            this.ignoreControls = false
+            this.$phoneAPI.post('deleteWhatsappGroup', { gruppo: resp.gruppo })
+            break
+        }
+      })
+      .catch(e => { this.ignoreControls = false })
     },
     onBackspace () {
-      if (this.ignoreControls === true) { this.ignoreControls = false; return }
+      if (this.ignoreControls) { this.ignoreControls = false; return }
       if (this.currentSelected !== -1) { this.currentSelected = -1; return }
       this.$router.push({ name: 'menu' })
     },
     onEnter () {
       if (this.currentSelected === -1) return
-      if (this.ignoreControls === true) return
+      if (this.ignoreControls) return
       // qui invio il gruppo al router
-      // console.log(this.gruppi[this.currentSelected])
       // DECOMMENTARE SE SI VUOLE SOLO SOTTO WIFI if (!this.hasWifi) {
       // DECOMMENTARE SE SI VUOLE SOLO SOTTO WIFI   this.$phoneAPI.sendErrorMessage('Non sei connesso al wifi')
       // DECOMMENTARE SE SI VUOLE SOLO SOTTO WIFI   return

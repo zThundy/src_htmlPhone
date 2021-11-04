@@ -32,7 +32,7 @@ end)
 RegisterNetEvent("gcphone:bluetooth_receivePic")
 AddEventHandler("gcphone:bluetooth_receivePic", function(link)
     if bluetooth then
-        SendNUIMessage({ event = "addPicToGallery", link = link })
+        SendNUIMessage({ event = "addPhotoToGallery", link = resp.attachments[1].proxy_url })
     else
         ESX.ShowNotification(Config.Language["BLUETOOTH_CANNOT_GET_IMAGE"])
     end

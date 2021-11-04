@@ -1,6 +1,6 @@
 <template>
   <div class="screen">
-    <list class="fontList" :list='messagesData' :headerBackground="'rgb(194, 108, 7)'" :disable="disableList" :title="LangString('APP_MESSAGE_TITLE')" @back="back" @select="onSelect" @option='onOption'></list>
+    <list class="fontList" :list='messagesData' :headerBackground="'rgb(194, 108, 7)'" :disable="ignoreControls" :title="LangString('APP_MESSAGE_TITLE')" @back="back" @select="onSelect" @option='onOption'></list>
   </div>
 </template>
 
@@ -14,12 +14,12 @@ export default {
   components: { List },
   data () {
     return {
-      disableList: false
+      ignoreControls: false
     }
   },
   methods: {
     ...mapActions(['deleteMessagesNumber', 'deleteAllMessages', 'startVideoCall']),
-    onSelect: function (data) {
+    onSelect (data) {
       if (data.id === -1) {
         this.$router.push({name: 'messages.selectcontact'})
       } else {
@@ -28,11 +28,10 @@ export default {
     },
     onOption (data) {
       if (data.number === undefined) return
-      this.disableList = true
+      this.ignoreControls = true
       Modal.CreateModal({
         scelte: [
           {id: 4, title: this.LangString('APP_PHONE_CALL'), icons: 'fa-phone'},
-          // {id: 8, title: this.LangString('APP_PHONE_VIDEO_CALL'), icons: 'fa-video-camera'},
           {id: 5, title: this.LangString('APP_PHONE_CALL_ANONYMOUS'), icons: 'fa-mask'},
           {id: 6, title: this.LangString('APP_MESSAGE_NEW_MESSAGE'), icons: 'fa-sms'}
         ]
@@ -42,27 +41,38 @@ export default {
           {id: 2, title: this.LangString('APP_MESSAGE_ERASE_ALL_CONVERSATIONS'), icons: 'fa-trash', color: 'red'},
           {id: 3, title: this.LangString('CANCEL'), icons: 'fa-undo', color: 'red'}
         ])
-      }).then(rep => {
-        if (rep.id === 1) {
-          this.deleteMessagesNumber({num: data.number})
-        } else if (rep.id === 2) {
-          this.deleteAllMessages()
-        } else if (rep.id === 4) {
-          this.$phoneAPI.startCall({ numero: data.number })
-        } else if (rep.id === 5) {
-          this.$phoneAPI.startCall({ numero: '#' + data.number })
-        } else if (rep.id === 6) {
-          this.$router.push({ name: 'messages.view', params: data })
-        } else if (rep.id === 7) {
-          this.$router.push({ name: 'contacts.view', params: { id: 0, number: data.number } })
-        } else if (rep.id === 8) {
-          this.startVideoCall({ numero: data.number })
+      }).then(resp => {
+        switch(resp.id) {
+          case 1:
+            this.deleteMessagesNumber({num: data.number})
+            break
+          case 2:
+            this.deleteAllMessages()
+            break
+          case 3:
+            this.ignoreControls = false
+            break
+          case 4:
+            this.$phoneAPI.startCall({ numero: data.number })
+            break
+          case 5:
+            this.$phoneAPI.startCall({ numero: '#' + data.number })
+            break
+          case 6:
+            this.$router.push({ name: 'messages.view', params: data })
+            break
+          case 7:
+            this.$router.push({ name: 'contacts.view', params: { id: 0, number: data.number } })
+            break
+          case 8:
+            this.startVideoCall({ numero: data.number })
+            break
         }
-        this.disableList = false
       })
+      .catch(e => { this.ignoreControls = false })
     },
     back: function () {
-      if (this.disableList === true) return
+      if (this.ignoreControls === true) return
       this.$router.push({ name: 'menu' })
     }
   },

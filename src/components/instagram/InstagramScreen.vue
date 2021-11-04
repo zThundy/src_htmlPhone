@@ -168,10 +168,19 @@ export default {
 }
 
 .phone-title-icon {
-  font-size: 40px;
+  /* font-size: 31px; */
   position: absolute;
-  margin-top: 35px;
-  margin-left: 280px;
+  margin-top: 37px;
+  /* margin-left: 280px; */
+  /* float: right; */
+  width: 100%;
+  /* margin-right: 50px; */
   color: rgba(0, 0, 0, 0.9);
+}
+
+.phone-title-icon i {
+  font-size: 40px;
+  float: right;
+  margin-right: 20px;
 }
 </style>

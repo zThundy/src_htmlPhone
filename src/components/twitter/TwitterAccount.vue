@@ -180,8 +180,8 @@ export default {
     handler (name, active) {
       console.log(`Status of switch ${name} is ${active ? 'active' : 'inactive'}`)
     },
-    onUp: function () {
-      if (this.ignoreControls === true) return
+    onUp () {
+      if (this.ignoreControls) return
       let select = document.querySelector('.group.select')
       if (select === null) {
         select = document.querySelector('.group')
@@ -205,8 +205,8 @@ export default {
         }
       }
     },
-    onDown: function () {
-      if (this.ignoreControls === true) return
+    onDown () {
+      if (this.ignoreControls) return
       let select = document.querySelector('.group.select')
       if (select === null) {
         select = document.querySelector('.group')
@@ -230,22 +230,25 @@ export default {
         }
       }
     },
-    onEnter: function () {
-      if (this.ignoreControls === true) return
+    onEnter () {
+      if (this.ignoreControls) return
       let select = document.querySelector('.group.select')
       if (select === null) return
       if (select.dataset !== null) {
         if (select.dataset.type === 'text') {
           const $input = select.querySelector('input')
-          let options = {
+          Modal.CreateTextModal({
             limit: parseInt(select.dataset.maxlength) || 64,
             text: select.dataset.defaultValue || '',
             title: select.dataset.title || ''
-          }
-          this.$phoneAPI.getReponseText(options).then(data => {
-            $input.value = data.text
-            $input.dispatchEvent(new window.Event('change'))
           })
+          .then(resp => {
+            if (resp !== undefined && resp.text !== undefined) {
+              $input.value = resp.text
+              $input.dispatchEvent(new window.Event('change'))
+            }
+          })
+          .catch(e => { this.ignoreControls = false })
         }
         if (select.dataset.type === 'button') {
           select.click()
@@ -262,58 +265,76 @@ export default {
     setLocalAccount ($event, key) {
       this.localAccount[key] = $event.target.value
     },
-    async setLocalAccountAvartar ($event) {
-      try {
-        this.ignoreControls = true
-        let scelte = [
-          {id: 1, title: this.LangString('APP_TWITTER_LINK_PICTURE'), icons: 'fa-link'},
-          {id: 2, title: this.LangString('APP_TWITTER_TAKE_PICTURE'), icons: 'fa-camera'}
-        ]
-        const resp = await Modal.CreateModal({ scelte: scelte })
-        if (resp.id === 1) {
-          const data = await Modal.CreateTextModal({ text: this.twitterAvatarUrl || 'https://i.imgur.com/' })
-          this.twitterSetAvatar({avatarUrl: data.text})
-          this.ignoreControls = false
-        } else if (resp.id === 2) {
-          const newAvatar = await this.$phoneAPI.takePhoto()
-          if (newAvatar.url !== null) {
-            if (this.localAccount.avatarUrl === null) {
-              this.localAccount.avatarUrl = newAvatar.url
-              this.twitterAvatarUrl = newAvatar.url
-            }
-            this.twitterSetAvatar({ avatarUrl: newAvatar.url })
-            this.ignoreControls = false
-          }
+    setLocalAccountAvartar ($event) {
+      this.ignoreControls = true
+      Modal.CreateModal({ scelte: [
+        { id: 1, title: this.LangString('APP_TWITTER_LINK_PICTURE'), icons: 'fa-link' },
+        { id: 2, title: this.LangString('APP_TWITTER_TAKE_PICTURE'), icons: 'fa-camera' }
+      ] }).then(async choice => {
+        switch(choice.id) {
+          case 1:
+            Modal.CreateTextModal({
+              text: this.twitterAvatarUrl || 'https://i.imgur.com/',
+              title: this.LangString('TYPE_LINK')
+            })
+            .then(resp => {
+              this.twitterSetAvatar({ avatarUrl: resp.text })
+              this.ignoreControls = false
+            })
+            .catch(e => { this.ignoreControls = false })
+            break
+          case 2:
+            this.$phoneAPI.takePhoto()
+            .then(pic => {
+              if (this.localAccount.avatarUrl === null) {
+                this.localAccount.avatarUrl = pic
+                this.twitterAvatarUrl = pic
+              }
+              this.twitterSetAvatar({ avatarUrl: pic })
+              this.ignoreControls = false
+            })
+            .catch(e => { this.ignoreControls = false })
+            break
         }
-      } catch (e) {}
+      })
+      .catch(e => { this.ignoreControls = false })
     },
     async onPressChangeAvartar () {
-      try {
-        this.ignoreControls = true
-        let scelte = [
-          {id: 1, title: this.LangString('APP_TWITTER_LINK_PICTURE'), icons: 'fa-link'},
-          {id: 2, title: this.LangString('APP_TWITTER_TAKE_PICTURE'), icons: 'fa-camera'}
-        ]
-        const resp = await Modal.CreateModal({ scelte: scelte })
-        if (resp.id === 1) {
-          const data = await Modal.CreateTextModal({ text: this.twitterAvatarUrl || 'https://i.imgur.com/' })
-          this.twitterSetAvatar({avatarUrl: data.text})
-          this.ignoreControls = false
-        } else if (resp.id === 2) {
-          const newAvatar = await this.$phoneAPI.takePhoto()
-          if (newAvatar.url !== null) {
-            if (this.localAccount.avatarUrl === null) {
-              this.localAccount.avatarUrl = newAvatar.url
-              this.twitterAvatarUrl = newAvatar.url
-            }
-            this.twitterSetAvatar({ avatarUrl: newAvatar.url })
-            this.ignoreControls = false
-          }
+      this.ignoreControls = true
+      Modal.CreateModal({ scelte: [
+        { id: 1, title: this.LangString('APP_TWITTER_LINK_PICTURE'), icons: 'fa-link' },
+        { id: 2, title: this.LangString('APP_TWITTER_TAKE_PICTURE'), icons: 'fa-camera' }
+      ] })
+      .then(async response => {
+        switch(response.id) {
+          case 1:
+            Modal.CreateTextModal({
+              text: this.twitterAvatarUrl || 'https://i.imgur.com/',
+              title: this.LangString('TYPE_LINK')
+            })
+            .then(resp => {
+              this.twitterSetAvatar({ avatarUrl: resp.text })
+              this.ignoreControls = false
+            })
+            .catch(e => { this.ignoreControls = false })
+            break
+          case 2:
+            this.$phoneAPI.takePhoto()
+            .then(pic => {
+              if (this.localAccount.avatarUrl === null) {
+                this.localAccount.avatarUrl = pic
+                this.twitterAvatarUrl = pic
+              }
+              this.twitterSetAvatar({ avatarUrl: pic })
+              this.ignoreControls = false
+            })
+            .catch(e => { this.ignoreControls = false })
+            break
         }
-      } catch (e) {}
+      })
+      .catch(e => { this.ignoreControls = false })
     },
     login () {
-      console.log(this.localAccount.username, this.localAccount.password)
       this.twitterLogin({ username: this.localAccount.username, password: this.localAccount.password })
       this.state = STATES.MENU
     },
@@ -343,31 +364,43 @@ export default {
     },
     async changePassword (value) {
       try {
-        const password1 = await Modal.CreateTextModal({ limit: 30, title: 'Inserisci la nuova password' })
-        if (password1.text === '') return
-        const password2 = await Modal.CreateTextModal({ limit: 30, title: 'Ripeti la password' })
-        if (password2.text === '') return
-        if (password2.text !== password1.text) {
-          this.$notify({
-            title: this.LangString('APP_TWITTER_NAME'),
-            message: this.LangString('APP_TWITTER_NOTIF_NEW_PASSWORD_MISS_MATCH'),
-            icon: 'twitter',
-            backgroundColor: '#e0245e80'
+        Modal.CreateTextModal({
+          limit: 40,
+          title: this.LangString('APP_TWITTER_TYPE_PASSWORD_TITLE_1'),
+          color: 'rgb(55, 161, 242)'
+        })
+        .then(pass1 => {
+          if (pass1.text === '' || pass1.text === null || pass1.text === undefined) return
+          Modal.CreateTextModal({
+            limit: 40,
+            title: this.LangString('APP_TWITTER_TYPE_PASSWORD_TITLE_2'),
+            color: 'rgb(55, 161, 242)'
           })
-          return
-        } else if (password2.text.length < 6) {
-          this.$notify({
-            title: this.LangString('APP_TWITTER_NAME'),
-            message: this.LangString('APP_TWITTER_NOTIF_NEW_PASSWORD_LENGTH_ERROR'),
-            icon: 'twitter',
-            backgroundColor: '#e0245e80'
+          .then(pass2 => {
+            if (pass2.text === '' || pass2.text === null || pass2.text === undefined) return
+            if (pass2.text !== pass1.text) {
+              this.$notify({
+                title: this.LangString('APP_TWITTER_NAME'),
+                message: this.LangString('APP_TWITTER_NOTIF_NEW_PASSWORD_MISS_MATCH'),
+                icon: 'twitter',
+                backgroundColor: '#e0245e80'
+              })
+              return
+            } else if (pass2.text.length < 6) {
+              this.$notify({
+                title: this.LangString('APP_TWITTER_NAME'),
+                message: this.LangString('APP_TWITTER_NOTIF_NEW_PASSWORD_LENGTH_ERROR'),
+                icon: 'twitter',
+                backgroundColor: '#e0245e80'
+              })
+              return
+            }
+            this.twitterChangePassword(pass2.text)
           })
-          return
-        }
-        this.twitterChangePassword(password2.text)
-      } catch (e) {
-        console.error(e)
-      }
+          .catch(e => { this.ignoreControls = false })
+        })
+        .catch(e => { this.ignoreControls = false })
+      } catch (e) { }
     }
   },
   created () {

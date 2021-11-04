@@ -5,7 +5,7 @@
       <div class="employe-container" v-for="(elem, key) in myAziendaInfo.employes" :key="key" :class="{ selected: key === currentSelected }">
         <div class="employe-header">
           <div class="employe-status" :class="[ elem.isOnline ? 'online' : 'offline']">
-            <div class="fa fa-user-o" aria-hidden="true"></div>
+            <div class="employe-icon fa fa-user-o" aria-hidden="true"></div>
           </div>
           
           <div class="employe-title">
@@ -77,26 +77,29 @@ export default {
       this.SET_AZIENDA_IGNORE_CONTROLS(true)
       try {
         let currentEmploye = this.myAziendaInfo.employes[this.currentSelected]
-        let scelte = [
+        Modal.CreateModal({ scelte: [
           {id: 1, title: this.LangString('APP_AZIENDA_PROMOTE_EMPLOYE'), icons: 'fa-plus-square', color: 'green'},
           {id: 2, title: this.LangString('APP_AZIENDA_DEMOTE_EMPLOYE'), icons: 'fa-minus-square', color: 'orange'},
           {id: -1, title: this.LangString('CANCEL'), icons: 'fa-undo', color: 'red'}
-        ]
-        Modal.CreateModal({ scelte }).then(resp => {
-          if (resp.id === 1) {
-            this.$phoneAPI.aziendaEmployesAction({ action: 'promote', employe: currentEmploye })
-            this.SET_AZIENDA_IGNORE_CONTROLS(false)
-          } else if (resp.id === 2) {
-            this.$phoneAPI.aziendaEmployesAction({ action: 'demote', employe: currentEmploye })
-            this.SET_AZIENDA_IGNORE_CONTROLS(false)
-          } else if (resp.id === -1) { this.SET_AZIENDA_IGNORE_CONTROLS(false) }
+        ] })
+        .then(resp => {
+          this.SET_AZIENDA_IGNORE_CONTROLS(false)
+          switch(resp.id) {
+            case 1:
+              this.$phoneAPI.aziendaEmployesAction({ action: 'promote', employe: currentEmploye })
+              break
+            case 2:
+              this.$phoneAPI.aziendaEmployesAction({ action: 'demote', employe: currentEmploye })
+              break
+            case -1:
+              break
+          }
         })
+        .catch(e => { this.SET_AZIENDA_IGNORE_CONTROLS(false) })
       } catch (e) { }
     },
     onBack () {
-      if (this.aziendaIngoreControls) {
-        this.SET_AZIENDA_IGNORE_CONTROLS(false)
-      }
+      if (this.aziendaIngoreControls) this.SET_AZIENDA_IGNORE_CONTROLS(false)
     }
   },
   created () {
@@ -105,8 +108,7 @@ export default {
     this.$bus.$on('keyUpEnter', this.onEnter)
     this.$bus.$on('keyUpBackspace', this.onBack)
   },
-  mounted () {
-  },
+  // mounted () {},
   beforeDestroy () {
     this.$bus.$off('keyUpArrowUp', this.onUp)
     this.$bus.$off('keyUpArrowDown', this.onDown)
@@ -174,6 +176,12 @@ export default {
 
 .employe-status.offline {
   background-color: rgb(255, 50, 50);
+}
+
+.employe-status .employe-icon {
+  font-size: 13px;
+  padding-left: 1px;
+  padding-top: 1px;
 }
 
 /* NAME AND NUMBER TITLE */

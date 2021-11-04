@@ -24,21 +24,37 @@ export default {
   methods: {
     ...mapActions(['updateIgnoredControls']),
     async onSelect (itemSelect) {
-      if (this.ignoreControls === true) return
+      if (this.ignoreControls) return
       this.updateIgnoredControls(true)
       // qui apro il modal con le opzioni di selezione
-      const response = await Modal.CreateModal({scelte: [...itemSelect.subMenu, {title: 'Cancella', icons: 'fa-undo', color: 'red'}]})
-      if (response.title === 'Cancella' || response.title === 'cancel') { this.updateIgnoredControls(false); return }
-      // dopo aver controllato se effettivamente si preme una opzione valida
-      if (response.title !== 'Cancella') {
-        const data = await Modal.CreateTextModal({ title: this.LangString('APP_PHONE_FAVOURITES_MODAL_TITLE') })
-        if (data.text !== undefined || data.text !== null) {
-          this.updateIgnoredControls(false)
-          // this.$phoneAPI.callEvent(rep.eventName, rep.type)
-          this.$phoneAPI.sendEmergencyMessage({ eventName: response.eventName, text: data.text, type: response.type, item: itemSelect })
-          // this.$router.push({name: 'menu'})
+      Modal.CreateModal({ scelte: [
+        ...itemSelect.subMenu,
+        { title: 'Cancella', icons: 'fa-undo', color: 'red' }
+      ] })
+      .then(response => {
+        switch(response.title) {
+          case 'Cancella':
+            this.updateIgnoredControls(false)
+            break
+          default:
+            Modal.CreateTextModal({
+              limit: 255,
+              title: this.LangString('APP_PHONE_FAVOURITES_MODAL_TITLE'),
+              color: 'rgb(6, 152, 87)'
+            })
+            .then(resp => {
+              if (resp.text !== undefined || resp.text !== null) {
+                // this.$phoneAPI.callEvent(rep.eventName, rep.type)
+                this.$phoneAPI.sendEmergencyMessage({ eventName: response.eventName, text: resp.text, type: response.type, item: itemSelect })
+                // this.$router.push({name: 'menu'})
+                setTimeout(() => { this.updateIgnoredControls(false) }, 500)
+              }
+            })
+            .catch((e) => { setTimeout(() => { this.updateIgnoredControls(false) }, 500) })
+            break
         }
-      }
+      })
+      .catch(e => { this.updateIgnoredControls(false) })
     }
   },
 
