@@ -1,4 +1,4 @@
-myCover = nil
+myCover = "base"
 
 local function RefreshCovers()
     local covers = gcPhoneServerT.cover_requestCovers()
