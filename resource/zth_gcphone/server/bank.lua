@@ -150,7 +150,7 @@ gcPhoneT.bank_getBankInfo = function()
     MySQL.Async.fetchAll("SELECT * FROM phone_bank_movements WHERE `from` = @from ORDER BY id DESC", {
         ['@from'] = user_iban,
         ['@to'] = user_iban
-    }, function(result) TriggerClientEvent("gcphone:bank_sendBankMovements", source, result) end)
+    }, function(result) TriggerClientEvent("gcphone:bank_sendBankMovements", player, result) end)
     return xPlayer.getAccount("bank").money, user_iban
 end
 
