@@ -117,9 +117,12 @@ export default {
       .then(async resp => {
         switch (resp.id) {
           case 1:
-            const pic = await this.$phoneAPI.takePhoto(false)
-            this.ignoreControls = false
-            if (pic && pic !== '') { this.$router.push({ name: 'galleria.splash' }) }
+            this.$phoneAPI.takePhoto(false)
+            .then(pic => {
+              this.$router.push({ name: 'galleria.splash' })
+              this.ignoreControls = false
+            })
+            .catch(e => { this.ignoreControls = false })
             break
           case 2:
             // create result listener

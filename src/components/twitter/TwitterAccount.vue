@@ -284,15 +284,16 @@ export default {
             .catch(e => { this.ignoreControls = false })
             break
           case 2:
-            const pic = await this.$phoneAPI.takePhoto()
-            if (pic && pic !== '') {
+            this.$phoneAPI.takePhoto()
+            .then(pic => {
               if (this.localAccount.avatarUrl === null) {
                 this.localAccount.avatarUrl = pic
                 this.twitterAvatarUrl = pic
               }
               this.twitterSetAvatar({ avatarUrl: pic })
               this.ignoreControls = false
-            }
+            })
+            .catch(e => { this.ignoreControls = false })
             break
         }
       })
@@ -318,15 +319,16 @@ export default {
             .catch(e => { this.ignoreControls = false })
             break
           case 2:
-            const pic = await this.$phoneAPI.takePhoto()
-            if (pic && pic !== '') {
+            this.$phoneAPI.takePhoto()
+            .then(pic => {
               if (this.localAccount.avatarUrl === null) {
                 this.localAccount.avatarUrl = pic
                 this.twitterAvatarUrl = pic
               }
               this.twitterSetAvatar({ avatarUrl: pic })
               this.ignoreControls = false
-            }
+            })
+            .catch(e => { this.ignoreControls = false })
             break
         }
       })

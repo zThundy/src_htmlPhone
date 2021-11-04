@@ -163,11 +163,12 @@ export default {
                   .catch(e => { this.ignoreControl = false })
                   break
                 case 2:
-                  const pic = await this.$phoneAPI.takePhoto()
-                  if (pic && pic !== '') {
+                  this.$phoneAPI.takePhoto()
+                  .then(pic => {
                     this.UPDATE_TEMP_INFO({ type: 'pic', text: pic })
                     this.ignoreControl = false
-                  }
+                  })
+                  .catch(e => { this.ignoreControl = false })
                   break
                 case -1:
                   this.ignoreControl = false

@@ -187,12 +187,13 @@ export default {
             .catch(e => { this.ignoreControls = false })
             break
           case 2:
-            const pic = await this.$phoneAPI.takePhoto()
-            if (pic && pic !== '') {
-              this.ignoreControls = false
+            this.$phoneAPI.takePhoto()
+            .then(pic => {
               this.updateGroupVars({value: pic, key: 'image'})
               setTimeout(() => { this.currentPage = this.STATES.INFO_GRUPPO }, 50)
-            }
+              this.ignoreControls = false
+            })
+            .catch(e => { this.ignoreControls = false })
             break
         }
       })

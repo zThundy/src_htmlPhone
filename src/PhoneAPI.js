@@ -83,14 +83,20 @@ class PhoneAPI {
   }
 
   async takePhoto (openCamera = true) {
-    let tmp_status = true
-    if (openCamera) tmp_status = await this.openFakeCamera()
-    if (tmp_status) {
-      const pic = await this.picture.getPicture()
-      this.post('setEnabledFakeCamera', false)
-      this.onaddPhotoToGallery({ link: pic })
-      return pic
-    }
+    return new Promise((resolve, reject) => {
+      let tmp_status = true
+      if (openCamera) tmp_status = await this.openFakeCamera()
+      if (tmp_status) {
+        const pic = await this.picture.getPicture()
+        if (pic && pic !== '') {
+          this.post('setEnabledFakeCamera', false)
+          this.onaddPhotoToGallery({ link: pic })
+          resolve(pic)
+        } else {
+          reject('cant-get-pic')
+        }
+      }
+    })
   }
 
   onsendParametersValues (data) {

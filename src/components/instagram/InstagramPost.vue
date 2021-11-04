@@ -52,12 +52,13 @@ export default {
             .catch(e => { this.ignoreControls = false })
             break
           case 2:
-            const pic = await this.$phoneAPI.takePhoto()
-            if (pic && pic !== '') {
+            this.$phoneAPI.takePhoto()
+            .then(pic => {
               this.instagramSaveTempPost(pic)
               this.$bus.$emit('instagramScegliFiltri')
               this.ignoreControls = false
-            }
+            })
+            .catch(e => { this.ignoreControls = false })
             break
         }
       })

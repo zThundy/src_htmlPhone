@@ -281,15 +281,16 @@ export default {
               .catch(e => { this.ignoreControls = false })
               break
             case 2:
-              const pic = await this.$phoneAPI.takePhoto()
-              if (pic && pic !== '') {
+              this.$phoneAPI.takePhoto()
+              .then(pic => {
                 if (this.accountLocale.avatarUrl === null) {
                   this.accountLocale.avatarUrl = pic
                   this.instagramAvatarUrl = pic
                 }
                 this.instagramSetAvatar({ avatarUrl: pic })
                 this.ignoreControls = false
-              }
+              })
+              .catch(e => { this.ignoreControls = false })
               break
           }
         })

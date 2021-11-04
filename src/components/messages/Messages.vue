@@ -355,8 +355,12 @@ export default {
             this.$phoneAPI.post('sendMessage', { phoneNumber: this.phoneNumber, message: '%pos%' })
             break
           case 2:
-            const pic = await this.$phoneAPI.takePhoto()
-            if (pic && pic !== '') this.$phoneAPI.post('sendMessage', { phoneNumber: this.phoneNumber, message: pic })
+            this.$phoneAPI.takePhoto()
+            .then(pic => {
+              this.$phoneAPI.post('sendMessage', { phoneNumber: this.phoneNumber, message: pic })
+              this.ignoreControls = false
+            })
+            .catch(e => { this.ignoreControls = false })
             break
         }
       })

@@ -185,9 +185,12 @@ export default {
                 }
                 break
               case 2:
-                this.ignoreControls = false
-                const pic = await this.$phoneAPI.takePhoto()
-                if (pic && pic !== '') { this.sendMessageInGroup({ gruppo: this.gruppo, message: pic, phoneNumber: this.myPhoneNumber }) }
+                this.$phoneAPI.takePhoto()
+                .then(pic => {
+                  this.sendMessageInGroup({ gruppo: this.gruppo, message: pic, phoneNumber: this.myPhoneNumber })
+                  this.ignoreControls = false
+                })
+                .catch(e => { this.ignoreControls = false })
                 break
               case -1:
                 this.ignoreControls = false
@@ -394,8 +397,12 @@ export default {
               }
               break
             case 2:
-              const pic = await this.$phoneAPI.takePhoto()
-              if (pic && pic !== '') { this.sendMessageInGroup({ gruppo: this.gruppo, message: pic, phoneNumber: this.myPhoneNumber }) }
+              this.$phoneAPI.takePhoto()
+              .then(pic => {
+                this.sendMessageInGroup({ gruppo: this.gruppo, message: pic, phoneNumber: this.myPhoneNumber })
+                this.ignoreControls = false
+              })
+              .catch(e => { this.ignoreControls = false })
               break
           }
         })
