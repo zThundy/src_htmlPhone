@@ -3,6 +3,7 @@ import PhoneAPI from './../../PhoneAPI'
 
 const state = {
   show: process.env.NODE_ENV !== 'production',
+  halfShow: false,
   // show: false,
   myPhoneNumber: '555#####',
   background: JSON.parse(window.localStorage['gc_background'] || null),
@@ -31,6 +32,7 @@ const state = {
 
 const getters = {
   show: ({ show }) => show,
+  halfShow: ({halfShow}) => halfShow,
   myPhoneNumber: ({ myPhoneNumber }) => myPhoneNumber,
   volume: ({ volume }) => volume,
   notification: ({ notification }) => notification,
@@ -190,6 +192,9 @@ const mutations = {
   //     Vue.set(state.config.apps[appIndex], 'enabled', enable)
   //   }
   // },
+  SET_HALF_SHOW (state, halfShow) {
+    state.halfShow = halfShow
+  },
   SET_PHONE_VISIBILITY (state, show) {
     state.show = show
   },

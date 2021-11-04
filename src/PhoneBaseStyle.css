@@ -7,6 +7,7 @@ body {
   font-size: 20px;
   margin: 0;
   padding: 0;
+  overflow: hidden;
   /* background-image: url("https://cdn.discordapp.com/attachments/848629680655433738/850852468953841664/screenshot.jpg"); */
   /* background-color: rgba(255, 255, 255, 0.3); */
   /* background-blend-mode: lighten; */

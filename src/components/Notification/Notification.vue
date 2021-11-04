@@ -19,7 +19,7 @@
 
 <script>
 import events from './events'
-import { mapGetters } from 'vuex'
+import { mapGetters, mapMutations } from 'vuex'
 
 export default {
   components: { },
@@ -36,9 +36,10 @@ export default {
     events.$on('add', this.addItem)
   },
   computed: {
-    ...mapGetters(['show', 'volume', 'LangString'])
+    ...mapGetters(['show', 'volume', 'halfShow', 'LangString'])
   },
   methods: {
+    ...mapMutations(['SET_HALF_SHOW']),
     formatEmoji (message) {
       return this.$phoneAPI.convertEmoji(message)
     },
@@ -88,6 +89,7 @@ export default {
         this.currentShowing = null
         setTimeout(() => {
           if (this.list[0]) { this.showNotification(this.list[0]) }
+          if (this.list.length === 0) { this.SET_HALF_SHOW(false) }
         }, 200)
       }, dataNotif.duration)
     },

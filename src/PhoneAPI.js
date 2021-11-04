@@ -19,6 +19,8 @@ class PhoneAPI {
         this['on' + event.data.event](event.data)
       } else if (event.data.show !== undefined) {
         store.commit('SET_PHONE_VISIBILITY', event.data.show)
+      } else if (event.data.halfShow !== undefined) {
+        store.commit('SET_HALF_SHOW', event.data.halfShow)
       }
     })
 

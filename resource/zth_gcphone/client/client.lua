@@ -68,6 +68,7 @@ end)
 
 RegisterNetEvent("gcphone:sendGenericNotification")
 AddEventHandler("gcphone:sendGenericNotification", function(data)
+    SendNUIMessage({ halfShow = true })
     SendNUIMessage({ event = "genericNotification", notif = data })
 end)
 
