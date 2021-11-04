@@ -83,7 +83,7 @@ class PhoneAPI {
   }
 
   async takePhoto (openCamera = true) {
-    return new Promise((resolve, reject) => {
+    return new Promise(async (resolve, reject) => {
       let tmp_status = true
       if (openCamera) tmp_status = await this.openFakeCamera()
       if (tmp_status) {
