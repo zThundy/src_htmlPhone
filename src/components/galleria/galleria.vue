@@ -78,6 +78,7 @@ export default {
       if (this.imgZoom) {
         this.imgZoom = undefined
         this.CHANGE_BRIGHTNESS_STATE(true)
+        this.ignoredControls = false
         return
       }
       if (this.ignoredControls) return
