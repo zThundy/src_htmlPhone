@@ -15,6 +15,7 @@ RegisterNUICallback("sendMoneyToIban", function(data, cb)
 end)
 
 RegisterNUICallback("requestBankInfo", function(data, cb)
+    local bank, iban = gcPhoneServerT.bank_getBankInfo()
     SendNUIMessage({ event = 'updateBankbalance', soldi = bank, iban = iban })
     cb("ok")
 end)
