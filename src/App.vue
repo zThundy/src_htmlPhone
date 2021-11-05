@@ -62,9 +62,15 @@ export default {
     },
     classObject () {
       if (this.brightnessActive) {
-        return {
-          filter: 'brightness(' + ((this.brightness / 100) + 0.10) + ')',
-          top: this.halfShow && !this.show && '70vh'
+        if (this.halfShow && !this.show) {
+          return {
+            filter: 'brightness(' + ((this.brightness / 100) + 0.10) + ')',
+            top: '70vh'
+          }
+        } else {
+          return {
+            filter: 'brightness(' + ((this.brightness / 100) + 0.10) + ')'
+          }
         }
       }
       return {}
