@@ -476,6 +476,10 @@ class PhoneAPI {
     this.post('twitter_getFavoriteTweets', { username, password })
   }
 
+  twitter_shotNotification (message, sourceAuthor) {
+    this.post('twitter_shotNotification', { message: message, sourceAuthor: sourceAuthor })
+  }
+
   ontwitter_tweets (data) {
     store.commit('SET_TWEETS', data)
   }
@@ -485,7 +489,7 @@ class PhoneAPI {
   }
 
   ontwitter_newTweet (data) {
-    store.dispatch('addTweet', data.tweet)
+    store.dispatch('addTweet', { tweet: data.tweet, sourceAuthor: data.sourceAuthor })
   }
 
   ontwitter_setAccount (data) {

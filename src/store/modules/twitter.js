@@ -56,19 +56,27 @@ const actions = {
     localStorage['gcphone_twitter_avatarUrl'] = data.avatarUrl
     commit('UPDATE_ACCOUNT', data)
   },
-  addTweet ({ commit, state }, tweet) {
+  addTweet ({ commit, state }, { tweet, sourceAuthor }) {
     let notif = state.twitterNotification === 2
     if (state.twitterNotification === 1) { notif = tweet.message && tweet.message.toLowerCase().indexOf(state.twitterUsername.toLowerCase()) !== -1 }
     // console.log(JSON.stringify(tweet))
     if (notif) {
-      Vue.notify({
+      // Vue.notify({
+      //   message: tweet.message,
+      //   title: tweet.author + ' :',
+      //   icon: 'twitter',
+      //   backgroundColor: 'rgb(80, 160, 230)',
+      //   sound: state.twitterNotificationSound ? 'Twitter_Sound_Effect.ogg' : undefined,
+      //   appName: 'Twitter'
+      // })
+      PhoneAPI.twitter_shotNotification({
         message: tweet.message,
-        title: tweet.author + ' :',
+        title: tweet.author,
         icon: 'twitter',
         backgroundColor: 'rgb(80, 160, 230)',
         sound: state.twitterNotificationSound ? 'Twitter_Sound_Effect.ogg' : undefined,
         appName: 'Twitter'
-      })
+      }, sourceAuthor)
     }
     commit('ADD_TWEET', { tweet })
   },

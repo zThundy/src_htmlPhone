@@ -147,7 +147,7 @@ local function TwitterPostTweet(username, password, message, player, realUser)
                 authorId = user.id
             }
             table.insert(CACHED_TWEETS, tweet)
-            TriggerClientEvent('gcPhone:twitter_newTweets', -1, tweet)
+            TriggerClientEvent('gcPhone:twitter_newTweets', -1, tweet, player)
         end)
     else
         TwitterShowError(player, 'TWITTER_INFO_TITLE', 'APP_TWITTER_NOTIF_NO_CONNECTION')

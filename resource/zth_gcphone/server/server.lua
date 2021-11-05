@@ -473,7 +473,7 @@ function addMessage(source, identifier, phone_number, message)
             if messaggi > 0 then
                 UpdatePianoTariffario(myPhone, "messaggi", messaggi - 1)
                 _addMessage(phone_number, myPhone, message, 1, function(memess)
-                    TriggerClientEvent("gcPhone:receiveMessage", player, memess)
+                    TriggerClientEvent("gcPhone:receiveMessage", player, memess, false)
                     _addMessage(myPhone, phone_number, message, 0, function(tomess)
                         gcPhoneT.getSourceFromIdentifier(otherIdentifier, function(target_source)
                             target_source = tonumber(target_source)
@@ -485,7 +485,7 @@ function addMessage(source, identifier, phone_number, message)
                                     -- se la sim è installata allora mando il telefono e gli mando la notifica
                                     segnaleReceiver = PLAYERS_PHONE_SIGNALS[gcPhoneT.getPlayerSegnaleIndex(PLAYERS_PHONE_SIGNALS, otherIdentifier)]
                                     if segnaleReceiver ~= nil and segnaleReceiver.potenzaSegnale > 0 then
-                                        TriggerClientEvent("gcPhone:receiveMessage", target_source, tomess)
+                                        TriggerClientEvent("gcPhone:receiveMessage", target_source, tomess, true)
                                         setMessageReceived(phone_number, myPhone)
                                     end
                                 else
