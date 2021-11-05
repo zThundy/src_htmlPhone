@@ -33,7 +33,7 @@
 </template>
 
 <script>
-import { mapGetters, mapActions } from 'vuex'
+import { mapGetters, mapActions, mapMutations } from 'vuex'
 import PhoneTitle from './../PhoneTitle'
 import Modal from '@/components/Modal/index.js'
 
@@ -58,19 +58,39 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['LangString', 'myPhoneNumber', 'backgroundLabel', 'suoneriaLabel', 'zoom', 'config', 'volume', 'availableLanguages', 'wifiString', 'retiWifi', 'notification', 'airplane', 'bluetooth', 'currentCover', 'myCovers', 'myImage', 'myData', 'isWifiOn']),
+    ...mapGetters([
+      'LangString',
+      'myPhoneNumber',
+      'backgroundLabel',
+      'suoneriaLabel',
+      'zoom',
+      'config',
+      'volume',
+      'availableLanguages',
+      'wifiString',
+      'retiWifi',
+      'notification',
+      'airplane',
+      'bluetooth',
+      'currentCover',
+      'myCovers',
+      'myImage',
+      'myData',
+      'isWifiOn',
+      'enableHalfShow'
+    ]),
     paramList () {
       // stringa di conferma reset
       const confirmResetStr = this.LangString('APP_CONFIG_RESET_CONFIRM')
       const confirmReset = {}
-      confirmReset[confirmResetStr] = {value: 'accept', icons: 'fa-exclamation-triangle'}
+      confirmReset[confirmResetStr] = { value: 'accept', icons: 'fa-exclamation-triangle' }
       // stringa di annulla
       const cancelStr = this.LangString('CANCEL')
       const cancelTB = {}
-      cancelTB[cancelStr] = {value: 'cancel', icons: 'fa-undo', color: 'red'}
+      cancelTB[cancelStr] = { value: 'cancel', icons: 'fa-undo', color: 'red' }
       // stringa di nessuna cover
       const nessunaCover = {}
-      nessunaCover['Nessuna cover'] = {value: 'base.png', label: 'Nessuna cover', color: 'orange'}
+      nessunaCover['Nessuna cover'] = { value: 'base.png', label: 'Nessuna cover', color: 'orange' }
       return [
         {
           icons: 'fa-phone',
@@ -107,6 +127,14 @@ export default {
           onValid: 'toggleAirplaneModeLocally',
           title: this.LangString('APP_CONFIG_AIRPLANE_MODE'),
           value: (this.airplane) ? this.LangString('APP_CONFIG_ENABLED_1') : this.LangString('APP_CONFIG_DISABLED_1'),
+          bottone: true
+        },
+        {
+          meta: 'enableHalfShow',
+          icons: 'fa-phone-volume',
+          onValid: 'enableHalfShowNotifications',
+          title: this.LangString('APP_CONFIG_HALF_NOTIFICATION'),
+          value: (this.enableHalfShow) ? this.LangString('APP_CONFIG_ENABLED_4') : this.LangString('APP_CONFIG_DISABLED_4'),
           bottone: true
         },
         {
@@ -168,12 +196,6 @@ export default {
             '0 %': {value: 0, icons: 'fa-volume-off'}
           }
         },
-        // {
-        //   icons: 'fa-microphone',
-        //   onValid: 'toggleTextToSpeech',
-        //   title: this.LangString('APP_CONFIG_TEXT_TO_SPEECH'),
-        //   value: (this.tts) ? 'Attiva' : 'Disattiva'
-        // },
         {
           icons: 'fa-globe',
           title: this.LangString('APP_CONFIG_LANGUAGE'),
@@ -201,6 +223,7 @@ export default {
   },
   methods: {
     ...mapActions(['getIntlString', 'setZoom', 'setBackground', 'setCurrentCover', 'setsuoneria', 'setVolume', 'setLanguage', 'toggleNotifications', 'toggleAirplane', 'updateWifiString', 'toggleWifi', 'toggleBluetooth']),
+    ...mapMutations(['TOGGLE_HALF_SHOW']),
     scrollIntoView: function () {
       this.$nextTick(() => {
         document.querySelector('.select').scrollIntoView({ behavior: 'smooth', block: 'start', inline: 'nearest' })
@@ -428,6 +451,11 @@ export default {
       this.bottone['notifications'] = Boolean(this.notification)
     },
 
+    enableHalfShowNotifications () {
+      this.TOGGLE_HALF_SHOW(!this.enableHalfShow)
+      this.bottone['enableHalfShow'] = Boolean(this.enableHalfShow)
+    },
+
     toggleAirplaneModeLocally () {
       this.toggleAirplane()
       this.bottone['airplane'] = Boolean(this.airplane)
@@ -457,6 +485,7 @@ export default {
     this.bottone['notifications'] = Boolean(this.notification)
     this.bottone['airplane'] = Boolean(this.airplane)
     this.bottone['bluetooth'] = Boolean(this.bluetooth)
+    this.bottone['enableHalfShow'] = Boolean(this.enableHalfShow)
     // qui richiedo le mie cover da phoneapi
     this.$phoneAPI.requestMyCovers()
     // console.log(JSON.stringify(this.myCovers))

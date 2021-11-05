@@ -22,6 +22,7 @@ const state = {
   notification: true,
   airplane: false,
   brightnessActive: true,
+  enableHalfShow: true,
   config: {
     operator_title: 'ThundyPhone',
     apps: [],
@@ -36,6 +37,7 @@ const getters = {
   myPhoneNumber: ({ myPhoneNumber }) => myPhoneNumber,
   volume: ({ volume }) => volume,
   notification: ({ notification }) => notification,
+  enableHalfShow: ({ enableHalfShow }) => enableHalfShow,
   airplane: ({ airplane }) => airplane,
   brightnessActive: ({ brightnessActive }) => brightnessActive,
   brightness: ({ brightness }) => brightness,
@@ -141,7 +143,7 @@ const actions = {
   },
   setsuoneria ({ commit }, suoneria) {
     window.localStorage['gc_suoneria'] = JSON.stringify(suoneria)
-    commit('SET_suoneria', suoneria)
+    commit('SET_SUONERIA', suoneria)
   },
   toggleNotifications ({ commit, state }) {
     commit('TOGGLE_NOTIFICATIONS')
@@ -192,8 +194,11 @@ const mutations = {
   //     Vue.set(state.config.apps[appIndex], 'enabled', enable)
   //   }
   // },
-  SET_HALF_SHOW (state, halfShow) {
-    state.halfShow = halfShow
+  TOGGLE_HALF_SHOW (state, bool) {
+    state.enableHalfShow = bool
+  },
+  SET_HALF_SHOW (state, bool) {
+    state.halfShow = state.enableHalfShow ? bool : false
   },
   SET_PHONE_VISIBILITY (state, show) {
     state.show = show
@@ -211,7 +216,7 @@ const mutations = {
   UPDATE_MY_COVERS (state, data) {
     state.myCovers = data
   },
-  SET_suoneria (state, suoneria) {
+  SET_SUONERIA (state, suoneria) {
     state.suoneria = suoneria
   },
   SET_ZOOM (state, zoom) {

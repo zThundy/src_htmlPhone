@@ -36,7 +36,7 @@ export default {
     events.$on('add', this.addItem)
   },
   computed: {
-    ...mapGetters(['show', 'volume', 'halfShow', 'LangString'])
+    ...mapGetters(['show', 'volume', 'halfShow', 'LangString', 'enableHalfShow'])
   },
   methods: {
     ...mapMutations(['SET_HALF_SHOW']),
@@ -90,6 +90,7 @@ export default {
         setTimeout(() => {
           if (this.list[0]) { this.showNotification(this.list[0]) }
           if (this.list.length === 0) { this.SET_HALF_SHOW(false) }
+          if (!this.enableHalfShow) { this.SET_HALF_SHOW(false) }
         }, 200)
       }, dataNotif.duration)
     },
