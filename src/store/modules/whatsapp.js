@@ -1,5 +1,4 @@
 import PhoneAPI from './../../PhoneAPI'
-import Vue from 'vue'
 
 const state = {
   gruppi: [],
@@ -34,14 +33,14 @@ const actions = {
   showMessageNotification ({ state, commit }, data) {
     // console.log('showMessageNotification is triggered')
     // console.log(data.sender, data.label, data.message)
-    Vue.notify({
-      message: data.message,
-      title: data.sender + ' | ' + data.label + ':',
-      icon: 'whatsapp',
-      backgroundColor: 'rgb(90, 200, 105)',
-      sound: 'Whatsapp_Message_Sound.ogg',
-      appName: 'Whatsapp'
-    })
+    // Vue.notify({
+    //   message: data.message,
+    //   title: data.sender + ' | ' + data.label + ':',
+    //   icon: 'whatsapp',
+    //   backgroundColor: 'rgb(90, 200, 105)',
+    //   sound: 'Whatsapp_Message_Sound.ogg',
+    //   appName: 'Whatsapp'
+    // })
     commit('ADD_MESSAGE_TO_GROUP', data)
   },
   editGroupTitle ({ commit }, data) {

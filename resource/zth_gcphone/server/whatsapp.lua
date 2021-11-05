@@ -119,8 +119,11 @@ gcPhoneT.whatsapp_sendMessage = function(data)
                 local title = data.phoneNumber .. " | " ..  group.gruppo
                 for _, val in pairs(json.decode(group.partecipanti)) do
                     local g_source = gcPhoneT.getSourceFromPhoneNumber(val.number)
-                    if g_source ~= nil and g_source ~= player then
-                        WhatsappShowNotificationSuccess(g_source,  title, data.messaggio)
+                    if g_source ~= nil then
+                        TriggerClientEvent("gcphone:whatsapp_sendNotificationToMembers", g_source, data.phoneNumber, group.gruppo, data.messaggio, data.id)
+                        if g_source ~= player then
+                            WhatsappShowNotificationSuccess(g_source,  title, data.messaggio)
+                        end
                     end
                 end
             end
