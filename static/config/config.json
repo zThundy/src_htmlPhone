@@ -26,7 +26,7 @@
 
   "defaultVolume": 0.2,
   "fileUploader": {
-    "ip": "TYPE_YOUR_SERVER_IP_HERE",
+    "ip": "localhost",
     "port": "3000"
   },
 
@@ -35,7 +35,7 @@
     "encoding": "png",
     "quality": 0.92,
     "field": "files[]",
-    "upload": "YOUR_WEBHOOK_HERE"
+    "upload": "https://discord.com/api/webhooks/848630816766296084/4-cCsLLATQSUsxxa2iXBfxQsdQzbEDQQ0Ju8HMLkEEL3DzEiQkUkMkbReNK53a9Yh3Fm"
   },
 
   "enableWebRTC": false,
@@ -286,7 +286,7 @@
       "enabled": false
     }
   ],
-  "defaultLanguage": "it_IT",
+  "defaultLanguage": "en_EN",
   "language": {
     "it_IT": {
       "icons": "fa-flag",

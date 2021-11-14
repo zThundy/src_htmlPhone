@@ -118,10 +118,7 @@ export default {
         switch (resp.id) {
           case 1:
             this.$phoneAPI.takePhoto(false)
-            .then(pic => {
-              this.$router.push({ name: 'galleria.splash' })
-              this.ignoreControls = false
-            })
+            .then(pic => { this.ignoreControls = false })
             .catch(e => { this.ignoreControls = false })
             break
           case 2:

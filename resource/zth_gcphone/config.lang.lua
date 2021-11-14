@@ -1,4 +1,4 @@
-Config.ChosenLanguage = "it"
+Config.ChosenLanguage = "en"
 
 Config.Language = {
     ["it"] = {

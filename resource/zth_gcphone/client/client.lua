@@ -53,8 +53,9 @@ Citizen.CreateThread(function()
     end, false)
     RegisterCommand('-openPhone', function() end, false)
 
+    local idle = 0
     while true do
-        Citizen.Wait(0)
+        idle = 0
         if menuIsOpen then
             while UpdateOnscreenKeyboard() == 0 do Citizen.Wait(100) end
             for _, value in ipairs(Config.Keys) do
@@ -62,7 +63,10 @@ Citizen.CreateThread(function()
                     SendNUIMessage({ keyUp = value.event })
                 end
             end
+        else
+            idle = 500
         end
+        Citizen.Wait(idle)
     end
 end)
 
