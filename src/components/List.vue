@@ -1,6 +1,6 @@
 <template>
   <div class="phone_app">
-    <PhoneTitle :title="title" :backgroundColor="headerBackground" :showSegnaleSection="showSegnaleSection" v-if="showHeader" @back="back"/>
+    <PhoneTitle :color="titleColor" :title="title" :backgroundColor="headerBackground" :showSegnaleSection="showSegnaleSection" v-if="showHeader" @back="back"/>
 
     <div class="elements">
       <div class="element" v-for='(elem, key) in list' :key="key" v-bind:class="{ select: key === currentSelect }">
@@ -70,6 +70,10 @@ export default {
     titleBackgroundColor: {
       type: String,
       default: '#FFFFFF'
+    },
+    titleColor: {
+      type: String,
+      default: 'black'
     }
   },
   watch: {

@@ -250,6 +250,7 @@ export default {
         this.ignoreControls = true
         Modal.CreateModal({ scelte })
         .then(data => {
+          this.ignoreControls = false
           switch(data.id) {
             case 'delete':
               this.$phoneAPI.post('deleteMessage', { id: elem.id })

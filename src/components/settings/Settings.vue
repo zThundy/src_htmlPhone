@@ -468,9 +468,9 @@ export default {
           { title: this.LangString('APP_CONFIG_RESET_CONFIRM'), color: 'red', icons: 'fa-exclamation-triangle', reset: true },
           { title: this.LangString('CANCEL'), icons: 'fa-undo', color: 'red' }
         ] })
-        .then(reponse => {
+        .then(response => {
           this.ignoreControls = false
-          if (reponse.reset) {
+          if (response.reset) {
             this.$phoneAPI.deleteALL()
           }
         })

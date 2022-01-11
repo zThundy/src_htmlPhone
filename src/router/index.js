@@ -70,8 +70,9 @@ import EmojiSplash from '@/components/emoji/emojisplash'
 import Calculator from '@/components/calculator/calculator'
 import CalculatorSplash from '@/components/calculator/calculatorsplash'
 
-import VideoCalls from '@/components/videocalls/videocalls'
-import VideoCallsSplash from '@/components/videocalls/videocallsSplash'
+// import VideoCalls from '@/components/videocalls/videocalls'
+// import VideoCallsSplash from '@/components/videocalls/videocallsSplash'
+// import VideoCallsActive from "@/components/videocalls/videocallsactive"
 
 Vue.use(Router)
 
@@ -327,16 +328,21 @@ export default new Router({
       name: 'calculator',
       component: Calculator
     },
-    {
-      path: '/videocalls/splash',
-      name: 'videocalls.splash',
-      component: VideoCallsSplash
-    },
-    {
-      path: '/videocalls',
-      name: 'videocalls',
-      component: VideoCalls
-    },
+    // {
+    //   path: '/videocalls/splash',
+    //   name: 'videocalls.splash',
+    //   component: VideoCallsSplash
+    // },
+    // {
+    //   path: '/videocalls',
+    //   name: 'videocalls',
+    //   component: VideoCalls
+    // },
+    // {
+    //   path: '/videocalls/active',
+    //   name: "videocalls.active",
+    //   component: VideoCallsActive
+    // },
     {
       path: '*',
       redirect: '/'

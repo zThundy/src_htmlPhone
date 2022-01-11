@@ -314,6 +314,12 @@ export default {
         fetch('http://' + this.config.fileUploader.ip + ':' + this.config.fileUploader.port + '/recordedMessageUpload', {
           method: 'POST',
           body: formData
+        }).then(() => {
+          this.$phoneAPI.sendVoicemailMessage({
+            number: this.voicemailTarget,
+            sender: this.myPhoneNumber,
+            display: this.$phoneAPI.config.voicemails_number
+          })
         }).catch((error) => { console.error(error) })
       }
     },

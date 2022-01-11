@@ -20,7 +20,8 @@ export default {
     ...mapGetters([]),
     style () {
       return {
-        backgroundColor: this.backgroundColor
+        backgroundColor: this.backgroundColor,
+        // position: "fixed"
       }
     }
   },

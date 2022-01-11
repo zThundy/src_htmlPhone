@@ -141,9 +141,9 @@ export default {
           { id: 1, title: this.LangString('APP_PHONE_DELETE'), icons: 'fa-trash', color: 'red' },
           { id: 2, title: this.LangString('CANCEL'), icons: 'fa-undo', color: 'red' }
         ] })
-        .then(reponse => {
+        .then(response => {
           this.ignoreControls = false
-          if (reponse.id === 1) {
+          if (response.id === 1) {
             this.$phoneAPI.deleteContact(this.id)
             history.back()
           }

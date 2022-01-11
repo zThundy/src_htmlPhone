@@ -20,7 +20,7 @@ import email from './modules/email'
 import news from './modules/news'
 import azienda from './modules/azienda'
 import license from './modules/license'
-import videocalls from './modules/videocalls'
+// import videocalls from './modules/videocalls'
 
 Vue.use(Vuex)
 
@@ -45,7 +45,7 @@ export default new Vuex.Store({
     azienda,
     wifi,
     license,
-    videocalls
+    // videocalls
   },
   strict: true
 })
