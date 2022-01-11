@@ -17,7 +17,7 @@ SELECT COUNT(*)
   WHERE table_schema = 'esfx'
   and COLUMN_NAME = 'phone_number'
   AND table_name = 'users' LIMIT 1;
-  set @query = IF(@exist <= 0, 'ALTER TABLE `users`  ADD COLUMN `phone_number` varchar(255) DEFAULT NULL', 'select \'Column Exists\' status');
+  set @query = IF(@exist <= 0, 'ALTER TABLE `users` ADD COLUMN `phone_number` varchar(255) DEFAULT NULL', 'select \'Column Exists\' status');
   prepare stmt from @query;
 EXECUTE stmt;
 
@@ -27,7 +27,7 @@ SELECT COUNT(*)
   WHERE table_schema = 'esfx'
   and COLUMN_NAME = 'iban'
   AND table_name = 'users' LIMIT 1;
-  set @query = IF(@exist <= 0, 'ALTER TABLE `users`  ADD COLUMN `iban` varchar(255) DEFAULT NULL', 'select \'Column Exists\' status');
+  set @query = IF(@exist <= 0, 'ALTER TABLE `users` ADD COLUMN `iban` varchar(255) DEFAULT NULL', 'select \'Column Exists\' status');
   prepare stmt from @query;
 EXECUTE stmt;
 
@@ -84,11 +84,11 @@ DELETE FROM `phone_bank_movements`;
 -- Dump della struttura di tabella esfx.phone_calls
 CREATE TABLE IF NOT EXISTS `phone_calls` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `owner` varchar(10) NOT NULL COMMENT 'Num tel proprio',
-  `num` varchar(10) NOT NULL COMMENT 'Num reférence du contact',
-  `incoming` int(11) NOT NULL COMMENT 'Défini si on est à l''origine de l''appels',
+  `owner` varchar(10) NOT NULL,
+  `num` varchar(10) NOT NULL,
+  `incoming` int(11) NOT NULL,
   `time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `accepts` int(11) NOT NULL COMMENT 'Appels accepter ou pas',
+  `accepts` int(11) NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
