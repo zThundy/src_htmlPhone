@@ -192,7 +192,7 @@ class VideoRequest {
   }
 
   stopRecording () {
-    if (this.recorder) this.recorder.stop()
+    if (this.recorder && this.recorder.state !== "inactive") this.recorder.stop()
   }
 
   stopCapture () {

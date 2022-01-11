@@ -89,7 +89,13 @@ export default {
                   const videoFormat = '[VIDEO]%' + this.myPhoneNumber + '%' + id
                   this.addPhoto({ link: videoFormat, type: 'video' })
                   this.$phoneAPI.post('setEnabledFakeCamera', false)
-                  this.$router.push({ name: 'galleria.splash' })
+                  this.$phoneAPI.ongenericNotification({
+                    message: 'VIDEO_SAVED_SUCCESSFULLY',
+                    title: 'VIDEO_TITLE',
+                    icon: 'camera',
+                    color: 'rgb(100, 100, 100)',
+                    appName: 'Camera'
+                  })
                 }
               })
               this.showSavePanel = false

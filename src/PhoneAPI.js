@@ -171,7 +171,7 @@ class PhoneAPI {
 
   async getReponseText (data) {
     if (process.env.NODE_ENV === 'production') {
-      return this.post('reponseText', data || {})
+      return this.post('responseText', data || {})
     } else {
       return { text: window.prompt() }
     }
@@ -351,6 +351,10 @@ class PhoneAPI {
 
   oncandidatesAvailable (data) {
     this.voiceRTC.addIceCandidates(data.candidates)
+  }
+
+  async sendVoicemailMessage(data) {
+    return this.post("newVoicemail", data)
   }
 
   onrejectCall (data) {
