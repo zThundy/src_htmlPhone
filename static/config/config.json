@@ -298,6 +298,8 @@
       "TYPE_LINK": "Digita un link",
       "VIDEO_NOT_FOUND": "Video non trovato",
       "VIDEO_ERROR_TITLE": "Errore nella riproduzione",
+      "VIDEO_SAVED_SUCCESSFULLY": "Video salvato con successo",
+      "VIDEO_TITLE": "Camera",
       "APP_PHOTO_TAKE_PICTURE": "Scatta fotografia",
       "APP_PHOTO_RECORD_VIDEO": "Registra video",
       "APP_PHOTO_SAVE_VIDEO_TITLE": "Vuoi salvare il video registrato?",
@@ -611,6 +613,7 @@
       "APP_BOURSE_ERROR_INTERNET": "Non hai abbastanza giga per eseguire questa azione",
       "APP_CALCULATOR_TITLE": "Calcolatrice",
       "APP_VIDEOCALLS_TITLE": "Video Chiamate",
+      "APP_VIDEOCALLS_CALL": "Videochiama",
 
       "TIMEAGO": [
         "Proprio adesso",
@@ -633,6 +636,8 @@
       "TYPE_LINK": "Type a link",
       "VIDEO_NOT_FOUND": "Video not found",
       "VIDEO_ERROR_TITLE": "Error on playing video",
+      "VIDEO_SAVED_SUCCESSFULLY": "Video saved successfully",
+      "VIDEO_TITLE": "Camera",
       "APP_PHOTO_TAKE_PICTURE": "Take photo",
       "APP_PHOTO_RECORD_VIDEO": "Record video",
       "APP_PHOTO_SAVE_VIDEO_TITLE": "Do you want to save the recorded video?",
@@ -945,6 +950,7 @@
       "APP_BOURSE_ERROR_INTERNET": "You do not have enough internet to do this!",
       "APP_CALCULATOR_TITLE": "Calculator",
       "APP_VIDEOCALLS_TITLE": "Video Calls",
+      "APP_VIDEOCALLS_CALL": "Videocall",
 
       "TIMEAGO": [
         "Now",

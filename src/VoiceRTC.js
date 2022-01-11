@@ -167,14 +167,6 @@ class VoiceRTC {
     }
   }
 
-  addVideoSource (stream) {
-    console.log(stream.getTracks())
-    // const track = stream.getTrackById(1)
-    // if (this.stream) {
-    //   this.stream.addTrack(track)
-    // }
-  }
-
   getAvailableCandidates () {
     const candidates = btoa(JSON.stringify(this.myCandidates))
     this.myCandidates = []
