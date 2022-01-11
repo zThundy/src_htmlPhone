@@ -162,6 +162,9 @@ Config.Language = {
         ["STARTCALL_MESSAGE_ERROR_2"] = "~r~Il telefono è occupato",
         ["STARTCALL_MESSAGE_ERROR_3"] = "~r~Non c'è segnale per effettuare una telefonata",
         ["STARTCALL_NO_SIM_INSTALLED"] = "~r~Devi avere una sim installata",
+
+        -- MODULES: VOICEMAILS
+        ["VOICEMAIL_NEW_AUDIO"] = "Hai un nuovo messaggio in segreteria da %s",
     },
     ["en"] = {
         -- DEBUG
@@ -324,6 +327,9 @@ Config.Language = {
         ["STARTCALL_MESSAGE_ERROR_2"] = "~r~The phone is busy",
         ["STARTCALL_MESSAGE_ERROR_3"] = "~r~There is no signal to make a phone call",
         ["STARTCALL_NO_SIM_INSTALLED"] = "~r~You must have a sim in the phone",
+
+        -- MODULES: VOICEMAILS
+        ["VOICEMAIL_NEW_AUDIO"] = "You have received a new voicemail from %s",
     }
 }
 

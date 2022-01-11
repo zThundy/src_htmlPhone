@@ -13,8 +13,8 @@ local function TchatAddMessage(channel, message)
         ['@channel'] = channel,
         ['@message'] = message
     }, function(id)
-        MySQL.Async.fetchAll("SELECT * from phone_app_chat WHERE `id` = @id", {['@id'] = id}, function(reponse)
-            TriggerClientEvent('gcPhone:tchat_receive', -1, reponse[1])
+        MySQL.Async.fetchAll("SELECT * from phone_app_chat WHERE `id` = @id", {['@id'] = id}, function(response)
+            TriggerClientEvent('gcPhone:tchat_receive', -1, response[1])
         end)
     end)
 end

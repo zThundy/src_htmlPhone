@@ -1,4 +1,4 @@
-RegisterNUICallback('reponseText', function(data, cb)
+RegisterNUICallback('responseText', function(data, cb)
     local resp = GetResponseText(data)
     cb(json.encode({ text = resp }))
 end)
