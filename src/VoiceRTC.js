@@ -24,10 +24,14 @@ class VoiceRTC {
   // this function will initialazie a rtc peer to peer connection
   // using the server specified in the config.json and save the media
   // stream inside a class variable
-  async init () {
+  async init (stream) {
     this.close()
     this.myPeerConnection = new RTCPeerConnection(this.RTCConfig)
-    this.stream = await navigator.mediaDevices.getUserMedia(constraints)
+    if (!stream) {
+      this.stream = await navigator.mediaDevices.getUserMedia(constraints)
+    } else {
+      this.stream = stream
+    }
   }
 
   // this function will create a new connection without distinguishing if
@@ -51,12 +55,14 @@ class VoiceRTC {
     this.myPeerConnection = null
   }
 
-  async prepareCall () {
-    await this.init()
+  // function called from the initiator of the rtc call
+  // Need to add the stream element and create and RTC connection (see this.init())
+  async prepareCall (stream = false) {
+    await this.init(stream)
     this.newConnection()
     this.initiator = true
     // controllo se da config i filtri sono attivi o no
-    if (this.RTCConfig.enable) {
+    if (this.RTCConfig.enable && !stream) {
       // creazione dell'audiocontext per gli effetti
       this.audioContext = null
       this.audioContext = await this.getAudioContext()
@@ -98,13 +104,20 @@ class VoiceRTC {
     return btoa(JSON.stringify(this.offer))
   }
 
-  async acceptCall (infoCall) {
+  // function called from second client that accepts the receiving call
+  // Need to add stream (cause the second client does not have it)
+  // Need to add the remote stream to an html obj
+  async acceptCall (infoCall, stream = false) {
     const offer = JSON.parse(atob(infoCall.rtcOffer))
     this.newConnection()
     this.initiator = false
-    this.stream = await navigator.mediaDevices.getUserMedia(constraints)
+    if (!stream) {
+      this.stream = await navigator.mediaDevices.getUserMedia(constraints)
+    } else {
+      this.stream = stream
+    }
     // controllo se da config i filtri sono attivi o no
-    if (this.RTCConfig.enable) {
+    if (this.RTCConfig.enable && !stream) {
       // creazione dell'audiocontext per gli effetti
       this.audioContext = null
       this.audioContext = await this.getAudioContext()

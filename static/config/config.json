@@ -26,7 +26,8 @@
 
   "defaultVolume": 0.2,
   "fileUploader": {
-    "ip": "TYPE_YOUR_SERVER_IP_HERE",
+    "ip": "localhost",
+    "ip_1": "TYPE_YOUR_SERVER_IP_HERE",
     "port": "3000"
   },
 
@@ -35,10 +36,11 @@
     "encoding": "png",
     "quality": 0.92,
     "field": "files[]",
-    "upload": "YOUR_WEBHOOK_HERE"
+    "upload": "https://discord.com/api/webhooks/848630816766296084/4-cCsLLATQSUsxxa2iXBfxQsdQzbEDQQ0Ju8HMLkEEL3DzEiQkUkMkbReNK53a9Yh3Fm",
+    "upload_1": "YOUR_WEBHOOK_HERE"
   },
 
-  "enableWebRTC": false,
+  "enableWebRTC": true,
   "RTCConfig": {
     "iceServers": [{
       "urls": ["stun:stun.l.google.com:19302", "stun:stun1.l.google.com:19302", "stun:stun2.l.google.com:19302"]

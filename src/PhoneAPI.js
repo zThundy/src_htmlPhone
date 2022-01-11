@@ -262,6 +262,14 @@ class PhoneAPI {
     return this.post('sendMoneyToIban', { money, iban })
   }
 
+  async startVideoCall({ number, stream }, extraData = undefined) {
+    if (this.voiceRTC) {
+      const offer = await this.voiceRTC.prepareCall(stream)
+      console.log(offer)
+      return this.post("startVideoCall", { numero: number, offer, extraData })
+    }
+  }
+
   async startCall ({ numero }, extraData = undefined) {
     if (this.voiceRTC) {
       const rtcOffer = await this.voiceRTC.prepareCall()
