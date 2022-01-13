@@ -27,6 +27,7 @@ module.exports = {
     'no-unused-vars': "warn",
     'quotes': "off",
     'no-redeclare': "off",
-    "space-before-function-paren": "off"
+    "space-before-function-paren": "off",
+    "eol-last": "off"
   }
 }
