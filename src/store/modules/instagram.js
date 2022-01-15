@@ -119,12 +119,7 @@ const mutations = {
   }
 }
 
-export default {
-  state,
-  getters,
-  actions,
-  mutations
-}
+export default { state, getters, actions, mutations }
 
 if (process.env.NODE_ENV !== 'production') {
   let data = new Date().getTime()
