@@ -49,7 +49,7 @@ export default {
             } else {
               // if enter is pressed, then resolve promise with
               // inserted text
-              resolve({ text: modal.inputText })
+              resolve({ text: modal.inputText.trim() })
             }
             // reset nui focus
             PhoneAPI.setNUIFocus(false)
@@ -62,6 +62,7 @@ export default {
       return new Promise((resolve, reject) => {
         PhoneAPI.getReponseText(propsData).then(response => {
           if (response !== undefined && response.text && response.text !== '') {
+            response.text = response.text.trim()
             resolve(response)
           } else {
             reject('no-text-given')
