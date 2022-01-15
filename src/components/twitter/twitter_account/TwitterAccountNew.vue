@@ -61,7 +61,9 @@ export default {
     createAccount() {
       if (!this.validAccount) return
       this.$phoneAPI.twitter_createAccount(this.account.username, this.account.password, this.account.avatarUrl)
+      this.changeRoute("MENU")
     },
+    changeRoute(route) { this.$bus.$emit("twitterChangingRoute", route) },
     changeAvatar() {
       this.$bus.$emit("updateTwitterIgnoreControls", true)
       Modal.CreateModal({ scelte: [

@@ -1,6 +1,6 @@
 <template>
   <div style="text-align: center; height: 100%;">
-    <div v-if="!isLogin" style="height: 100%;" class="flex">
+    <div v-if="!account.logged" style="height: 100%;" class="flex">
       <i class="fa fa-twitter twt-icon"></i>
 
       <div class="middle">
@@ -68,12 +68,6 @@ export default {
       'LangString',
       "account"
     ]),
-    isLogin () {
-      return this.account.username !== "" && this.account.password !== "" && this.validAccount
-    },
-    validAccount () {
-      return this.account.username.length >= 4 && this.account.password.length >= 6 && this.account.password === this.account.passwordConfirm
-    },
   },
   methods: {
     ...mapActions([
@@ -220,6 +214,9 @@ export default {
     },
   },
   created() {
+    // login the user on first launch of the app
+    if (!this.account.logged) this.$phoneAPI.twitter_login(this.account.username, this.account.password)
+    // create control events
     this.$bus.$on("twitterOnUp", this.onUp)
     this.$bus.$on("twitterOnDown", this.onDown)
     this.$bus.$on("twitterOnEnter", this.onEnter)

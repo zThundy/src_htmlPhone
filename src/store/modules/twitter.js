@@ -10,7 +10,8 @@ const state = {
     username: localStorage['gcphone_twitter_username'] || "",
     password: localStorage['gcphone_twitter_password'] || "",
     passwordConfirm: "",
-    avatarUrl: localStorage['gcphone_twitter_avatarUrl'] || "/html/static/img/app_twitter/default_profile.png"
+    avatarUrl: localStorage['gcphone_twitter_avatarUrl'] || "/html/static/img/app_twitter/default_profile.png",
+    logged: false
   },
 }
 
@@ -27,10 +28,10 @@ const getters = {
 
 const actions = {
   twitterLogout ({ dispatch }) {
+    dispatch("setAccount", { username: "", password: "", avatarUrl: "/html/static/img/app_twitter/default_profile.png", passwordConfirm: "", logged: false })
     localStorage.removeItem('gcphone_twitter_username')
     localStorage.removeItem('gcphone_twitter_password')
     localStorage.removeItem('gcphone_twitter_avatarUrl')
-    dispatch("setAccount", { username: "", password: "", avatarUrl: "/html/static/img/app_twitter/default_profile.png", passwordConfirm: "" })
   },
   twitterPostTweet ({ state, commit }, { message }) {
     PhoneAPI.twitter_postTweet(state.account.username, state.account.password, PhoneAPI.convertEmoji(message))
@@ -46,7 +47,6 @@ const actions = {
     localStorage['gcphone_twitter_password'] = data.password
     localStorage['gcphone_twitter_avatarUrl'] = data.avatarUrl
     commit('UPDATE_ACCOUNT', data)
-    if (data.passwordConfirm) commit("SET_PASSWORD_CONFIRM", data.passwordConfirm)
   },
   addTweet ({ commit, state }, { tweet, sourceAuthor }) {
     let index = state.twitterNotification.indexOf(true)
@@ -87,13 +87,12 @@ const mutations = {
   SET_TWITTER_NOTIFICATION_SOUND (state, { notificationSound }) {
     state.twitterNotificationSound = notificationSound
   },
-  UPDATE_ACCOUNT (state, { username, password, avatarUrl }) {
-    state.account.username = username
-    state.account.password = password
-    state.account.avatarUrl = avatarUrl
-  },
-  SET_PASSWORD_CONFIRM (state, pass) {
-    state.account.passwordConfirm = pass
+  UPDATE_ACCOUNT (state, data) {
+    state.account.username = data.username
+    state.account.password = data.password
+    state.account.avatarUrl = data.avatarUrl
+    if (data.passwordConfirm) state.account.passwordConfirm = data.passwordConfirm
+    if (data.logged !== null && data.logged !== undefined) state.account.logged = data.logged
   },
   SET_TWEETS (state, { tweets }) {
     state.tweets = tweets

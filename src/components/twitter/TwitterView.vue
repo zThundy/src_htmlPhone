@@ -187,8 +187,6 @@ export default {
   created () {
     // faccio la request a phoneapi per i tweets
     this.$phoneAPI.twitter_getTweets(this.account.username, this.account.password)
-    // login the user on first launch of the app
-    this.$phoneAPI.twitter_login(this.account.username, this.account.password)
     // creo gli eventi
     this.$bus.$on('keyUpArrowDown', this.onDown)
     this.$bus.$on('keyUpArrowUp', this.onUp)
