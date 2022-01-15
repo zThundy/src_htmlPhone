@@ -20,6 +20,17 @@ RegisterNUICallback("updateVolume", function(data, cb)
 end)
 
 RegisterNUICallback("sendStartupValues", function(data, cb)
+    -- inside this data, you will find:
+    -- @volume | the global volume of the phone
+    -- @notification | if the notifications are enabled or not
+    -- @cover | the current cover of the user
+    -- @airplane | if the user is in airplane or not,
+    -- @twitterSound | if the twitter notifications sound are enabled or not,
+    -- @twitterNotif | the state of the twitter notification
+    -- eg. [true, false, false] all notifications
+    -- eg. [false, true, false] only mentions
+    -- eg. [false, false, true] no notifications
+
     NOTIFICATIONS_ENABLED = data.notification
     if data.cover ~= nil then
         myCover = string.gsub(data.cover.value, ".png", "")

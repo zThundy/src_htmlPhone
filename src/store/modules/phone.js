@@ -177,7 +177,15 @@ const actions = {
     dispatch('setLanguage', 'it_IT')
   },
   sendStartupValues ({ state }) {
-    PhoneAPI.sendStartupValues({ volume: state.volume, notification: state.notification, cover: state.currentCover, airplane: state.airplane })
+    const data = {
+      volume: state.volume,
+      notification: state.notification,
+      cover: state.currentCover,
+      airplane: state.airplane,
+      twitterSound: localStorage['gcphone_twitter_notif_sound'] === "true",
+      twitterNotif: JSON.parse(localStorage['gcphone_twitter_notif']) || [true, false, false]
+    }
+    PhoneAPI.sendStartupValues(data)
   },
   changeBrightness ({ commit }, value) {
     commit('CHANGE_BRIGHTNESS', value)
