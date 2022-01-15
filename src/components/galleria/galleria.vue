@@ -147,12 +147,12 @@ export default {
                     this.imgZoom.link = link
                     this.restartVideo()
                   } else {
-                    this.$phoneAPI.ongenericNotification({
-                      message: 'VIDEO_NOT_FOUND',
-                      title: 'VIDEO_ERROR_TITLE',
+                    this.$notify({
+                      title: this.LangString('VIDEO_NOT_FOUND'),
+                      message: this.LangString('VIDEO_NOT_FOUND'),
                       icon: 'camera',
-                      color: 'rgb(205, 116, 76)',
-                      appName: 'Galleria'
+                      backgroundColor: 'rgb(205, 116, 76)',
+                      appName: "Galleria"
                     })
                   }
                 })
