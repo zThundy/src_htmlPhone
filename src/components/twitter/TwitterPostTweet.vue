@@ -1,7 +1,6 @@
 <template>
   <div style="width: 330px; height: 100%;" class="background">
     <div class='tweet_write'>
-        <!-- <textarea class="textarea-input" v-model.trim="message" v-autofocus :placeholder="LangString('APP_TWITTER_PLACEHOLDER_MESSAGE')"></textarea> -->
         <textarea class="textarea-input" v-model.trim="message" :placeholder="LangString('APP_TWITTER_PLACEHOLDER_MESSAGE')"></textarea>
         <i class="fa fa-pencil-alt" aria-hidden="true"></i>
 

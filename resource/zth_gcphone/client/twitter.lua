@@ -34,11 +34,6 @@ AddEventHandler("gcPhone:twitter_setTweetLikes", function(tweetId, has_like)
     SendNUIMessage({ event = 'twitter_setTweetLikes', tweetId = tweetId, has_like = has_like })
 end)
 
-RegisterNUICallback('twitter_shotNotification', function(data, cb)
-    if data.sourceAuthor == GetPlayerServerId(PlayerId()) then cb('ok'); return end
-    TriggerEvent('gcphone:sendGenericNotification', data.message)
-end)
-
 RegisterNUICallback('twitter_login', function(data, cb)
     gcPhoneServerT.twitter_login(data.username, data.password)
     cb("ok")
