@@ -501,8 +501,8 @@ class PhoneAPI {
   }
 
   ontwitter_setAccount (data) {
+    if (!data.logged) data.logged = true
     store.dispatch('setAccount', data)
-    store.commit("SET_PASSWORD_CONFIRM", data.password)
   }
 
   ontwitter_updateTweetLikes (data) {
@@ -565,7 +565,6 @@ class PhoneAPI {
   // a questo messaggio va mandato
   // data.hasWifi come booleano
   onupdateWifi ({ data }) {
-    store.dispatch('updateWifiString', data)
     store.commit('UPDATE_WIFI', data)
   }
 

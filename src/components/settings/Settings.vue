@@ -13,8 +13,8 @@
     </div>
 
     <div class='phone_content' style="overflow: hidden;">
-      <div class='element' v-for='(elem, key) in paramList' v-bind:class="{ select: key === currentSelect }" v-bind:key="key">
-        <i class="fa" v-bind:class="elem.icons" v-bind:style="{ color: elem.color }"></i>
+      <div class='element' v-for='(elem, key) in paramList' :class="{ select: key === currentSelect }" :key="key">
+        <i class="fa" :class="elem.icons" :style="{ color: elem.color }"></i>
 
         <div class="element-content">
           <span class="element-title">{{ elem.title }}</span>
@@ -67,7 +67,6 @@ export default {
       'config',
       'volume',
       'availableLanguages',
-      'wifiString',
       'retiWifi',
       'notification',
       'airplane',
@@ -77,6 +76,7 @@ export default {
       'myImage',
       'myData',
       'isWifiOn',
+      "hasWifi",
       'enableHalfShow'
     ]),
     paramList () {
@@ -102,7 +102,7 @@ export default {
           icons: 'fa-wifi',
           onValid: 'connectToWifi',
           title: this.LangString('APP_CONFIG_WIFI'),
-          value: this.wifiString,
+          value: (this.hasWifi && this.isWifiOn) ? this.LangString("APP_CONFIG_ENABLED_5") : this.LangString("APP_CONFIG_DISABLED_5"),
           values: []
         },
         {
@@ -222,7 +222,18 @@ export default {
     }
   },
   methods: {
-    ...mapActions(['getIntlString', 'setZoom', 'setBackground', 'setCurrentCover', 'setsuoneria', 'setVolume', 'setLanguage', 'toggleNotifications', 'toggleAirplane', 'updateWifiString', 'toggleWifi', 'toggleBluetooth']),
+    ...mapActions([
+      'getIntlString',
+      'setZoom',
+      'setBackground',
+      'setCurrentCover',
+      'setsuoneria',
+      'setVolume',
+      'setLanguage',
+      'toggleNotifications',
+      'toggleAirplane',
+      'toggleBluetooth'
+    ]),
     ...mapMutations(['TOGGLE_HALF_SHOW']),
     scrollIntoView: function () {
       this.$nextTick(() => {
@@ -236,9 +247,9 @@ export default {
         for (var i in this.retiWifi) {
           this.retiWifiRender[this.retiWifi[i].label] = { id: i, icons: 'fa-wifi', label: this.retiWifi[i].label, password: this.retiWifi[i].password, value: this.retiWifi[i].password }
         }
-        this.retiWifiRender['Annulla'] = { icons: 'fa-undo', label: 'Annulla', value: 'cancel', color: 'red' }
+        this.retiWifiRender[this.LangString("CANCEL")] = { icons: 'fa-undo', label: this.LangString("CANCEL"), value: 'cancel', color: 'red' }
       } else {
-        this.retiWifiRender['Wifi spento'] = { icons: 'fa-ban', label: 'Wifi spento', value: 'cancel', color: 'red' }
+        this.retiWifiRender[this.LangString("APP_CONFIG_WIFI_OFF")] = { icons: 'fa-ban', label: this.LangString("APP_CONFIG_WIFI_OFF"), value: 'cancel', color: 'red' }
       }
       return this.retiWifiRender
     },
@@ -353,7 +364,7 @@ export default {
               })
               .then(resp => {
                 if (resp.text !== '' && resp.text !== undefined && resp.text !== null && resp.text !== 'https://i.imgur.com/') {
-                  this.setBackground({ label: 'Personalizzato', value: resp.text })
+                  this.setBackground({ label: this.LangString("CUSTOM"), value: resp.text })
                   this.ignoreControls = false
                 }
               })
@@ -362,7 +373,7 @@ export default {
             case 2:
               this.$phoneAPI.takePhoto()
               .then(pic => {
-                this.setBackground({ label: 'Personalizzato', value: pic })
+                this.setBackground({ label: this.LangString("CUSTOM"), value: pic })
                 this.ignoreControls = false
               })
               .catch(e => { this.ignoreControls = false })
@@ -377,10 +388,6 @@ export default {
     },
 
     async connectToWifi (param, data) {
-      if (!this.isWifiOn) {
-        this.toggleWifi(!this.isWifiOn)
-        return
-      }
       var password = data.value
       this.ignoreControls = true
       Modal.CreateTextModal({
@@ -389,14 +396,10 @@ export default {
       .then(resp => {
         if (resp.text !== '' && resp.text !== undefined && resp.text !== null) {
           if (resp.text === password) {
-            // console.log('hey ai azzecato! :P')
             this.$phoneAPI.connettiAllaRete(this.retiWifiRender[data.title])
-            this.updateWifiString(true)
             this.ignoreControls = false
           } else {
-            // console.log('no azzecato :(')
             this.$phoneAPI.connettiAllaRete(false)
-            this.updateWifiString(false)
             this.ignoreControls = false
           }
         }
@@ -488,7 +491,6 @@ export default {
     this.bottone['enableHalfShow'] = Boolean(this.enableHalfShow)
     // qui richiedo le mie cover da phoneapi
     this.$phoneAPI.requestMyCovers()
-    // console.log(JSON.stringify(this.myCovers))
     this.$bus.$on('keyUpArrowRight', this.onRight)
     this.$bus.$on('keyUpArrowLeft', this.onLeft)
     this.$bus.$on('keyUpArrowDown', this.onDown)

@@ -1,32 +1,18 @@
 const state = {
   retiWifi: [],
-  wifiString: 'Non connesso',
   isWifiOn: true,
   hasWifi: false
 }
 
 const getters = {
   retiWifi: ({ retiWifi }) => retiWifi,
-  wifiString: ({ wifiString }) => wifiString,
   hasWifi: ({ hasWifi }) => hasWifi,
   isWifiOn: ({ isWifiOn }) => isWifiOn
 }
 
 const actions = {
-  updateWifiString ({ commit }, bool) {
-    if (bool) {
-      commit('UPDATE_WIFI_STRING', 'Connesso')
-    } else {
-      commit('UPDATE_WIFI_STRING', 'Non connesso')
-    }
-  },
   toggleWifi ({ commit }, bool) {
-    if (bool) {
-      commit('UPDATE_WIFI_STRING', 'Non connesso')
-    } else {
-      commit('UPDATE_WIFI_STRING', 'Wifi spento')
-      commit('UPDATE_WIFI', bool)
-    }
+    if (!bool) commit('UPDATE_WIFI', bool)
     commit('TOGGLE_WIFI', bool)
   }
 }
@@ -34,9 +20,6 @@ const actions = {
 const mutations = {
   UPDATE_RETI_WIFI (state, retiWifi) {
     state.retiWifi = retiWifi
-  },
-  UPDATE_WIFI_STRING (state, string) {
-    state.wifiString = string
   },
   UPDATE_WIFI (state, bool) {
     state.hasWifi = bool
