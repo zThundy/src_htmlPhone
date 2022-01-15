@@ -3,7 +3,6 @@
     class="custom-switch"
     :style="{ backgroundColor: backgroundColor }"
     :class="[ value ? 'active' : '' ]"
-    @click="$_onChange($event)"
   ></div>
 </template>
 
