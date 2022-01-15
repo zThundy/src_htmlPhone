@@ -28,6 +28,9 @@ module.exports = {
     'quotes': "off",
     'no-redeclare': "off",
     "space-before-function-paren": "off",
-    "eol-last": "off"
+    "eol-last": "off",
+    "no-trailing-spaces": "off",
+    "curly": "off",
+    "no-unreachable": "warn"
   }
 }
