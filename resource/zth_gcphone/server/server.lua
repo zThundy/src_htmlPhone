@@ -217,14 +217,20 @@ gcPhoneT.isAbleToCall = function(identifier, cb)
         local min = GetPianoTariffarioParam(phone_number, "minuti")
         if Config.IgnoredPlanJobs[xPlayer.job.name] then return cb(true, false, min) end
 
-        if min == nil then
-            cb(false, true, 0, Config.Language["PHONE_TARIFFS_NO_TARIFF"])
-        else
-            if min > 0 then
-                cb(true, true, min)
+        -- callback should be
+        -- isAble, useMin, min, message
+        if Config.EnableRadioTowers then
+            if min == nil then
+                cb(false, true, 0, Config.Language["PHONE_TARIFFS_NO_TARIFF"])
             else
-                cb(false, true, 0, Config.Language["PHONE_TARIFFS_NO_MINUTES"])
+                if min > 0 then
+                    cb(true, true, min)
+                else
+                    cb(false, true, 0, Config.Language["PHONE_TARIFFS_NO_MINUTES"])
+                end
             end
+        else
+            cb(true, false, 0)
         end
     else
         cb(false, true, 0, Config.Language["PHONE_TARIFFS_AIRPLANEMODE_ERROR"])
