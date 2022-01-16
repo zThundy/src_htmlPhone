@@ -2,7 +2,7 @@
   <div style="backgroundColor: white" class="phone_app messages">
     <PhoneTitle :backgroundColor="'rgb(194, 108, 7)'" :title="formatEmoji(displayContact)" style="color: black" /> <!--:title="displayContact" :backgroundColor="color" -->
     
-    <div class="phone_fullscreen_img" v-if="imgZoom !== null">
+    <div class="phone_fullscreen_img" v-if="imgZoom">
       <img v-if="imgZoom.type === 'photo'" :src="imgZoom.link" />
       <video v-else-if="imgZoom.type === 'video'" width="330" height="710" id="video-playback-element" :src="imgZoom.link" autoplay />
     </div>
@@ -325,7 +325,7 @@ export default {
       .catch(e => { this.ignoreControls = false })
     },
     onBackspace () {
-      if (this.imgZoom !== undefined) {
+      if (this.imgZoom) {
         this.imgZoom = undefined
         this.CHANGE_BRIGHTNESS_STATE(true)
         return

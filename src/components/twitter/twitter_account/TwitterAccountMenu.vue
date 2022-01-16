@@ -4,12 +4,12 @@
       <i class="fa fa-twitter twt-icon"></i>
 
       <div class="middle">
-        <div class="inputText" :class="{ select: currentIndex === 0 }">
+        <div class="twt-input-text" :class="{ select: currentIndex === 0 }">
           <input :placeholder="LangString('APP_TWITTER_ACCOUNT_USERNAME')" type="text" data-type="username" :value="account.username">
           <i class="fa fa-envelope"></i>
         </div>
 
-        <div class="inputText" :class="{ select: currentIndex === 1 }">
+        <div class="twt-input-text" :class="{ select: currentIndex === 1 }">
           <input :placeholder="LangString('APP_TWITTER_ACCOUNT_PASSWORD')" type="password" data-type="password" :value="account.password">
           <i class="fa fa-key"></i>
         </div>
@@ -17,11 +17,11 @@
 
       <div class="bottom">
         <div :class="{ select: currentIndex === 2 }">
-          <input type='button' class="btn btn-blue2" data-action="login" :value="LangString('APP_TWITTER_ACCOUNT_LOGIN')"/>
+          <input type='button' class="twt-btn twt-btn-blue2" data-action="login" :value="LangString('APP_TWITTER_ACCOUNT_LOGIN')"/>
         </div>
 
         <div :class="{ select: currentIndex === 3 }">
-          <input type='button' class="btn btn-blue" data-action="changeRoute" data-args="NEW_ACCOUNT" :value="LangString('APP_TWITTER_ACCOUNT_NEW')" />
+          <input type='button' class="twt-btn twt-btn-blue" data-action="changeRoute" data-args="NEW_ACCOUNT" :value="LangString('APP_TWITTER_ACCOUNT_NEW')" />
         </div>
       </div>
     </div>
@@ -29,22 +29,22 @@
     <div v-else class="flex">
       <div class="middle">
         <div :class="{ select: currentIndex === 0 }">
-          <img class="avatar" :src="account.avatarUrl">
+          <img class="twt-avatar" :src="account.avatarUrl">
           <input type="button" data-action="changeAvatar" style="display: none" />
         </div>
       </div>
 
       <div class="bottom">
         <div :class="{ select: currentIndex === 1 }">
-          <input type='button' class="btn btn-blue" :value="LangString('APP_TWITTER_ACCOUNT_CHANGE_PASSWORD')" data-action="changePassword" />
+          <input type='button' class="twt-btn twt-btn-blue" :value="LangString('APP_TWITTER_ACCOUNT_CHANGE_PASSWORD')" data-action="changePassword" />
         </div>
 
         <div :class="{ select: currentIndex === 2 }">
-          <input type='button' class="btn btn-blue" data-action="changeRoute" data-args="NOTIFICATIONS" :value="LangString('APP_TWITTER_NOTIFICATION')" />
+          <input type='button' class="twt-btn twt-btn-blue" data-action="changeRoute" data-args="NOTIFICATIONS" :value="LangString('APP_TWITTER_NOTIFICATION')" />
         </div>
 
         <div :class="{ select: currentIndex === 3 }">
-          <input type='button' class="btn btn-red" data-action="logout" :value="LangString('APP_TWITTER_ACCOUNT_LOGOUT')" />
+          <input type='button' class="twt-btn twt-btn-red" data-action="logout" :value="LangString('APP_TWITTER_ACCOUNT_LOGOUT')" />
         </div>
       </div>
     </div>

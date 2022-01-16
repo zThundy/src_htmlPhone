@@ -1,30 +1,30 @@
 <template>
   <div class="flex">
     <div class="middle">
-      <div class="inputText" :class="{ select: currentIndex === 0 }">
+      <div class="twt-input-text" :class="{ select: currentIndex === 0 }">
         <input :placeholder="LangString('APP_TWITTER_NEW_ACCOUNT_USERNAME')" type="text" data-type="username" :value="account.username">
         <i class="fa fa-twitter"></i>
       </div>
 
-      <div class="inputText" :class="{ select: currentIndex === 1 }">
+      <div class="twt-input-text" :class="{ select: currentIndex === 1 }">
         <input :placeholder="LangString('APP_TWITTER_NEW_ACCOUNT_PASSWORD')" type="password" data-type="password" :value="account.password">
         <i class="fa fa-key"></i>
       </div>
 
-      <div class="inputText" :class="{ select: currentIndex === 2 }">
+      <div class="twt-input-text" :class="{ select: currentIndex === 2 }">
         <input :placeholder="LangString('APP_TWITTER_NEW_ACCOUNT_PASSWORD_CONFIRM')" type="password" data-type="passwordConfirm" :value="account.passwordConfirm">
         <i class="fa fa-key"></i>
       </div>
 
       <div :class="{ select: currentIndex === 3 }">
-        <img class="avatar" :src="account.avatarUrl">
+        <img class="twt-avatar" :src="account.avatarUrl">
         <input type="button" data-action="changeAvatar" style="display: none" />
       </div>
     </div>
 
     <div class="bottom">
       <div :class="{ select: currentIndex === 4 }">
-        <input type='button' data-action="createAccount" class="btn" :class="validAccount ? 'btn-blue' : 'btn-grey'" :value="LangString('APP_TWIITER_ACCOUNT_CREATE')"/>
+        <input type='button' data-action="createAccount" class="twt-btn" :class="validAccount ? 'twt-btn-blue' : 'twt-btn-grey'" :value="LangString('APP_TWIITER_ACCOUNT_CREATE')"/>
       </div>
     </div>
   </div>

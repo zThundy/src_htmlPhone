@@ -13,17 +13,12 @@
   color: rgb(55, 161, 242);
 }
 
-.group {
-  position: relative;
-  margin-top: 24px;
-}
-
-.inputText {
+.twt-input-text {
   position: relative;
   margin-top: 3%;
 }
 
-.inputText input {
+.twt-input-text input {
   width: 300px;
   height: 40px;
   border: 0;
@@ -35,7 +30,7 @@
   color: rgb(35, 51, 76);
 }
 
-.inputText i {
+.twt-input-text i {
   position: absolute;
   top: 30%;
   left: 28px;
@@ -45,7 +40,7 @@
   transition: all ease-in-out 0.2s;
 }
 
-.inputText label {
+.twt-input-text label {
   color:#999;
   font-size:18px;
   font-weight:normal;
@@ -58,50 +53,20 @@
   -webkit-transition:0.2s ease all;
 }
 
-.inputText.select input {
+.twt-input-text.select input {
   border: 2px solid rgb(62, 170, 252);
   transition: all ease-in-out 0.2s;
 }
 
-.inputText input:focus ~ label, .inputText input:valid ~ label 		{
+.twt-input-text input:focus ~ label, .twt-input-text input:valid ~ label 		{
   top: -24px;
   font-size: 18px;
   color: #007bff85;
 }
 
-.group.img {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-}
-
-.group.img img {
-  width: 0;
-  height: 60px;
-  overflow: auto;
-
-  display: flex;
-  flex-direction: row;
-  overflow: auto;
-  flex-grow: 0;
-  flex: 0 0 64px;
-  margin-right: 12px;
-  border-radius: 100px;
-  object-fit: cover;
-}
-
-input {
-  font-size: 24px;
-  display: block;
-  width: 314px;
-  border:none;
-  border-bottom: 1px solid #757575;
-}
-input:focus { outline:none; }
-
 /* active state */
 
-.avatar {
+.twt-avatar {
   margin-top: 60px;
   margin-bottom: 60px;
   height: 128px;
@@ -112,11 +77,11 @@ input:focus { outline:none; }
   object-fit: cover;
 }
 
-.select .avatar {
+.select .twt-avatar {
   border: rgb(35, 51, 76) 1px solid;
 }
 
-.btn {
+.twt-btn {
   padding: 0px 0px;
   height: 48px;
   color: #fff;
@@ -128,7 +93,7 @@ input:focus { outline:none; }
   line-height: 18px;
 }
 
-.btn.btn-grey {
+.twt-btn.twt-btn-grey {
   width: 293px;
   margin: auto;
   margin-bottom: 10px;
@@ -142,7 +107,7 @@ input:focus { outline:none; }
   transition: 0.2s ease all;
 }
 
-.btn.btn-blue {
+.twt-btn.twt-btn-blue {
   width: 293px;
   margin: auto;
   margin-bottom: 10px;
@@ -156,7 +121,7 @@ input:focus { outline:none; }
   transition: 0.2s ease all;
 }
 
-.btn.btn-blue2 {
+.twt-btn.twt-btn-blue2 {
   width: 293px;
   margin: auto;
   margin-bottom: 10px;
@@ -170,7 +135,7 @@ input:focus { outline:none; }
   transition: 0.2s ease all;
 }
 
-.btn.btn-red {
+.twt-btn.twt-btn-red {
   width: 293px;
   margin: auto;
   margin-bottom: 50px;
@@ -184,28 +149,28 @@ input:focus { outline:none; }
   transition: 0.2s ease all;
 }
 
-.select .btn.btn-blue {
+.select .twt-btn.twt-btn-blue {
   background-color: rgb(55, 161, 242);
   color: white;
   border: none;
   transition: 0.2s ease all;
 }
 
-.select .btn.btn-blue2 {
+.select .twt-btn.twt-btn-blue2 {
   background-color: rgb(32, 95, 143);
   color: white;
   border: none;
   transition: 0.2s ease all;
 }
 
-.select .btn.btn-red {
+.select .twt-btn.twt-btn-red {
   background-color: #ff0000;
   color: white;
   border: none;
   transition: 0.2s ease all;
 }
 
-.select .btn.btn-grey {
+.select .twt-btn.twt-btn-grey {
   background-color: rgb(110, 118, 125);
   color: white;
   border: none;
