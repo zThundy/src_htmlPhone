@@ -183,7 +183,7 @@ const actions = {
       cover: state.currentCover,
       airplane: state.airplane,
       twitterSound: localStorage['gcphone_twitter_notif_sound'] === "true",
-      twitterNotif: JSON.parse(localStorage['gcphone_twitter_notif']) || [true, false, false]
+      twitterNotif: localStorage['gcphone_twitter_notif'] ? JSON.parse(localStorage['gcphone_twitter_notif']) : [true, false, false]
     }
     PhoneAPI.sendStartupValues(data)
   },
