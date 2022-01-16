@@ -5,16 +5,19 @@
     "version": "0.2.0",
     "configurations": [
         {
+            "name": "Build project",
+            "request": "launch",
+            "runtimeArgs": [ "run", "build" ],
+            "runtimeExecutable": "npm",
+            "skipFiles": [ "<node_internals>/**" ],
+            "type": "pwa-node"
+        },
+        {
             "name": "Run dev server",
             "request": "launch",
-            "runtimeArgs": [
-                "run",
-                "dev"
-            ],
+            "runtimeArgs": [ "run", "dev" ],
             "runtimeExecutable": "npm",
-            "skipFiles": [
-                "<node_internals>/**"
-            ],
+            "skipFiles": [ "<node_internals>/**" ],
             "type": "pwa-node"
         }
     ]
