@@ -8,7 +8,6 @@
         <div class="sottotitoloGruppo">{{ s.partecipantiString }}</div>
       </div>
     </div>
-
   </div>
 </template>
 

@@ -10,10 +10,10 @@
       </div>
     </div>
 
-    <div class="write-input-container">
+    <div style="background-color: rgb(26, 26, 26);" class="write-input-container">
       <div class='write-input'>
         <input type="text" :placeholder="LangString('APP_DARKTCHAT_PLACEHOLDER_ENTER_MESSAGE')">
-        <i class="fas fa-paper-plane"></i>
+        <i style="background-color: #373B3C;" class="fas fa-paper-plane"></i>
       </div>
     </div>
   </div>
@@ -159,50 +159,4 @@ export default {
   margin-right: 5%;
   margin-top: 10px;
 }
-
-.write-input-container {
-  width: 330px;
-  height: 50px;
-  bottom: 3px;
-  position: relative;
-  background-color: rgb(26, 26, 26);
-}
-
-.write-input {
-  position: relative;
-  height: 40px;
-  width: 90%;
-  background-color: #e9e9eb;
-  border-radius: 56px;
-  margin-left: auto;
-  margin-right: auto;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.6);
-}
-
-.write-input input {
-  height: 100%;
-  border: none;
-  outline: none;
-  font-size: 15px;
-  margin-left: 14px;
-  padding: 12px 5px;
-  background-color: rgba(236, 236, 241, 0)
-}
-
-.write-input i {
-  height: 50px;
-  width: 50px;
-  font-size: 15px;
-  bottom: 5px;
-  color: #e2e2e2;
-  float: right;
-  position: relative;
-  padding-top: 16px;
-  border-radius: 50px;
-  text-align-last: center;
-  background-color: #373B3C;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.6);
-  transition: all .5s ease;
-}
-
 </style>
