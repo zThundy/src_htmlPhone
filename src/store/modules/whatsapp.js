@@ -133,7 +133,7 @@ if (process.env.NODE_ENV !== 'production') {
   state.gruppi = [
     {
       id: 1,
-      icona: 'https://cdn.discordapp.com/attachments/848629680655433738/932002729499426846/zth_gcphone.picture.png',
+      icona: 'https://u.trs.tn/tohqw.jpg',
       gruppo: 'Provo',
       partecipanti: ['55529322'],
       partecipantiString: 'tanto questa viene rimpiazzata dal lua'

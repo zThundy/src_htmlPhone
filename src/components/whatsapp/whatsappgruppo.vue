@@ -20,7 +20,7 @@
       </md-activity-indicator>
     </custom-toast>
 
-    <div id='sms_list'>
+    <div style="width: 100%; height: 605px;" id='sms_list'>
       <div v-for="(s, i) of messaggi[String(gruppo.id)]" :key="i" class="whatsapp-menu-item">
         <div v-if="isSMSAudio(s)" style="overflow: auto;">
           <div v-if="isSentByMe(s)" class="bubble daMe" :class="{ select: i === currentSelected }">
@@ -60,7 +60,7 @@
 
     <div class="whatsapp-write-input-container">
       <div class='whatsapp-write-input'>
-        <input type="text" :placeholder="LangString('APP_WHATSAPP_PLACEHOLDER_ENTER_MESSAGE')">
+        <input type="text" :placeholder="LangString('APP_WHATSAPP_PLACEHOLDER_ENTER_MESSAGE')" v-autofocus>
         <i v-if="!isRecording" class="fas fa-paper-plane"></i>
         <i v-else style="background-color: rgb(220, 0, 12);" class="fas fa-microphone"></i>
       </div>
@@ -462,22 +462,20 @@ export default {
 /* Input message zone */
 
 #sms_list{
+  height: calc(100% - 34px - 26px);
   overflow-y: hidden;
-  width: 100%;
-  height: 78%;
+  padding-bottom: 8px;
 }
 
 .whatsapp-write-input-container {
-  width: 100%;
-  height: 70px;
+  width: 330px;
+  height: 50px;
   position: relative;
-  overflow: hidden;
 }
 
 .whatsapp-write-input {
-  top: 15px;
   position: relative;
-  height: 65%;
+  height: 40px;
   width: 90%;
   background-color: #e9e9eb;
   border-radius: 56px;
@@ -487,15 +485,12 @@ export default {
 }
 
 .whatsapp-write-input input {
-  position: relative;
-  height: 80%;
-  width: 70%;
+  height: 100%;
   border: none;
   outline: none;
   font-size: 15px;
   margin-left: 14px;
-  padding-left: 5px;
-  padding-top: 10px;
+  padding: 12px 5px;
   background-color: rgba(236, 236, 241, 0)
 }
 
@@ -503,7 +498,7 @@ export default {
   height: 50px;
   width: 50px;
   font-size: 15px;
-  bottom: 38px;
+  bottom: 5px;
   color: #e2e2e2;
   float: right;
   position: relative;

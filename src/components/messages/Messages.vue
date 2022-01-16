@@ -2,7 +2,7 @@
   <div style="backgroundColor: white" class="phone_app messages">
     <PhoneTitle :backgroundColor="'rgb(194, 108, 7)'" :title="formatEmoji(displayContact)" style="color: black" /> <!--:title="displayContact" :backgroundColor="color" -->
     
-    <div class="phone_fullscreen_img" v-if="imgZoom">
+    <div class="phone_fullscreen_img" v-if="imgZoom !== null">
       <img v-if="imgZoom.type === 'photo'" :src="imgZoom.link" />
       <video v-else-if="imgZoom.type === 'video'" width="330" height="710" id="video-playback-element" :src="imgZoom.link" autoplay />
     </div>
@@ -325,7 +325,7 @@ export default {
       .catch(e => { this.ignoreControls = false })
     },
     onBackspace () {
-      if (this.imgZoom) {
+      if (this.imgZoom !== undefined) {
         this.imgZoom = undefined
         this.CHANGE_BRIGHTNESS_STATE(true)
         return
@@ -337,7 +337,7 @@ export default {
         this.$router.go(-1)
       }
     },
-    onRight () {
+    onRight: function () {
       if (this.ignoreControls) return
       if (this.selectMessage === -1) this.showOptions()
     },
@@ -662,5 +662,50 @@ export default {
   color: white;
   font-size: 20px;
   margin-top: 20%;
+}
+
+.write-input-container {
+  width: 330px;
+  height: 55px;
+  bottom: 5px;
+  position: relative;
+  background-color: white;
+}
+
+.write-input {
+  position: relative;
+  height: 40px;
+  width: 90%;
+  background-color: #e9e9eb;
+  border-radius: 56px;
+  margin-left: auto;
+  margin-right: auto;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.6);
+}
+
+.write-input input {
+  height: 100%;
+  border: none;
+  outline: none;
+  font-size: 15px;
+  margin-left: 14px;
+  padding: 12px 5px;
+  background-color: rgba(236, 236, 241, 0)
+}
+
+.write-input i {
+  height: 50px;
+  width: 50px;
+  font-size: 15px;
+  bottom: 5px;
+  color: #e2e2e2;
+  float: right;
+  position: relative;
+  padding-top: 16px;
+  border-radius: 50px;
+  text-align-last: center;
+  background-color: rgb(194, 108, 7);
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.6);
+  transition: all .5s ease;
 }
 </style>

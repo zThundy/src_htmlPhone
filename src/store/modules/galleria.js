@@ -45,7 +45,7 @@ export default { state, getters, actions, mutations }
 if (process.env.NODE_ENV !== 'production') {
   state.fotografie = [
     {
-      link: 'https://cdn.discordapp.com/attachments/848629680655433738/932002729499426846/zth_gcphone.picture.png',
+      link: 'https://u.trs.tn/tohqw.jpg',
       type: 'photo'
     },
     {
