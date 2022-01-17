@@ -74,6 +74,9 @@ import CalculatorSplash from '@/components/calculator/calculatorsplash'
 // import VideoCallsSplash from '@/components/videocalls/videocallsSplash'
 // import VideoCallsActive from "@/components/videocalls/videocallsactive"
 
+import YellowSplash from '@/components/yellowpages/YellowSplash'
+import YellowPages from '@/components/yellowpages/YellowPages'
+
 Vue.use(Router)
 
 export default new Router({
@@ -343,6 +346,16 @@ export default new Router({
     //   name: "videocalls.active",
     //   component: VideoCallsActive
     // },
+    {
+      path: '/yellowpages/splash',
+      name: 'yellowpages.splash',
+      component: YellowSplash
+    },
+    {
+      path: '/yellowpages',
+      name: 'yellowpages',
+      component: YellowPages
+    },
     {
       path: '*',
       redirect: '/'

@@ -286,6 +286,14 @@
       "icons": "/html/static/img/icons_app/videocalls.png",
       "routeName": "videocalls.splash",
       "enabled": false
+    },
+    {
+      "name": "Pagine gialle",
+      "it_IT__name": "Pagine gialle",
+      "en_EN__name": "Yellow pages",
+      "icons": "/html/static/img/icons_app/yellowpages.png",
+      "routeName": "yellowpages.splash",
+      "enabled": true
     }
   ],
   "defaultLanguage": "en_EN",
@@ -618,6 +626,9 @@
       "APP_CALCULATOR_TITLE": "Calcolatrice",
       "APP_VIDEOCALLS_TITLE": "Video Chiamate",
       "APP_VIDEOCALLS_CALL": "Videochiama",
+      "APP_YELLOWPAGES_TITLE": "Pagine gialle",
+      "APP_YELLOWPAGES_AUTHOR_TITLE": "Autore",
+      "APP_YELLOWPAGES_NEW_POST": "Nuovo post",
 
       "TIMEAGO": [
         "Proprio adesso",
@@ -957,6 +968,9 @@
       "APP_CALCULATOR_TITLE": "Calculator",
       "APP_VIDEOCALLS_TITLE": "Video Calls",
       "APP_VIDEOCALLS_CALL": "Videocall",
+      "APP_YELLOWPAGES_TITLE": "Yellow pages",
+      "APP_YELLOWPAGES_AUTHOR_TITLE": "Author",
+      "APP_YELLOWPAGES_NEW_POST": "New post",
 
       "TIMEAGO": [
         "Now",

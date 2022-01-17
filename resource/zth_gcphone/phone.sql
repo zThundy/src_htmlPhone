@@ -470,6 +470,21 @@ DELETE FROM `phone_sim`;
 /*!40000 ALTER TABLE `phone_sim` DISABLE KEYS */;
 /*!40000 ALTER TABLE `phone_sim` ENABLE KEYS */;
 
+-- Dump della struttura di tabella esfx.phone_yellow_pages
+CREATE TABLE IF NOT EXISTS `phone_yellow_pages` (
+  `id` bigint(20) NOT NULL DEFAULT '0',
+  `identifier` varchar(255) DEFAULT NULL,
+  `number` varchar(255) DEFAULT NULL,
+  `description` varchar(255) DEFAULT NULL,
+  `date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+-- Dump dei dati della tabella esfx.phone_yellow_pages: ~0 rows (circa)
+DELETE FROM `phone_yellow_pages`;
+/*!40000 ALTER TABLE `phone_yellow_pages` DISABLE KEYS */;
+/*!40000 ALTER TABLE `phone_yellow_pages` ENABLE KEYS */;
+
 /*!40101 SET SQL_MODE=IFNULL(@OLD_SQL_MODE, '') */;
 /*!40014 SET FOREIGN_KEY_CHECKS=IF(@OLD_FOREIGN_KEY_CHECKS IS NULL, 1, @OLD_FOREIGN_KEY_CHECKS) */;
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

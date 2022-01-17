@@ -1,6 +1,6 @@
 fx_version "bodacious"
 game "gta5"
-version "4.1.10"
+version "4.2.0"
 author "zThundy__"
 
 ui_page 'html/index.html'
@@ -59,6 +59,7 @@ client_script {
     "client/bourse.lua",
     "client/phonebox.lua",
     "client/voicemails.lua",
+    "client/yellowpages.lua",
 
     -- modules
     "modules/tokovoip.lua",
@@ -89,6 +90,7 @@ server_script {
     "server/bourse.lua",
     "server/phonebox.lua",
     "server/voicemails.lua",
+    "server/yellowpages.lua",
 
     -- modules
     "modules/saltychat.lua",

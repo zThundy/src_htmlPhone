@@ -21,6 +21,7 @@ import news from './modules/news'
 import azienda from './modules/azienda'
 import license from './modules/license'
 // import videocalls from './modules/videocalls'
+import yellows from './modules/yellowpages'
 
 Vue.use(Vuex)
 
@@ -45,7 +46,8 @@ export default new Vuex.Store({
     azienda,
     wifi,
     license,
-    // videocalls
+    // videocalls,
+    yellows,
   },
   strict: true
 })
