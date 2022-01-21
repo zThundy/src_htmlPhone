@@ -2,11 +2,16 @@
   <div class="phone_app">
     <PhoneTitle :title="LangString('APP_YELLOWPAGES_TITLE')" color="white" backgroundColor="rgb(210, 166, 5)"/>
 
-    <div v-for="(elem, id) in yellows" :key="id" class="post-container" :class="{ select: currentSelect === id }">
-      <div class="content-container">
-        <span class="author">{{LangString("APP_YELLOWPAGES_AUTHOR_TITLE")}}: {{elem.author}}</span>
-        <div class="description-container">
-          <span>{{elem.description}}</span>
+    <div class="yellows-container">
+      <div v-for="(elem, id) in yellows" :key="id" class="post-container" :class="{ select: currentSelect === id }">
+        <div class="content-container">
+          <span class="author">
+            <span v-if="IsPersonalMessage(elem)" class="fas fa-user"></span>
+            {{LangString("APP_YELLOWPAGES_AUTHOR_TITLE")}}: {{elem.number}}
+            </span>
+          <div class="description-container">
+            <span>{{elem.description}}</span>
+          </div>
         </div>
       </div>
     </div>
@@ -15,7 +20,7 @@
 
 <script>
 import PhoneTitle from './../PhoneTitle'
-import { mapGetters } from "vuex"
+import { mapGetters, mapMutations } from "vuex"
 import Modal from '@/components/Modal/index.js'
 
 export default {
@@ -30,19 +35,37 @@ export default {
   computed: {
     ...mapGetters([
       "LangString",
-      "yellows"
+      "yellows",
+      "myPhoneNumber"
     ])
   },
   methods: {
+    ...mapMutations([
+      "DELETE_YELLOW_POST"
+    ]),
+    IsPersonalMessage(m) {
+      if (m.number === this.myPhoneNumber) return "fa-plus"
+      return ""
+    },
+    scrollIntoView () {
+      this.$nextTick(() => {
+        const elem = this.$el.querySelector('.select')
+        if (elem !== null) {
+          elem.scrollIntoView({ behavior: 'smooth', block: 'start', inline: 'nearest' })
+        }
+      })
+    },
     onDown() {
       if (this.ignoreControls) return
       if (this.currentSelect === this.yellows.length - 1) return
       this.currentSelect++
+      this.scrollIntoView()
     },
     onUp() {
       if (this.ignoreControls) return
       if (this.currentSelect === 0) return
       this.currentSelect--
+      this.scrollIntoView()
     },
     onEnter() {
       if (this.ignoreControls) return
@@ -51,19 +74,31 @@ export default {
       if (this.ignoreControls) return
     },
     onRight() {
+      if (this.yellows.length === 0) return
       if (this.ignoreControls) return
       this.ignoreControls = true
-      let scelte = [
-        { id: 1, title: this.LangString('APP_YELLOWPAGES_NEW_POST'), icons: 'fa-plus' },
-      ]
+      const yellow = this.yellows[this.currentSelect]
+      let scelte = [{ id: 1, title: this.LangString('APP_YELLOWPAGES_NEW_POST'), icons: 'fa-plus' }]
+      if (yellow.number === this.myPhoneNumber) scelte = [...scelte, { id: 2, title: this.LangString('APP_YELLOWPAGES_DELETE_POST'), icons: 'fa-trash', color: 'orange' }]
       scelte = [...scelte, { id: -1, title: this.LangString('CANCEL'), icons: 'fa-undo', color: 'red' }]
       Modal.CreateModal({ scelte })
       .then(resp => {
         this.ignoreControls = false
         switch (resp.id) {
           case 1:
+            Modal.CreateTextModal({
+              title: this.LangString('TYPE_MESSAGE'),
+              limit: 255,
+              color: 'rgb(210, 166, 5)'
+            })
+            .then(message => {
+              this.$phoneAPI.createYellowPost({ message: message.text, author: this.myPhoneNumber })
+            })
             break
           case 2:
+            this.DELETE_YELLOW_POST(this.currentSelect)
+            this.currentSelect--
+            this.$phoneAPI.deleteYellowPost({ id: yellow.id })
             break
         }
       })
@@ -78,6 +113,7 @@ export default {
     },
   },
   created () {
+    this.$phoneAPI.requestYellowPosts()
     this.$bus.$on('keyUpArrowDown', this.onDown)
     this.$bus.$on('keyUpArrowUp', this.onUp)
     this.$bus.$on('keyUpEnter', this.onEnter)
@@ -97,6 +133,10 @@ export default {
 </script>
 
 <style scoped>
+.yellows-container {
+  overflow-y: hidden;
+}
+
 .post-container {
   width: 94%;
   height: auto;

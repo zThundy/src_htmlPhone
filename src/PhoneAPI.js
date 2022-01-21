@@ -848,6 +848,20 @@ class PhoneAPI {
   async sellCrypto (data) {
     return this.post('sellCrypto', data)
   }
+
+  /* YELLOW PAGES */
+
+  async requestYellowPosts() {
+    return this.post("requestYellowPosts")
+  }
+
+  onreceiveYellowPosts(data) {
+    store.commit("RECEIVE_YELLOW_POSTS", data.posts)
+  }
+
+  async createYellowPost(data) {
+    return this.post("createYellowPost", data)
+  }
 }
 
 function decimalAdjust (type, value, exp) {
