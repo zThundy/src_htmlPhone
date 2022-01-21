@@ -473,7 +473,7 @@ DELETE FROM `phone_sim`;
 -- Dump della struttura di tabella esfx.phone_yellow_pages
 CREATE TABLE IF NOT EXISTS `phone_yellow_pages` (
   `id` bigint(20) NOT NULL DEFAULT '0',
-  `identifier` varchar(255) DEFAULT NULL,
+  `author` varchar(255) DEFAULT NULL,
   `number` varchar(255) DEFAULT NULL,
   `description` varchar(255) DEFAULT NULL,
   `date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
