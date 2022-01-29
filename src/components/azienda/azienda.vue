@@ -2,8 +2,8 @@
   <div style="width: 100%; height: 100%;" class="phone_app">
     <PhoneTitle :title="LangString('APP_AZIENDA_TITLE')" :color="'black'" backgroundColor="rgb(255, 180, 89)"/>
 
-    <div v-if="myJobInfo && myJobInfo.buttons" class="container">
-      <div class="informations-container">
+    <div v-if="myJobInfo && myJobInfo.buttons" class="azienda-container">
+      <div class="informations-azienda-container">
         <div class="informations-head">
           <img :src="myAziendaInfo.img ? myAziendaInfo.img : '/html/static/img/icons_app/azienda.png'">
           <div class="informations-inline">
@@ -23,7 +23,7 @@
         </div>
       </div>
 
-      <div class="buttons-container">
+      <div class="buttons-azienda-container">
         <div v-for="(val, key) in appButtons" :key="key">
           <input type='button' class="generic-button" :class="{ select: currentSelect == key }" :value="LangString(val.label)" />
         </div>
@@ -174,12 +174,12 @@ export default {
 </script>
 
 <style scoped>
-.container {
+.azienda-container {
   height: 100%;
   background-color: rgb(85, 85, 85);
 }
 
-.informations-container {
+.informations-azienda-container {
   height: 18%;
   background-color: bisque;
 }
@@ -252,7 +252,7 @@ export default {
   margin-right: auto;
 }
 
-.buttons-container {
+.buttons-azienda-container {
   position: relative;
   display: flex;
   flex-direction: column;

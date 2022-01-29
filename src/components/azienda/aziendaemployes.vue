@@ -1,8 +1,8 @@
 <template>
   <div style="width: 100%; height: 630px; overflow: hidden;">
 
-    <div class="employes-container">
-      <div class="employe-container" v-for="(elem, key) in myAziendaInfo.employes" :key="key" :class="{ selected: key === currentSelected }">
+    <div class="employes-azienda-container">
+      <div class="employe-azienda-container" v-for="(elem, key) in myAziendaInfo.employes" :key="key" :class="{ selected: key === currentSelected }">
         <div class="employe-header">
           <div class="employe-status" :class="[ elem.isOnline ? 'online' : 'offline']">
             <div class="employe-icon fa fa-user-o" aria-hidden="true"></div>
@@ -119,14 +119,14 @@ export default {
 </script>
 
 <style scoped>
-.employes-container {
+.employes-azienda-container {
   height: 94%;
   margin-top: 10px;
   overflow: hidden;
   border-radius: 20px;
 }
 
-.employe-container {
+.employe-azienda-container {
   width: 96%;
   height: 100px;
   background-color: rgb(255, 196, 123);
@@ -137,7 +137,7 @@ export default {
   border-radius: 10px;
 }
 
-.employe-container.selected {
+.employe-azienda-container.selected {
   background-color: rgb(255, 174, 75);
 }
 

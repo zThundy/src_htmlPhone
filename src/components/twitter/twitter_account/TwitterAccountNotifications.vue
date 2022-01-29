@@ -36,7 +36,6 @@
 import { mapGetters, mapActions } from "vuex"
 
 import CustomSwitch from '@/components/CustomSwitch'
-import "./style.css"
 
 export default {
   components: { CustomSwitch },
@@ -108,6 +107,8 @@ export default {
 </script>
 
 <style>
+@import url("./style.css");
+
 .container.select {
   background-color: rgba(55, 161, 242, 0.2);
 }

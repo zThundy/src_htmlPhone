@@ -5,8 +5,6 @@
 <script>
 import { mapGetters } from 'vuex'
 
-import "./twitter_account/style.css"
-
 import MENU from "./twitter_account/TwitterAccountMenu.vue"
 import NEW_ACCOUNT from "./twitter_account/TwitterAccountNew.vue"
 import NOTIFICATIONS from "./twitter_account/TwitterAccountNotifications.vue"
@@ -86,3 +84,7 @@ export default {
   }
 }
 </script>
+
+<style scoped>
+@import url("./twitter_account/style.css");
+</style>>

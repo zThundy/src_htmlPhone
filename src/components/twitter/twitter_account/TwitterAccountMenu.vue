@@ -55,8 +55,6 @@
 import { mapGetters, mapActions } from 'vuex'
 import Modal from '@/components/Modal'
 
-import "./style.css"
-
 export default {
   data() {
     return {
@@ -231,6 +229,8 @@ export default {
 </script>
 
 <style scoped>
+@import url("./style.css");
+
 .bottom {
   margin-top: auto;
   margin-bottom: auto;
