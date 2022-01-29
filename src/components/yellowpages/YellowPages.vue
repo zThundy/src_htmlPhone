@@ -67,19 +67,19 @@ export default {
       this.currentSelect--
       this.scrollIntoView()
     },
-    onEnter() {
-      if (this.ignoreControls) return
-    },
     onLeft() {
       if (this.ignoreControls) return
     },
     onRight() {
-      if (this.yellows.length === 0) return
       if (this.ignoreControls) return
       this.ignoreControls = true
-      const yellow = this.yellows[this.currentSelect]
       let scelte = [{ id: 1, title: this.LangString('APP_YELLOWPAGES_NEW_POST'), icons: 'fa-plus' }]
-      if (yellow.number === this.myPhoneNumber) scelte = [...scelte, { id: 2, title: this.LangString('APP_YELLOWPAGES_DELETE_POST'), icons: 'fa-trash', color: 'orange' }]
+      const yellow = this.yellows[this.currentSelect]
+      if (this.yellows.length > 0) {
+        if (yellow.number === this.myPhoneNumber) {
+          scelte = [...scelte, { id: 2, title: this.LangString('APP_YELLOWPAGES_DELETE_POST'), icons: 'fa-trash', color: 'orange' }]
+        }
+      }
       scelte = [...scelte, { id: -1, title: this.LangString('CANCEL'), icons: 'fa-undo', color: 'red' }]
       Modal.CreateModal({ scelte })
       .then(resp => {
@@ -116,7 +116,7 @@ export default {
     this.$phoneAPI.requestYellowPosts()
     this.$bus.$on('keyUpArrowDown', this.onDown)
     this.$bus.$on('keyUpArrowUp', this.onUp)
-    this.$bus.$on('keyUpEnter', this.onEnter)
+    this.$bus.$on('keyUpEnter', this.onRight)
     this.$bus.$on('keyUpArrowLeft', this.onLeft)
     this.$bus.$on('keyUpArrowRight', this.onRight)
     this.$bus.$on('keyUpBackspace', this.onBack)
@@ -124,7 +124,7 @@ export default {
   beforeDestroy () {
     this.$bus.$off('keyUpArrowDown', this.onDown)
     this.$bus.$off('keyUpArrowUp', this.onUp)
-    this.$bus.$off('keyUpEnter', this.onEnter)
+    this.$bus.$off('keyUpEnter', this.onRight)
     this.$bus.$off('keyUpArrowLeft', this.onLeft)
     this.$bus.$off('keyUpArrowRight', this.onRight)
     this.$bus.$off('keyUpBackspace', this.onBack)
