@@ -630,6 +630,7 @@
       "APP_YELLOWPAGES_AUTHOR_TITLE": "Autore",
       "APP_YELLOWPAGES_NEW_POST": "Nuovo post",
       "APP_YELLOWPAGES_DELETE_POST": "Elimina post",
+      "APP_YELLOW_NEW_POST_TITLE": "Nuovo post",
 
       "TIMEAGO": [
         "Proprio adesso",
@@ -973,6 +974,7 @@
       "APP_YELLOWPAGES_AUTHOR_TITLE": "Author",
       "APP_YELLOWPAGES_NEW_POST": "New post",
       "APP_YELLOWPAGES_DELETE_POST": "Delete post",
+      "APP_YELLOW_NEW_POST_TITLE": "New post",
 
       "TIMEAGO": [
         "Now",
