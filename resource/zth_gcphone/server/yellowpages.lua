@@ -11,7 +11,7 @@ local function YellowShowSuccess(player, title, message)
 end
 
 MySQL.ready(function()
-    MySQL.Async.fetchAll("SELECT * FROM phone_yellow_posts", {}, function(yellows)
+    MySQL.Async.fetchAll("SELECT * FROM phone_yellow_pages", {}, function(yellows)
         CACHED_YELLOWS = yellows
     end)
 end)
