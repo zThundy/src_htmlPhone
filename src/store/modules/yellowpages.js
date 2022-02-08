@@ -15,6 +15,9 @@ const mutations = {
   },
   RECEIVE_YELLOW_POSTS(state, data) {
     state.yellows = data
+  },
+  RECEIVE_YELLOW_POST(state, data) {
+    state.yellows.push(data)
   }
 }
 

@@ -2,34 +2,34 @@
   <div class="phone_app">
     <PhoneTitle :title="LangString('APP_BOURSE_TITLE')" @back="onBackspace" :backgroundColor="'rgba(77, 100, 111, 1.0)'" />
 
-    <div v-if="stocksProfile" class='container'>
-      <div class="stocks-menu">
-        <div class="stocks-menu-button" :class="{ selected: currentPage === 0 }"><i class="fas fa-chart-line stocks-menu-icon"></i>Mercato</div>
-        <div class="stocks-menu-button" :class="{ selected: currentPage === 1 }"><i class="fas fa-business-time stocks-menu-icon"></i>Investimenti</div>
+    <div v-if="stocksProfile" class='bourse_container'>
+      <div class="bourse-stocks-menu">
+        <div class="bourse-stocks-menu-button" :class="{ selected: currentPage === 0 }"><i class="fas fa-chart-line bourse-stocks-menu-icon"></i>Mercato</div>
+        <div class="bourse-stocks-menu-button" :class="{ selected: currentPage === 1 }"><i class="fas fa-business-time bourse-stocks-menu-icon"></i>Investimenti</div>
       </div>
 
       <div v-if="currentPage === 0">
-        <img class="info-logo" src="/html/static/img/icons_app/borsa.png" />
-        <div class='profile-info'>
-          <div class='info-user'>
-            <p class='info-user-name'>{{ stocksProfile.name }}</p>
-            <p class='info-user-surname'>{{ stocksProfile.surname }}</p>
+        <img class="bourse-info-logo" src="/html/static/img/icons_app/borsa.png" />
+        <div class='bourse-profile-bourse-info'>
+          <div class='bourse-info-user'>
+            <p class='bourse-info-user-name'>{{ stocksProfile.name }}</p>
+            <p class='bourse-info-user-surname'>{{ stocksProfile.surname }}</p>
           </div>
-          <div class='info-balance'>
-            <p class='info-balance-title'>Portafoglio</p>
-            <md-amount class="info-balance-amount" :value="stocksProfile.balance" :duration="500" has-separator transition></md-amount> $
+          <div class='bourse-info-balance'>
+            <p class='bourse-info-balance-title'>Portafoglio</p>
+            <md-amount class="bourse-info-balance-amount" :value="stocksProfile.balance" :duration="500" has-separator transition></md-amount> $
           </div>
         </div>
 
-        <div class="stocks-table">
-          <div class="stocks-table-inner">
-            <div v-for="(table, key) in stocksInfo" :key="key" class="stocks-table-elem" :class="{ select: currentSelect === key }">
-              <p class="stocks-ticker stocks-bold">{{ table.name }}</p>
-              <p class="stocks-ticker stocks-current-mp">{{ table.currentMarket }} $</p>
-              <p class="stocks-ticker stocks-current-variation" :style="{ color: getBourseColor(table) }">
+        <div class="bourse-stocks-table">
+          <div class="bourse-stocks-table-inner">
+            <div v-for="(table, key) in stocksInfo" :key="key" class="bourse-stocks-table-elem" :class="{ select: currentSelect === key }">
+              <p class="bourse-stocks-ticker bourse-stocks-bold">{{ table.name }}</p>
+              <p class="bourse-stocks-ticker bourse-stocks-current-mp">{{ table.currentMarket }} $</p>
+              <p class="bourse-stocks-ticker bourse-stocks-current-variation" :style="{ color: getBourseColor(table) }">
                 {{ Number(table.currentMarket - table.closeMarket).toFixed(1) }}
                 ({{ Number((Math.abs(table.currentMarket - table.closeMarket) * 100) / table.closeMarket).toFixed(2) }}%)
-                <i class="stocks-ticker stocks-current-arrow"
+                <i class="bourse-stocks-ticker bourse-stocks-current-arrow"
                   :class="getBourseArrow(table)" :style="{ color: getBourseColor(table) }"
                 ></i>
               </p>
@@ -39,26 +39,26 @@
       </div>
 
       <div v-if="currentPage === 1">
-        <img class="info-logo" src="/html/static/img/icons_app/borsa.png" />
+        <img class="bourse-info-logo" src="/html/static/img/icons_app/borsa.png" />
 
-        <div class='profile-info'>
-          <div class='info-user'>
-            <p class='info-user-name'>{{ stocksProfile.name }}</p>
-            <p class='info-user-surname'>{{ stocksProfile.surname }}</p>
+        <div class='bourse-profile-bourse-info'>
+          <div class='bourse-info-user'>
+            <p class='bourse-info-user-name'>{{ stocksProfile.name }}</p>
+            <p class='bourse-info-user-surname'>{{ stocksProfile.surname }}</p>
           </div>
-          <div class='info-balance'>
-            <p class='info-balance-title'>Portafoglio</p>
-            <md-amount class="info-balance-amount" :value="stocksProfile.balance" :duration="500" has-separator transition></md-amount> $
+          <div class='bourse-info-balance'>
+            <p class='bourse-info-balance-title'>Portafoglio</p>
+            <md-amount class="bourse-info-balance-amount" :value="stocksProfile.balance" :duration="500" has-separator transition></md-amount> $
           </div>
         </div>
         
-        <div class="stocks-table">
-          <div class="stocks-table-inner">
-            <div v-for="(table, key) in myStocksInfo" :key="key" class="stocks-table-elem" :class="{ select: currentSelect === key }">
-              <p class="stocks-ticker-personal stocks-bold">{{ table.name }}</p>
-              <p class="stocks-ticker-personal stocks-current-mp">{{ table.amount }}</p>
-              <p class="stocks-ticker-personal stocks-current-mp">{{ getCurrentMarket(table).toFixed(1) }} $</p>
-              <p class="stocks-ticker-personal stocks-current-mp">{{ (getCurrentMarket(table) * table.amount).toFixed(1) }} $</p>
+        <div class="bourse-stocks-table">
+          <div class="bourse-stocks-table-inner">
+            <div v-for="(table, key) in myStocksInfo" :key="key" class="bourse-stocks-table-elem" :class="{ select: currentSelect === key }">
+              <p class="bourse-stocks-ticker-personal bourse-stocks-bold">{{ table.name }}</p>
+              <p class="bourse-stocks-ticker-personal bourse-stocks-current-mp">{{ table.amount }}</p>
+              <p class="bourse-stocks-ticker-personal bourse-stocks-current-mp">{{ getCurrentMarket(table).toFixed(1) }} $</p>
+              <p class="bourse-stocks-ticker-personal bourse-stocks-current-mp">{{ (getCurrentMarket(table) * table.amount).toFixed(1) }} $</p>
             </div>
           </div>
         </div>
@@ -251,12 +251,12 @@ export default {
 </script>
 
 <style scoped>
-.container {
+.bourse_container {
   height: 100%;
   background-color: rgb(197, 197, 197);
 }
 
-.stocks-menu {
+.bourse-stocks-menu {
   position: absolute;
   width: 100%;
   height: 70px;
@@ -268,7 +268,7 @@ export default {
   color: rgb(15, 15, 15);
 }
 
-.stocks-menu-button {
+.bourse-stocks-menu-button {
   background-color: #96b2be;
   height: 45px;
   padding: 12px;
@@ -277,11 +277,11 @@ export default {
   font-size: 18px;
 }
 
-.stocks-menu-icon {
+.bourse-stocks-menu-icon {
   margin-right: 5px;
 }
 
-.profile-info {
+.bourse-profile-bourse-info {
   background-color: #00394a;
   height: 130px;
   clip-path: polygon(0 0, 0 100px, 100% 100%, 100% 0);
@@ -291,27 +291,27 @@ export default {
   color: white;
 }
 
-.info-user {
+.bourse-info-user {
   position: relative;
   top: 20px;
 }
 
-.info-user-surname {
+.bourse-info-user-surname {
   font-weight: bold;
   font-size: 24px;
 }
 
-.info-balance {
+.bourse-info-balance {
   position: relative;
   top: 20px;
 }
 
-.info-balance-title {
+.bourse-info-balance-title {
   font-weight: bold;
   font-size: 24px;
 }
 
-.info-logo {
+.bourse-info-logo {
   position: absolute;
   right: 40px;
   top: 165px;
@@ -319,20 +319,20 @@ export default {
   z-index: 9999;
 }
 
-.stocks-table {
+.bourse-stocks-table {
   background-color: #001e27;
   margin-top: -30px;
   height: 490px;
 }
 
-.stocks-table-inner {
+.bourse-stocks-table-inner {
   top: 70px;
   position: relative;
   height: 439px;
   overflow-y: hidden;
 }
 
-.stocks-table-elem {
+.bourse-stocks-table-elem {
   background-color: #00394a;
   height: 70px;
   border-bottom: 1px solid #607d8b;
@@ -340,23 +340,23 @@ export default {
   justify-content: space-between;
 }
 
-.stocks-table-elem.select {
+.bourse-stocks-table-elem.select {
   background-color: #005c79;
 }
 
-.stocks-menu-button.selected {
+.bourse-stocks-menu-button.selected {
   background-color: #00394a;
   color: white;
 }
 
-.stocks-ticker {
+.bourse-stocks-ticker {
   position: relative;
   top: 22px;
   margin-left: 10px;
   color: #69a7c3;
 }
 
-.stocks-ticker-personal {
+.bourse-stocks-ticker-personal {
   position: relative;
   top: 22px;
   color: #69a7c3;
@@ -364,23 +364,23 @@ export default {
   margin-right: 10px;
 }
 
-.stocks-bold {
+.bourse-stocks-bold {
   font-weight: bold;
   left: 5px;
 }
 
-.stocks-current-mp {
+.bourse-stocks-current-mp {
   color: white;
 }
 
-.stocks-current-variation {
+.bourse-stocks-current-variation {
   top: 22px;
   font-size: 16px;
   color: #991616;
   font-weight: bold;
 }
 
-.stocks-current-arrow {
+.bourse-stocks-current-arrow {
   top: 0;
   left: -10px;
   font-size: 14px;

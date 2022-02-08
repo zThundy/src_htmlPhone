@@ -1,7 +1,7 @@
 
-RegisterNetEvent("gcphone:yellow_receivePosts")
-AddEventHandler("gcphone:yellow_receivePosts", function(data)
-    SendNUIMessage({ event = "receiveYellowPosts", posts = data })
+RegisterNetEvent("gcphone:yellow_receivePost")
+AddEventHandler("gcphone:yellow_receivePost", function(data)
+    SendNUIMessage({ event = "yellow_receivePost", post = data })
 end)
 
 RegisterNUICallback("createYellowPost", function(data, cb)
@@ -11,4 +11,5 @@ end)
 
 RegisterNUICallback("requestYellowPosts", function(data, cb)
     SendNUIMessage({ event = "receiveYellowPosts", posts = gcPhoneServerT.getYellowPosts() })
+    cb("ok")
 end)

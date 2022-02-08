@@ -855,6 +855,10 @@ class PhoneAPI {
     return this.post("requestYellowPosts")
   }
 
+  onreceiveYellowPost(data) {
+    store.commit("RECEIVE_YELLOW_POST", data.post)
+  }
+
   onreceiveYellowPosts(data) {
     store.commit("RECEIVE_YELLOW_POSTS", data.posts)
   }

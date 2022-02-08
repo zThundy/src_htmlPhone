@@ -2,14 +2,14 @@
   <div class="phone_app">
     <PhoneTitle :title="LangString('APP_YELLOWPAGES_TITLE')" color="white" backgroundColor="rgb(210, 166, 5)"/>
 
-    <div class="yellows-container">
-      <div v-for="(elem, id) in yellows" :key="id" class="post-container" :class="{ select: currentSelect === id }">
-        <div class="content-container">
+    <div class="yellow-container">
+      <div v-for="(elem, id) in yellows" :key="id" class="yellow-post-container" :class="{ select: currentSelect === id }">
+        <div class="yellow-content-container">
           <span class="author">
             <span v-if="IsPersonalMessage(elem)" class="fas fa-user"></span>
             {{LangString("APP_YELLOWPAGES_AUTHOR_TITLE")}}: {{elem.number}}
             </span>
-          <div class="description-container">
+          <div class="yellow-description-container">
             <span>{{elem.description}}</span>
           </div>
         </div>
@@ -133,11 +133,11 @@ export default {
 </script>
 
 <style scoped>
-.yellows-container {
+.yellow-container {
   overflow-y: hidden;
 }
 
-.post-container {
+.yellow-post-container {
   width: 94%;
   height: auto;
   margin-left: auto;
@@ -149,18 +149,18 @@ export default {
   transition: all .1s ease-in-out;
 }
 
-.post-container.select {
+.yellow-post-container.select {
   background-color: rgb(255, 208, 38);
   transition: all .1s ease-in-out;
 }
 
-.content-container {
+.yellow-content-container {
   width: 100%;
   display: flex;
   flex-direction: column;
 }
 
-.content-container .author {
+.yellow-content-container .author {
   position: relative;
   color: grey;
   padding-left: 10px;
@@ -169,7 +169,7 @@ export default {
   font-size: 15px;
 }
 
-.content-container .description-container {
+.yellow-content-container .yellow-description-container {
   position: relative;
   margin-left: auto;
   margin-right: auto;
@@ -184,7 +184,9 @@ export default {
   padding-right: 8px;
 }
 
-.description-container span {
+.yellow-description-container span {
+  width: 100%;
+  height: auto;
   font-size: 16px;
 }
 </style>
