@@ -1,6 +1,6 @@
 local CACHED_YELLOWS = {}
 
-local function YellowShowSuccess(player, title, message)
+local function YellowNotification(player, title, message)
     TriggerClientEvent("gcphone:sendGenericNotification", player, {
         message = message,
         title = title,
@@ -18,23 +18,61 @@ MySQL.ready(function()
     end)
 end)
 
+gcPhoneT.deleteYellowPost = function(id)
+    local player = source
+    local identifier = gcPhoneT.getPlayerID(player)
+    local isAble, mbToRemove = gcPhoneT.isAbleToSurfInternet(identifier, 0.5)
+    if isAble then
+        gcPhoneT.useInternetData(identifier, mbToRemove)
+        id = tonumber(id)
+        MySQL.Async.execute("DELETE FROM phone_yellow_pages WHERE id = @id", { ['@id'] = id  })
+        for k, v in pairs(CACHED_YELLOWS) do
+            if tonumber(v.id) == id then
+                table.remove(CACHED_YELLOWS, k)
+                break
+            end
+        end
+    else
+        YellowNotification(-1, "ERROR", "APP_YELLOW_NO_TARIFF")
+    end
+end
+
 gcPhoneT.createYellowPost = function(data)
     local player = source
     local identifier = gcPhoneT.getPlayerID(player)
-    data.identifier = identifier
-    data.description = data.message
-    data.number = data.author
-    data.date = os.time()
-    MySQL.Async.insert("INSERT INTO phone_yellow_pages(identifier, number, description) VALUES(@identifier, @number, @description)", {
-        ['@identifier'] = identifier,
-        ['@number'] = data.author,
-        ['@description'] = data.message
-    })
-    table.insert(CACHED_YELLOWS, data)
-    YellowShowSuccess(-1, "APP_YELLOW_NEW_POST_TITLE", data.message)
-    TriggerClientEvent("gcphone:yellow_receivePost", player, data)
+    local isAble, mbToRemove = gcPhoneT.isAbleToSurfInternet(identifier, 0.5)
+    if isAble then
+        gcPhoneT.useInternetData(identifier, mbToRemove)
+        local phone_number = gcPhoneT.getPhoneNumber(identifier)
+        data.author  = phone_number
+        data.identifier = identifier
+        data.description = data.message
+        data.number = data.author
+        data.date = os.time()
+        MySQL.Async.insert("INSERT INTO phone_yellow_pages(identifier, number, description) VALUES(@identifier, @number, @description)", {
+            ['@identifier'] = identifier,
+            ['@number'] = data.author,
+            ['@description'] = data.message
+        })
+        -- add the incremental id to local table using the last element of the
+        -- table CACHED_YELLOWS
+        data.id = CACHED_YELLOWS[#CACHED_YELLOWS].id + 1
+        table.insert(CACHED_YELLOWS, data)
+        YellowNotification(-1, "APP_YELLOW_NEW_POST_TITLE", data.message)
+        TriggerClientEvent("gcphone:yellow_receivePost", player, data)
+    else
+        YellowNotification(-1, "ERROR", "APP_YELLOW_NO_TARIFF")
+    end
 end
 
 gcPhoneT.getYellowPosts = function()
-    return CACHED_YELLOWS
+    local player = source
+    local identifier = gcPhoneT.getPlayerID(player)
+    local isAble, mbToRemove = gcPhoneT.isAbleToSurfInternet(identifier, #CACHED_YELLOWS * 0.01)
+    if isAble then
+        gcPhoneT.useInternetData(identifier, mbToRemove)
+        return CACHED_YELLOWS
+    else
+        YellowNotification(-1, "ERROR", "APP_YELLOW_NO_TARIFF")
+    end
 end

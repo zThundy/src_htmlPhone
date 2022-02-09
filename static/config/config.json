@@ -631,6 +631,7 @@
       "APP_YELLOWPAGES_NEW_POST": "Nuovo post",
       "APP_YELLOWPAGES_DELETE_POST": "Elimina post",
       "APP_YELLOW_NEW_POST_TITLE": "Nuovo post",
+      "APP_YELLOW_NO_TARIFF": "Non hai abbastanza internet",
 
       "TIMEAGO": [
         "Proprio adesso",
@@ -975,6 +976,7 @@
       "APP_YELLOWPAGES_NEW_POST": "New post",
       "APP_YELLOWPAGES_DELETE_POST": "Delete post",
       "APP_YELLOW_NEW_POST_TITLE": "New post",
+      "APP_YELLOW_NO_TARIFF": "You have no internet",
 
       "TIMEAGO": [
         "Now",

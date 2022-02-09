@@ -855,6 +855,10 @@ class PhoneAPI {
     return this.post("requestYellowPosts")
   }
 
+  async deleteYellowPost(id) {
+    return this.post("deleteYellowPost", id)
+  }
+
   onreceiveYellowPost(data) {
     store.commit("RECEIVE_YELLOW_POST", data.post)
   }

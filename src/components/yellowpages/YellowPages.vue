@@ -8,9 +8,9 @@
           <span class="author">
             <span v-if="IsPersonalMessage(elem)" class="fas fa-user"></span>
             {{LangString("APP_YELLOWPAGES_AUTHOR_TITLE")}}: {{elem.number}}
-            </span>
+          </span>
           <div class="yellow-description-container">
-            <span>{{elem.description}}</span>
+            <span class="yellow-description-content">{{elem.description}}</span>
           </div>
         </div>
       </div>
@@ -184,7 +184,8 @@ export default {
   padding-right: 8px;
 }
 
-.yellow-description-container span {
+.yellow-description-container .yellow-description-content {
+  line-break: normal;
   width: 100%;
   height: auto;
   font-size: 16px;
