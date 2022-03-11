@@ -52,6 +52,7 @@ function newPhoneProp()
     while not HasModelLoaded(phoneModel) do Citizen.Wait(1) end
     phoneProp = CreateObject(phoneModel, 1.0, 1.0, 1.0, 1, 1, 0)
     local bone = GetPedBoneIndex(ped, 28422)
+    SetEntityCollision(phoneProp, false, false)
     AttachEntityToEntity(phoneProp, ped, bone, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1, 1, 0, 0, 2, 1)
     table.insert(CACHED_PROPS, phoneProp)
 end
