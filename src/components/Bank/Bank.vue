@@ -7,7 +7,7 @@
 
     <div class="dividerRectangle md-example-child md-example-child-amount">
       <i class="fas fa-credit-card"></i>
-      <md-amount class="bankAmount" :value="bankAmount" :duration="1500" has-separator transition></md-amount> $
+      <md-amount class="bankAmount" :value="bankAmount" :duration="1500" has-separator transition></md-amount> {{ LangString("APP_BANK_SYMBOL") }}
     </div>
 
     <div class="dividerRectangle2">
@@ -18,18 +18,15 @@
     <hr class="separator">
 
     <div class="movementsCards">
-
       <div class="movementsCard" v-for="(elem, key) in movements" :key="key" v-bind:class="{selected: key === currentSelect}">
         <i v-if="elem.type == 'positive'" style="color: lime;" class="fas fa-arrow-up"></i>
         <i v-else style="color: red;" class="fas fa-arrow-down"></i>
         <label class="to">{{ LangString('APP_BANK_MOVEMENTS_TO') }}: {{ elem.to }}</label>
         <label class="from">{{ LangString('APP_BANK_MOVEMENTS_FROM') }}: {{ elem.from }}</label>
-        <label class="amount">{{ LangString('APP_BANK_MOVEMENTS_AMOUNT') }}: {{ elem.amount }} $</label>
+        <label class="amount">{{ LangString('APP_BANK_MOVEMENTS_AMOUNT') }}: {{ elem.amount }} {{ LangString("APP_BANK_SYMBOL") }}</label>
         <hr class="mov-separator">
       </div>
-
     </div>
-    
   </div>
 </template>
 
