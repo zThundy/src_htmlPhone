@@ -35,20 +35,20 @@ AddEventHandler(Config.AmbulanceJobEventName, function(_isDead)
 end)
 
 Citizen.CreateThread(function()
-    RegisterKeyMapping('+openPhone', Config.Language["SETTINGS_KEY_LABEL"], 'keyboard', Config.KeyToOpenPhone)
+    RegisterKeyMapping('+openPhone', translate("SETTINGS_KEY_LABEL"), 'keyboard', Config.KeyToOpenPhone)
     RegisterCommand('+openPhone', function()
         if not IsEntityPlayingAnim(GetPlayerPed(-1), 'mp_arresting', 'idle', 3) then
             if not isDead then
                 if gcPhoneServerT.getItemAmount(Config.PhoneItemName) > 0 then
                     TogglePhone()
                 else
-                    ESX.ShowNotification(Config.Language["NO_PHONE_ITEM"])
+                    ESX.ShowNotification(translate("NO_PHONE_ITEM"))
                 end
             else
-                ESX.ShowNotification(Config.Language["NO_PHONE_WHILE_DEAD"])
+                ESX.ShowNotification(translate("NO_PHONE_WHILE_DEAD"))
             end
         else
-            ESX.ShowNotification(Config.Language["NO_PHONE_WHILE_ARRESTED"])
+            ESX.ShowNotification(translate("NO_PHONE_WHILE_ARRESTED"))
         end
     end, false)
     RegisterCommand('-openPhone', function() end, false)
@@ -113,9 +113,9 @@ AddEventHandler("gcPhone:allMessage", function(allmessages, notReceivedMessages)
     if not GLOBAL_AIRPLANE then
         if notReceivedMessages ~= nil and notReceivedMessages > 0 then
             if notReceivedMessages == 1 then
-                ESX.ShowNotification(Config.Language["SINGLE_UNREAD_MESSAGE_NOTIFICATION"]:format(notReceivedMessages))
+                ESX.ShowNotification(translate("SINGLE_UNREAD_MESSAGE_NOTIFICATION"):format(notReceivedMessages))
             else
-                ESX.ShowNotification(Config.Language["MULTIPLE_UNREAD_MESSAGES_NOTIFICATION"]:format(notReceivedMessages))
+                ESX.ShowNotification(translate("MULTIPLE_UNREAD_MESSAGES_NOTIFICATION"):format(notReceivedMessages))
             end
         end
     end
@@ -143,12 +143,12 @@ AddEventHandler("gcPhone:receiveMessage", function(message, displayNotification)
         end
         table.insert(messages, message)
         if message.owner == 0 then
-            local text = Config.Language["MESSAGE_NOTIFICATION_NO_TRANSMITTER"]
+            local text = translate("MESSAGE_NOTIFICATION_NO_TRANSMITTER")
             if Config.ShowNumberNotification then
-                text = Config.Language["MESSAGE_NOTIFICATION_TRANSMITTER"]:format(message.transmitter)
+                text = translate("MESSAGE_NOTIFICATION_TRANSMITTER"):format(message.transmitter)
                 for _, contact in pairs(PERSONAL_CONTACTS) do
                     if contact.number == message.transmitter then
-                        text = Config.Language["MESSAGE_NOTIFICATION_TRANSMITTER"]:format(contact.display)
+                        text = translate("MESSAGE_NOTIFICATION_TRANSMITTER"):format(contact.display)
                         break
                     end
                 end
@@ -299,6 +299,7 @@ function TogglePhone()
         firstname = firstname,
         lastname = lastname
     })
+    SendNUIMessage({ event = "sendTranslations", language = getScope("nui"), type = Config.ChosenLanguage })
     if menuIsOpen then 
         PhonePlayIn()
     else

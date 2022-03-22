@@ -60,9 +60,5 @@ end)
 
 RegisterNetEvent("gcPhone:instagram_setAccount")
 AddEventHandler("gcPhone:instagram_setAccount", function(username, password, avatarUrl)
-    SendNUIMessage({ event = "instagramSetupAccount", data = {
-        username = username,
-        password = password,
-        avatarUrl = avatarUrl
-    } })
+    SendNUIMessage({ event = "instagram_setAccount", username = username, password = password, avatarUrl = avatarUrl })
 end)

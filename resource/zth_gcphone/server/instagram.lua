@@ -21,7 +21,7 @@ MySQL.ready(function()
                 account.authorIcon = account.avatar_url
                 table.insert(CACHED_ACCOUNTS, account)
             end
-            gcPhone.debug(Config.Language["CACHE_INSTAGRAM_1"])
+            gcPhone.debug(translate("CACHE_INSTAGRAM_1"))
         end)
     end)
 
@@ -30,7 +30,7 @@ MySQL.ready(function()
             if not CACHED_LIKES[like.postId] then CACHED_LIKES[like.postId] = {} end
             table.insert(CACHED_LIKES[like.postId], like)
         end
-        gcPhone.debug(Config.Language["CACHE_INSTAGRAM_2"])
+        gcPhone.debug(translate("CACHE_INSTAGRAM_2"))
     end)
 end)
 
@@ -266,6 +266,7 @@ gcPhoneT.instagram_changePassword = function(username, password, newPassword)
                     break
                 end
             end
+            TriggerClientEvent('gcPhone:instagram_setAccount', player, username, newPassword, user.avatar_url)
             InstagramShowSuccess(player, 'INSTAGRAM_INFO_TITLE', 'APP_INSTAGRAM_NOTIF_PASSCHANGE_SUCCESS')
         end)
     else
