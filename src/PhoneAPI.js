@@ -40,7 +40,7 @@ class PhoneAPI {
       this.picture = new PictureRequest(this.config.picturesConfig)
       if (this.config.enableWebRTC) this.voiceRTC = new VoiceRTC(this.config.RTCConfig, this.config.RTCFilters)
       this.post('notififyUseRTC', this.voiceRTC)
-      store.dispatch('loadConfig', this.config)
+      store.dispatch('loadConfig', { config: this.config })
     })
 
     fetch('/html/static/config/emoji.json', { method: 'GET', mode: 'cors' })
@@ -98,6 +98,18 @@ class PhoneAPI {
           reject('cant-get-pic')
         }
       }
+    })
+  }
+
+  onsendTranslations (data) {
+    /*
+      data.type // the choosen language
+      data.language // the actual content
+    */
+    store.dispatch('loadConfig', {
+      config: this.config,
+      type: data.type,
+      language: data.language
     })
   }
 
@@ -501,6 +513,7 @@ class PhoneAPI {
   }
 
   ontwitter_setAccount (data) {
+    // this is bad but i don't care
     if (!data.logged) data.logged = true
     store.dispatch('setAccount', data)
   }
@@ -610,11 +623,9 @@ class PhoneAPI {
     store.commit('SET_POSTS', posts)
   }
 
-  oninstagram_setAccount ({ data }) {
-    store.dispatch('setInstagramAccount', data)
-  }
-
-  oninstagramSetupAccount ({ data }) {
+  oninstagram_setAccount (data) {
+    // this is bad but i don't care
+    if (!data.logged) data.logged = true
     store.dispatch('setInstagramAccount', data)
   }
 
