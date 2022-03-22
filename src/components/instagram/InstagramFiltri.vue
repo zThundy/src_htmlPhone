@@ -27,7 +27,8 @@
 </template>
 
 <script>
-import { mapActions, mapGetters } from 'vuex'
+import Vue from "vue"
+import { mapGetters } from 'vuex'
 import Modal from '@/components/Modal/index.js'
 
 export default {
@@ -68,12 +69,11 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['LangString', 'tempImage', 'instagramUsername', 'instagramPassword'])
+    ...mapGetters(['LangString', 'igAccount', 'tempImage', 'instagramUsername', 'instagramPassword', 'instagramNotification', 'instagramNotificationSound'])
   },
   watch: {
   },
   methods: {
-    ...mapActions(['instagramPostImage']),
     scrollIntoView () {
       this.$nextTick(() => {
         const elem = this.$el.querySelector('.selected')
@@ -89,8 +89,6 @@ export default {
     },
     onRight () {
       if (this.ignoreControls) return
-      // il 26 in questa funzione sarebbe il massimo di filtri: non ho idea
-      // di perche non prenda this.filters.length
       this.selectedMessage = this.selectedMessage === 26 ? this.selectedMessage : this.selectedMessage + 1
       this.scrollIntoView()
     },
@@ -100,15 +98,11 @@ export default {
     },
     onUp () {
       if (this.ignoreControls) return
-      // il 26 in questa funzione sarebbe il massimo di filtri: non ho idea
-      // di perche non prenda this.filters.length
       this.selectedMessage = (this.selectedMessage < 3) ? this.selectedMessage : this.selectedMessage - 3
       this.scrollIntoView()
     },
     onDown () {
       if (this.ignoreControls) return
-      // il 26 in questa funzione sarebbe il massimo di filtri: non ho idea
-      // di perche non prenda this.filters.length
       this.selectedMessage = (this.selectedMessage > 23) ? this.selectedMessage : this.selectedMessage + 3
       this.scrollIntoView()
     },
@@ -127,7 +121,7 @@ export default {
             })
             .then(resp => {
               if (resp.text !== '' && resp.text !== undefined && resp.text !== null) {
-                this.instagramPostImage({didascalia: resp.text, filter: this.filters[this.selectedMessage], message: this.tempImage, author: this.instagramUsername})
+                this.instagramPostImage({ didascalia: resp.text, filter: this.filters[this.selectedMessage], message: this.tempImage })
                 this.$bus.$emit('instagramHome')
               }
               this.ignoreControls = false
@@ -135,13 +129,30 @@ export default {
             .catch(e => { this.ignoreControls = false })
             break
           case 2:
-            this.instagramPostImage({didascalia: '', filter: this.filters[this.selectedMessage], message: this.tempImage, author: this.instagramUsername})
+            this.instagramPostImage({ didascalia: '', filter: this.filters[this.selectedMessage], message: this.tempImage })
             this.ignoreControls = false
             this.$bus.$emit('instagramHome')
             break
         }
       })
       .catch(e => { this.ignoreControls = false })
+    },
+    instagramPostImage(imageTable) {
+      let notif = this.instagramNotification === 2
+      if (this.instagramNotification === 1) {
+        notif = imageTable.message.toLowerCase().indexOf(this.igAccount.username.toLowerCase()) !== -1
+      }
+      if (notif) {
+        Vue.notify({
+          message: this.LangString("APP_INSTAGRAM_ACCOUNT_NEW_POST"),
+          title: this.igAccount.username,
+          icon: 'instagram',
+          backgroundColor: 'rgb(255, 204, 0)',
+          sound: this.instagramNotificationSound ? 'Instagram_Notification.ogg' : undefined,
+          appName: 'Instagram'
+        })
+      }
+      this.$phoneAPI.instagram_postImage(this.igAccount.username, this.igAccount.password, imageTable)
     }
   },
   created () {
