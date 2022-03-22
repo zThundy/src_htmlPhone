@@ -1,0 +1,190 @@
+.content {
+  padding-top: 20px;
+  margin-top: 0px;
+  height: calc(100% - 48px);
+  display: flex;
+  flex-direction: column;
+}
+
+.insta-icon {
+  font-size: 90px;
+  margin-top: 50px;
+  margin-bottom: 50px;
+  color: rgb(0, 0, 0);
+}
+
+/* ######################### */
+/* PAGINA LOGIN DI INSTAGRAM */
+/* ######################### */
+
+.instagram_title {
+  width: 250px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.textbox {
+  font-size: 24px;
+  display: flexbox;
+  padding-left: 2px;
+  width: 91%;
+  height: 50px;
+  border: none;
+  border-bottom: 1px solid #757575;
+}
+
+.textbox:focus { 
+  outline: none; 
+  opacity: 0.9;
+}
+
+.insta-LoginText {
+  top: 18px;
+  bottom: 0px;
+  justify-content: center;
+  color: black;
+  font-size: 20px;
+}
+
+.insta-group.insta_select .insta-LoginText {
+  color: #fff;
+  background-color: #2196f3;
+}
+
+/* TEXT BOX */
+
+.insta-input-text {
+  position: relative;
+  margin-top: 3%;
+}
+
+.insta-input-text input {
+  width: 300px;
+  height: 40px;
+  border-radius: 15px;
+  border: 2px solid rgb(0, 0, 0);
+  font-size: 14px;
+  padding: 26px 0px 26px 45px;
+  margin: auto;
+  color: rgb(75, 75, 75);
+}
+
+.insta-input-text i {
+  position: absolute;
+  top: 30%;
+  left: 28px;
+  border-radius: 15px;
+  font-size: 21px;
+  color: rgb(0, 0, 0);
+  transition: all ease-in-out 0.2s;
+}
+
+.insta-input-text label {
+  color: rgb(0, 0, 0);
+  font-size: 18px;
+  font-weight: normal;
+  position: absolute;
+  pointer-events: none;
+  left: 10px;
+  top: 10px;
+  transition: 0.2s ease all;
+}
+
+.insta-input-text.select i {
+  color: rgb(150, 150, 150);
+  transition: all ease-in-out 0.2s;
+}
+
+.insta-input-text.select input {
+  color: rgb(0, 0, 0);
+  border: 2px solid rgb(150, 150, 150);
+  transition: all ease-in-out 0.2s;
+}
+
+/* AVATAR */
+
+.insta-avatar {
+  margin-top: 5%;
+  margin-bottom: 5%;
+  height: 128px;
+  width: 128px;
+  overflow: auto;
+  border-radius: 100px;
+  align-self: center;
+  object-fit: cover;
+  border: rgb(68, 68, 68) 1px solid;
+  transition: all ease-in-out 0.1s;
+}
+
+.select .insta-avatar {
+  border: rgb(68, 68, 68) 3px solid;
+  transition: all ease-in-out 0.1s;
+}
+
+/* BOTTONI */
+
+.insta-btn {
+  height: 48px;
+  color: #fff;
+  background-color: #edeeee;
+  border-radius: 10px;
+}
+
+.insta-btn.insta-btn-grey {
+  width: 293px;
+  margin: auto;
+  text-align: center;
+  border: 1px solid rgb(120, 120, 120);
+  color: rgb(120, 120, 120);
+  background-color: rgb(200, 200, 200);
+  font-weight: 100;
+  font-size: 14px;
+  transition: 0.2s ease all;
+}
+
+.insta-btn.insta-btn-blue {
+  width: 85%;
+  margin-top: 5%;
+  text-align: center;
+  border: 1px solid rgb(49, 150, 226);
+  color: rgb(49, 150, 226);
+  background-color: white;
+  font-size: 18px;
+  transition: 0.2s ease all;
+}
+
+.insta-btn.insta-btn-red {
+  width: 85%;
+  margin-top: 5%;
+  text-align: center;
+  border: 1px solid #ee3838;
+  color: #ee3838;
+  background-color: white;
+  font-weight: 100;
+  font-size: 18px;
+  transition: 0.2s ease all;
+}
+
+.select .insta-btn.insta-btn-blue {
+  background-color: rgb(49, 150, 226);
+  color: white;
+  border: none;
+  transition: 0.2s ease all;
+  border: 1px solid rgb(255, 255, 255);
+}
+
+.select .insta-btn.insta-btn-red {
+  background-color: #ff0000;
+  color: white;
+  border: none;
+  transition: 0.2s ease all;
+  border: 1px solid rgb(255, 255, 255);
+}
+
+.select .insta-btn.insta-btn-grey {
+  background-color: rgb(110, 118, 125);
+  color: white;
+  border: none;
+  transition: 0.2s ease all;
+  border: 1px solid rgb(255, 255, 255);
+}
