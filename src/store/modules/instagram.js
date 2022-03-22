@@ -1,24 +1,28 @@
-import PhoneAPI from './../../PhoneAPI'
 import Vue from 'vue'
 
 const state = {
   tempImage: '',
-  instagramUsername: localStorage['gp_ig_username'],
-  instagramPassword: localStorage['gp_ig_password'],
-  instagramAvatarUrl: localStorage['gp_ig_avatarUrl'],
-  instagramNotification: localStorage['gp_ig_notif'] ? parseInt(localStorage['gp_ig_notif']) : 2,
-  instagramNotificationSound: localStorage['gp_ig_notif_sound'] !== 'false',
+  instagramNotification: localStorage['gp_ig_notif'] ? JSON.parse(localStorage['gp_ig_notif']) : [true, false, false],
+  instagramNotificationSound: localStorage['gp_ig_notif_sound'] || "true",
   instaPosts: [],
-  likedInstas: []
+  likedInstas: [],
+  igAccount: {
+    username: localStorage["gp_ig_username"] || "",
+    password: localStorage["gp_ig_password"] || "",
+    avatarUrl: localStorage['gp_ig_avatarUrl'] || "/html/static/img/app_instagram/default_profile.png",
+    passwordConfirm: "",
+    logged: false
+  }
 }
 
 const getters = {
   tempImage: ({ tempImage }) => tempImage,
-  instagramUsername: ({ instagramUsername }) => instagramUsername,
-  instagramPassword: ({ instagramPassword }) => instagramPassword,
-  instagramAvatarUrl: ({ instagramAvatarUrl }) => instagramAvatarUrl,
+  igAccount: ({ igAccount }) => igAccount,
   instagramNotification: ({ instagramNotification }) => instagramNotification,
-  instagramNotificationSound: ({ instagramNotificationSound }) => instagramNotificationSound,
+  instagramNotificationSound: ({ instagramNotificationSound }) => {
+    if (instagramNotificationSound === "true") return true
+    return false
+  },
   instaPosts: ({ instaPosts }) => instaPosts
 }
 
@@ -27,79 +31,50 @@ const actions = {
   instagramSaveTempPost ({ commit }, url) {
     commit('SAVE_TEMP_POST_PIC', url)
   },
-  // selezione del filtro e della didascalia da mandare al client
-  // del gcphone
-  instagramPostImage ({ state }, imageTable) {
-    let notif = state.instagramNotification === 2
-    if (state.instagramNotification === 1) {
-      notif = imageTable.image && imageTable.message.toLowerCase().indexOf(state.instagramUsername.toLowerCase()) !== -1
-    }
-    if (notif === true) {
-      Vue.notify({
-        message: 'Ha pubblicato un nuovo post!',
-        title: imageTable.author,
-        icon: 'instagram',
-        backgroundColor: 'rgb(255, 204, 0)',
-        sound: state.instagramNotificationSound ? 'Instagram_Notification.ogg' : undefined,
-        appName: 'Instagram'
-      })
-    }
-    PhoneAPI.instagram_postImage(state.instagramUsername, state.instagramPassword, imageTable)
-  },
-  instagramChangePassword ({ state }, newPassword) {
-    state.instagramPassword = newPassword
-    PhoneAPI.instagram_changePassword(state.instagramUsername, state.instagramPassword, newPassword)
-  },
   // questa funzione pulisce gli state interni dello storage locale
   // per permetterti di loggare su insta da un altro account
-  instagramLogout ({ commit }) {
+  instagramLogout ({ dispatch }) {
+    dispatch("setInstagramAccount", { username: "", password: "", avatarUrl: "/html/static/img/app_twitter/default_profile.png", passwordConfirm: "", logged: false })
     localStorage.removeItem('gp_ig_username')
     localStorage.removeItem('gp_ig_password')
     localStorage.removeItem('gp_ig_avatarUrl')
-    commit('UPDATE_INSTAGRAM_ACCOUNT', { username: undefined, password: undefined, avatarUrl: undefined })
   },
   // questo imposta i valori a prescindere da dove vengono
   setInstagramAccount ({ commit }, data) {
+    if (!data.username) data.username = localStorage['gp_ig_username'] || ""
+    if (!data.password) data.password = localStorage['gp_ig_password'] || ""
+    if (!data.avatarUrl) data.avatarUrl = localStorage['gp_ig_avatarUrl'] || "/html/static/img/app_instagram/default_profile.png"
     localStorage['gp_ig_username'] = data.username
     localStorage['gp_ig_password'] = data.password
     localStorage['gp_ig_avatarUrl'] = data.avatarUrl
     commit('UPDATE_INSTAGRAM_ACCOUNT', data)
   },
-  instagramSetAvatar ({ state }, { avatarUrl }) {
-    state.instagramAvatarUrl = avatarUrl
-    PhoneAPI.instagram_setAvatar(state.instagramUsername, state.instagramPassword, avatarUrl)
-  },
-  instagramToogleLike ({ state }, postId) {
-    PhoneAPI.instagram_toggleLikePost(state.instagramUsername, state.instagramPassword, postId)
-  },
   setInstagramNotification ({ commit }, value) {
-    localStorage['gp_ig_notif'] = value
-    commit('SET_TWITTER_NOTIFICATION', { notification: value })
+    localStorage['gp_ig_notif'] = JSON.stringify(value)
+    commit('SET_INSTAGRAM_NOTIFICATION', { notification: value })
   },
   setInstagramNotificationSound ({ commit }, value) {
+    value = String(value)
     localStorage['gp_ig_notif_sound'] = value
-    commit('SET_TWITTER_NOTIFICATION_SOUND', { notificationSound: value })
+    commit('SET_INSTAGRAM_NOTIFICATION_SOUND', { notificationSound: value })
   }
 }
 
 const mutations = {
-  // mutuation dell'account di twitter in risposta
-  // all'action "setInstagramAccount" o "instagramLogout"
-  // sunto: UPDATE DIRETTO DELL'HTML
-  UPDATE_INSTAGRAM_ACCOUNT (state, { username, password, avatarUrl }) {
-    state.instagramUsername = username
-    state.instagramPassword = password
-    state.instagramAvatarUrl = avatarUrl
+  UPDATE_INSTAGRAM_ACCOUNT (state, data) {
+    state.igAccount.username = data.username
+    state.igAccount.password = data.password
+    state.igAccount.avatarUrl = data.avatarUrl
+    if (data.passwordConfirm) state.igAccount.passwordConfirm = data.passwordConfirm
+    if (data.logged !== null && data.logged !== undefined) state.igAccount.logged = data.logged
   },
-  // questa funzione è quella che riceve i post dal database
-  // successivamente alla chiamata di "fetchPosts"
   SET_POSTS (state, { posts }) {
     state.instaPosts = posts
   },
-  SET_TWITTER_NOTIFICATION (state, { notification }) {
+  SET_INSTAGRAM_NOTIFICATION (state, { notification }) {
     state.instagramNotification = notification
   },
-  SET_TWITTER_NOTIFICATION_SOUND (state, { notificationSound }) {
+  SET_INSTAGRAM_NOTIFICATION_SOUND (state, { notificationSound }) {
     state.instagramNotificationSound = notificationSound
   },
   UPDATE_POST_LIKES (state, { postId, likes }) {
