@@ -311,7 +311,7 @@ export default {
     for (var key in this.contacts) {
       this.selectedContacts[this.contacts[key].id] = false
     }
-    this.updateGroupVars({ value: 'Nessun titolo', key: 'title' })
+    this.updateGroupVars({ value: this.LangString("APP_WHATSAPP_DEFAULT_GROUP_TITLE"), key: 'title' })
     this.updateGroupVars({ value: '/html/static/img/app_whatsapp/defaultgroup.png', key: 'image' })
     // uso questa variabile per controllare
     // se sei in fase di modifica o no

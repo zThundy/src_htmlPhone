@@ -55,9 +55,6 @@ export default {
     changingRoute(route) {
       this.state = STATES[route]
     },
-    updateLocalAccountValue(value, data) {
-      this.localAccount[value] = data
-    },
     updateIgnoreControls(val) {
       setTimeout(() => { this.ignoreControls = val }, 100)
     }
@@ -69,7 +66,6 @@ export default {
     this.$bus.$on('keyUpBackspace', this.onBack)
 
     this.$bus.$on("twitterChangingRoute", this.changingRoute)
-    this.$bus.$on("changeLocalTwitterAccountValue", this.updateLocalAccountValue)
     this.$bus.$on("updateTwitterIgnoreControls", this.updateIgnoreControls)
   },
   beforeDestroy () {
@@ -79,7 +75,6 @@ export default {
     this.$bus.$off('keyUpBackspace', this.onBack)
 
     this.$bus.$off("twitterChangingRoute", this.changingRoute)
-    this.$bus.$off("changeLocalTwitterAccountValue", this.updateLocalAccountValue)
     this.$bus.$off("updateTwitterIgnoreControls", this.updateIgnoreControls)
   }
 }
