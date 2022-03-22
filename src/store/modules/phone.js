@@ -23,12 +23,7 @@ const state = {
   airplane: false,
   brightnessActive: true,
   enableHalfShow: true,
-  config: {
-    operator_title: 'ThundyPhone',
-    apps: [],
-    colors: ['#0066CC'],
-    language: {}
-  }
+  config: {}
 }
 
 const getters = {
@@ -105,23 +100,19 @@ const getters = {
     return AvailableLanguage
   },
   LangString ({ config, lang }) {
-    lang = lang || config.defaultLanguage
-    if (config.language[lang] === undefined) {
-      return (LABEL) => LABEL
-    }
-    return (LABEL, defaultValue) => {
-      return config.language[lang][LABEL] || defaultValue || LABEL
+    return (LABEL) => {
+      if (process.env.NODE_ENV !== 'production') return "M_T"
+      return config.language[config.langaugeType].data[LABEL] || LABEL
     }
   }
 }
 
 const actions = {
-  loadConfig ({ commit, state }, config) {
-    const keyLang = Object.keys(config.language)
-    for (const key of keyLang) {
-      const timeAgoConf = config.language[key].TIMEAGO
-      if (timeAgoConf !== undefined) Vue.prototype.$timeago.addLocale(key, timeAgoConf)
-    }
+  loadConfig ({ commit, state }, { config, language, type }) {
+    var timeAgoConf = config.language[type || config.defaultLanguage].TIMEAGO
+    if (type) config.langaugeType = type
+    if (language) config.language[type].data = language
+    if (timeAgoConf !== undefined) Vue.prototype.$timeago.addLocale(type, timeAgoConf)
     Vue.prototype.$timeago.setCurrentLocale(state.lang)
     if (config.defaultContacts !== undefined) commit('SET_DEFAULT_CONTACTS', config.defaultContacts)
     commit('SET_CONFIG', config)

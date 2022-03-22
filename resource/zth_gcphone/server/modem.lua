@@ -32,7 +32,7 @@ gcPhoneT.modem_createModem = function(label, password, coords)
             end)
         end)
     else
-        showXNotification(xPlayer, Config.Language["MODEM_CREATION_TIMEOUT_MESSAGE"]:format(Config.WaitBeforeCreatingAgaing))
+        showXNotification(xPlayer, translate("MODEM_CREATION_TIMEOUT_MESSAGE"):format(Config.WaitBeforeCreatingAgaing))
     end
 end
 
@@ -56,7 +56,7 @@ gcPhoneT.modem_rinnovaModem = function()
             end
         end)
     else
-        showXNotification(xPlayer, Config.Language["MODEM_CREATION_NOT_ENOUGH_MONEY"])
+        showXNotification(xPlayer, translate("MODEM_CREATION_NOT_ENOUGH_MONEY"))
     end
 end
 
@@ -70,7 +70,7 @@ gcPhoneT.modem_cambiaPassword = function(password)
         Reti.UpdateReteWifi(player, { password = password }, "password")
         TriggerClientEvent("gcphone:modem_updateMenu", player)
     else
-        showXNotification(xPlayer, Config.Language["MODEM_CREATION_NOT_ENOUGH_MONEY"])
+        showXNotification(xPlayer, translate("MODEM_CREATION_NOT_ENOUGH_MONEY"))
     end
 end
 
@@ -80,12 +80,12 @@ gcPhoneT.modem_compraModem = function()
 
     if xPlayer.getAccount("bank").money >= Config.BuyModemPrice then
         xPlayer.addInventoryItem(Config.ModemItemName, 1)
-        showXNotification(xPlayer, Config.Language["MODEM_BOUGHT_OK"])
+        showXNotification(xPlayer, translate("MODEM_BOUGHT_OK"))
 
         xPlayer.removeAccountMoney("bank", Config.BuyModemPrice)
         TriggerClientEvent("gcphone:modem_updateMenu", player)
     else
-        showXNotification(xPlayer, Config.Language["MODEM_CREATION_NOT_ENOUGH_MONEY"])
+        showXNotification(xPlayer, translate("MODEM_CREATION_NOT_ENOUGH_MONEY"))
     end
 end
 
@@ -99,22 +99,22 @@ ESX.RegisterServerCallback("gcphone:modem_getMenuInfo", function(source, cb)
         if #result > 0 then
             local createdString = os.date("%d/%m/%Y - %X", math.floor(result[1].created / 1000))
             local dueString = os.date("%d/%m/%Y - %X", math.floor(result[1].due_date / 1000))
-            table.insert(elements, { label = Config.Language["MODEM_MENU_ARGS_1"]:format(createdString) })
+            table.insert(elements, { label = translate("MODEM_MENU_ARGS_1"):format(createdString) })
             if result[1].not_expire == 1 then
-                table.insert(elements, { label = Config.Language["MODEM_MENU_ARGS_2"] })
+                table.insert(elements, { label = translate("MODEM_MENU_ARGS_2") })
             else
-                table.insert(elements, { label = Config.Language["MODEM_MENU_ARGS_3"]:format(dueString) })
+                table.insert(elements, { label = translate("MODEM_MENU_ARGS_3"):format(dueString) })
             end
 
             local password = result[1].password
             local label = result[1].label
-            table.insert(elements, { label = Config.Language["MODEM_MENU_ARGS_4"]:format(label) })
-            table.insert(elements, { label = Config.Language["MODEM_MENU_ARGS_5"]:format(password), value = "aggiorna_password" })
+            table.insert(elements, { label = translate("MODEM_MENU_ARGS_4"):format(label) })
+            table.insert(elements, { label = translate("MODEM_MENU_ARGS_5"):format(password), value = "aggiorna_password" })
 
-            table.insert(elements, { label = Config.Language["MODEM_MENU_ARGS_6"]:format(Config.RenewModemPrice), value = "rinnova_modem" })
+            table.insert(elements, { label = translate("MODEM_MENU_ARGS_6"):format(Config.RenewModemPrice), value = "rinnova_modem" })
         else
-            table.insert(elements, { label = Config.Language["MODEM_MENU_ARGS_7"] })
-            table.insert(elements, { label = Config.Language["MODEM_MENU_ARGS_8"]:format(Config.BuyModemPrice), value = "buy_modem" })
+            table.insert(elements, { label = translate("MODEM_MENU_ARGS_7") })
+            table.insert(elements, { label = translate("MODEM_MENU_ARGS_8"):format(Config.BuyModemPrice), value = "buy_modem" })
         end
 
         cb(elements)

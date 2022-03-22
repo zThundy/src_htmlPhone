@@ -160,7 +160,7 @@ if Config.EnableBreakWifiTowers then
                 for index, v in pairs(RadioTowers) do
                     if v.broken then
                         if GetDistanceBetweenCoords(GetEntityCoords(GetPlayerPed(-1)), v.x, v.y, 1.0, false) <= 5.0 then
-                            ESX.ShowHelpNotification(Config.Language["HELPNOTIFICATION_WIFI_RADIO_REPAIR"])
+                            ESX.ShowHelpNotification(translate("HELPNOTIFICATION_WIFI_RADIO_REPAIR"))
 
                             if IsControlJustPressed(0, 38) then
                                 v.broken = false

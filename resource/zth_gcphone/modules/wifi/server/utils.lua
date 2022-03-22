@@ -36,7 +36,7 @@ function Reti.AddReteWifi(source, rete, cb)
         ['@due_date'] = os.date("%Y-%m-%d %H:%m:%S", rete.due_date)
     }, function(rowsChanged)
         if rowsChanged > 0 then
-            showXNotification(xPlayer, Config.Language["WIFI_MODEM_CREATED_OK"])
+            showXNotification(xPlayer, translate("WIFI_MODEM_CREATED_OK"))
             table.insert(CACHED_WIFIS, {
                 steam_id = xPlayer.identifier,
                 label = rete.label,
@@ -47,10 +47,10 @@ function Reti.AddReteWifi(source, rete, cb)
                 due_date = os.time() * 1000
             })
             Reti.LoadAndSendWifi()
-            Reti.Debug(Config.Language["WIFI_LOAD_DEBUG_4"])
+            Reti.Debug(translate("WIFI_LOAD_DEBUG_4"))
             if cb ~= nil then cb(true) end
         else
-            showXNotification(xPlayer, Config.Language["WIFI_MODEM_CREATED_ERROR"])
+            showXNotification(xPlayer, translate("WIFI_MODEM_CREATED_ERROR"))
             if cb ~= nil then cb(false) end
         end
     end)
@@ -62,7 +62,7 @@ function Reti.RemoveReteWifi(source, rete)
         ['@steam_id'] = rete.owner_id
     }, function(rowsChanged)
         if rowsChanged > 0 then
-            showXNotification(xPlayer, Config.Language["WIFI_MODEM_DELETE_OK"])
+            showXNotification(xPlayer, translate("WIFI_MODEM_DELETE_OK"))
             for id, r in pairs(CACHED_WIFIS) do
                 if r.steam_id == rete.owner_id then
                     CACHED_WIFIS[id] = nil
@@ -70,9 +70,9 @@ function Reti.RemoveReteWifi(source, rete)
                 end
             end
             Reti.LoadAndSendWifi()
-            Reti.Debug(Config.Language["WIFI_LOAD_DEBUG_4"])
+            Reti.Debug(translate("WIFI_LOAD_DEBUG_4"))
         else
-            showXNotification(xPlayer, Config.Language["WIFI_MODEM_DELETE_ERROR"])
+            showXNotification(xPlayer, translate("WIFI_MODEM_DELETE_ERROR"))
         end
     end)
 end
@@ -84,7 +84,7 @@ function Reti.UpdateReteWifi(source, rete, param)
         ['@'..param] = rete[param]
     }, function(rowsChanged)
         if rowsChanged > 0 then
-            showXNotification(xPlayer, Config.Language["WIFI_MODEM_UPDATE_OK"])
+            showXNotification(xPlayer, translate("WIFI_MODEM_UPDATE_OK"))
             for id, r in pairs(CACHED_WIFIS) do
                 if r.steam_id == rete.owner_id then
                     r[param] = rete[param]
@@ -92,28 +92,28 @@ function Reti.UpdateReteWifi(source, rete, param)
                 end
             end
             Reti.LoadAndSendWifi()
-            Reti.Debug(Config.Language["WIFI_LOAD_DEBUG_4"])
+            Reti.Debug(translate("WIFI_LOAD_DEBUG_4"))
         else
-            showXNotification(xPlayer, Config.Language["WIFI_MODEM_UPDATE_ERROR"])
+            showXNotification(xPlayer, translate("WIFI_MODEM_UPDATE_ERROR"))
         end
     end)
 end
 
 function Reti.CheckDueDate()
-    Reti.Debug(Config.Language["WIFI_LOAD_DEBUG_5"])
+    Reti.Debug(translate("WIFI_LOAD_DEBUG_5"))
     for index, rete in pairs(CACHED_WIFIS) do
         if rete.not_expire == 0 then
             local due_date = math.floor(rete.due_date / 1000)
             local created = math.floor(rete.created / 1000)
             if os.difftime(created, due_date) >= 0 then
-                Reti.Debug(Config.Language["WIFI_LOAD_DEBUG_6"]:format(rete.steam_id))
+                Reti.Debug(translate("WIFI_LOAD_DEBUG_6"):format(rete.steam_id))
                 MySQL.Async.execute("DELETE FROM phone_wifi_nets WHERE steam_id = @steam_id AND label = @label", {
                     ['@steam_id'] = rete.steam_id,
                     ['@label'] = rete.label
                 })
             end
         else
-            Reti.Debug(Config.Language["WIFI_LOAD_DEBUG_7"]:format(rete.steam_id))
+            Reti.Debug(translate("WIFI_LOAD_DEBUG_7"):format(rete.steam_id))
         end
     end
 end

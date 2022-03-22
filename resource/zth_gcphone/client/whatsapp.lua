@@ -10,7 +10,7 @@ AddEventHandler("gcphone:whatsapp_updateGruppi", function(groups, number)
         for _, contact in pairs(group.partecipanti) do
             -- se il numero che loopa è il tuo, allora sostituisce il display
             -- con "Tu"
-            if contact.number == number then contact.display = Config.Language["WHATSAPP_YOU_LABEL"] end
+            if contact.number == number then contact.display = translate("WHATSAPP_YOU_LABEL") end
             -- mi loopo i contatti e mi creo la stringa da mandare al NUI
             if index == 1 then
                 group.partecipantiString = contact.display
@@ -74,9 +74,9 @@ end)
 RegisterNUICallback("updateGroup", function(data, cb)
     ESX.TriggerServerCallback("gcphone:whatsapp_editGroup", function(ok)
         if ok then
-            ESX.ShowNotification(Config.Language["WHATSAPP_GROUP_UPDATED_OK"])
+            ESX.ShowNotification(translate("WHATSAPP_GROUP_UPDATED_OK"))
         else
-            ESX.ShowNotification(Config.Language["WHATSAPP_GROUP_UPDATED_ERROR"])
+            ESX.ShowNotification(translate("WHATSAPP_GROUP_UPDATED_ERROR"))
         end
     end, data)
     cb("ok")

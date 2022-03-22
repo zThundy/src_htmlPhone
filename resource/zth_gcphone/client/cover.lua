@@ -33,10 +33,10 @@ local function OpenShopMenu(myCovers)
         local name = data.current.name
 
         if gcPhoneServerT.cover_buyCover(name) then
-            ESX.ShowNotification(Config.Language["COVER_BOUGHT_OK"])
+            ESX.ShowNotification(translate("COVER_BOUGHT_OK"))
             RefreshCovers()
         else
-            ESX.ShowNotification(Config.Language["COVER_BOUGHT_ERROR"])
+            ESX.ShowNotification(translate("COVER_BOUGHT_ERROR"))
         end
 
         ESX.UI.Menu.CloseAll()
@@ -60,7 +60,7 @@ local function OpenShopMenu(myCovers)
     SendNUIMessage({ show = true })
 
     ESX.UI.Menu.Open('default', GetCurrentResourceName(), 'negozio_cover', {
-        title = Config.Language["COVER_SHOP_TITLE"],
+        title = translate("COVER_SHOP_TITLE"),
         elements = elements
     }, onMenuSelect, onMenuClose, onMenuChangeIndex)
 end
@@ -95,7 +95,7 @@ Citizen.CreateThread(function()
             ChangeCover("base")
             SendNUIMessage({ show = false })
         end,
-		msg = Config.Language["HELPNOTIFICATION_COVER_SHOP_LABEL"],
+		msg = translate("HELPNOTIFICATION_COVER_SHOP_LABEL"),
 	})
 
     local info = Config.CoverShopBlip

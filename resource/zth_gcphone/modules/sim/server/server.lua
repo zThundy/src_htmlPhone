@@ -35,7 +35,7 @@ local function NewSim(source)
                 ['@messaggi'] = 0,
                 ['@dati'] = 0
             }, function(id)
-                showXNotification(xPlayer, Config.Language["SIM_CREATED_MESSAGE_OK"])
+                showXNotification(xPlayer, translate("SIM_CREATED_MESSAGE_OK"))
                 gcPhoneT.updateCachedNumber(phone_number, identifier, false)
 
                 CACHED_TARIFFS[phone_number] = {
@@ -50,7 +50,7 @@ local function NewSim(source)
                 }
             end)
         else
-            showXNotification(xPlayer, Config.Language["SIM_CREATED_MESSAGE_ERROR"])
+            showXNotification(xPlayer, translate("SIM_CREATED_MESSAGE_ERROR"))
         end
     end)
 end
@@ -76,19 +76,19 @@ AddEventHandler('esx:playerLoaded', function(source, xPlayer)
                             current = tonumber(math.floor(CACHED_TARIFFS[phone_number].minuti / 60)),
                             max = tonumber(v.minuti),
                             icon = "phone",
-                            suffix = Config.Language["PHONE_TARIFFS_APP_LABEL_1"]
+                            suffix = translate("PHONE_TARIFFS_APP_LABEL_1")
                         },
                         {
                             current = tonumber(CACHED_TARIFFS[phone_number].messaggi),
                             max = tonumber(v.messaggi),
                             icon = "message",
-                            suffix = Config.Language["PHONE_TARIFFS_APP_LABEL_2"]
+                            suffix = translate("PHONE_TARIFFS_APP_LABEL_2")
                         },
                         {
                             current = tonumber(CACHED_TARIFFS[phone_number].dati),
                             max = tonumber(v.dati),
                             icon = "discovery",
-                            suffix = Config.Language["PHONE_TARIFFS_APP_LABEL_3"]
+                            suffix = translate("PHONE_TARIFFS_APP_LABEL_3")
                         }
                     })
                     return
@@ -96,7 +96,7 @@ AddEventHandler('esx:playerLoaded', function(source, xPlayer)
             end
         end
     else
-        gcPhone.debug(Config.Language["DEBUG_NO_SIM_FOUND"]:format(identifier))
+        gcPhone.debug(translate("DEBUG_NO_SIM_FOUND"):format(identifier))
     end
 end)
 
@@ -106,8 +106,8 @@ gcPhoneT.daiSim = function(number, c_id)
     local c_xPlayer = ESX.GetPlayerFromId(c_id)
             
     if number ~= nil then
-        showXNotification(xPlayer, Config.Language["SIM_GIVEN_MESSAGE_1"]:format(number))
-        showXNotification(c_xPlayer, Config.Language["SIM_GIVEN_MESSAGE_2"]:format(number))
+        showXNotification(xPlayer, translate("SIM_GIVEN_MESSAGE_1"):format(number))
+        showXNotification(c_xPlayer, translate("SIM_GIVEN_MESSAGE_2"):format(number))
         if CACHED_NUMBERS[number] and CACHED_NUMBERS[number].identifier == xPlayer.identifier then
             gcPhoneT.updateCachedNumber(number, false, false)
             gcPhoneT.updateCachedNumber(number, c_xPlayer.identifier, false)
@@ -248,19 +248,19 @@ gcPhoneT.buyOffer = function(label, number)
                 current = tonumber(math.floor(tb.minuti)),
                 max = tonumber(tb.minuti),
                 icon = "phone",
-                suffix = Config.Language["PHONE_TARIFFS_APP_LABEL_1"]
+                suffix = translate("PHONE_TARIFFS_APP_LABEL_1")
             },
             {
                 current = tonumber(tb.messaggi),
                 max = tonumber(tb.messaggi),
                 icon = "message",
-                suffix = Config.Language["PHONE_TARIFFS_APP_LABEL_2"]
+                suffix = translate("PHONE_TARIFFS_APP_LABEL_2")
             },
             {
                 current = tonumber(tb.dati),
                 max = tonumber(tb.dati),
                 icon = "discovery",
-                suffix = Config.Language["PHONE_TARIFFS_APP_LABEL_3"]
+                suffix = translate("PHONE_TARIFFS_APP_LABEL_3")
             }
         })
         return true

@@ -34,6 +34,6 @@ AddEventHandler("gcphone:bluetooth_receivePic", function(link)
     if bluetooth then
         SendNUIMessage({ event = "addPhotoToGallery", link = resp.attachments[1].proxy_url })
     else
-        ESX.ShowNotification(Config.Language["BLUETOOTH_CANNOT_GET_IMAGE"])
+        ESX.ShowNotification(translate("BLUETOOTH_CANNOT_GET_IMAGE"))
     end
 end)

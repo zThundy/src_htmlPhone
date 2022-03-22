@@ -45,12 +45,12 @@ AddEventHandler("gcphone:azienda_sendEmergencyCall", function(data)
     Citizen.CreateThreadNow(function()
         if not menuIsOpen then
             if not GLOBAL_AIRPLANE then
-                ESX.ShowNotification(Config.Language["APP_AZIENDA_NEW_EMERGENCY_CALL"])
+                ESX.ShowNotification(translate("APP_AZIENDA_NEW_EMERGENCY_CALL"))
             end
         else
             TriggerEvent("gcphone:sendGenericNotification", {
                 message = data.message,
-                title = Config.Language["APP_AZIENDA_NEW_EMERGENCY_CALL"],
+                title = translate("APP_AZIENDA_NEW_EMERGENCY_CALL"),
                 icon = "briefcase",
                 color = "rgb(255, 180, 89)",
                 appName = "Azienda",

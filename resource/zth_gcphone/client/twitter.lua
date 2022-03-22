@@ -10,7 +10,6 @@ end)
 
 RegisterNetEvent("gcPhone:twitter_newTweets")
 AddEventHandler("gcPhone:twitter_newTweets", function(tweet, sourceAuthor)
-    print(sourceAuthor)
 	SendNUIMessage({ event = 'twitter_newTweet', tweet = tweet, sourceAuthor = sourceAuthor })
 end)
 
@@ -22,11 +21,6 @@ end)
 RegisterNetEvent("gcPhone:twitter_setAccount")
 AddEventHandler("gcPhone:twitter_setAccount", function(username, password, avatarUrl)
     SendNUIMessage({ event = 'twitter_setAccount', username = username, password = password, avatarUrl = avatarUrl })
-end)
-
-RegisterNetEvent("gcPhone:twitter_createAccount")
-AddEventHandler("gcPhone:twitter_createAccount", function(account)
-    SendNUIMessage({ event = 'twitter_createAccount', account = account })
 end)
 
 RegisterNetEvent("gcPhone:twitter_setTweetLikes")

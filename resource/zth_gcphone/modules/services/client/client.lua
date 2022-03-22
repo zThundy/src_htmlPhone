@@ -22,22 +22,22 @@ local function CheckForDispatchScript()
         ids = ids + 1
 
         TriggerServerEvent("dispatch:svNotify", {
-			code = Config.Language["EMERGENCY_CALL_CODE"],
+			code = translate("EMERGENCY_CALL_CODE"),
 			street = GetStreetAndZone(),
 			id = ids,
 			priority = 3,
-			title = Config.Language["EMERGENCY_CALL_LABEL"],
+			title = translate("EMERGENCY_CALL_LABEL"),
 			position = {
 				x = coords.x,
 				y = coords.y,
 				z = coords.z
 			},
-            blipname = Config.Language["EMERGENCY_CALL_BLIP_LABEL"],
+            blipname = translate("EMERGENCY_CALL_BLIP_LABEL"),
             color = 2,
             sprite = 304,
             fadeOut = 30,
             duration = 10000,
-            officer = Config.Language["EMERGENCY_CALL_CALLER_LABEL"]
+            officer = translate("EMERGENCY_CALL_CALLER_LABEL")
 		})
     end
 end
@@ -78,7 +78,7 @@ end
 RegisterNetEvent('esx_addons_gcphone:call')
 AddEventHandler('esx_addons_gcphone:call', function(data)
     if not data.coords then data.coords = GetEntityCoords(GetPlayerPed(-1)) end
-    if not data.job then return gcPhone.debug(Config.Language["CHECK_JOB_NAME_EMERGENCY_CALLS"]) end
+    if not data.job then return gcPhone.debug(translate("CHECK_JOB_NAME_EMERGENCY_CALLS")) end
     if not data.display then data.display = data.job end
     data.coords = vector3(data.coords.x or 1.0, data.coords.y or 1.0, data.coords.z or 1.0)
 

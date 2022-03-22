@@ -61,14 +61,14 @@ gcPhoneT.sendMoneyToUser = function(data)
     local xPlayer = ESX.GetPlayerFromId(player)
 
     if iban:find("INSERISCI") or iban:find("IBAN") or iban:find("DESTINATARIO") then
-        showXNotification(xPlayer, Config.Language["BANK_IBAN_NOT_VALID"])
+        showXNotification(xPlayer, translate("BANK_IBAN_NOT_VALID"))
         return
     end
     
     local user_identifier = getUserFromIban(iban)
     if user_identifier ~= nil then
         if user_identifier == xPlayer.identifier then
-            showXNotification(xPlayer, Config.Language["BANK_SEND_MONEY_TO_SELF_ERROR"])
+            showXNotification(xPlayer, translate("BANK_SEND_MONEY_TO_SELF_ERROR"))
             return
         end
 
@@ -84,8 +84,8 @@ gcPhoneT.sendMoneyToUser = function(data)
                         local user_iban = getUsersIban(xPlayer.identifier)
                         local c_user_iban = getUsersIban(c_xPlayer.identifier)
 
-                        showXNotification(xPlayer, Config.Language["BANK_SENT_MONEY_TO_IBAN"]:format(amount, iban))
-                        showXNotification(c_xPlayer, Config.Language["BANK_RECEIVED_MONEY_FROM_IBAN"]:format(amount, user_iban))
+                        showXNotification(xPlayer, translate("BANK_SENT_MONEY_TO_IBAN"):format(amount, iban))
+                        showXNotification(c_xPlayer, translate("BANK_RECEIVED_MONEY_FROM_IBAN"):format(amount, user_iban))
 
                         c_xPlayer.addAccountMoney("bank", amount)
                         xPlayer.removeAccountMoney("bank", amount)
@@ -107,21 +107,21 @@ gcPhoneT.sendMoneyToUser = function(data)
                                 ['@identifier'] = user_identifier,
                                 ['@name'] = "bank"
                             }, function()
-                                showXNotification(xPlayer, Config.Language["BANK_SENT_MONEY_TO_OFFLINE_OK"])
+                                showXNotification(xPlayer, translate("BANK_SENT_MONEY_TO_OFFLINE_OK"))
                             end)
                         else
-                            showXNotification(xPlayer, Config.Language["BANK_IBAN_NOT_VALID"])
+                            showXNotification(xPlayer, translate("BANK_IBAN_NOT_VALID"))
                         end
                     end) 
                 end
             else
-                showXNotification(xPlayer, Config.Language["BANK_SENT_MONEY_TO_OFFLINE_ERROR_1"])
+                showXNotification(xPlayer, translate("BANK_SENT_MONEY_TO_OFFLINE_ERROR_1"))
             end
         else
-            showXNotification(xPlayer, Config.Language["BANK_SENT_MONEY_TO_OFFLINE_ERROR_2"])
+            showXNotification(xPlayer, translate("BANK_SENT_MONEY_TO_OFFLINE_ERROR_2"))
         end
     else
-        showXNotification(xPlayer, Config.Language["BANK_IBAN_NOT_VALID"])
+        showXNotification(xPlayer, translate("BANK_IBAN_NOT_VALID"))
     end
 end
 

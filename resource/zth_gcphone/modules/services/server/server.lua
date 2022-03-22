@@ -13,7 +13,7 @@ local function GetPlayersFromJob(job)
 end
 
 local function SendEmergencyCall(data, listSrc)
-    local _message = Config.Language["EMERGENCY_CALL_MESSAGE"]:format(data.phone_number, data.message)
+    local _message = translate("EMERGENCY_CALL_MESSAGE"):format(data.phone_number, data.message)
     if data.coords then _message = _message .. '\n GPS: ' .. data.coords.x .. ', ' .. data.coords.y end
 
     for _, source in pairs(listSrc) do
@@ -43,7 +43,7 @@ gcPhoneT.servicesStartCall = function(data, hideNumber)
         local identifier = gcPhoneT.getPlayerID(player)
         data.phone_number = gcPhoneT.getPhoneNumber(identifier)
     end
-    if hideNumber or not data.phone_number then data.phone_number = Config.Language["EMERGENCY_CALL_NO_NUMBER"] end
+    if hideNumber or not data.phone_number then data.phone_number = translate("EMERGENCY_CALL_NO_NUMBER") end
     SendEmergencyCall(data, GetPlayersFromJob(data.job))
 end
 

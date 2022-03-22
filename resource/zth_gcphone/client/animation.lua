@@ -77,7 +77,7 @@ function doCleanup()
     end
 
     CACHED_PROPS = {}
-    gcPhone.debug(Config.Language["ANIMATIONS_CLEANUP_DEBUG_1"])
+    gcPhone.debug(translate("ANIMATIONS_CLEANUP_DEBUG_1"))
 end
 
 --[[

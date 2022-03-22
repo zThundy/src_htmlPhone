@@ -52,12 +52,12 @@ function Reti.RefreshBlips()
         if info.broken then
             SetBlipColour(blip, 1)
             BeginTextCommandSetBlipName("STRING")
-            AddTextComponentString(Config.Language["WIFI_BROKEN_RADIO_TOWER_BLIP"])
+            AddTextComponentString(translate("WIFI_BROKEN_RADIO_TOWER_BLIP"))
             EndTextCommandSetBlipName(blip)
         else
             SetBlipColour(blip, 3)
             BeginTextCommandSetBlipName("STRING")
-            AddTextComponentString(Config.Language["WIFI_RADIO_TOWER_BLIP"])
+            AddTextComponentString(translate("WIFI_RADIO_TOWER_BLIP"))
             EndTextCommandSetBlipName(blip)
         end
 

@@ -24,7 +24,7 @@ CACHED_TARIFFS = {}
 AddEventHandler("playerDropped", function(reason)
     local player = source
     TriggerClientEvent("gcphone:animations_doCleanup", player)
-    gcPhone.debug(Config.Language["ANIMATIONS_CLEANUP_DEBUG_2"])
+    gcPhone.debug(translate("ANIMATIONS_CLEANUP_DEBUG_2"))
 end)
 
 MySQL.ready(function()
@@ -36,7 +36,7 @@ MySQL.ready(function()
             CACHED_NUMBERS[tostring(v.phone_number)] = { identifier = v.identifier, inUse = false }
         end
 
-        gcPhone.debug(Config.Language["CACHING_STARTUP_5"])
+        gcPhone.debug(translate("CACHING_STARTUP_5"))
         MySQL.Async.fetchAll("SELECT phone_number, identifier FROM users WHERE phone_number IS NOT NULL", {}, function(users)
             for _, v in pairs(users) do
                 if CACHED_NUMBERS[tostring(v.phone_number)] and CACHED_NUMBERS[tostring(v.phone_number)].identifier == v.identifier then
@@ -44,14 +44,14 @@ MySQL.ready(function()
                 end
             end
 
-            gcPhone.debug(Config.Language["CACHING_STARTUP_1"])
+            gcPhone.debug(translate("CACHING_STARTUP_1"))
             MySQL.Async.fetchAll("SELECT * FROM phone_users_contacts", {}, function(contacts)
                 for id, contact in pairs(contacts) do
                     if not CACHED_CONTACTS[tostring(contact.identifier)] then CACHED_CONTACTS[tostring(contact.identifier)] = {} end
                     table.insert(CACHED_CONTACTS[tostring(contact.identifier)], contact)
                 end
 
-                gcPhone.debug(Config.Language["CACHING_STARTUP_2"])
+                gcPhone.debug(translate("CACHING_STARTUP_2"))
                 MySQL.Async.fetchAll("SELECT * FROM phone_messages", {}, function(messages)
                     for id, message in pairs(messages) do
                         if not CACHED_MESSAGES[message.receiver] then CACHED_MESSAGES[message.receiver] = {} end
@@ -64,13 +64,13 @@ MySQL.ready(function()
                             table.insert(CACHED_CALLS[call.owner], call)
                         end
 
-                        gcPhone.debug(Config.Language["CACHING_STARTUP_3"])
+                        gcPhone.debug(translate("CACHING_STARTUP_3"))
                         for _, v in pairs(numbers) do
                             CACHED_TARIFFS[v.phone_number] = v
                         end
 
-                        gcPhone.debug(Config.Language["WIFI_LOAD_DEBUG_8"])
-                        gcPhone.debug(Config.Language["CACHING_STARTUP_4"])
+                        gcPhone.debug(translate("WIFI_LOAD_DEBUG_8"))
+                        gcPhone.debug(translate("CACHING_STARTUP_4"))
                         phone_loaded = true
                     end)
                 end)
@@ -83,7 +83,7 @@ if Config.EnableRadioTowers then
     Citizen.CreateThreadNow(function()
         while true do
             Citizen.Wait(Config.TimeToSaveTariffs * 1000)
-            gcPhone.debug(Config.Language["DEBUG_STARTED_SAVING_OF_TARIFFS"])
+            gcPhone.debug(translate("DEBUG_STARTED_SAVING_OF_TARIFFS"))
             for _, v in pairs(CACHED_TARIFFS) do
                 MySQL.Async.execute("UPDATE phone_sim SET minuti = @m, messaggi = @s, dati = @i WHERE id = @id", {
                     ['@m'] = v.minuti,
@@ -221,19 +221,19 @@ gcPhoneT.isAbleToCall = function(identifier, cb)
         -- isAble, useMin, min, message
         if Config.EnableRadioTowers then
             if min == nil then
-                cb(false, true, 0, Config.Language["PHONE_TARIFFS_NO_TARIFF"])
+                cb(false, true, 0, translate("PHONE_TARIFFS_NO_TARIFF"))
             else
                 if min > 0 then
                     cb(true, true, min)
                 else
-                    cb(false, true, 0, Config.Language["PHONE_TARIFFS_NO_MINUTES"])
+                    cb(false, true, 0, translate("PHONE_TARIFFS_NO_MINUTES"))
                 end
             end
         else
             cb(true, false, 0)
         end
     else
-        cb(false, true, 0, Config.Language["PHONE_TARIFFS_AIRPLANEMODE_ERROR"])
+        cb(false, true, 0, translate("PHONE_TARIFFS_AIRPLANEMODE_ERROR"))
     end
 end
 
@@ -243,7 +243,7 @@ end
 
 gcPhoneT.getFirstnameAndLastname = function(identifier)
     if not identifier then
-        gcPhone.debug(Config.Language["FIRSTNAME_LASTNAME_ERROR"])
+        gcPhone.debug(translate("FIRSTNAME_LASTNAME_ERROR"))
         local player = source
         local xPlayer = ESX.GetPlayerFromId(player)
         identifier = xPlayer.identifier
@@ -263,7 +263,7 @@ gcPhoneT.getFirstnameAndLastname = function(identifier)
     if CACHED_NAMES[identifier] then
         return CACHED_NAMES[identifier].firstname, CACHED_NAMES[identifier].lastname
     else
-        return Config.Language["EMPTY_FIELD_LABEL"], Config.Language["EMPTY_FIELD_LABEL"]
+        return translate("EMPTY_FIELD_LABEL"), translate("EMPTY_FIELD_LABEL")
     end
 end
 
@@ -290,9 +290,9 @@ gcPhoneT.updateCachedNumber = function(number, identifier, isChanging)
 
     -- check if the identifier is given to log it correctly
     if identifier then
-        gcPhone.debug(Config.Language["CACHE_NUMBERS_1"]:format(number, identifier))
+        gcPhone.debug(translate("CACHE_NUMBERS_1"):format(number, identifier))
     else
-        gcPhone.debug(Config.Language["CACHE_NUMBERS_2"]:format(number))
+        gcPhone.debug(translate("CACHE_NUMBERS_2"):format(number))
     end
 
     -- get the old number for this given isdentifier
@@ -307,7 +307,7 @@ gcPhoneT.updateCachedNumber = function(number, identifier, isChanging)
                 CACHED_NUMBERS[number].inUse = true
             else
                 -- da esx_cartesim al login del player
-                gcPhone.debug(Config.Language["CACHE_NUMBERS_3"]:format(identifier, number))
+                gcPhone.debug(translate("CACHE_NUMBERS_3"):format(identifier, number))
                 CACHED_NUMBERS[number].inUse = true
             end
         else
@@ -419,7 +419,7 @@ gcPhoneT.addContact = function(display, number, email, icon)
             TriggerClientEvent("gcPhone:contactList", player, getContacts(identifier))
         end)
     else
-        TriggerClientEvent("esx:showNotification", player, Config.Language["ADD_CONTACT_ERROR"])
+        TriggerClientEvent("esx:showNotification", player, translate("ADD_CONTACT_ERROR"))
     end
 end
 
@@ -504,13 +504,13 @@ function addMessage(source, identifier, phone_number, message)
                     end)
                 end)
             else
-                TriggerClientEvent("esx:showNotification", player, Config.Language["ADD_MESSAGE_ERROR_1"])
+                TriggerClientEvent("esx:showNotification", player, translate("ADD_MESSAGE_ERROR_1"))
             end
         else
-            TriggerClientEvent("esx:showNotification", player, Config.Language["ADD_MESSAGE_ERROR_2"])
+            TriggerClientEvent("esx:showNotification", player, translate("ADD_MESSAGE_ERROR_2"))
         end
     else
-        TriggerClientEvent("esx:showNotification", player, Config.Language["ADD_MESSAGE_ERROR_3"])
+        TriggerClientEvent("esx:showNotification", player, translate("ADD_MESSAGE_ERROR_3"))
     end 
 end
 
@@ -548,7 +548,7 @@ gcPhoneT.setReadMessageNumber = function(transmitter_number)
     local player = source
     local identifier = gcPhoneT.getPlayerID(player)
     local receiver_number = gcPhoneT.getPhoneNumber(identifier)
-    if not receiver_number then return gcPhone.debug(Config.Language["DEBUG_PHONENUMBER_NIL"]) end
+    if not receiver_number then return gcPhone.debug(translate("DEBUG_PHONENUMBER_NIL")) end
     for _, message in pairs(CACHED_MESSAGES[receiver_number]) do
         if message.transmitter == transmitter_number and message.receiver == receiver_number then
             message.isRead = 1
@@ -589,7 +589,7 @@ gcPhoneT.deleteMessage = function(id)
     local player = source
     local identifier = gcPhoneT.getPlayerID(player)
     local phone_number = gcPhoneT.getPhoneNumber(identifier)
-    if not phone_number then return gcPhone.debug(Config.Language["DEBUG_PHONENUMBER_NIL"]) end
+    if not phone_number then return gcPhone.debug(translate("DEBUG_PHONENUMBER_NIL")) end
     for table_index, message in pairs(CACHED_MESSAGES[phone_number]) do
         if message.id == id then
             table.remove(CACHED_MESSAGES[phone_number], table_index)
@@ -603,7 +603,7 @@ gcPhoneT.deleteMessageNumber = function(transmitter_number)
     local player = source
     local identifier = gcPhoneT.getPlayerID(player)
     local receiver_number = gcPhoneT.getPhoneNumber(identifier)
-    if not receiver_number then return gcPhone.debug(Config.Language["DEBUG_PHONENUMBER_NIL"]) end
+    if not receiver_number then return gcPhone.debug(translate("DEBUG_PHONENUMBER_NIL")) end
     for table_index, message in pairs(CACHED_MESSAGES[receiver_number]) do
         if message.transmitter == transmitter_number and message.receiver == receiver_number then
             table.remove(CACHED_MESSAGES[receiver_number], table_index)
@@ -618,7 +618,7 @@ end
 
 gcPhoneT.deleteReceivedMessages = function(identifier)
     local receiver_number = gcPhoneT.getPhoneNumber(identifier)
-    if not receiver_number then return gcPhone.debug(Config.Language["DEBUG_PHONENUMBER_NIL"]) end
+    if not receiver_number then return gcPhone.debug(translate("DEBUG_PHONENUMBER_NIL")) end
     CACHED_MESSAGES[receiver_number] = {}
     -- need to choose the clean table or the complete delete of table
     -- maybe i'll leave the empty table
@@ -715,7 +715,7 @@ gcPhoneT.deletePhoneHistory = function(number)
     local player = source
     local identifier = gcPhoneT.getPlayerID(player)
     local phone_number = gcPhoneT.getPhoneNumber(identifier)
-    if not phone_number then return gcPhone.debug(Config.Language["DEBUG_PHONENUMBER_NIL"]) end
+    if not phone_number then return gcPhone.debug(translate("DEBUG_PHONENUMBER_NIL")) end
     MySQL.Async.execute("DELETE FROM phone_calls WHERE `owner` = @owner AND `num` = @num", {
         ['@owner'] = phone_number,
         ['@num'] = number
@@ -732,7 +732,7 @@ gcPhoneT.deleteAllPhoneHistory = function(identifier)
     local player = source
     if player then identifier = gcPhoneT.getPlayerID(player) end
     local phone_number = gcPhoneT.getPhoneNumber(identifier)
-    if not phone_number then return gcPhone.debug(Config.Language["DEBUG_PHONENUMBER_NIL"]) end
+    if not phone_number then return gcPhone.debug(translate("DEBUG_PHONENUMBER_NIL")) end
     MySQL.Async.execute("DELETE FROM phone_calls WHERE `owner` = @owner", { ['@owner'] = phone_number }, function()
         CACHED_CALLS[phone_number] = {}
     end)
@@ -742,7 +742,7 @@ gcPhoneT.requestOfferFromCache = function()
     local player = source
     local identifier = gcPhoneT.getPlayerID(player)
     local phone_number = gcPhoneT.getPhoneNumber(identifier)
-    if not phone_number then return gcPhone.debug(Config.Language["DEBUG_PHONENUMBER_NIL"]) end
+    if not phone_number then return gcPhone.debug(translate("DEBUG_PHONENUMBER_NIL")) end
     if CACHED_TARIFFS[phone_number] then
         local sim = CACHED_TARIFFS[phone_number]
         TriggerClientEvent("gcPhone:sendRequestedOfferta", player, { tonumber(math.floor(sim.minuti / 60)), tonumber(sim.messaggi), tonumber(sim.dati) }, sim.piano_tariffario)
@@ -775,7 +775,7 @@ gcPhoneT.startCall = function(phone_number, rtcOffer, extraData)
     else
         srcPhone = gcPhoneT.getPhoneNumber(srcIdentifier)
     end
-    if not srcPhone then return TriggerClientEvent("esx:showNotification", player, Config.Language["STARTCALL_NO_SIM_INSTALLED"]) end
+    if not srcPhone then return TriggerClientEvent("esx:showNotification", player, translate("STARTCALL_NO_SIM_INSTALLED")) end
     -- srcPhone è il numero di telefono di chi ha avviato la chiamata
     
     -- qui mi prendo tutte le informazioni del giocatore a cui sto chiamanto
@@ -825,11 +825,11 @@ gcPhoneT.startCall = function(phone_number, rtcOffer, extraData)
                             end
                         else
                             PlayNoSignal(player, Chiamate[CALL_INDEX])
-                            TriggerClientEvent("esx:showNotification", player, Config.Language["STARTCALL_MESSAGE_ERROR_1"])
+                            TriggerClientEvent("esx:showNotification", player, translate("STARTCALL_MESSAGE_ERROR_1"))
                         end
                     else
                         PlayNoSignal(player, Chiamate[CALL_INDEX])
-                        TriggerClientEvent("esx:showNotification", player, Config.Language["STARTCALL_MESSAGE_ERROR_2"])
+                        TriggerClientEvent("esx:showNotification", player, translate("STARTCALL_MESSAGE_ERROR_2"))
                     end
                 end)
             else
@@ -842,7 +842,7 @@ gcPhoneT.startCall = function(phone_number, rtcOffer, extraData)
                 else
                     Chiamate[CALL_INDEX].noSignal = true
                     PlayNoSignal(player, Chiamate[CALL_INDEX])
-                    TriggerClientEvent("esx:showNotification", player, Config.Language["STARTCALL_MESSAGE_ERROR_3"])
+                    TriggerClientEvent("esx:showNotification", player, translate("STARTCALL_MESSAGE_ERROR_3"))
                 end
             end
         else

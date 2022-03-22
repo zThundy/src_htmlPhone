@@ -19,7 +19,7 @@ MySQL.ready(function()
                 account.authorIcon = account.avatar_url
                 table.insert(CACHED_ACCOUNTS, account)
             end
-            gcPhone.debug(Config.Language["CACHE_TWITTER_1"])
+            gcPhone.debug(translate("CACHE_TWITTER_1"))
         end)
     end)
 
@@ -28,7 +28,7 @@ MySQL.ready(function()
             if not CACHED_LIKES[like.tweetId] then CACHED_LIKES[like.tweetId] = {} end
             table.insert(CACHED_LIKES[like.tweetId], like)
         end
-        gcPhone.debug(Config.Language["CACHE_TWITTER_2"])
+        gcPhone.debug(translate("CACHE_TWITTER_2"))
     end)
 end)
 

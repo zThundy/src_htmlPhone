@@ -43,11 +43,11 @@ end)
 
 RegisterNUICallback('connettiAllaRete', function(data, cb)
     if data == false then
-        ESX.ShowNotification(Config.Language["MODEM_WRONG_PASSWORD"])
+        ESX.ShowNotification(translate("MODEM_WRONG_PASSWORD"))
         return
     end
     WIFI_TEMP_DATA = { label = data.label, password = data.password }
-    ESX.ShowNotification(Config.Language["MODEM_CORRECT_PASSWORD"])
+    ESX.ShowNotification(translate("MODEM_CORRECT_PASSWORD"))
     UpdateWifiInfo(true, WIFI_TEMP_DATA)
     StartWifiRangeCheck()
     cb("ok")
@@ -58,7 +58,7 @@ RegisterNUICallback('startCall', function(data, cb)
         if data.rtcOffer == nil then data.rtcOffer = '' end
         gcPhoneServerT.startCall(data.numero, data.rtcOffer, data.extraData)
     else
-        ESX.ShowNotification(Config.Language["PHONECALLS_AEREO_MODE_ERROR"])
+        ESX.ShowNotification(translate("PHONECALLS_AEREO_MODE_ERROR"))
     end
     cb("ok")
 end)
@@ -119,7 +119,7 @@ RegisterNUICallback('sendMessage', function(data, cb)
 
         gcPhoneServerT.sendMessage(data.phoneNumber, data.message)
     else
-        ESX.ShowNotification(Config.Language["MESSAGES_AEREO_MODE_ERROR"])
+        ESX.ShowNotification(translate("MESSAGES_AEREO_MODE_ERROR"))
     end
     cb("ok")
 end)

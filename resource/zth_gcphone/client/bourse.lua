@@ -12,9 +12,9 @@ end)
 RegisterNUICallback("buyCrypto", function(data, cb)
     local ok = gcPhoneServerT.buyCrypto(data)
     if ok then
-        ESX.ShowNotification(Config.Language["BOURSE_CRYPTO_BOUGHT_OK"]:format(data.amount, data.crypto.name, data.crypto.currentMarket))
+        ESX.ShowNotification(translate("BOURSE_CRYPTO_BOUGHT_OK"):format(data.amount, data.crypto.name, data.crypto.currentMarket))
     else
-        ESX.ShowNotification(Config.Language["BOURSE_CRYPTO_BOUGHT_ERROR"])
+        ESX.ShowNotification(translate("BOURSE_CRYPTO_BOUGHT_ERROR"))
     end
     SendNUIMessage({ event = "receiveBourseProfile", profile = gcPhoneServerT.getBourseProfile() })
     SendNUIMessage({ event = "receiveMyCrypto", crypto = gcPhoneServerT.getMyCrypto() })
@@ -24,9 +24,9 @@ end)
 RegisterNUICallback("sellCrypto", function(data, cb)
     local ok = gcPhoneServerT.sellCrypto(data)
     if ok then
-        ESX.ShowNotification(Config.Language["BOURSE_CRYPTO_SELL_OK"]:format(data.amount, data.crypto.name, data.price))
+        ESX.ShowNotification(translate("BOURSE_CRYPTO_SELL_OK"):format(data.amount, data.crypto.name, data.price))
     else
-        ESX.ShowNotification(Config.Language["BOURSE_CRYPTO_SELL_ERROR"])
+        ESX.ShowNotification(translate("BOURSE_CRYPTO_SELL_ERROR"))
     end
     SendNUIMessage({ event = "receiveBourseProfile", profile = gcPhoneServerT.getBourseProfile() })
     SendNUIMessage({ event = "receiveMyCrypto", crypto = gcPhoneServerT.getMyCrypto() })

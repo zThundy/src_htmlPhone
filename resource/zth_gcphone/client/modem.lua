@@ -14,7 +14,7 @@ Citizen.CreateThread(function()
         onExit = function()
             ESX.UI.Menu.CloseAll()
         end,
-        msg = Config.Language["HELPNOTIFICATION_MODEM_SHOP_LABEL"],
+        msg = translate("HELPNOTIFICATION_MODEM_SHOP_LABEL"),
     })
 
     local info = Config.ModemManagementBlip
@@ -35,9 +35,9 @@ end)
 
 RegisterNetEvent("gcphone:modem_chooseCredentials")
 AddEventHandler("gcphone:modem_chooseCredentials", function()
-    local data = {limit = 255, title = Config.Language["MODEM_CHOOSE_CREDENTIAL_SSID"]}
+    local data = {limit = 255, title = translate("MODEM_CHOOSE_CREDENTIAL_SSID")}
     local label = GetResponseText(data)
-    data.title = Config.Language["MODEM_CHOOSE_CREDENTIAL_PASSWD"]
+    data.title = translate("MODEM_CHOOSE_CREDENTIAL_PASSWD")
     local password = GetResponseText(data)
 
     gcPhoneServerT.modem_createModem(label, password, GetEntityCoords(GetPlayerPed(-1)))
@@ -54,7 +54,7 @@ function OpenModemManagement()
     ESX.TriggerServerCallback("gcphone:modem_getMenuInfo", function(elements)
         onMenuSelect = function(data, _)
             if data.current.value == "aggiorna_password" then
-                local password = GetResponseText({ limit = 255, title = Config.Language["MODEM_CHOOSE_CREDENTIAL_NEW_PASSWD"] })
+                local password = GetResponseText({ limit = 255, title = translate("MODEM_CHOOSE_CREDENTIAL_NEW_PASSWD") })
                 gcPhoneServerT.modem_cambiaPassword(password)
             end
 
@@ -77,7 +77,7 @@ function OpenModemManagement()
         end
 
         ESX.UI.Menu.Open('default', GetCurrentResourceName(), 'modem_management', {
-            title = Config.Language["MODEM_SHOP_TITLE"],
+            title = translate("MODEM_SHOP_TITLE"),
             elements = elements
         }, onMenuSelect, onMenuClose)
     end)

@@ -44,7 +44,7 @@ function CallStaticPhone(player, phone_number, rtcOffer, extraData)
         TriggerClientEvent('gcPhone:notifyFixePhoneChange', -1, FIXED_PHONES_INFO)
         TriggerClientEvent('gcPhone:waitingCall', player, Chiamate[indexCall], true)
     else
-        TriggerClientEvent("esx:showNotification", player, Config.Language["PHONEBOX_PHONE_OCCUPIED"])
+        TriggerClientEvent("esx:showNotification", player, translate("PHONEBOX_PHONE_OCCUPIED"))
     end
 end
 

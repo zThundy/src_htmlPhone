@@ -19,7 +19,7 @@ if IsDuplicityVersion() then
         if t and t.showNotification then
             t.showNotification(message)
         else
-            gcPhone.debug(Config.Language["NO_XPLAYER_NOTIFICATION"])
+            gcPhone.debug(translate("NO_XPLAYER_NOTIFICATION"))
         end
     end
 end

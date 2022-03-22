@@ -7,11 +7,11 @@ TARIFFS_LOADED = false
 MySQL.ready(function()
     MySQL.Async.fetchAll("SELECT * FROM phone_cell_towers", {}, function(r)
         CACHED_TOWERS = r
-        Reti.Debug(Config.Language["WIFI_LOAD_DEBUG_1"])
+        Reti.Debug(translate("WIFI_LOAD_DEBUG_1"))
         MySQL.Async.fetchAll("SELECT * FROM phone_wifi_nets", {}, function(r)
             CACHED_WIFIS = r
             Reti.LoadAndSendWifi()
-            Reti.Debug(Config.Language["WIFI_LOAD_DEBUG_2"])
+            Reti.Debug(translate("WIFI_LOAD_DEBUG_2"))
             TARIFFS_LOADED = true
         end)
     end)
@@ -25,7 +25,7 @@ if Config.EnableRadioTowers then
             while true do
                 TriggerClientEvent('esx_wifi:riceviTorriRadio', -1, CACHED_TOWERS)
                 TriggerClientEvent('esx_wifi:riceviRetiWifi', -1, CACHED_WIFIS)
-                Reti.Debug(Config.Language["WIFI_LOAD_DEBUG_3"])
+                Reti.Debug(translate("WIFI_LOAD_DEBUG_3"))
                 Citizen.Wait(Config.SyncThreadWait * 1000)
             end
         end

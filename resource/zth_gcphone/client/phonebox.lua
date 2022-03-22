@@ -79,7 +79,7 @@ if Config.EnablePhoneBoxes then
                         inRangeToActivePhone = true
                         inRangedist = dist
                         if dist <= 1.0 then 
-                            ESX.ShowHelpNotification(Config.Language["HELPNOTIFICATION_PHONE_BOXES_ANSWER"]:format(Config.KeyLabel))
+                            ESX.ShowHelpNotification(translate("HELPNOTIFICATION_PHONE_BOXES_ANSWER"):format(Config.KeyLabel))
                             if IsControlJustPressed(1, Config.KeyTakeCall) then
                                 AnswerPhone(PHONE_BOXES_STATUS[i])
                                 PHONE_BOXES_STATUS[i] = {}
@@ -128,7 +128,7 @@ if Config.EnablePhoneBoxes then
                             props[number] = CreateObject(GetHashKey(Config.PhonePropModel), v.coords.x, v.coords.y, v.coords.z, false, true, false)
                         end
                         if dist <= 2.0 then
-                            ESX.ShowHelpNotification(Config.Language["HELPNOTIFICATION_PHONE_BOXES_CALL"]:format(Config.KeyLabel))
+                            ESX.ShowHelpNotification(translate("HELPNOTIFICATION_PHONE_BOXES_CALL"):format(Config.KeyLabel))
                             if IsControlJustPressed(0, Config.KeyTakeCall) then
                                 if not number then
                                     number = getPhoneBoxNumber(v.coords)
