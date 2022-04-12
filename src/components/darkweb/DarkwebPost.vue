@@ -73,8 +73,7 @@ export default {
     postMessage () {
       Modal.CreateTextModal({
         title: this.LangString('TYPE_MESSAGE'),
-        color: '#606060',
-        limit: 255
+        color: '#606060'
       })
       .then(resp => {
         const message = resp.text.trim()

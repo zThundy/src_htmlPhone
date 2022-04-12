@@ -95,24 +95,24 @@ const getters = {
     const langKey = Object.keys(config.language)
     const AvailableLanguage = {}
     for (const key of langKey) {
+      console.log("key", key)
       AvailableLanguage[config.language[key].NAME] = {value: key, icons: 'fa-flag'}
     }
     return AvailableLanguage
   },
-  LangString ({ config, lang }) {
+  LangString ({ config }) {
     return (LABEL) => {
       if (process.env.NODE_ENV !== 'production') return "M_T"
-      return config.language[config.langaugeType].data[LABEL] || LABEL
+      return config.language[config.languageType][LABEL] || LABEL
     }
   }
 }
 
 const actions = {
   loadConfig ({ commit, state }, { config, language, type }) {
-    var timeAgoConf = config.language[type || config.defaultLanguage].TIMEAGO
-    if (type) config.langaugeType = type
-    if (language) config.language[type].data = language
-    if (timeAgoConf !== undefined) Vue.prototype.$timeago.addLocale(type, timeAgoConf)
+    if (type) config.languageType = type
+    if (language) config.language = language
+    if (config.time !== undefined) Vue.prototype.$timeago.addLocale(type, config.time)
     Vue.prototype.$timeago.setCurrentLocale(state.lang)
     if (config.defaultContacts !== undefined) commit('SET_DEFAULT_CONTACTS', config.defaultContacts)
     commit('SET_CONFIG', config)
@@ -159,13 +159,13 @@ const actions = {
   closePhone () {
     PhoneAPI.closePhone()
   },
-  resetPhone ({ dispatch, getters }) {
+  resetPhone ({ dispatch, getters, state }) {
     dispatch('setZoom', '100%')
     dispatch('setVolume', 1)
     dispatch('setBackground', getters.config.background_default)
     dispatch('setCurrentCover', getters.config.cover_default)
     dispatch('setsuoneria', getters.config.suoneria_default)
-    dispatch('setLanguage', 'it_IT')
+    dispatch('setLanguage', state.config.languageType)
   },
   sendStartupValues ({ state }) {
     const data = {
@@ -187,12 +187,6 @@ const mutations = {
   SET_CONFIG (state, config) {
     state.config = config
   },
-  // SET_APP_ENABLE (state, {appName, enable}) {
-  //   const appIndex = state.config.apps.findIndex(app => app.name === appName)
-  //   if (appIndex !== -1) {
-  //     Vue.set(state.config.apps[appIndex], 'enabled', enable)
-  //   }
-  // },
   TOGGLE_HALF_SHOW (state, bool) {
     state.enableHalfShow = bool
   },
@@ -225,6 +219,7 @@ const mutations = {
     state.volume = volume
   },
   SET_LANGUAGE (state, lang) {
+    state.config.languageType = lang
     state.lang = lang
   },
   TOGGLE_NOTIFICATIONS (state) {

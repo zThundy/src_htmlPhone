@@ -76,7 +76,6 @@ export default {
       this.SET_AZIENDA_IGNORE_CONTROLS(true)
       Modal.CreateTextModal({
         title: this.LangString('TYPE_MESSAGE'),
-        limit: 255,
         color: 'rgb(255, 180, 89)'
       })
       .then(resp => {

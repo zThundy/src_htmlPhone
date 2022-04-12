@@ -75,13 +75,11 @@ export default {
             break
           case 2:
             Modal.CreateTextModal({
-              limit: 200,
               title: this.LangString('APP_BANK_TYPE_IBAN_TITLE'),
               color: 'rgb(45, 74, 175)'
             })
             .then(iban => {
               Modal.CreateTextModal({
-                limit: 200,
                 title: this.LangString('APP_BANK_TYPE_AMOUNT_TITLE'),
                 color: 'rgb(45, 74, 175)'
               })

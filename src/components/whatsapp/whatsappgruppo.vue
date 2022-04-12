@@ -235,8 +235,7 @@ export default {
       if (this.ignoreControls) return
       Modal.CreateTextModal({
         title: this.LangString('TYPE_MESSAGE'),
-        color: 'rgb(112, 255, 125)',
-        limit: 64
+        color: 'rgb(112, 255, 125)'
       })
       .then(resp => {
         const message = resp.text.trim()

@@ -75,8 +75,7 @@ export default {
             Modal.CreateTextModal({
               text: 'https://i.imgur.com/',
               title: this.LangString('TYPE_LINK'),
-              color: 'rgb(112, 255, 125)',
-              limit: 64
+              color: 'rgb(112, 255, 125)'
             })
             .then(resp => {
               if (resp.text !== '' && resp.text !== undefined && resp.text !== null && resp.text !== 'https://i.imgur.com/') {

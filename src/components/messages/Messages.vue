@@ -157,7 +157,6 @@ export default {
         this.onActionMessage(this.messagesListApp[this.selectMessage])
       } else {
         Modal.CreateTextModal({
-          limit: 64,
           title: this.LangString('TYPE_MESSAGE'),
           color: 'rgb(194, 108, 7)'
         })

@@ -88,7 +88,6 @@ export default {
           case 1:
             Modal.CreateTextModal({
               title: this.LangString('TYPE_MESSAGE'),
-              limit: 255,
               color: 'rgb(210, 166, 5)'
             })
             .then(message => {

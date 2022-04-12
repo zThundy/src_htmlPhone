@@ -74,7 +74,6 @@ export default {
     },
     onEnter () {
       Modal.CreateTextModal({
-        limit: 64,
         title: this.LangString('TYPE_MESSAGE'),
         color: 'rgb(194, 108, 7)'
       })

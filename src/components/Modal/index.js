@@ -26,6 +26,7 @@ export default {
     if (config.useHTMLTextbox) {
       PhoneAPI.setNUIFocus(true)
       return new Promise((resolve, reject) => {
+        if (!propsData.limit) propsData.limit = Number(config.maxTextLength) || 255
         let modal = new (Vue.extend(TextModal))({ el: document.createElement('div'), propsData })
         modal.$el.onkeydown = (e) => {
           const key = e.key.toLowerCase()

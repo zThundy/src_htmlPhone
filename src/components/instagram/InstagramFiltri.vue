@@ -116,8 +116,7 @@ export default {
         switch(resp.id) {
           case 1:
             Modal.CreateTextModal({
-              title: this.LangString('TYPE_MESSAGE'),
-              limit: 255
+              title: this.LangString('TYPE_MESSAGE')
             })
             .then(resp => {
               if (resp.text !== '' && resp.text !== undefined && resp.text !== null) {
