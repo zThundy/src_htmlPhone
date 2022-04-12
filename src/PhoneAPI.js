@@ -451,14 +451,6 @@ class PhoneAPI {
     store.commit('TCHAT_SET_MESSAGES', data.messages)
   }
 
-  onnotes_receive (data) {
-    store.dispatch('notesAddMessage', data)
-  }
-
-  onnotes_channel (data) {
-    store.commit('NOTES_SET_MESSAGES', data)
-  }
-
   onautoStartCall (data) {
     this.startCall({ numero: data.number }, data.extraData)
   }
