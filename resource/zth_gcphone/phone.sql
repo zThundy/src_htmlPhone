@@ -278,20 +278,6 @@ DELETE FROM `phone_messages`;
 /*!40000 ALTER TABLE `phone_messages` DISABLE KEYS */;
 /*!40000 ALTER TABLE `phone_messages` ENABLE KEYS */;
 
--- Dump della struttura di tabella esfx.phone_news
-CREATE TABLE IF NOT EXISTS `phone_news` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `message` longtext NOT NULL,
-  `pics` longtext NOT NULL,
-  `time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
--- Dump dei dati della tabella esfx.phone_news: ~0 rows (circa)
-DELETE FROM `phone_news`;
-/*!40000 ALTER TABLE `phone_news` DISABLE KEYS */;
-/*!40000 ALTER TABLE `phone_news` ENABLE KEYS */;
-
 -- Dump della struttura di tabella esfx.phone_twitter_accounts
 CREATE TABLE IF NOT EXISTS `phone_twitter_accounts` (
   `id` int(11) NOT NULL AUTO_INCREMENT,

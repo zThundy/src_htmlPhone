@@ -17,7 +17,6 @@ import galleria from './modules/galleria'
 import bluetooth from './modules/bluetooth'
 import darkweb from './modules/darkweb'
 import email from './modules/email'
-import news from './modules/news'
 import azienda from './modules/azienda'
 import license from './modules/license'
 // import videocalls from './modules/videocalls'
@@ -42,7 +41,6 @@ export default new Vuex.Store({
     bluetooth,
     darkweb,
     email,
-    news,
     azienda,
     wifi,
     license,

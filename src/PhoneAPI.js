@@ -776,27 +776,6 @@ class PhoneAPI {
     return this.post('registerEmail', email)
   }
 
-  async fetchNews () {
-    return this.post('fetchNews')
-  }
-
-  onsendRequestedNews (data) {
-    store.commit('UPDATE_NEWS', data.news)
-  }
-
-  async postNews (pics, desc) {
-    return this.post('postNews', { pics: pics, message: desc })
-  }
-
-  async requestJob () {
-    return this.post('requestJob')
-  }
-
-  onreceiveNewsJob (data) {
-    store.commit('UPDATE_JOB', data.job)
-    store.commit('UPDATE_ACCESS', data.access)
-  }
-
   async requestJobInfo () {
     return this.post('requestJobInfo')
   }

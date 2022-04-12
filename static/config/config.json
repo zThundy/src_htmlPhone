@@ -22,7 +22,7 @@
     "#78909C"
   ],
 
-  "useHTMLTextbox": true,
+  "useHTMLTextbox": false,
   "maxTextLength": 255,
 
   "defaultVolume": 0.2,
@@ -246,14 +246,6 @@
       "en_EN__name": "Email",
       "icons": "/html/static/img/icons_app/email.png",
       "routeName": "email.splash",
-      "enabled": true
-    },
-    {
-      "name": "News",
-      "it_IT__name": "News",
-      "en_EN__name": "News",
-      "icons": "/html/static/img/icons_app/news.png",
-      "routeName": "news.splash",
       "enabled": true
     },
     {

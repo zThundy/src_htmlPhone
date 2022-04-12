@@ -58,9 +58,6 @@ import EmailWrite from '@/components/email/emailwrite'
 import EmailChooseContact from '@/components/email/emailchoosecontact'
 import EmailRegister from '@/components/email/emailregister'
 
-import News from '@/components/news/news'
-import NewsSplash from '@/components/news/newssplash'
-
 import Azienda from '@/components/azienda/azienda'
 import AziendaSplash from '@/components/azienda/aziendasplash'
 
@@ -290,16 +287,6 @@ export default new Router({
       path: '/email/choosecontact',
       name: 'email.choosecontact',
       component: EmailChooseContact
-    },
-    {
-      path: '/news',
-      name: 'news',
-      component: News
-    },
-    {
-      path: '/news/splash',
-      name: 'news.splash',
-      component: NewsSplash
     },
     {
       path: '/azienda',

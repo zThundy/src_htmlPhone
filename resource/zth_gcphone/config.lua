@@ -207,10 +207,3 @@ Config.MinAziendaGrade = {
         [0] = {"chat", "calls"}
     }
 }
-
--- these will be the jobs that will have access
--- to the announcements or news application
-Config.AnnouncesAppJobs = {
-    police = true,
-    ambulance = true
-}
