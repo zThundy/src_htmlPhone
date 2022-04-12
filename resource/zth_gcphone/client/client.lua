@@ -137,7 +137,7 @@ AddEventHandler("gcPhone:receiveMessage", function(message, displayNotification)
                 title = "APP_MESSAGE_TITLE",
                 icon = "envelope",
                 color = "rgb(255, 140, 30)",
-                appName = "Messaggi",
+                appName = translate("APP_MESSAGE_TITLE"),
                 sound = NOTIFICATIONS_ENABLED and "msgnotify.ogg" or nil
             })
         end

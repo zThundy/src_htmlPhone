@@ -1,4 +1,5 @@
--- eventi e funzioni per funzionamento
+-- garbage code
+-- maybe i'll be working on it in the future
 
 RegisterNetEvent("gcphone:whatsapp_updateGruppi")
 AddEventHandler("gcphone:whatsapp_updateGruppi", function(groups, number)

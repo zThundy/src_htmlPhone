@@ -18,7 +18,7 @@
 
     <template v-if="currentPage === STATES.INFO_GRUPPO">
       <div class="elements">
-        <div class="group inputText" data-type="text" data-maxlength='64' :data-defaultValue="tempGroupInfo['title']" data-title="Inserisci il titolo del gruppo">
+        <div class="group inputText" data-type="text" data-maxlength='64' :data-defaultValue="tempGroupInfo['title']" :data-title="LangString('APP_WHATSAPP_CHANGE_GROUP_TITLE_MODAL')">
           <input class="nomeGruppoBox" type="text" :value="tempGroupInfo['title']" @change="updateGroupVars({value: $event.target.value, key: 'title'})">
           <span class="highlight"></span>
           <span class="bar"></span>

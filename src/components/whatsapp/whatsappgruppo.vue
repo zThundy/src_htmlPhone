@@ -16,7 +16,7 @@
         :text-size="16"
         color="white"
         text-color="white"
-      >Aggiornamento...
+      >{{ LangString("LOADING") }}
       </md-activity-indicator>
     </custom-toast>
 

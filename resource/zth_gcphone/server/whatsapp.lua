@@ -1,3 +1,5 @@
+-- garbage code
+-- maybe i'll be working on it in the future
 local WHATSAPP_GROUPS = {}
 
 local function WhatsappShowNotificationError(player, title, message)
