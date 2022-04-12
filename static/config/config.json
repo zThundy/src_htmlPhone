@@ -23,6 +23,7 @@
   ],
 
   "useHTMLTextbox": true,
+  "maxTextLength": 255,
 
   "defaultVolume": 0.2,
   "fileUploader": {
@@ -123,7 +124,8 @@
 
   "defaultContacts": [],
 
-  "apps": [{
+  "apps": [
+    {
       "name": "Twitter",
       "it_IT__name": "Twitter",
       "en_EN__name": "Twitter",
@@ -142,7 +144,7 @@
     {
       "name": "Galleria",
       "it_IT__name": "Galleria",
-      "en_EN__name": "Galleria",
+      "en_EN__name": "Gallery",
       "icons": "/html/static/img/icons_app/galleria.png",
       "routeName": "galleria.splash",
       "enabled": true
@@ -296,32 +298,17 @@
       "enabled": true
     }
   ],
-  
-  "defaultLanguage": "en_EN",
-  "language": {
-    "it_IT": {
-      "TIMEAGO": [
-        "Proprio adesso",
-        ["%s secondo fa", "%s secondi fa"],
-        ["%s minuto fa", "%s minuti fa"],
-        ["%s ora fa", "%s ore fa"],
-        ["%s giorno fa", "%s giorni fa"],
-        ["%s settimana fa", "%s settimane fa"],
-        ["%s mese fa", "%s mesi fa"],
-        ["%s anno fa", "%s anni fa"]
-      ]
-    },
-    "en_EN": {
-      "TIMEAGO": [
-        "Now",
-        ["%s second ago", "%s seconds ago"],
-        ["%s minute ago", "%s minutes ago"],
-        ["%s hour ago", "%s hours ago"],
-        ["%s day ago", "%s days ago"],
-        ["%s week ago", "%s weeks ago"],
-        ["%s month ago", "%s months ago"],
-        ["%s year ago", "%s years ago"]
-      ]
-    }
-  }
+
+  "time": [
+    "Now",
+    ["%s second ago", "%s seconds ago"],
+    ["%s minute ago", "%s minutes ago"],
+    ["%s hour ago", "%s hours ago"],
+    ["%s day ago", "%s days ago"],
+    ["%s week ago", "%s weeks ago"],
+    ["%s month ago", "%s months ago"],
+    ["%s year ago", "%s years ago"]
+  ],
+
+  "language": {}
 }

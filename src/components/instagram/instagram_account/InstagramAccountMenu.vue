@@ -116,6 +116,10 @@ export default {
       }
     },
 
+    login () {
+      this.currentIndex = 0
+      this.$phoneAPI.instagram_login(this.igAccount.username, this.igAccount.password)
+    },
     logout () {
       this.currentIndex = 0
       this.instagramLogout()

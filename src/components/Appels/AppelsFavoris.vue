@@ -29,16 +29,15 @@ export default {
       // qui apro il modal con le opzioni di selezione
       Modal.CreateModal({ scelte: [
         ...itemSelect.subMenu,
-        { title: 'Cancella', icons: 'fa-undo', color: 'red' }
+        { title: this.LangString("CANCEL"), icons: 'fa-undo', color: 'red' }
       ] })
       .then(response => {
         switch(response.title) {
-          case 'Cancella':
+          case this.LangString("CANCEL"):
             this.updateIgnoredControls(false)
             break
           default:
             Modal.CreateTextModal({
-              limit: 255,
               title: this.LangString('APP_PHONE_FAVOURITES_MODAL_TITLE'),
               color: 'rgb(6, 152, 87)'
             })
@@ -57,12 +56,12 @@ export default {
       .catch(e => { this.updateIgnoredControls(false) })
     }
   },
-
+  /*
   created () {
   },
-
   beforeDestroy () {
   }
+  */
 }
 </script>
 

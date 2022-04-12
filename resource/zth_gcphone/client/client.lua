@@ -299,7 +299,7 @@ function TogglePhone()
         firstname = firstname,
         lastname = lastname
     })
-    SendNUIMessage({ event = "sendTranslations", language = getScope("nui"), type = Config.ChosenLanguage })
+    SendNUIMessage({ event = "sendTranslations", language = getAllScopes("nui"), type = Config.ChosenLanguage })
     if menuIsOpen then 
         PhonePlayIn()
     else

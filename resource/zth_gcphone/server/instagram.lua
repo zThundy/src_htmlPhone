@@ -233,8 +233,7 @@ gcPhoneT.instagram_loginAccount = function(username, password)
         gcPhoneT.useInternetData(identifier, mbToRemove)
         local user = GetInstagramUser(username, password)
         if not user then
-            print("no user found")
-            InstagramShowError(player, 'INSTAGRAM_INFO_TITLE', 'APP_INSTAGRAM_NO_ACCOUNT')
+            InstagramShowError(player, 'INSTAGRAM_INFO_TITLE', 'APP_INSTAGRAM_NOTIF_LOGIN_ERROR')
             return
         end
         InstagramShowSuccess(player, 'INSTAGRAM_INFO_TITLE', 'APP_INSTAGRAM_NOTIF_LOGIN_SUCCESS')
