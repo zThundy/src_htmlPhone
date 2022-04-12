@@ -59,11 +59,6 @@ gcPhoneT.sendMoneyToUser = function(data)
     local player = source
     local iban = data.iban
     local xPlayer = ESX.GetPlayerFromId(player)
-
-    if iban:find("INSERISCI") or iban:find("IBAN") or iban:find("DESTINATARIO") then
-        showXNotification(xPlayer, translate("BANK_IBAN_NOT_VALID"))
-        return
-    end
     
     local user_identifier = getUserFromIban(iban)
     if user_identifier ~= nil then
@@ -92,6 +87,12 @@ gcPhoneT.sendMoneyToUser = function(data)
 
                         TriggerClientEvent("gcPhone:updateBankAmount", xPlayer.source, xPlayer.getAccount("bank").money, user_iban)
                         TriggerClientEvent("gcPhone:updateBankAmount", c_xPlayer.source, c_xPlayer.getAccount("bank").money, c_user_iban)
+
+                        -- fuck it i don't care
+                        if not Config.ShouldUseIban then
+                            user_iban = xPlayer.identifier
+                            c_user_iban = c_xPlayer.identifier
+                        end
 
                         updateBankMovements(xPlayer.source, xPlayer.identifier, amount, "negative", c_user_iban, user_iban)
                         updateBankMovements(c_xPlayer.source, c_xPlayer.identifier, amount, "positive", user_iban, c_user_iban)
@@ -137,6 +138,11 @@ function updateBankMovements(source, identifier, amount, type, iban, iban_from)
                 ['@from'] = iban,
                 ['@to'] = iban
             }, function(result)
+                -- for loop that changes the from and to values to the user_iban
+                for i = 1, #result do
+                    result[i].from = iban_from
+                    result[i].to = iban_from
+                end
                 TriggerClientEvent("gcphone:bank_sendBankMovements", source, result)
             end)
         end
@@ -148,9 +154,16 @@ gcPhoneT.bank_getBankInfo = function()
     local xPlayer = ESX.GetPlayerFromId(player)
     local user_iban = getUsersIban(xPlayer.identifier)
     MySQL.Async.fetchAll("SELECT * FROM phone_bank_movements WHERE `from` = @from ORDER BY id DESC", {
-        ['@from'] = user_iban,
-        ['@to'] = user_iban
-    }, function(result) TriggerClientEvent("gcphone:bank_sendBankMovements", player, result) end)
+        ['@from'] = Config.ShouldUseIban and user_iban or xPlayer.identifier,
+        ['@to'] = Config.ShouldUseIban and user_iban or xPlayer.identifier
+    }, function(result)
+        -- for loop that changes the from and to values to the user_iban
+        for i = 1, #result do
+            result[i].from = user_iban
+            result[i].to = user_iban
+        end
+        TriggerClientEvent("gcphone:bank_sendBankMovements", player, result)
+    end)
     return xPlayer.getAccount("bank").money, user_iban
 end
 
