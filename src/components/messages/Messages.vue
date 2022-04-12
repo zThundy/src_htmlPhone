@@ -349,10 +349,10 @@ export default {
       if (this.config.picturesConfig.enabled) scelte = [{ id: 2, title: this.LangString('APP_MESSAGE_SEND_PHOTO'), icons: 'fa-image' }, ...scelte]
       Modal.CreateModal({ scelte: scelte })
       .then(async data => {
-        this.ignoreControls = false
         switch(data.id) {
           case 1:
             this.$phoneAPI.post('sendMessage', { phoneNumber: this.phoneNumber, message: '%pos%' })
+            this.ignoreControls = false
             break
           case 2:
             this.$phoneAPI.takePhoto()

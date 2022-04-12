@@ -21,9 +21,9 @@ export default {
     ...mapActions(['deleteMessagesNumber', 'deleteAllMessages', 'startVideoCall']),
     onSelect (data) {
       if (data.id === -1) {
-        this.$router.push({name: 'messages.selectcontact'})
+        this.$router.push({ name: 'messages.selectcontact' })
       } else {
-        this.$router.push({name: 'messages.view', params: data})
+        this.$router.push({ name: 'messages.view', params: data })
       }
     },
     onOption (data) {
@@ -42,6 +42,7 @@ export default {
           {id: 3, title: this.LangString('CANCEL'), icons: 'fa-undo', color: 'red'}
         ])
       }).then(resp => {
+        this.ignoreControls = false
         switch(resp.id) {
           case 1:
             this.deleteMessagesNumber({num: data.number})
@@ -50,7 +51,6 @@ export default {
             this.deleteAllMessages()
             break
           case 3:
-            this.ignoreControls = false
             break
           case 4:
             this.$phoneAPI.startCall({ numero: data.number })
@@ -71,8 +71,8 @@ export default {
       })
       .catch(e => { this.ignoreControls = false })
     },
-    back: function () {
-      if (this.ignoreControls === true) return
+    back () {
+      if (this.ignoreControls) return
       this.$router.push({ name: 'menu' })
     }
   },
