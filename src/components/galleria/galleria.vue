@@ -158,6 +158,7 @@ export default {
                 })
               } else if (element.type === 'photo') {
                 this.imgZoom = element
+                this.ignoredControls = false
               }
               this.CHANGE_BRIGHTNESS_STATE(false)
               break
@@ -204,6 +205,7 @@ export default {
               break
             case 5:
               this.deleteSinglePicture(this.currentSelect)
+              this.ignoredControls = false
               break
             case 6:
               const videoData = this.getSMSVideoInfo(element.link)
