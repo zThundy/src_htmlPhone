@@ -271,6 +271,9 @@ Config.Language = {
             ["APP_CONTACT_LABEL_NAME"] = "Nome - Cognome",
             ["APP_CONTACT_LABEL_NUMBER"] = "Numero",
             ["APP_CONTACT_LABEL_EMAIL"] = "Email (Max: 35)",
+            ["APP_CONTACT_NEW_NAME"] = "Inserisci il nome del contatto",
+            ["APP_CONTACT_NEW_NUMBER"] = "Inserisci il numero del contatto",
+            ["APP_CONTACT_NEW_EMAIL"] = "Inserisci la email del contatto",
             ["APP_MESSAGES_INOLTRA"] = "Inoltra",
             ["APP_MESSAGE_INOLTRA_IMG"] = "Inoltra",
             ["APP_MESSAGES_ADD_CONTACT"] = "Aggiungi",
@@ -515,6 +518,7 @@ Config.Language = {
             ["APP_YELLOWPAGES_DELETE_POST"] = "Elimina post",
             ["APP_YELLOW_NEW_POST_TITLE"] = "Nuovo post",
             ["APP_YELLOW_NO_TARIFF"] = "Non hai abbastanza internet",
+            ["APP_YELLOW_NO_NUMBER"] = "Nessuna sim installata",
         },
     },
     ["en_EN"] = {
@@ -786,6 +790,9 @@ Config.Language = {
             ["APP_CONTACT_LABEL_NAME"] = "Firstname - Lastname",
             ["APP_CONTACT_LABEL_NUMBER"] = "Number",
             ["APP_CONTACT_LABEL_EMAIL"] = "Email (Max: 35)",
+            ["APP_CONTACT_NEW_NAME"] = "Type the new contact name",
+            ["APP_CONTACT_NEW_NUMBER"] = "Type the new contact number",
+            ["APP_CONTACT_NEW_EMAIL"] = "Type the new contact email",
             ["APP_MESSAGES_INOLTRA"] = "Forward",
             ["APP_MESSAGE_INOLTRA_IMG"] = "Forward",
             ["APP_MESSAGES_ADD_CONTACT"] = "Add",
@@ -1030,6 +1037,7 @@ Config.Language = {
             ["APP_YELLOWPAGES_DELETE_POST"] = "Delete post",
             ["APP_YELLOW_NEW_POST_TITLE"] = "New post",
             ["APP_YELLOW_NO_TARIFF"] = "You have no internet",
+            ["APP_YELLOW_NO_NUMBER"] = "No sim installed",
         },
     }
 }

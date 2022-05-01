@@ -44,22 +44,26 @@ gcPhoneT.createYellowPost = function(data)
     if isAble then
         gcPhoneT.useInternetData(identifier, mbToRemove)
         local phone_number = gcPhoneT.getPhoneNumber(identifier)
-        data.author  = phone_number
-        data.identifier = identifier
-        data.description = data.message
-        data.number = data.author
-        data.date = os.time()
-        MySQL.Async.insert("INSERT INTO phone_yellow_pages(identifier, number, description) VALUES(@identifier, @number, @description)", {
-            ['@identifier'] = identifier,
-            ['@number'] = data.author,
-            ['@description'] = data.message
-        })
-        -- add the incremental id to local table using the last element of the
-        -- table CACHED_YELLOWS
-        data.id = CACHED_YELLOWS[#CACHED_YELLOWS].id + 1
-        table.insert(CACHED_YELLOWS, data)
-        YellowNotification(-1, "APP_YELLOW_NEW_POST_TITLE", data.message)
-        TriggerClientEvent("gcphone:yellow_receivePost", player, data)
+        if phone_number and not phone_number:find("#") then
+            data.author  = phone_number
+            data.identifier = identifier
+            data.description = data.message
+            data.number = data.author
+            data.date = os.time()
+            MySQL.Async.insert("INSERT INTO phone_yellow_pages(identifier, number, description) VALUES(@identifier, @number, @description)", {
+                ['@identifier'] = identifier,
+                ['@number'] = data.author,
+                ['@description'] = data.message
+            })
+            -- add the incremental id to local table using the last element of the
+            -- table CACHED_YELLOWS
+            data.id = CACHED_YELLOWS[#CACHED_YELLOWS].id + 1
+            table.insert(CACHED_YELLOWS, data)
+            YellowNotification(-1, "APP_YELLOW_NEW_POST_TITLE", data.message)
+            TriggerClientEvent("gcphone:yellow_receivePost", player, data)
+        else
+            YellowNotification(-1, "ERROR", "APP_YELLOW_NO_NUMBER")
+        end
     else
         YellowNotification(-1, "ERROR", "APP_YELLOW_NO_TARIFF")
     end

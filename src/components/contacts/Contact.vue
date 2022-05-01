@@ -3,21 +3,21 @@
     <PhoneTitle :backgroundColor="'rgb(194, 108, 7)'" :title="contact.display" @back="forceCancel"/>
 
     <div class='phone_content content inputText'>
-      <div class="group select" data-type="text" data-model='display' data-maxlength='30' data-title="Inserisci il nome del contatto">
+      <div class="group select" data-type="text" data-model='display' data-maxlength='30' :data-title="LangString('APP_CONTACT_NEW_NAME')">
         <input type="text" v-model="contact.display" maxlength="30" v-autofocus>
         <span class="highlight"></span>
         <span class="bar"></span>
         <label>{{ LangString('APP_CONTACT_LABEL_NAME') }}</label>
       </div>
       
-      <div class="group inputText" data-type="text" data-model='number' data-maxlength='10' data-title="Inserisci il numero del contatto">
+      <div class="group inputText" data-type="text" data-model='number' data-maxlength='10' :data-title="LangString('APP_CONTACT_NEW_NUMBER')">
         <input type="text" v-model="contact.number" maxlength="10">
         <span class="highlight"></span>
         <span class="bar"></span>
         <label>{{ LangString('APP_CONTACT_LABEL_NUMBER') }}</label>
       </div>
 
-      <div class="group inputText" data-type="text" data-model='email' data-maxlength='35' data-title="Inserisci la email del contatto">
+      <div class="group inputText" data-type="text" data-model='email' data-maxlength='35' :data-title="LangString('APP_CONTACT_NEW_EMAIL')">
         <input type="text" v-model="contact.email" maxlength="35">
         <span class="highlight"></span>
         <span class="bar"></span>
