@@ -83,15 +83,24 @@ export default {
       // if (this.soundList[dataNotif.id]) { this.soundList[dataNotif.id].play() }
       this.$phoneAPI.onplaySound({ volume: this.volume, sound: this.currentShowing.sound, loop: false })
       setTimeout(() => {
-        if (this.currentShowing === null || this.currentShowing === undefined) return
-        this.list = this.list.filter(n => n.id !== this.currentShowing.id)
-        // delete this.soundList[this.currentShowing.id]
-        this.currentShowing = null
-        setTimeout(() => {
-          if (this.list[0]) { this.showNotification(this.list[0]) }
-          if (this.list.length === 0) { this.SET_HALF_SHOW(false) }
-          if (!this.enableHalfShow) { this.SET_HALF_SHOW(false) }
-        }, 200)
+        try {
+          if (this.currentShowing === null || this.currentShowing === undefined) return
+          this.list = this.list.filter(n => n.id !== this.currentShowing.id)
+          // delete this.soundList[this.currentShowing.id]
+          this.currentShowing = null
+          setTimeout(() => {
+            try {
+              if (this.list[0]) { this.showNotification(this.list[0]) }
+              if (this.list.length === 0) { this.SET_HALF_SHOW(false) }
+              if (!this.enableHalfShow) { this.SET_HALF_SHOW(false) }
+            } catch(e) {
+              this.SET_HALF_SHOW(false)
+            }
+          }, 200)
+        } catch(e) {
+          this.SET_HALF_SHOW(false)
+          this.currentShowing = null
+        }
       }, dataNotif.duration)
     },
     style (notif) {
