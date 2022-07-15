@@ -1,4 +1,4 @@
-needAuth = true
+needAuth = false
 
 RegisterNetEvent("gcphone:authClient")
 AddEventHandler("gcphone:authClient", function(data)

@@ -1,5 +1,5 @@
 local tunnel = module("modules/TunnelV2")
-gcPhoneServerT = tunnel.getInterface(Config.AuthKey, "gcphone_server_t", "gcphone_server_t")
+gcPhoneServerT = tunnel.getInterface("gcphone", "gcphone_server_t", "gcphone_server_t")
 
 menuIsOpen = false
 PERSONAL_CONTACTS = {}
@@ -289,7 +289,6 @@ end)
 function TogglePhone()
     menuIsOpen = not menuIsOpen
     SendNUIMessage({ show = menuIsOpen })
-    if needAuth then gcPhoneServerT.authServer() end
     local firstname, lastname = gcPhoneServerT.getFirstnameAndLastname()
     local firstjob, secondjob = gcPhoneServerT.getFirstAndSecondJob()
     SendNUIMessage({
