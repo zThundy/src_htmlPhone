@@ -289,7 +289,6 @@ end)
 function TogglePhone()
     menuIsOpen = not menuIsOpen
     SendNUIMessage({ show = menuIsOpen })
-    if needAuth then gcPhoneServerT.authServer() end
     local firstname, lastname = gcPhoneServerT.getFirstnameAndLastname()
     local firstjob, secondjob = gcPhoneServerT.getFirstAndSecondJob()
     SendNUIMessage({
