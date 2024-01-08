@@ -31,6 +31,7 @@ module.exports = {
     "eol-last": "off",
     "no-trailing-spaces": "off",
     "curly": "off",
-    "no-unreachable": "warn"
+    "no-unreachable": "warn",
+    "semi": "off"
   }
 }

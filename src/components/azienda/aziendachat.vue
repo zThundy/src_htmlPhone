@@ -106,26 +106,26 @@ export default {
           scelte = [{id: 3, title: this.LangString('APP_AZIENDA_SET_POSITION'), icons: 'fa-location-arrow'}, ...scelte]
         }
         Modal.CreateModal({ scelte })
-        .then(resp => {
-          switch(resp.id) {
-            case 1:
-              this.$phoneAPI.sendAziendaMessage({ azienda: this.myAziendaInfo.name, number: currentMessage.authorPhone, message: '%pos%' })
-              this.SET_AZIENDA_IGNORE_CONTROLS(false)
-              break
-            case 2:
-              this.$phoneAPI.startCall({ numero: currentMessage.authorPhone })
-              this.SET_AZIENDA_IGNORE_CONTROLS(false)
-              break
-            case 3:
-              let val = currentMessage.message.match(/(-?\d+(\.\d+)?), (-?\d+(\.\d+)?)/)
-              this.$phoneAPI.setGPS(val[1], val[3])
-              this.SET_AZIENDA_IGNORE_CONTROLS(false)
-              break
-            case -1:
-              this.SET_AZIENDA_IGNORE_CONTROLS(false)
-          }
-        })
-        .catch(e => { this.SET_AZIENDA_IGNORE_CONTROLS(false) })
+          .then(resp => {
+            switch(resp.id) {
+              case 1:
+                this.$phoneAPI.sendAziendaMessage({ azienda: this.myAziendaInfo.name, number: currentMessage.authorPhone, message: '%pos%' })
+                this.SET_AZIENDA_IGNORE_CONTROLS(false)
+                break
+              case 2:
+                this.$phoneAPI.startCall({ numero: currentMessage.authorPhone })
+                this.SET_AZIENDA_IGNORE_CONTROLS(false)
+                break
+              case 3:
+                let val = currentMessage.message.match(/(-?\d+(\.\d+)?), (-?\d+(\.\d+)?)/)
+                this.$phoneAPI.setGPS(val[1], val[3])
+                this.SET_AZIENDA_IGNORE_CONTROLS(false)
+                break
+              case -1:
+                this.SET_AZIENDA_IGNORE_CONTROLS(false)
+            }
+          })
+          .catch(e => { this.SET_AZIENDA_IGNORE_CONTROLS(false) })
       } catch (e) { }
     },
     onBack () {

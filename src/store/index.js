@@ -18,7 +18,6 @@ import bluetooth from './modules/bluetooth'
 import darkweb from './modules/darkweb'
 import email from './modules/email'
 import azienda from './modules/azienda'
-import license from './modules/license'
 // import videocalls from './modules/videocalls'
 import yellows from './modules/yellowpages'
 
@@ -43,7 +42,6 @@ export default new Vuex.Store({
     email,
     azienda,
     wifi,
-    license,
     // videocalls,
     yellows,
   },

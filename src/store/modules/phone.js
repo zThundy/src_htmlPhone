@@ -65,12 +65,12 @@ const getters = {
     }
     return suoneria
   },
-  currentCover: ({ currentCover, config }) => {
+  currentCover: ({ currentCover, config }, getters) => {
     if (currentCover === null) {
       if (window.localStorage['gc_cover'] !== undefined && window.localStorage['gc_cover'] !== null) {
         return JSON.parse(window.localStorage['gc_cover'])
       }
-      return { label: 'Nessuna cover', value: 'base.png' }
+      return { label: getters.LangString("NO_COVER_LABEL"), value: 'base.png' }
     }
     return currentCover
   },

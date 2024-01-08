@@ -90,7 +90,7 @@ export default {
       cancelTB[cancelStr] = { value: 'cancel', icons: 'fa-undo', color: 'red' }
       // stringa di nessuna cover
       const nessunaCover = {}
-      nessunaCover['Nessuna cover'] = { value: 'base.png', label: 'Nessuna cover', color: 'orange' }
+      nessunaCover["no_cover"] = { value: 'base.png', label: this.LangString("NO_COVER_LABEL"), color: 'orange' }
       return [
         {
           icons: 'fa-phone',
@@ -310,9 +310,9 @@ export default {
           if (param.meta !== undefined || param.meta !== null) {
             if (param.meta === 'cover' && param.values[key].value !== 'cancel') {
               if (param.values[key].color === undefined || param.values[key].color === null) {
-                return {title: key, value: param.values[key].value, picto: param.values[key].value, icons: 'fa-mobile'}
+                return {title: param.values[key].label, value: param.values[key].value, picto: param.values[key].value, icons: 'fa-mobile'}
               } else {
-                return {title: key, value: param.values[key].value, picto: param.values[key].value, icons: 'fa-mobile', color: param.values[key].color}
+                return {title: param.values[key].label, value: param.values[key].value, picto: param.values[key].value, icons: 'fa-mobile', color: param.values[key].color}
               }
             }
             if (param.meta === 'background') {
@@ -334,12 +334,12 @@ export default {
           }
         })
         Modal.CreateModal({ scelte })
-        .then(resp => {
-          this.ignoreControls = false
-          if (resp.title === 'cancel' || resp.value === 'cancel') return
-          this[param.onValid](param, resp)
-        })
-        .catch(e => { this.ignoreControls = false })
+          .then(resp => {
+            this.ignoreControls = false
+            if (resp.title === 'cancel' || resp.value === 'cancel') return
+            this[param.onValid](param, resp)
+          })
+          .catch(e => { this.ignoreControls = false })
       }
       // qui controllo se le values non sono definite
       if (param.values === undefined && param.onValid !== undefined && param.onValid !== null) {

@@ -93,35 +93,35 @@ export default {
         scelte = [{id: 0, title: this.LangString('APP_PHONE_CALL'), icons: 'fa-phone'}, ...scelte]
       }
       Modal.CreateModal({ scelte })
-      .then(resp => {
-        switch (resp.id) {
-          case 0:
-            this.$phoneAPI.startCall({ numero })
-            this.updateIgnoredControls(false)
-            break
-          case 1:
-            this.deletePhoneHistory({ numero })
-            this.updateIgnoredControls(false)
-            break
-          case 2:
-            this.deleteAllPhoneHistory()
-            this.updateIgnoredControls(false)
-            break
-          case 4:
-            this.save(numero)
-            this.updateIgnoredControls(false)
-            break
-          case 5:
-            this.$router.push({ name: 'messages.view', params: { display: item.display, number: numero } })
-            this.updateIgnoredControls(false)
-            break
-          case 6:
-            this.$phoneAPI.startCall({ numero: '#' + numero })
-            this.updateIgnoredControls(false)
-            break
-        }
-      })
-      .catch(e => { this.updateIgnoredControls(false) })
+        .then(resp => {
+          switch (resp.id) {
+            case 0:
+              this.$phoneAPI.startCall({ numero })
+              this.updateIgnoredControls(false)
+              break
+            case 1:
+              this.deletePhoneHistory({ numero })
+              this.updateIgnoredControls(false)
+              break
+            case 2:
+              this.deleteAllPhoneHistory()
+              this.updateIgnoredControls(false)
+              break
+            case 4:
+              this.save(numero)
+              this.updateIgnoredControls(false)
+              break
+            case 5:
+              this.$router.push({ name: 'messages.view', params: { display: item.display, number: numero } })
+              this.updateIgnoredControls(false)
+              break
+            case 6:
+              this.$phoneAPI.startCall({ numero: '#' + numero })
+              this.updateIgnoredControls(false)
+              break
+          }
+        })
+        .catch(e => { this.updateIgnoredControls(false) })
     },
     async onEnter () {
       if (this.ignoreControls) return

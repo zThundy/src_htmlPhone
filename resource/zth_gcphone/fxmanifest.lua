@@ -40,8 +40,6 @@ client_script {
     "client/client.lua",
     "client/nui_callbacks.lua",
 
-    "client/req.lua",
-
     "client/textbox.lua",
     "client/photo.lua",
     "client/app_tchat.lua",
@@ -71,8 +69,6 @@ client_script {
 server_script {
     "@mysql-async/lib/MySQL.lua",
     "server/server.lua",
-    
-    "server/req.lua",
 
     "server/app_tchat.lua",
     "server/twitter.lua",
